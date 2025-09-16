@@ -53,6 +53,8 @@ $colors: (
     950: #0d2610,
   ),
   "default": (
+    "brand-primary": $brand-primary,
+    "brand-secondary": $brand-secondary,
     "primary": $primaryWhite,
     "accent": $accentPrimaryWhite,
     "warn": $warningPrimaryWhite,
@@ -65,6 +67,8 @@ $colors: (
     "on-warn": $custom-light-50,
   ),
   "dark": (
+    "brand-primary": $brand-primary,
+    "brand-secondary": $brand-secondary,
     "primary": $primaryBlack,
     "accent": $accentPrimaryBlack,
     "warn": $warningPrimaryBlack,

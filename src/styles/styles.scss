@@ -32,7 +32,7 @@ hr {
 
 .hero-section {
     padding-top: 80px;
-    background: linear-gradient(45deg, #2FA6DE 0%, #195A78 100%);
+    background: linear-gradient(45deg, #770CE2 0%, #430780 100%);
 
     .cta-img-1, .cta-img-2 {
         position: absolute;
@@ -42,14 +42,16 @@ hr {
     }
     .cta-img-1 {
         left: 0;
+        left: -4vw;
         img {
-            max-height: 450px;
+            max-height: 640px;
         }
     }
     .cta-img-2 {
         right: 0;
+        right: -4vw;
         img {
-            max-height: 550px;
+            max-height: 740px;
         }
     }
     h1 {
@@ -64,7 +66,7 @@ hr {
 }
 .ellipsis {
     width: 300px;
-    height: 600px;
+    height: 90vh;
     border-radius: 50%;
     filter: blur(100px);
     background-color: #21CEB9;
@@ -78,8 +80,8 @@ hr {
         left: -150px;
     }
     &.second {
-        bottom: -130px;
-        right: -150px;
+        bottom: -160px;
+        right: -40px;
     }
 }
 .ellipsis-base {
@@ -90,6 +92,7 @@ hr {
     z-index: 14;
     width: 100%;
     object-fit: contain;
+    filter: drop-shadow(0px -14px 4px #770CE2) drop-shadow(0px -14px 8px #770CE2) drop-shadow(0px -14px 16px #770CE2) drop-shadow(0px -14px 24px #770CE2);
 }
 .overlay {
     position: absolute;

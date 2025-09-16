@@ -5,7 +5,7 @@
     align-items: center;
     justify-content: center;
     // margin: 0 .25em;
-    font-size: .9em;
+    font-size: 1em;
     font-weight: $regular;
     border-radius: 8px;
     box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
@@ -26,7 +26,7 @@
     }
 
     &.btn-primary {
-        background-color: $brand-green-500;
+        background-color: $brand-primary;
         color: $onPrimaryBlack;
         &:hover {
             box-shadow: none;
@@ -34,7 +34,7 @@
     }
 
     &.btn-secondary {
-        background-color: $brand-blue-500;
+        background-color: $brand-secondary;
         color: $onPrimaryWhite;
         &:hover {
             box-shadow: none;
@@ -62,7 +62,7 @@
         background-color: transparent;
         color: $onPrimaryBlack;
         box-shadow: none;
-        border: 1px solid $onPrimaryWhite;
+        border: 1px solid $brand-primary;
     }
 
 }

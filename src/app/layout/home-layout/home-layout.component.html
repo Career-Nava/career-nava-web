@@ -3,7 +3,7 @@
     <div class="container mx-auto">
         <div class="d-flex flex-wrap justify-content-center justify-content-sm-between align-items-center gap-2 gap-sm-0 w-100">
             <a href="/home" class="d-block">
-                <img src="assets/images/logo/logo.png" class="w-100 object-fit-contain" alt="Logo">
+                <img src="assets/images/logo/logo.png" class="w-100 max-w-240 object-fit-contain" alt="Logo">
             </a>
               <div class="d-flex justify-content-center align-items-center gap-2">
                 <!-- <a [routerLink]="['/sign-in']" class="btn btn-transparent bg-transparent text-primary" mat-button><span>Sign In</span> </a> -->
@@ -22,23 +22,23 @@
 <router-outlet></router-outlet>
 
 <!-- Footer content -->
-<footer class="footer bg-brand-blue-700 overflow-hidden position-relative text-custom-light-50">
+<footer class="footer bg-default-brand-primary overflow-hidden position-relative text-custom-light-50">
     <div class="ellipsis first"></div>
     <div class="ellipsis second"></div>
-    <img src="assets/images/illustrations/graduants.svg" class="position-absolute bottom-0 graduants" alt="">
+    <img src="assets/images/illustrations/graduants-2.svg" class="position-absolute graduants" alt="" style="bottom:60px;">
     <div class="container mx-auto position-relative z-3">
         <div class="row justify-content-between pb-4">
             <!-- Column 1 -->
             <div class="col-12 col-lg-5">
                 <div class="w-100 d-flex flex-column gap-4">
                     <a href="/home" class="d-block">
-                        <img src="assets/images/logo/logo.png" class="w-100 max-w-240 object-fit-contain" alt="Zeraki Logo">
+                        <img src="assets/images/logo/logo.png" class="w-100 max-w-240 object-fit-contain" alt="Career Nava Logo">
                     </a>
                     <h2>Integrate, Align & Optimize your social learning with us!</h2>
                     <p>
-                        With Zeraki, we have a science-backed platform, You can now learn and improve
+                        With Career Nava, we have a science-backed platform, You can now learn and improve
                     </p>
-                    <a (click)="joinTheWaitlistModal()" class="btn btn-primary w-100" mat-button><span>Book a Demo</span> </a>
+                    <a (click)="joinTheWaitlistModal()" class="btn btn-secondary w-100" mat-button><span>Book a Demo</span> </a>
                 </div>
             </div>
             <!-- Column 2 -->
@@ -127,7 +127,7 @@
             </div>
         </div>
     </div>
-    <div class="p-2 text-center text-sm text-default-on-primary position-relative z-3" style="height: 60px;">
-        <p>2023 - 2024 &copy; Zeraki.</p>
+    <div class="bg-dark-primary p-2 text-center text-sm text-white position-relative z-3 d-flex align-items-center justify-content-center" style="height: 60px;">
+        <p>2023 - 2024 &copy; Career Nava.</p>
     </div>
 </footer>
