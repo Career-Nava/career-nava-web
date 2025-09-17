@@ -317,7 +317,7 @@ section {
     width: 180px;
     height: 180px;
     border-radius: 8px;
-    border: 1.5px solid $brand-green-800;
+    border: 1.5px solid $brand-secondary;
     overflow: hidden;
 
     img {
@@ -376,5 +376,48 @@ section {
 .nav-link {
     &:hover {
         cursor: pointer;
+    }
+}
+
+.pricing-package {
+    position: relative;
+    border-radius: 8px;
+    border: 1px solid $brand-primary;
+    overflow: hidden;
+    background: $backgroundPrimaryWhite;
+    min-height: 350px;
+    &::before {
+        content: "";
+        position: absolute;
+        top: -50px;
+        left: 0;
+        width: 100%;
+        background-color: $brand-primary;
+        transform: skew(0deg, 8deg);
+        height: 200px;
+    }
+    .header {
+        height: 150px;
+        align-content: center;
+        h3 {
+            font-size: 2.5em !important;
+        }
+    }
+    .footer {
+        border-radius: 0px !important;
+        padding: 2em;
+        &:hover {
+            color: $brand-secondary;
+        }
+    }
+    .content {
+        padding: 180px 1rem 1rem 1rem;
+        margin: 0;
+        li {
+            padding: 1em;
+        }
+    }
+    & > *{
+        z-index: 1;
     }
 }

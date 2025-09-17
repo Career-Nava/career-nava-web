@@ -52,6 +52,15 @@ $colors: (
     900: #204724,
     950: #0d2610,
   ),
+  "brand-purple": (
+    50: #EBDBFB,
+    // 500: $brand-primary,
+  ),
+  "brand-yellow": (
+    50: #FEF6E7,
+    // 500: $brand-secodary,
+  ),
+
   "default": (
     "brand-primary": $brand-primary,
     "brand-secondary": $brand-secondary,
