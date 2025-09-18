@@ -86,4 +86,26 @@
     .sidebar-overlay {
         display: block;
     }
+    .header {
+        .navbar-collapse {
+            justify-content: space-between;
+            background-color: transparent;
+            padding: 0;
+        }
+        .navbar-nav {
+            width: 100%;
+            justify-content: center;
+            .nav-link {
+                color: $onPrimaryBlack;
+            }
+            .nav-link.active {
+                color: $brand-secondary;
+            }
+        }
+        .nav-action {
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+        }
+    }
 }

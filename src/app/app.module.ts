@@ -12,6 +12,7 @@ import {NgApexchartsModule} from "ng-apexcharts";
 import {HttpClientModule} from "@angular/common/http";
 import {AssignmentsComponent} from "./modules/admin/assignments/assignments.component";
 import {CommonModule} from "@angular/common";
+import { HeaderComponent } from './modules/components/header/header.component';
 
 
 @NgModule({

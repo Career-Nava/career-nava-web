@@ -15,13 +15,17 @@ import {StudentOverviewComponent} from "./modules/student/student-overview/stude
 import {TeacherOverviewComponent} from "./modules/teacher/teacher-overview/teacher-overview.component";
 import {StudentsComponent} from "./modules/teacher/students/students.component";
 import {StudentAssignmentComponent} from "./modules/student/student-assignment/student-assignment.component";
+import { AboutComponent } from './modules/landing/about/about.component';
+import { BlogComponent } from './modules/landing/blog/blog.component';
 
 export const routes: Routes = [
     { path: '', redirectTo: '/home', pathMatch: 'full' },
 
     {path: '', component: HomeLayoutComponent, children:
         [
-            {path: 'home', component: HomeComponent}
+            { path: 'home', component: HomeComponent },
+            { path: 'about', component: AboutComponent },
+            { path: 'blog', component: BlogComponent }
         ]
     },
 
