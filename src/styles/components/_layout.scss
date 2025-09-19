@@ -228,6 +228,12 @@ header.header {
 .linear-brand-blue {
   background: linear-gradient(45deg, $brand-blue-500 0%, $brand-blue-950 100%);
 }
+.linear-brand-primary {
+  background: linear-gradient(45deg, #770CE2 0%, #430780 100%);
+}
+.linear-brand-secondary {
+  background: linear-gradient(45deg, $brand-secondary 0%, #F59E0B 100%);
+}
 
 .blog-navigation {
     margin-bottom: 1em;
