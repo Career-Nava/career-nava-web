@@ -3,7 +3,7 @@
     position: relative;
     overflow: hidden;
     border-radius: 8px;
-    border-color: $brand-green-800;
+    border-color: $custom-light-200;
 
     &.pricing-card {
         .mat-card-header {
@@ -51,7 +51,8 @@
         flex-wrap: wrap;
         row-gap: 1em;
         padding: 24px;
-        background-color: #FAFBFF;
+        background-color: $custom-light-50;
+        border-color: $custom-light-100;
     }
 
     .card-title {
