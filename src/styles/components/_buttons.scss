@@ -65,6 +65,13 @@
         border: 1px solid $brand-primary;
     }
 
+    &.btn-white {
+        background-color: $primaryWhite;
+        color: $onPrimaryWhite;
+        box-shadow: none;
+        border: 1px solid $brand-primary;
+    }
+
 }
 
 

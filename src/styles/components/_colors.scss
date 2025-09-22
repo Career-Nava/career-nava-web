@@ -52,15 +52,35 @@ $colors: (
     900: #204724,
     950: #0d2610,
   ),
+
+  // Brand Purple
   "brand-purple": (
-    50: #EBDBFB,
-    // 500: $brand-primary,
+    50:  #F5F0FC,
+    100: #E6DBFA,
+    200: #CBB7F5,
+    300: #AE8FEF,
+    400: #905FEA,
+    500: $brand-primary, // baseline
+    600: #5F09B5,
+    700: #490789,
+    800: #32055E,
+    900: #20023A,
+    950: #130124
   ),
+
+  // Brand Yellow
   "brand-yellow": (
-    50: #FEF6E7,
-    400: hsl(39, 92%, 55%),
-    900: hsl(39, 92%, 25%),
-    // 500: $brand-secondary,
+    50:  #FFFAF2,
+    100: #FFF3DF,
+    200: #FFE2B8,
+    300: #FFD18F,
+    400: #FFC067,
+    500: $brand-secondary, // baseline
+    600: #D9A94C,
+    700: #B38A3C,
+    800: #8C6B2D,
+    900: #60481E,
+    950: #3D2D12
   ),
 
   "default": (
