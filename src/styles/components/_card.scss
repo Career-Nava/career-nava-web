@@ -115,18 +115,18 @@
     }
 
     &.badge-primary {
-        background-color: $brand-green-100;
-        color: $brand-green-600;
+        background-color: $brand-purple-100;
+        color: $brand-purple-600;
     }
 
     &.badge-secondary {
-        background-color: $brand-blue-100;
-        color: $brand-blue-600;
+        background-color: $brand-yellow-100;
+        color: $brand-yellow-600;
     }
 }
 
 .header-decorater {
-    background: linear-gradient(90deg, $brand-green-500 0%, transparent 100%) !important;
+    background: linear-gradient(90deg, $brand-yellow-550 0%, transparent 100%) !important;
     border: none;
 
     .pattern {

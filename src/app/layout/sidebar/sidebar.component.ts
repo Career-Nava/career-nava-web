@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { SharedModule } from '../../shared/shared/shared.module';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faArrowRightFromBracket, faChartLine, faCoffee, faFile, faHouse, faUser } from '@fortawesome/free-solid-svg-icons';
+import { faArrowRightFromBracket, faChartLine, faCoffee, faFile, faHouse, faLaptop, faUser, faUsers } from '@fortawesome/free-solid-svg-icons';
 import { AuthService } from '../../services/auth/auth.service';
 import { Subscription } from 'rxjs';
 import { SidebarService } from '../../services/sidebar/sidebar.service';
@@ -18,8 +18,10 @@ export class SidebarComponent {
   faHouse = faHouse;
   faFile = faFile;
   faUser = faUser;
+  faUsers = faUsers;
   faChartLine = faChartLine;
   faArrowRightFromBracket = faArrowRightFromBracket;
+  faLaptop = faLaptop;
 
   isOpen = false;
   private subscription!: Subscription;

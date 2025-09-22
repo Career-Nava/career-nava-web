@@ -55,32 +55,33 @@ $colors: (
 
   // Brand Purple
   "brand-purple": (
-    50:  #F5F0FC,
-    100: #E6DBFA,
-    200: #CBB7F5,
-    300: #AE8FEF,
-    400: #905FEA,
-    500: $brand-primary, // baseline
-    600: #5F09B5,
-    700: #490789,
-    800: #32055E,
-    900: #20023A,
-    950: #130124
+    50:  $brand-purple-50,
+    100: $brand-purple-100,
+    200: $brand-purple-200,
+    300: $brand-purple-300,
+    400: $brand-purple-400,
+    500: $brand-purple-500, // baseline
+    600: $brand-purple-600,
+    700: $brand-purple-700,
+    800: $brand-purple-800,
+    900: $brand-purple-900,
+    950: $brand-purple-950
   ),
 
   // Brand Yellow
   "brand-yellow": (
-    50:  #FFFAF2,
-    100: #FFF3DF,
-    200: #FFE2B8,
-    300: #FFD18F,
-    400: #FFC067,
-    500: $brand-secondary, // baseline
-    600: #D9A94C,
-    700: #B38A3C,
-    800: #8C6B2D,
-    900: #60481E,
-    950: #3D2D12
+    50:  $brand-yellow-50,
+    100: $brand-yellow-100,
+    200: $brand-yellow-200,
+    300: $brand-yellow-300,
+    400: $brand-yellow-400,
+    500: $brand-yellow-500, // baseline
+    550: $brand-yellow-550, 
+    600: $brand-yellow-600,
+    700: $brand-yellow-700,
+    800: $brand-yellow-800,
+    900: $brand-yellow-900,
+    950: $brand-yellow-950
   ),
 
   "default": (

@@ -17,6 +17,8 @@ import {StudentsComponent} from "./modules/teacher/students/students.component";
 import {StudentAssignmentComponent} from "./modules/student/student-assignment/student-assignment.component";
 import { AboutComponent } from './modules/landing/about/about.component';
 import { BlogComponent } from './modules/landing/blog/blog.component';
+import { MentorsComponent } from './modules/student/mentors/mentors.component';
+import { StudentSessionsComponent } from './modules/student/student-sessions/student-sessions.component';
 
 export const routes: Routes = [
     { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -32,7 +34,7 @@ export const routes: Routes = [
   // Auth Dashboard
     {path: 'sign-in', component: SignInComponent},
 
-  // Admin Dashboard
+  // Admin Dashboard 
     {path: 'admin', component: AdminLayoutComponent, children: [
         {path: 'assessment', component: AssessmentComponent},
         {path: 'overview', component: OverviewComponent},
@@ -51,8 +53,10 @@ export const routes: Routes = [
 
   // Student Dashboard
   {path: 'student', component: LayoutComponent, children: [
-      {path: 'overview', component: StudentOverviewComponent},
+      {path: 'overview', component: StudentOverviewComponent}, 
       {path: 'assignments', component: StudentAssignmentComponent},
+      { path:'mentors', component: MentorsComponent },
+      { path:'sessions', component: StudentSessionsComponent },
     ]
   },
 
