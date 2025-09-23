@@ -1,0 +1,164 @@
+[
+  {
+    "id": 1,
+    "name": "Winnie Johnson",
+    "title": "Senior Product Designer",
+    "company": "Master Works | Facebook",
+    "image": "assets/images/avatars/female-15.jpg",
+    "sessions": 84,
+    "reviews": 34,
+    "rating": 4.5,
+    "experienceYears": 7,
+    "avgAttendance": "100%",
+    "category": "Scholarships",
+    "experiences": [
+      {
+        "title": "Senior Product Designer",
+        "description": "Led product design teams focusing on scalable design systems and cross-platform experiences.",
+        "year": "2020 - Present",
+        "companyImage": "assets/images/company/facebook.png"
+      },
+      {
+        "title": "UI/UX Designer",
+        "description": "Worked on multiple client projects delivering mobile-first solutions.",
+        "year": "2017 - 2020",
+        "companyImage": "assets/images/company/masterworks.png"
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "name": "James Carter",
+    "title": "Full Stack Developer",
+    "company": "TechHive Solutions",
+    "image": "assets/images/avatars/male-18.jpg",
+    "sessions": 65,
+    "reviews": 28,
+    "rating": 4.2,
+    "experienceYears": 5,
+    "avgAttendance": "96%",
+    "category": "Essay Writing",
+    "experiences": [
+      {
+        "title": "Full Stack Developer",
+        "description": "Built enterprise web apps with Angular, Node.js, and MongoDB.",
+        "year": "2021 - Present",
+        "companyImage": "assets/images/company/techhive.png"
+      },
+      {
+        "title": "Backend Developer",
+        "description": "Developed scalable APIs and optimized backend performance.",
+        "year": "2019 - 2021",
+        "companyImage": "assets/images/company/startup.png"
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "name": "Sophia Lee",
+    "title": "Data Scientist",
+    "company": "AI Innovations",
+    "image": "assets/images/avatars/female-17.jpg",
+    "sessions": 92,
+    "reviews": 41,
+    "rating": 4.8,
+    "experienceYears": 6,
+    "avgAttendance": "98%",
+    "category": "Career Guidance",
+    "experiences": [
+      {
+        "title": "Lead Data Scientist",
+        "description": "Designed and deployed machine learning models in production.",
+        "year": "2022 - Present",
+        "companyImage": "assets/images/company/ai-innovations.png"
+      },
+      {
+        "title": "Data Analyst",
+        "description": "Analyzed user behavior and created data-driven dashboards.",
+        "year": "2018 - 2022",
+        "companyImage": "assets/images/company/analyticsco.png"
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "name": "Michael Brown",
+    "title": "Cybersecurity Specialist",
+    "company": "SecureNet Corp",
+    "image": "assets/images/avatars/male-19.jpg",
+    "sessions": 50,
+    "reviews": 22,
+    "rating": 4.1,
+    "experienceYears": 8,
+    "avgAttendance": "94%",
+    "category": "Scholarships",
+    "experiences": [
+      {
+        "title": "Cybersecurity Specialist",
+        "description": "Developed penetration testing frameworks and threat models.",
+        "year": "2020 - Present",
+        "companyImage": "assets/images/company/securenet.png"
+      }
+    ]
+  },
+  {
+    "id": 5,
+    "name": "Amelia Davis",
+    "title": "Marketing Strategist",
+    "company": "BrandBoost Agency",
+    "image": "assets/images/avatars/female-18.jpg",
+    "sessions": 73,
+    "reviews": 29,
+    "rating": 4.4,
+    "experienceYears": 9,
+    "avgAttendance": "97%",
+    "category": "Essay Writing",
+    "experiences": [
+      {
+        "title": "Marketing Strategist",
+        "description": "Led brand campaigns increasing engagement by 45%.",
+        "year": "2019 - Present",
+        "companyImage": "assets/images/company/brandboost.png"
+      },
+      {
+        "title": "Content Marketer",
+        "description": "Created social campaigns for tech startups.",
+        "year": "2015 - 2019",
+        "companyImage": "assets/images/company/startup.png"
+      },
+      {
+        "title": "SEO Specialist",
+        "description": "Improved organic search rankings for e-commerce sites.",
+        "year": "2013 - 2015",
+        "companyImage": "assets/images/company/seo.png"
+      }
+    ]
+  },
+  {
+    "id": 6,
+    "name": "Daniel Kim",
+    "title": "Project Manager",
+    "company": "AgileWorks",
+    "image": "assets/images/avatars/male-20.jpg",
+    "sessions": 61,
+    "reviews": 25,
+    "rating": 4.3,
+    "experienceYears": 10,
+    "avgAttendance": "99%",
+    "category": "Career Guidance",
+    "experiences": [
+      {
+        "title": "Project Manager",
+        "description": "Managed large agile teams delivering fintech products.",
+        "year": "2018 - Present",
+        "companyImage": "assets/images/company/agileworks.png"
+      },
+      {
+        "title": "Scrum Master",
+        "description": "Facilitated sprints and improved delivery timelines.",
+        "year": "2015 - 2018",
+        "companyImage": "assets/images/company/scrum.png"
+      }
+    ]
+  }
+]

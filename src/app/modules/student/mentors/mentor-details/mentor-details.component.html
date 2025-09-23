@@ -1,0 +1,45 @@
+<div class="container-fluid">
+
+  <!-- Header -->
+  <div class="card header-decorater mb-5" style="min-height: none;">
+    <img src="assets/images/pattern.png" alt="" class="pattern">
+
+    <div class="p-4 w-100 text-center text-lg-start" style="z-index: 5; height: 150px;">
+      <div class="row align-items-center justify-content-lg-start">
+        
+        <div class="col-12">
+            <img [src]="mentor?.image" [alt]="mentor?.name"
+             class="object-fit-cover rounded" style="width: 240px; height: 240px;"/>
+          <div class="w-100">
+            <h1 class="mentor-name">{{ mentor?.name }}</h1>
+            <p>{{ mentor?.title }} at {{ mentor?.company }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    </div>
+
+    <ul class="nav nav-tabs">
+    <li class="nav-item">
+      <a class="nav-link active" aria-current="page" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">
+        Overview
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="#">Achievements</a>
+    </li>
+  </ul>
+
+  <div class="tab-content">
+
+    <div class="tab-pane active" id="home" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
+        <div class="card border-0">
+            <div class="card-body">
+                <h2><b>Background</b></h2>
+                <p>Lorem ipsum</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+  </div>

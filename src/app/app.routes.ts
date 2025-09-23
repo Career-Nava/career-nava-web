@@ -19,6 +19,7 @@ import { AboutComponent } from './modules/landing/about/about.component';
 import { BlogComponent } from './modules/landing/blog/blog.component';
 import { MentorsComponent } from './modules/student/mentors/mentors.component';
 import { StudentSessionsComponent } from './modules/student/student-sessions/student-sessions.component';
+import { MentorDetailsComponent } from './modules/student/mentors/mentor-details/mentor-details.component';
 
 export const routes: Routes = [
     { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -56,6 +57,7 @@ export const routes: Routes = [
       {path: 'overview', component: StudentOverviewComponent}, 
       {path: 'assignments', component: StudentAssignmentComponent},
       { path:'mentors', component: MentorsComponent },
+      { path:'mentors/mentor-details/:id', component: MentorDetailsComponent },
       { path:'sessions', component: StudentSessionsComponent },
     ]
   },
