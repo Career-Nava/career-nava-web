@@ -26,7 +26,8 @@ hr {
     min-width: none;
     max-width: none;
     height: 1px;
-    background-color: rgb(0,0,0,0.02);
+    background-color: $custom-light-200;
+    border-top: $custom-light-200 solid;
     margin: 1em 0;
 }
 .header {

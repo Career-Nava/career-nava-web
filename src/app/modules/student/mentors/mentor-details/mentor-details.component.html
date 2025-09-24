@@ -11,13 +11,13 @@
           <div class="w-100">
             <h1 class="mentor-name">{{ mentor?.name }}</h1>
             <p>{{ mentor?.title }} at {{ mentor?.company }}</p>
-            <button class="btn btn-primary my-4 mx-auto">Book A Session With {{ mentor?.name }}</button>
+            <button class="btn btn-primary my-4 mx-auto mx-lg-0">Book A Session With {{ mentor?.name }}</button>
           </div>
       </div>
     </div>
     </div>
 
-    <div class="row">
+    <div class="row gy-4">
       <div class="col-12 col-lg-7">
         <ul class="nav nav-tabs">
         <li class="nav-item">
@@ -25,9 +25,9 @@
             Overview
           </a>
         </li>
-        <li class="nav-item">
+        <!-- <li class="nav-item">
           <a class="nav-link" href="#">Achievements</a>
-        </li>
+        </li> -->
       </ul>
 
       <div class="tab-content">
@@ -35,9 +35,44 @@
         <div class="tab-pane active" id="home" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
             <div class="card border-0">
                 <div class="card-body">
-                    <p>""{{ mentor?.description }}""</p>
+                  <h3 class="card-title"><b>Overview</b></h3>
+                    <p class="my-4" style="line-height: 1.9; font-size: 1.15em;">"{{ mentor?.description }}"</p>
                     <br>
-                    <h3><b>Background</b></h3>
+                    <div class="card">
+                      <div class="card-header">
+                        <h3 class="card-title"><b>Background</b></h3>
+                      </div>
+
+                      <div class="card-body">
+
+                        <div class="py-2 d-flex align-items-center justify-content-between">
+                          <p class="fs-6">Expertise:</p>
+                        <div class="d-flex align-items-center gap-2">
+                          <p class="badge badge-primary mx-2" *ngFor="let e of mentor?.expertise">{{ e }}</p>
+                        </div>
+                        </div>
+
+                        <hr>
+
+                        <div class="py-2 d-flex align-items-center justify-content-between">
+                          <p class="fs-6">Disciplines:</p>
+                        <div class="d-flex align-items-center gap-2">
+                          <p class="badge badge-white b-1 mx-2" *ngFor="let d of mentor?.disciplines">{{ d }}</p>
+                        </div>
+                        </div>
+
+                        <hr>
+
+                        <div class="py-2 d-flex align-items-center justify-content-between">
+                          <p class="fs-6">Fluency:</p>
+                        <div class="d-flex align-items-center gap-2">
+                          <p class="badge badge-white b-1 mx-2" *ngFor="let f of mentor?.fluentIn">{{ f }}</p>
+                        </div>
+                        </div>
+                        
+                      </div>
+
+                    </div>
                 </div>
             </div>
             </div>

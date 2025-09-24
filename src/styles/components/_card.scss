@@ -124,6 +124,12 @@
         background-color: $brand-yellow-100;
         color: $brand-yellow-600;
     }
+
+    &.badge-white {
+        background-color: $primaryWhite;
+        color: $onPrimaryWhite;
+        border-color: $custom-light-200;
+    }
 }
 
 .header-decorater {

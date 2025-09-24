@@ -19,5 +19,8 @@ export interface Mentor {
   avgAttendance: string;
   category: string;
   description: string;
+  expertise:[],
+  disciplines: [],
+  fluentIn: [],
   experiences?: MentorExperience[];
 }
