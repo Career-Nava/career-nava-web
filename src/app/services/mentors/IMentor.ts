@@ -18,5 +18,6 @@ export interface Mentor {
   experienceYears: number;
   avgAttendance: string;
   category: string;
+  description: string;
   experiences?: MentorExperience[];
 }

@@ -11,18 +11,19 @@
     "experienceYears": 7,
     "avgAttendance": "100%",
     "category": "Scholarships",
+    "description": "I’m a Senior Product Designer at Facebook with over 7 years of experience designing intuitive digital experiences. I’ve mentored aspiring designers on portfolio reviews, design systems, and building case studies that stand out. I can help you sharpen your design process, prepare for interviews, and grow confidence in presenting your work.",
     "experiences": [
       {
         "title": "Senior Product Designer",
         "description": "Led product design teams focusing on scalable design systems and cross-platform experiences.",
         "year": "2020 - Present",
-        "companyImage": "assets/images/company/facebook.png"
+        "companyImage": "assets/images/clients/chevening-sc.webp"
       },
       {
         "title": "UI/UX Designer",
         "description": "Worked on multiple client projects delivering mobile-first solutions.",
         "year": "2017 - 2020",
-        "companyImage": "assets/images/company/masterworks.png"
+        "companyImage": "assets/images/clients/google.svg"
       }
     ]
   },
@@ -38,18 +39,19 @@
     "experienceYears": 5,
     "avgAttendance": "96%",
     "category": "Essay Writing",
+    "description": "As a Software Engineer at Google, I’ve worked on scalable products that impact millions of users. My passion lies in guiding engineers to write clean, maintainable code and prepare for technical interviews. Whether you’re looking to improve algorithms, system design, or career growth strategies, I’m here to support your journey.",
     "experiences": [
       {
         "title": "Full Stack Developer",
         "description": "Built enterprise web apps with Angular, Node.js, and MongoDB.",
         "year": "2021 - Present",
-        "companyImage": "assets/images/company/techhive.png"
+        "companyImage": "assets/images/clients/Mastercard.svg"
       },
       {
         "title": "Backend Developer",
         "description": "Developed scalable APIs and optimized backend performance.",
         "year": "2019 - 2021",
-        "companyImage": "assets/images/company/startup.png"
+        "companyImage": "assets/images/clients/Microsoft.svg"
       }
     ]
   },
@@ -65,18 +67,19 @@
     "experienceYears": 6,
     "avgAttendance": "98%",
     "category": "Career Guidance",
+    "description": "I’m a Career Coach and Scholarship Advisor with a decade of experience helping students secure top international scholarships. I’ve guided applicants in refining personal statements, preparing for interviews, and strategically choosing programs. Let’s work together to unlock the next stage of your academic journey.",
     "experiences": [
       {
         "title": "Lead Data Scientist",
         "description": "Designed and deployed machine learning models in production.",
         "year": "2022 - Present",
-        "companyImage": "assets/images/company/ai-innovations.png"
+        "companyImage": "assets/images/clients/mastercard-foundation-sc.webp"
       },
       {
         "title": "Data Analyst",
         "description": "Analyzed user behavior and created data-driven dashboards.",
         "year": "2018 - 2022",
-        "companyImage": "assets/images/company/analyticsco.png"
+        "companyImage": "assets/images/clients/mext-scholarship-sc.webp"
       }
     ]
   },
@@ -92,12 +95,13 @@
     "experienceYears": 8,
     "avgAttendance": "94%",
     "category": "Scholarships",
+    "description": "As a Data Scientist at Microsoft, I specialize in machine learning, predictive modeling, and data storytelling. I enjoy mentoring those starting out in data, helping with project structuring, interview prep, and building strong portfolios. I can guide you on practical ways to showcase your skills to land opportunities.",
     "experiences": [
       {
         "title": "Cybersecurity Specialist",
         "description": "Developed penetration testing frameworks and threat models.",
         "year": "2020 - Present",
-        "companyImage": "assets/images/company/securenet.png"
+        "companyImage": "assets/images/clients/mastercard-foundation-sc.webp"
       }
     ]
   },
@@ -113,6 +117,7 @@
     "experienceYears": 9,
     "avgAttendance": "97%",
     "category": "Essay Writing",
+    "description": "I’m a Senior UX Researcher with 9+ years of experience working in startups and large companies. My strength is in helping early-career researchers build strong methodologies, conduct impactful studies, and turn insights into product decisions. I can also help you position yourself for research roles globally.",
     "experiences": [
       {
         "title": "Marketing Strategist",
@@ -124,13 +129,13 @@
         "title": "Content Marketer",
         "description": "Created social campaigns for tech startups.",
         "year": "2015 - 2019",
-        "companyImage": "assets/images/company/startup.png"
+        "companyImage": "assets/images/clients/mastercard-foundation-sc.webp"
       },
       {
         "title": "SEO Specialist",
         "description": "Improved organic search rankings for e-commerce sites.",
         "year": "2013 - 2015",
-        "companyImage": "assets/images/company/seo.png"
+        "companyImage": "assets/images/clients/mwf-stacked-rgb.webp"
       }
     ]
   },
@@ -146,18 +151,19 @@
     "experienceYears": 10,
     "avgAttendance": "99%",
     "category": "Career Guidance",
+    "description": "As a Product Manager at a fast-growing fintech, I bridge the gap between business and technology to deliver user-centric solutions. I mentor aspiring PMs on roadmapping, stakeholder communication, and breaking into product roles. If you’re looking to transition into product or sharpen your leadership skills, let’s connect.",
     "experiences": [
       {
         "title": "Project Manager",
         "description": "Managed large agile teams delivering fintech products.",
         "year": "2018 - Present",
-        "companyImage": "assets/images/company/agileworks.png"
+        "companyImage": "assets/images/clients/Microsoft.svg"
       },
       {
         "title": "Scrum Master",
         "description": "Facilitated sprints and improved delivery timelines.",
         "year": "2015 - 2018",
-        "companyImage": "assets/images/company/scrum.png"
+        "companyImage": "assets/images/clients/Yoast-social-logo.webp"
       }
     ]
   }
