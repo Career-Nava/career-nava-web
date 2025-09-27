@@ -11,79 +11,87 @@
                 </a>
                 </div>
             </div>
-            <div class="col-12 col-lg-12">
-                <div class="row align-items-center py-4">
-                    <div class="col-12 col-lg-4 d-flex flex-column align-items-center gap-2">
-                        <div class="teacher-img mb-4">
-                            <img src="assets/images/clients/pic-1.png" alt="teacher" class="w-100 h-100">
-                        </div>
-                        <h3>Winnie Johnson</h3>
-                        <div class="d-flex justify-content-center align-items-center gap-2">
-                            <p class="badge bg-brand-yellow-50 text-default-on-primary">Mastercard Scholarship</p>
-                            <p class="badge bg-brand-yellow-50 text-default-on-primary">Google Scholarship</p>
-                        </div>
-                        <a class="btn btn-secondary w-100 max-w-3xl mx-auto">
-                        <span>View Winnie Johnson's Story</span>
-                        </a>
-                        <hr>
-                        <p>Current Mentees: <b>104</b></p>
-                        <p>Mission: <b>To make sure you achieve all your goals.</b></p>
-                        
-                        <div class="d-flex flex-wrap justify-content-center align-items-center gap-2">
-                            <span class="p-2 m-1 bg-brand-purple-100 rounded">Communication</span>
-                            <span class="p-2 m-1 bg-brand-purple-100 rounded">Data Analysis</span>
-                            <span class="p-2 m-1 bg-brand-purple-100 rounded">Essay Writting</span> 
-                        </div>
-                    </div>
-                    
-                    <div class="col-12 col-lg-4 d-flex flex-column align-items-center gap-2">
-                        <div class="teacher-img mb-4">
-                            <img src="assets/images/clients/pic-2.png" alt="teacher" class="w-100 h-100">
-                        </div>
-                        <h3>Mark Quinton</h3>
-                        <div class="d-flex justify-content-center align-items-center gap-2">
-                            <p class="badge bg-brand-yellow-50 text-default-on-primary">Scholarship</p>
-                            <p class="badge bg-brand-yellow-50 text-default-on-primary">Essay Writting</p>
-                        </div>
-                        <a class="btn btn-secondary w-100 max-w-3xl mx-auto">
-                        <span>View Mark Quinton's Story</span>
-                        </a>
-                        <hr>
-                        <p>Current Mentees: <b>26</b></p>
-                        <p>Mission: <b>To make sure you achieve all your goals.</b></p>
-                        
-                        <div class="d-flex flex-wrap justify-content-center align-items-center gap-2">
-                            <span class="p-2 m-1 bg-brand-purple-100 rounded">Communication</span>
-                            <span class="p-2 m-1 bg-brand-purple-100 rounded">Data Analysis</span>
-                            <span class="p-2 m-1 bg-brand-purple-100 rounded">Essay Writting</span> 
-                        </div>
-                    </div>
+            <div class="w-100 mentor-carousel my-4">
+             <div class="mentor-track">
+                <!-- Mentors First Copy -->
+                <div id="mentor" *ngFor="let mentor of mentors" class="card bg-transparent b-0">
+                  <div class="card-header position-relative align-items-center overflow-hidden p-0 teacher-img w-100">
+                    <img
+                      [src]="mentor.image"
+                      [alt]="mentor.name"
+                      class="w-100 h-100 mx-auto"
+                    />
+                  </div>
+                  <div class="card-body p-4 text-start">
+                    <h3 class="text-center">{{ mentor.name }}</h3>
+                    <p>
+                      <fa-icon [icon]="faBriefcase" class="text-brand-yellow-550 mr-2"></fa-icon>
+                      {{ mentor.title }} at {{ mentor.company }}
+                    </p>
+                    <p>
+                      <fa-icon [icon]="faComments" class="text-brand-yellow-550 mr-2"></fa-icon>
+                      {{ mentor.sessions }} Sessions ({{ mentor.reviews }} Reviews)
+                    </p>
+                    <p>
+                      Rating:
+                      <ng-container *ngFor="let _ of getStars(mentor.rating)">
+                        <fa-icon [icon]="faStarFull" class="text-brand-yellow-550"></fa-icon>
+                      </ng-container>
+                      <ng-container *ngIf="mentor.rating % 1 !== 0">
+                        <fa-icon [icon]="faStarHalf" class="text-brand-yellow-550"></fa-icon>
+                      </ng-container>
 
-                    <div class="col-12 col-lg-4 d-flex flex-column align-items-center gap-2">
-                        <div class="teacher-img mb-4">
-                            <img src="assets/images/clients/pic-3.png" alt="teacher" class="w-100 h-100">
-                        </div>
-                        <h3>Inan Tzain</h3>
-                        <div class="d-flex justify-content-center align-items-center gap-2">
-                            <p class="badge bg-brand-yellow-50 text-default-on-primary">Resume Reviews</p>
-                            <p class="badge bg-brand-yellow-50 text-default-on-primary">Scholarships</p>
-                        </div>
-                        <a class="btn btn-secondary w-100 max-w-3xl mx-auto">
-                        <span>View Inan Tzain's Story</span>
-                        </a>
-                        <hr>
-                        <p>Current Mentees: <b>10</b></p>
-                        <p>Mission: <b>To make sure you achieve all your goals.</b></p>
-                        
-                        <div class="d-flex flex-wrap justify-content-center align-items-center gap-2">
-                            <span class="p-2 m-1 bg-brand-purple-100 rounded">Communication</span>
-                            <span class="p-2 m-1 bg-brand-purple-100 rounded">Data Analysis</span>
-                            <span class="p-2 m-1 bg-brand-purple-100 rounded">Essay Writting</span> 
-                        </div>
-                    </div>
+                      <span class="ml-2">{{ mentor.rating }} Star Rating</span>
+                    </p>
+                    <p>Experience: <b>{{ mentor.experienceYears }} Years</b></p>
+                    <p>Avg Attendance: <b>{{ mentor.avgAttendance }}</b></p>
+                  </div>
+                  <div class="card-footer flex-row flex-wrap justify-content-center align-items-center gap-2 h-auto p-0 b-0 bg-transparent">
+                    <span *ngFor="let e of mentor.expertise" class="p-2 m-1 bg-brand-purple-100 rounded">{{ e }}</span>
+                  </div>
                 </div>
-            </div>
+                <!-- Second copy (duplicate for seamless loop) -->
+                 <div id="mentor" *ngFor="let mentor of mentors" class="card bg-transparent b-0">
+                  <div class="card-header position-relative align-items-center overflow-hidden p-0 teacher-img w-100">
+                    <img
+                      [src]="mentor.image"
+                      [alt]="mentor.name"
+                      class="w-100 h-100 mx-auto"
+                    />
+                  </div>
+                  <div class="card-body p-4 text-start">
+                    <h3 class="text-center">{{ mentor.name }}</h3>
+                    <p>
+                      <fa-icon [icon]="faBriefcase" class="text-brand-yellow-550 mr-2"></fa-icon>
+                      {{ mentor.title }} at {{ mentor.company }}
+                    </p>
+                    <p>
+                      <fa-icon [icon]="faComments" class="text-brand-yellow-550 mr-2"></fa-icon>
+                      {{ mentor.sessions }} Sessions ({{ mentor.reviews }} Reviews)
+                    </p>
+                    <p>
+                      Rating:
+                      <ng-container *ngFor="let _ of getStars(mentor.rating)">
+                        <fa-icon [icon]="faStarFull" class="text-brand-yellow-550"></fa-icon>
+                      </ng-container>
+                      <ng-container *ngIf="mentor.rating % 1 !== 0">
+                        <fa-icon [icon]="faStarHalf" class="text-brand-yellow-550"></fa-icon>
+                      </ng-container>
+
+                      <span class="ml-2">{{ mentor.rating }} Star Rating</span>
+                    </p>
+                    <p>Experience: <b>{{ mentor.experienceYears }} Years</b></p>
+                    <p>Avg Attendance: <b>{{ mentor.avgAttendance }}</b></p>
+                  </div>
+                  <div class="card-footer flex-row flex-wrap justify-content-center align-items-center gap-2 h-auto p-0 b-0 bg-transparent">
+                    <span *ngFor="let e of mentor.expertise" class="p-2 m-1 bg-brand-purple-100 rounded">{{ e }}</span>
+                  </div>
+                </div>
+             </div>
         </div>
+
     </div>
     </div>
+</div>
 </section>
+

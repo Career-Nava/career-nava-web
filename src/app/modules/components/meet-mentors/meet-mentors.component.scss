@@ -1,0 +1,37 @@
+.mentor-carousel {
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+}
+
+.mentor-track {
+    display: flex;
+    gap: 2rem;
+    animation: scroll 30s linear infinite;
+    .card {
+    width: 300px; 
+    height: auto; 
+    flex: 0 0 auto; /* prevents shrinking */
+    object-fit: contain;
+    }
+    .mentor {
+        .card-header {
+            border-radius: 8px;
+            overflow: hidden !important;
+            height: 240px;
+        }
+        img {
+            margin: 0 auto;
+        }
+    }
+}
+
+/* Infinite scroll animation */
+@keyframes scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
