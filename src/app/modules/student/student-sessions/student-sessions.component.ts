@@ -3,26 +3,8 @@ import { faCalendar, faClock, faEllipsisV } from '@fortawesome/free-solid-svg-ic
 import { Subscription } from 'rxjs';
 import { AssignmentsService } from '../../../services/assignments/assignments.service';
 import { SharedModule } from '../../../shared/shared/shared.module';
-
-interface Assignment {
-  id: number;
-  title: string;
-  subtitle: string;
-  subject: string;
-  teacherId: number;  // Foreign key to reference a teacher
-  description: string;
-  date: string;       // Format YYYY-MM-DD for simplicity
-  time: string;       // Time in HH:MM format
-  status: 'active' | 'upcoming'; // Status of the assignment
-  thumbnail?: string;
-  teacher?: {
-    id: string;
-    name: string;
-    avatar: string;
-    email: string;
-    phone: string;
-  };
-}
+import { SessionsService } from '../../../services/sessions/sessions.service';
+import { ISessions } from '../../../services/sessions/ISessions';
 
 @Component({
   selector: 'app-student-sessions',
@@ -38,27 +20,28 @@ faCalendar = faCalendar;
   faClock = faClock;
   faDotVertical = faEllipsisV;
 
-  assignments: Assignment[] = []; // Plain array
   private subscriptions: Subscription = new Subscription();
+  
+  sessions: ISessions[] = [];
 
-  constructor(private assignmentService: AssignmentsService) {
+  constructor(private assignmentService: AssignmentsService, private sessionService: SessionsService) {
   }
-
+  
   ngOnInit(): void {
-    // this.assignments$ = this.assignmentService.getAssignments();
-    // console.log('Assignments:', this.assignments$);
-
-    this.loadAssignments();
-
+    this.loadSessions();
   }
 
-  loadAssignments(): void {
-    this.subscriptions.add(this.assignmentService.getAssignments().subscribe({
-      next: (assignments) => {
-        this.assignments = assignments;
-        console.log('Assignments:', this.assignments);
+  getStars(rating: number): number[] {
+    return Array(Math.floor(rating)).fill(0);
+  }
+
+  private loadSessions(): void {
+    this.subscriptions.add(this.sessionService.getSessions().subscribe({
+      next: (sessions) => {
+        this.sessions = sessions;
+        console.log('Sessions:', this.sessions);
       },
-      error: (err) => console.error('Failed to load assignments:', err)
+      error: (e) => console.error('Failed to load sessions', e)
     }));
   }
 

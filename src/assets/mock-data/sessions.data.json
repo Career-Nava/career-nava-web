@@ -1,0 +1,102 @@
+[
+  {
+    "id": 1,
+    "title": "Breaking into Product Design",
+    "link": "https://zoom.us/j/1234567890",
+    "role": "Senior Product Designer",
+    "image": "assets/images/sessions/1.png",
+    "imageThumbnail": "assets/images/sessions/1.png",
+    "date": "2025-09-25",
+    "time": "16:00",
+    "sessionDuration": "60 mins",
+    "reviews": 45,
+    "rating": 4.8,
+    "category": "Product Design",
+    "status": "active",
+    "description": "Learn how to transition into product design with practical frameworks, portfolio guidance, and real-world case studies from a seasoned mentor.",
+    "mentor": {
+        "id": 1,
+        "name": "Amina Yusuf",
+        "title": "Senior Product Designer",
+        "company": "Figma",
+        "image": "assets/images/avatars/female-20.jpg",
+        "category": "Product Design"
+      },
+    "menteesAttending": []
+  },
+  {
+    "id": 2,
+    "title": "Mastering UX Research Methods",
+    "link": "https://zoom.us/j/9876543210",
+    "role": "UX Researcher",
+    "image": "assets/images/sessions/2.png",
+    "imageThumbnail": "assets/images/sessions/2.png",
+    "date": "2025-09-28",
+    "time": "10:30",
+    "sessionDuration": "45 mins",
+    "reviews": 60,
+    "rating": 4.9,
+    "category": "UX Research",
+    "status": "active",
+    "description": "Dive deep into user research methods, usability testing, and synthesizing insights to create impactful design decisions.",
+    "mentor": {
+        "id": 2,
+        "name": "Carlos Mendes",
+        "title": "UX Researcher",
+        "company": "Google",
+        "image": "assets/images/avatars/male-05.jpg",
+        "category": "UX Research"
+      },
+    "menteesAttending": []
+  },
+  {
+    "id": 3,
+    "title": "Crafting Winning Portfolios",
+    "link": "https://zoom.us/j/555666777",
+    "role": "Design Lead",
+    "image": "assets/images/sessions/3.png",
+    "imageThumbnail": "assets/images/sessions/3.png",
+    "date": "2025-10-02",
+    "time": "18:00",
+    "sessionDuration": "90 mins",
+    "reviews": 32,
+    "rating": 4.7,
+    "category": "Career Growth",
+    "status": "inactive",
+    "description": "Get insider tips on creating a portfolio that stands out, highlights your strengths, and aligns with recruiter expectations.",
+    "mentor": {
+        "id": 3,
+        "name": "Sophie Chen",
+        "title": "Design Lead",
+        "company": "Airbnb",
+        "image": "assets/images/avatars/female-10.jpg",
+        "category": "Career Growth"
+      },
+    "menteesAttending": []
+  },
+  {
+    "id": 4,
+    "title": "From Designer to Design Manager",
+    "link": "https://zoom.us/j/444555666",
+    "role": "Design Manager",
+    "image": "assets/images/sessions/4.png",
+    "imageThumbnail": "assets/images/sessions/4.png",
+    "date": "2025-10-05",
+    "time": "14:00",
+    "sessionDuration": "60 mins",
+    "reviews": 27,
+    "rating": 4.6,
+    "category": "Leadership",
+    "status": "inactive",
+    "description": "Understand the transition from IC to manager, managing teams, and driving culture while still keeping design craft alive.",
+    "mentor": {
+        "id": 4,
+        "name": "David Kim",
+        "title": "Design Manager",
+        "company": "Spotify",
+        "image": "assets/images/avatars/male-09.jpg",
+        "category": "Leadership"
+      },
+    "menteesAttending": []
+  }
+]

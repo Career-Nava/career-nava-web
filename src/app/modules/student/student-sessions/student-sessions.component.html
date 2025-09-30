@@ -1,36 +1,10 @@
 <div class="container">
 
-  <!-- Header -->
-  <div class="card header-decorater mb-5">
-    <!-- <div class="decorater-ellipse">
-        <div class="ellipse ellipse-sm"></div>
-        <div class="ellipse ellipse-md"></div>
-        <div class="ellipse ellipse-lg"></div>
-    </div> -->
-    <img src="assets/images/pattern.png" alt="" class="pattern">
-
-    <div class="card-body text-center text-lg-start" style="z-index: 5;">
-      <div class="row align-items-center justify-content-lg-between">
-        <!-- Name -->
-        <div class="col-12 col-lg-6">
-          <div>
-            <h1>My Assignments</h1>
-            <p>Lorem ipsum dolor sit amet consectetur. Ultrices venenatis sit mi netus consectetur bibendum lacus eu parturient.</p>
-            <a href="" class="btn btn-secondary">
-              <!-- <fa-icon [icon]="faPlus"></fa-icon> -->
-              Add Assessment
-            </a>
-          </div>
-        </div>
-        <div class="col-12 col-lg-4">
-          <!-- Illustration -->
-          <div class="w-100 mx-auto d-none d-lg-block" style="max-width: 200px;">
-            <img src="assets/images/illustrations/personal-data-flatline.svg" alt="illustration" class="w-100 h-100 object-contain">
-          </div>
-        </div>
-      </div>
+  <div class="col-12 col-lg-6">
+    <div class="mb-4">
+      <h1>My Sessions</h1>
+      <p>Lorem ipsum dolor sit amet consectetur. Ultrices venenatis sit mi netus consectetur bibendum lacus eu parturient.</p>
     </div>
-
   </div>
 
   <ul class="nav nav-tabs">
@@ -53,49 +27,56 @@
       <div class="card border-0">
         <div class="card-header">
           <div>
-            <h3 class="card-title">Assignments (3)</h3>
+            <h3 class="card-title">My Sessions ({{sessions.length}})</h3>
             <p>Lorem ipsum dolor sit amet consectetur. Ultrices venenatis sit mi netus consectetur bibendum lacus eu parturient.</p>
           </div>
-          <a href="#" class="btn btn-primary">See all assignments</a>
-        </div>
+        </div> 
         <div class="card-body">
-          <div class="row gap-4 gap-lg-0">
+          <div class="row gy-4">
             <!-- Assignments -->
-            <div *ngFor="let assignment of assignments" class="col-12 col-lg-4">
+            <div *ngFor="let session of sessions" class="col-12 col-md-6 col-lg-4">
               <div class="card" >
-                <div class="card-header position-relative align-items-start overflow-hidden">
-                  <ng-container *ngIf="assignment.thumbnail">
-                    <div class="backdrop-blur"></div>
-                    <img [src]="assignment.thumbnail" [alt]="assignment.title" class="fit-image">
-                  </ng-container>
-                  <div class="position-relative z-2">
-                    <h4 class="card-title">{{ assignment.title }}</h4>
-                    <p class="card-subtitle">Computer Science</p>
-                    <div class="d-flex flex-column mt-4">
-                      <p><fa-icon [icon]="faCalendar" class="text-brand-green-500"></fa-icon> {{ assignment.date }}</p>
-                      <p><fa-icon [icon]="faClock" class="text-brand-green-500"></fa-icon> {{ assignment.time }}</p>
-                      <p>Status: <span class="badge badge-primary">{{ assignment.status }}</span></p>
-                    </div>
-                  </div>
-                  <a href="#" class="w-24 h-24 d-flex justify-content-center align-items-center z-2"><fa-icon [icon]="faDotVertical"></fa-icon></a>
+                <div class="card-header d-block overflow-hidden p-0">
+                  <img [src]="session.imageThumbnail" [alt]="session.title" class="w-100 object-fit-cover" style="height: 200px;">
                 </div>
                 <div class="card-body">
+                  <div class="position-relative z-2">
+                    <h4 class="card-title">{{ session.title }}</h4>
+                    <p class="card-subtitle">{{ session.category }}</p>
+                    <div class="d-flex flex-column mt-4">
+                      <p><fa-icon [icon]="faCalendar" class="text-brand-green-500"></fa-icon> {{ session.date | date:'medium' }}</p>
+                      <p><fa-icon [icon]="faClock" class="text-brand-green-500"></fa-icon> {{ session.time }} ({{ session.sessionDuration }})</p>
+                      <!-- <p>Status: <span class="badge-sm" [ngClass]="{
+                                  'bg-success': session.status === 'active',
+                                  'bg-secondary': session.status === 'inactive'
+                                }">
+                                  {{ session.status | titlecase }}
+                                </span>
+                      </p> -->
+                    </div>
+                  </div>
                   <p>
-                    {{ assignment.description }}
+                    {{ session.description }}
                   </p>
-                  <!-- <h4>Teacher:</h4> -->
                   <hr>
                   <div class="d-flex flex-wrap align-items-center gap-2">
-                    <img [src]="assignment.teacher?.avatar" [alt]="assignment.teacher?.name" class="w-60 h-60 object-fit-cover" style="border-radius: 50%;">
+                    <img [src]="session.mentor.image" [alt]="session.mentor.name" class="w-60 h-60 object-fit-cover" style="border-radius: 50%;">
                     <div>
-                      <h4>{{ assignment.teacher?.name }}</h4>
-                      <p>{{ assignment.teacher?.email }}</p>
-                      <p>{{ assignment.teacher?.phone }}</p>
+                      <h4>{{ session.mentor.name }}</h4>
+                      <p>{{ session.mentor.title }}</p>
                     </div>
                   </div>
                 </div>
                 <div class="card-footer bg-transparent border-0">
-                  <a href="#" class="btn btn-primary w-100">Download Assignment</a>
+                  <a [href]="session.status === 'active' ? session.link : null" 
+                    target="_blank" 
+                    class="btn btn-primary w-100" 
+                    [class.disabled]="session.status === 'inactive'"
+                    (click)="session.status === 'inactive' ? $event.preventDefault() : null"
+                  >
+                    Session Is {{ session.status | titlecase }}
+                </a>
+
                 </div>
               </div>
             </div>

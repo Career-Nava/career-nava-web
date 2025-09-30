@@ -71,6 +71,9 @@
         box-shadow: none;
         border: 1px solid $brand-primary;
     }
+    &.btn-disabled {
+        opacity: 30%;
+    }
 
 }
 

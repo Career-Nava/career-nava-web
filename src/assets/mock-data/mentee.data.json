@@ -1,0 +1,94 @@
+[
+  {
+    "id": 1,
+    "name": "Daniel Kim",
+    "role": "Student",
+    "title": "Aspiring Product Designer",
+    "company": "University of Nairobi",
+    "avatar": "assets/images/avatars/male-11.jpg",
+    "category": "Scholarships",
+    "description": "Passionate about creating inclusive design experiences and exploring career opportunities in UX research.",
+    "interests": ["UX Research", "Product Design"],
+    "disciplines": ["Design Thinking", "Prototyping"],
+    "fluentIn": ["English", "Kiswahili"],
+    "experiences": [
+      {
+        "title": "UX Design Intern",
+        "description": "Assisted in creating wireframes and prototypes for a mobile financial app.",
+        "year": "2024",
+        "companyImage": "assets/images/companies/fintech.png"
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "name": "Sophia Patel",
+    "role": "Graduate",
+    "title": "Junior Data Scientist",
+    "company": "Independent Researcher",
+    "avatar": "assets/images/avatars/female-18.jpg",
+    "category": "Essay Writing",
+    "description": "Interested in AI applications in finance and exploring opportunities in research writing.",
+    "interests": ["Machine Learning", "Essay Writing"],
+    "disciplines": ["Data Science", "Research"],
+    "fluentIn": ["English", "Hindi"],
+    "experiences": [
+      {
+        "title": "Research Assistant",
+        "description": "Contributed to academic essays and papers on financial modeling.",
+        "year": "2023"
+      },
+      {
+        "title": "AI Workshop Participant",
+        "description": "Participated in hands-on workshops on NLP and predictive analytics.",
+        "year": "2024"
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "name": "Michael Ochieng",
+    "role": "Professional",
+    "title": "Software Engineer",
+    "company": "TechNova",
+    "avatar": "assets/images/avatars/male-19.jpg",
+    "category": "Career Growth",
+    "description": "Focused on backend development and mentoring peers in cloud engineering.",
+    "interests": ["Backend Development", "Cloud Computing"],
+    "disciplines": ["Software Engineering", "DevOps"],
+    "fluentIn": ["English", "French"],
+    "experiences": [
+      {
+        "title": "Backend Engineer",
+        "description": "Built scalable APIs for fintech applications.",
+        "year": "2022",
+        "companyImage": "assets/images/companies/technova.png"
+      },
+      {
+        "title": "Cloud Certification",
+        "description": "Achieved AWS Certified Solutions Architect credential.",
+        "year": "2023"
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "name": "Aisha Mohammed",
+    "role": "Undergraduate",
+    "title": "Marketing Enthusiast",
+    "company": "Strathmore University",
+    "avatar": "assets/images/avatars/female-21.jpg",
+    "category": "Scholarships",
+    "description": "Exploring opportunities in digital marketing and international business through mentorship.",
+    "interests": ["Digital Marketing", "Scholarships"],
+    "disciplines": ["Marketing Strategy", "Brand Communication"],
+    "fluentIn": ["English", "Arabic"],
+    "experiences": [
+      {
+        "title": "Marketing Intern",
+        "description": "Worked on social media campaigns and content strategy for a student club.",
+        "year": "2024"
+      }
+    ]
+  }
+]
