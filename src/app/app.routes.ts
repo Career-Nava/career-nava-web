@@ -53,9 +53,17 @@ export const routes: Routes = [
   },
 
   // Student Dashboard
-  {path: 'student', component: LayoutComponent, children: [
-      {path: 'overview', component: StudentOverviewComponent}, 
-      {path: 'assignments', component: StudentAssignmentComponent},
+  // {path: 'student', component: LayoutComponent, children: [
+  //     {path: 'overview', component: StudentOverviewComponent}, 
+  //     {path: 'assignments', component: StudentAssignmentComponent},
+  //     { path:'mentors', component: MentorsComponent },
+  //     { path:'mentors/mentor-details/:id', component: MentorDetailsComponent },
+  //     { path:'sessions', component: StudentSessionsComponent },
+  //   ]
+  // },
+
+  // Mentee Dashboard
+  {path: 'mentee', component: LayoutComponent, children: [
       { path:'mentors', component: MentorsComponent },
       { path:'mentors/mentor-details/:id', component: MentorDetailsComponent },
       { path:'sessions', component: StudentSessionsComponent },

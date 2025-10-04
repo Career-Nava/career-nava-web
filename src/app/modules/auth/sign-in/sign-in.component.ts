@@ -31,7 +31,7 @@ export class SignInComponent {
           if (user) {
             switch (user.role) {
               case 'student':
-                this.router.navigate(['/student/overview']);
+                this.router.navigate(['/mentee/mentors']);
                 break;
               case 'teacher':
                 this.router.navigate(['/teacher/overview']);
