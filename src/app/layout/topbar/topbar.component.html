@@ -1,17 +1,33 @@
 <header class="topbar bg-white">
     <nav class="navbar navbar-expand-lg bg-body-tertiary">
-        <div class="container-fluid justify-content-center justify-content-sm-between">
+        <div class="container-fluid justify-content-center justify-content-sm-end">
           <a class="navbar-brand d-lg-none">
-            <img src="assets/images/logo/logo.png" alt="Career Nava Logo">
+            <img src="assets/images/logo/logo-variant.png" alt="Career Nava Logo">
           </a>
-          <!-- <button (click)="toggleSidebar()" class="btn btn-primary d-block d-lg-none">Open Menu</button> -->
-          <div class="d-flex topbar-menus justify-content-between justify-content-sm-between">
+
+              <!-- <button (click)="toggleSidebar()" class="btn btn-primary d-block d-lg-none">Open Menu</button> -->
+          <div class="d-flex topbar-menus align-items-center justify-content-between justify-content-sm-between gap-2">
+            
+            <div class="nav-item dropdown">
+              <a href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" class="nav-link dropdown-toggle d-flex flex-wrap align-items-center gap-2">
+                <img [src]="user?.avatar" [alt]="user?.name" class="w-48 h-48 object-fit-cover" style="border-radius: 50%;">
+                <div>
+                  <h4>{{ user?.name }}</h4>
+                  <p>{{ user?.email }}</p>
+                </div>
+              </a>
+                <ul class="dropdown-menu">
+                <li><a class="dropdown-item p-3" (click)="logout()"><p>Logout</p></a></li>
+                </ul>
+              </div>
+
             <button (click)="toggleSidebar()" class="btn btn-primary d-block d-lg-none">Menu</button>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarScroll" aria-controls="navbarScroll" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
           </div>
-        <div class="collapse navbar-collapse justify-content-between" id="navbarScroll">
+
+              <!-- <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarScroll" aria-controls="navbarScroll" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button> -->
+        <!-- <div class="collapse navbar-collapse justify-content-end" id="navbarScroll">
           <form class="d-flex" role="search">
             <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
             <button class="btn btn-outline-success" type="submit">Search</button>
@@ -26,13 +42,14 @@
                 </div>
               </a>
                 <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="/">Home</a></li>
+                <li><a class="dropdown-item" href="/mentors">Explore Mentors</a></li>
                 <li><a class="dropdown-item" (click)="logout()">Logout</a></li>
                 </ul>
             </li>
             </ul>
 
-        </div>
-        </div>
+        </div> -->
+        
+      </div>
     </nav>
 </header>

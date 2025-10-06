@@ -53,6 +53,25 @@ export class AuthService {
     );
   }
 
+  register(userData: {
+    firstName?: string;
+    lastName?: string;
+    email: string;
+    password: string;
+    role: string;
+  }): Observable<IUser> {
+    const newUser: IUser = {
+      ...userData,
+      name: `${userData.firstName ?? ''} ${userData.lastName ?? ''}`.trim(),
+    };
+
+    // Simulate a successful registration response
+    console.log('Mock register user:', newUser);
+    this.safeSetItem('currentUser', JSON.stringify(newUser));
+
+    return of(newUser); // Returns observable for UI compatibility
+  }
+
   getUser(): IUser | null {
     const user = this.safeGetItem('currentUser');
     return user ? JSON.parse(user) : null;

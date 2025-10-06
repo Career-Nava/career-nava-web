@@ -20,6 +20,8 @@ import { BlogComponent } from './modules/landing/blog/blog.component';
 import { MentorsComponent } from './modules/student/mentors/mentors.component';
 import { StudentSessionsComponent } from './modules/student/student-sessions/student-sessions.component';
 import { MentorDetailsComponent } from './modules/student/mentors/mentor-details/mentor-details.component';
+import { AuthLayoutComponent } from './modules/auth/auth-layout/auth-layout.component';
+import { SignUpComponent } from './modules/auth/sign-up/sign-up/sign-up.component';
 
 export const routes: Routes = [
     { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -33,8 +35,19 @@ export const routes: Routes = [
     },
 
   // Auth Dashboard
-    {path: 'sign-in', component: SignInComponent},
+  { path: '', component: AuthLayoutComponent, children: [
+    { path: 'sign-in', component: SignInComponent },
+    { path: 'sign-up', component: SignUpComponent }, 
+  ]},
 
+  // Mentee Dashboard
+  {path: 'mentee', component: LayoutComponent, children: [
+      { path:'mentors', component: MentorsComponent },
+      { path:'mentors/mentor-details/:id', component: MentorDetailsComponent },
+      { path:'sessions', component: StudentSessionsComponent },
+    ]
+  },
+    
   // Admin Dashboard 
     {path: 'admin', component: AdminLayoutComponent, children: [
         {path: 'assessment', component: AssessmentComponent},
@@ -62,13 +75,6 @@ export const routes: Routes = [
   //   ]
   // },
 
-  // Mentee Dashboard
-  {path: 'mentee', component: LayoutComponent, children: [
-      { path:'mentors', component: MentorsComponent },
-      { path:'mentors/mentor-details/:id', component: MentorDetailsComponent },
-      { path:'sessions', component: StudentSessionsComponent },
-    ]
-  },
 
 //   { path: '**', component: PageNotFoundComponent },  // Wildcard route for a 404 page
 ];
