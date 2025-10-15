@@ -91,10 +91,35 @@
     "description": "Understand the transition from IC to manager, managing teams, and driving culture while still keeping design craft alive.",
     "mentor": {
         "id": 4,
-        "name": "David Kim",
+        "name": "David Lawa",
         "title": "Design Manager",
         "company": "Spotify",
         "image": "assets/images/avatars/male-09.jpg",
+        "category": "Leadership"
+      },
+    "menteesAttending": []
+  },
+  {
+    "id": 5,
+    "title": "How to apply for Google scholarships",
+    "link": "https://zoom.us/j/444555666",
+    "role": "Design Manager",
+    "image": "",
+    "imageThumbnail": "",
+    "date": "2025-10-05",
+    "time": "14:00",
+    "sessionDuration": "60 mins",
+    "reviews": 27,
+    "rating": 4.6,
+    "category": "Leadership",
+    "status": "inactive",
+    "description": "Understand the transition from IC to manager, managing teams, and driving culture while still keeping design craft alive.",
+    "mentor": {
+        "id": 4,
+        "name": "Ted Ayobi",
+        "title": "Design Manager",
+        "company": "Spotify",
+        "image": "assets/images/avatars/male-03.jpg",
         "category": "Leadership"
       },
     "menteesAttending": []
