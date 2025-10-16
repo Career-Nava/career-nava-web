@@ -22,6 +22,7 @@ import { StudentSessionsComponent } from './modules/student/student-sessions/stu
 import { MentorDetailsComponent } from './modules/student/mentors/mentor-details/mentor-details.component';
 import { AuthLayoutComponent } from './modules/auth/auth-layout/auth-layout.component';
 import { SignUpComponent } from './modules/auth/sign-up/sign-up/sign-up.component';
+import { ScholarshipsComponent } from './modules/scholarships/scholarships/scholarships.component';
 
 export const routes: Routes = [
     { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -45,6 +46,7 @@ export const routes: Routes = [
       { path:'mentors', component: MentorsComponent },
       { path:'mentors/mentor-details/:id', component: MentorDetailsComponent },
       { path:'sessions', component: StudentSessionsComponent },
+      { path: 'scholarships', component: ScholarshipsComponent }
     ]
   },
     
