@@ -1,97 +1,148 @@
 <section class="text-center">
-    <div class="container">
+  <div class="container">
     <div class="w-100 max-w-md mx-auto d-flex flex-column justify-content-center align-items-center gap-2">
-        <div class="row align-items-center justify-content-center">
-            <div class="col-12 col-lg-12">
-                <div class="mb-4">
-                    <h2 class="text-5xl font-bold">Meet your teachers</h2>
-                <p>Career Nava brings the best high school teachers home and empowers students to excel in exams and beyond.</p>
-                <a class="btn btn-primary mt-4 w-100 max-w-3xl mx-auto">
-                    <span>Book A Session With Us</span>
-                </a>
-                </div>
-            </div>
-            <div class="w-100 mentor-carousel my-4">
-             <div class="mentor-track">
-                <!-- Mentors First Copy -->
-                <div id="mentor" *ngFor="let mentor of mentors" class="card bg-transparent b-0">
-                  <div class="card-header position-relative align-items-center overflow-hidden p-0 teacher-img w-100">
-                    <img
-                      [src]="mentor.image"
-                      [alt]="mentor.name"
-                      class="w-100 h-100 mx-auto"
-                    />
-                  </div>
-                  <div class="card-body p-4 text-start">
-                    <h3 class="text-center">{{ mentor.name }}</h3>
-                    <p>
-                      <fa-icon [icon]="faBriefcase" class="text-brand-yellow-550 mr-2"></fa-icon>
-                      {{ mentor.title }} at {{ mentor.company }}
-                    </p>
-                    <p>
-                      <fa-icon [icon]="faComments" class="text-brand-yellow-550 mr-2"></fa-icon>
-                      {{ mentor.sessions }} Sessions ({{ mentor.reviews }} Reviews)
-                    </p>
-                    <p>
-                      Rating:
-                      <ng-container *ngFor="let _ of getStars(mentor.rating)">
-                        <fa-icon [icon]="faStarFull" class="text-brand-yellow-550"></fa-icon>
-                      </ng-container>
-                      <ng-container *ngIf="mentor.rating % 1 !== 0">
-                        <fa-icon [icon]="faStarHalf" class="text-brand-yellow-550"></fa-icon>
-                      </ng-container>
-
-                      <span class="ml-2">{{ mentor.rating }} Star Rating</span>
-                    </p>
-                    <p>Experience: <b>{{ mentor.experienceYears }} Years</b></p>
-                    <p>Avg Attendance: <b>{{ mentor.avgAttendance }}</b></p>
-                  </div>
-                  <div class="card-footer flex-row flex-wrap justify-content-center align-items-center gap-2 h-auto p-0 b-0 bg-transparent">
-                    <span *ngFor="let e of mentor.expertise" class="p-2 m-1 bg-brand-purple-100 rounded">{{ e }}</span>
-                  </div>
-                </div>
-                <!-- Second copy (duplicate for seamless loop) -->
-                 <div id="mentor" *ngFor="let mentor of mentors" class="card bg-transparent b-0">
-                  <div class="card-header position-relative align-items-center overflow-hidden p-0 teacher-img w-100">
-                    <img
-                      [src]="mentor.image"
-                      [alt]="mentor.name"
-                      class="w-100 h-100 mx-auto"
-                    />
-                  </div>
-                  <div class="card-body p-4 text-start">
-                    <h3 class="text-center">{{ mentor.name }}</h3>
-                    <p>
-                      <fa-icon [icon]="faBriefcase" class="text-brand-yellow-550 mr-2"></fa-icon>
-                      {{ mentor.title }} at {{ mentor.company }}
-                    </p>
-                    <p>
-                      <fa-icon [icon]="faComments" class="text-brand-yellow-550 mr-2"></fa-icon>
-                      {{ mentor.sessions }} Sessions ({{ mentor.reviews }} Reviews)
-                    </p>
-                    <p>
-                      Rating:
-                      <ng-container *ngFor="let _ of getStars(mentor.rating)">
-                        <fa-icon [icon]="faStarFull" class="text-brand-yellow-550"></fa-icon>
-                      </ng-container>
-                      <ng-container *ngIf="mentor.rating % 1 !== 0">
-                        <fa-icon [icon]="faStarHalf" class="text-brand-yellow-550"></fa-icon>
-                      </ng-container>
-
-                      <span class="ml-2">{{ mentor.rating }} Star Rating</span>
-                    </p>
-                    <p>Experience: <b>{{ mentor.experienceYears }} Years</b></p>
-                    <p>Avg Attendance: <b>{{ mentor.avgAttendance }}</b></p>
-                  </div>
-                  <div class="card-footer flex-row flex-wrap justify-content-center align-items-center gap-2 h-auto p-0 b-0 bg-transparent">
-                    <span *ngFor="let e of mentor.expertise" class="p-2 m-1 bg-brand-purple-100 rounded">{{ e }}</span>
-                  </div>
-                </div>
-             </div>
+      <div class="row align-items-center justify-content-center">
+        <div class="col-12 col-lg-12">
+          <div class="mb-4">
+            <h2 class="text-5xl font-bold">Meet your teachers</h2>
+            <p>
+              Career Nava brings the best high school teachers home and empowers
+              students to excel in exams and beyond.
+            </p>
+            <a class="btn btn-primary mt-4 w-100 max-w-3xl mx-auto">
+              <span>Book A Session With Us</span>
+            </a>
+          </div>
         </div>
 
-    </div>
-    </div>
-</div>
-</section>
+        <div class="w-100 mentor-carousel my-4">
+          <div class="mentor-track">
+            <!-- First copy -->
+            <div
+              id="mentor"
+              *ngFor="let mentor of mentors"
+              class="card bg-transparent b-0"
+            >
+              <div
+                class="card-header position-relative align-items-center overflow-hidden p-0 teacher-img w-100"
+              >
+                <img
+                  [src]="mentor.profilePicture"
+                  [alt]="mentor.fullName"
+                  class="w-100 h-100 mx-auto"
+                />
+              </div>
+              <div class="card-body p-4 text-start">
+                <h3 class="text-center">{{ mentor.fullName }}</h3>
+                <p>
+                  <fa-icon
+                    [icon]="faBriefcase"
+                    class="text-brand-yellow-550 mr-2"
+                  ></fa-icon>
+                  {{ mentor.positionTitle }} at {{ mentor.company }}
+                </p>
+                <p>
+                  <fa-icon
+                    [icon]="faComments"
+                    class="text-brand-yellow-550 mr-2"
+                  ></fa-icon>
+                  {{ mentor.totalSessions }} Sessions ({{ mentor.totalReviews }} Reviews)
+                </p>
+                <p>
+                  Rating:
+                  <ng-container *ngFor="let _ of getStars(mentor.avgRating)">
+                    <fa-icon
+                      [icon]="faStarFull"
+                      class="text-brand-yellow-550"
+                    ></fa-icon>
+                  </ng-container>
+                  <ng-container *ngIf="(mentor.avgRating ?? 0) % 1 !== 0">
+                  <fa-icon
+                      [icon]="faStarHalf"
+                      class="text-brand-yellow-550"
+                    ></fa-icon>
+                  </ng-container>
 
+                  <span class="ml-2">{{ mentor.avgRating }} Star Rating</span>
+                </p>
+<!--                <p>Experience: <b>{{ mentor.experienceYears }} Years</b></p>-->
+<!--                <p>Avg Attendance: <b>{{ mentor.avgAttendance }}</b></p>-->
+              </div>
+              <div
+                class="card-footer flex-row flex-wrap justify-content-center align-items-center gap-2 h-auto p-0 b-0 bg-transparent"
+              >
+                <span
+                  *ngFor="let e of mentor.expertise"
+                  class="p-2 m-1 bg-brand-purple-100 rounded"
+                >{{ e }}</span
+                >
+              </div>
+            </div>
+
+            <!-- Second copy -->
+            <div
+              id="mentor"
+              *ngFor="let mentor of mentors"
+              class="card bg-transparent b-0"
+            >
+              <div
+                class="card-header position-relative align-items-center overflow-hidden p-0 teacher-img w-100"
+              >
+                <img
+                  [src]="mentor.profilePicture"
+                  [alt]="mentor.fullName"
+                  class="w-100 h-100 mx-auto"
+                />
+              </div>
+              <div class="card-body p-4 text-start">
+                <h3 class="text-center">{{ mentor.fullName }}</h3>
+                <p>
+                  <fa-icon
+                    [icon]="faBriefcase"
+                    class="text-brand-yellow-550 mr-2"
+                  ></fa-icon>
+                  {{ mentor.positionTitle }} at {{ mentor.company }}
+                </p>
+                <p>
+                  <fa-icon
+                    [icon]="faComments"
+                    class="text-brand-yellow-550 mr-2"
+                  ></fa-icon>
+                  {{ mentor.totalSessions }} Sessions ({{ mentor.totalReviews }} Reviews)
+                </p>
+                <p>
+                  Rating:
+                  <ng-container *ngFor="let _ of getStars(mentor.avgRating)">
+                    <fa-icon
+                      [icon]="faStarFull"
+                      class="text-brand-yellow-550"
+                    ></fa-icon>
+                  </ng-container>
+                  <ng-container *ngIf="(mentor.avgRating ?? 0) % 1 !== 0">
+                    <fa-icon
+                      [icon]="faStarHalf"
+                      class="text-brand-yellow-550"
+                    ></fa-icon>
+                  </ng-container>
+
+                  <span class="ml-2">{{ mentor.avgRating }} Star Rating</span>
+                </p>
+<!--                <p>Experience: <b>{{ mentor.experienceYears }} Years</b></p>-->
+<!--                <p>Avg Attendance: <b>{{ mentor.avgAttendance }}</b></p>-->
+              </div>
+              <div
+                class="card-footer flex-row flex-wrap justify-content-center align-items-center gap-2 h-auto p-0 b-0 bg-transparent"
+              >
+                <span
+                  *ngFor="let e of mentor.expertise"
+                  class="p-2 m-1 bg-brand-purple-100 rounded"
+                >{{ e }}</span
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

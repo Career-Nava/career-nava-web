@@ -1,11 +1,12 @@
 import { Component } from '@angular/core';
-import {FaIconComponent} from "@fortawesome/angular-fontawesome";
-import {SharedModule} from "../../../shared/shared/shared.module";
-import { faArrowRight, faCalendar, faClock, faDotCircle, faEllipsisV, faEnvelope, faFile } from '@fortawesome/free-solid-svg-icons';
-import {Student} from "../../../services/students/IStudent";
-import {Subscription} from "rxjs";
-import {StudentsService} from "../../../services/students/students.service";
-import { IUser, AuthService } from '../../../services/auth/auth.service';
+import { FaIconComponent } from "@fortawesome/angular-fontawesome";
+import { faArrowRight, faCalendar, faClock, faEllipsisV, faEnvelope, faFile } from '@fortawesome/free-solid-svg-icons';
+import { Subscription } from "rxjs";
+import { AuthService } from "../../../services/auth/auth.service";
+import { Student } from "../../../services/students/IStudent";
+import { StudentsService } from "../../../services/students/students.service";
+import { UserModel } from "../../../services/user/user.model";
+import { SharedModule } from "../../../shared/shared/shared.module";
 
 @Component({
   selector: 'app-teacher-overview',
@@ -26,7 +27,7 @@ export class TeacherOverviewComponent {
 
   students: Student[] = []; // Plain array
   private subscriptions: Subscription = new Subscription();
-  user: IUser | null = null;
+  user: UserModel | null = null;
 
   constructor(private studentsService: StudentsService, private authService: AuthService) {
   }

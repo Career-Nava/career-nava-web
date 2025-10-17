@@ -1,8 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { AuthService } from "../../../services/auth/auth.service";
 import {SharedModule} from "../../../shared/shared/shared.module";
 import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
 import {faArrowRightFromBracket, faChartLine, faFile, faHouse, faUser } from '@fortawesome/free-solid-svg-icons';
-import { AuthService } from '../../../services/auth/auth.service';
 import { Subscription } from 'rxjs';
 import { SidebarService } from '../../../services/sidebar/sidebar.service';
 

@@ -1,103 +1,80 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient } from "@angular/common/http";
 import { Injectable } from '@angular/core';
-import { Router } from '@angular/router';
-import { Observable, map, catchError, of } from 'rxjs';
-
-export interface IUser {
-  name?: string;
-  email: string;
-  password: string;
-  role: string;
-  avatar?: string;
-}
+import { Router } from "@angular/router";
+import { catchError, map, Observable, throwError } from "rxjs";
+import { ConfigurationService } from "../configuration.service";
+import { RestService } from "../rest.service";
+import { UserModel } from "../user/user.model";
+import { AuthResponse, GoogleAuthRequest, LoginRequest, RegisterRequest } from "./auth.model";
 
 @Injectable({
   providedIn: 'root'
 })
-export class AuthService {
-  private userDataUrl = 'assets/mock-data/users/data.json';
+export class AuthService extends RestService {
 
-  constructor(private http: HttpClient, private router: Router) { }
+  constructor(http: HttpClient, config: ConfigurationService, private router: Router) {
+    super(http, 'auth', config.get<any>('api').baseUrl);
+  }
 
-  // login(email: string, password: string): Observable<IUser | null> {
-  //   return this.http.get<IUser[]>(this.userDataUrl).pipe(
-  //     map(users => {
-  //       const user = users.find(u => u.email === email && u.password === password);
-  //       if (user) {
-  //         localStorage.setItem('currentUser', JSON.stringify(user));
-  //         return user;
-  //       }
-  //       return null;
-  //     }),
-  //     catchError(error => {
-  //       console.error('login error:', error);
-  //       return of(null);
-  //     })
-  //   );
-  // }
+  register(payload: RegisterRequest): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(`${ this.baseUrl }/register`, payload);
+  }
 
-  login(email: string, password: string): Observable<IUser | null> {
-    return this.http.get<IUser[]>(this.userDataUrl).pipe(
-      map(users => {
-        const user = users.find(u => u.email === email && u.password === password);
-        if (user) {
-          this.safeSetItem('currentUser', JSON.stringify(user));
-          return user;
-        }
-        return null;
+  login(payload: LoginRequest): Observable<AuthResponse['data']> {
+    return this.http.post<AuthResponse>(`${ this.baseUrl }/login`, payload).pipe(
+      map((res) => {
+        if (res?.data) return res.data;
+        throw new Error('Invalid response from server');
       }),
-      catchError(error => {
-        console.error('login error:', error);
-        return of(null);
+      catchError((err) => {
+        console.error('Login request failed:', err);
+        return throwError(() => err);
       })
     );
   }
 
-  register(userData: {
-    firstName?: string;
-    lastName?: string;
-    email: string;
-    password: string;
-    role: string;
-  }): Observable<IUser> {
-    const newUser: IUser = {
-      ...userData,
-      name: `${userData.firstName ?? ''} ${userData.lastName ?? ''}`.trim(),
-    };
-
-    // Simulate a successful registration response
-    console.log('Mock register user:', newUser);
-    this.safeSetItem('currentUser', JSON.stringify(newUser));
-
-    return of(newUser); // Returns observable for UI compatibility
+  // New Google Login
+  googleLogin(payload: GoogleAuthRequest): Observable<AuthResponse['data']> {
+    return this.http.post<AuthResponse>(`${ this.baseUrl }/google`, payload).pipe(
+      map(res => {
+        if (res?.data) return res.data;
+        throw new Error('Invalid response from server');
+      }),
+      catchError(err => {
+        console.error('Google login failed:', err);
+        return throwError(() => err);
+      })
+    );
   }
 
-  getUser(): IUser | null {
-    const user = this.safeGetItem('currentUser');
-    return user ? JSON.parse(user) : null;
+  logout(): void {
+    localStorage.removeItem('auth_token');
+    localStorage.removeItem('user');
+
+    void this.router.navigate([ '/sign-in' ]);
   }
 
-  logout() {
-    this.safeRemoveItem('currentUser');
-    this.router.navigate(['/home']);
+  saveSession(token: string, user: UserModel): void {
+    localStorage.setItem('auth_token', token);
+    localStorage.setItem('user', JSON.stringify(user));
   }
 
-  private safeGetItem(key: string): string | null {
-    if (typeof localStorage !== 'undefined') {
-      return localStorage.getItem(key);
-    }
-    return null;
+  getUser(): any {
+    const data = localStorage.getItem('user');
+    const parsed = data ? JSON.parse(data) : null;
+    console.log('%c[AuthService] getUser ->', 'color: violet', parsed);
+    return parsed;
   }
 
-  private safeSetItem(key: string, value: string): void {
-    if (typeof localStorage !== 'undefined') {
-      localStorage.setItem(key, value);
-    }
+  getToken(): string | null {
+    const token = localStorage.getItem('auth_token');
+    console.log('%c[AuthService] getToken ->', 'color: violet', token);
+    return token;
   }
 
-  private safeRemoveItem(key: string): void {
-    if (typeof localStorage !== 'undefined') {
-      localStorage.removeItem(key);
-    }
+  isAuthenticated(): boolean {
+    const result = !!this.getToken();
+    console.log('%c[AuthService] isAuthenticated ->', 'color: violet', result);
+    return result;
   }
 }
