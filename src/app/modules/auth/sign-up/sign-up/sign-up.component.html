@@ -1,52 +1,91 @@
 <div class="container d-flex flex-column align-items-center justify-content-center h-100" style="padding-top: 2em;">
-        <div class="text-center" style="margin-bottom: 2em;">
-            <img src="assets/images/logo/logo.png" class="w-100 object-fit-contain mx-auto" alt="Logo" style="max-width: 200px;">
-        </div>
-        <div class="card w-100 max-w-4xl mx-auto border-0 bg-transparent text-white">
-            <div class="card-header bg-transparent justify-content-center border-0">
-                <!-- <img src="assets/images/logo/logo.png" class="w-100 object-fit-contain mx-auto" alt="Logo" style="max-width: 200px;"> -->
-                <h2 class="card-title fs-10">Sign Up With CareerNava</h2>
-        </div>
-            <div class="card-body">
+  <div class="text-center" style="margin-bottom: 2em;">
+    <a [routerLink]="['/home']">
+      <img
+        src="assets/images/logo/logo.png"
+        class="w-100 object-fit-contain mx-auto"
+        alt="Logo"
+        style="max-width: 200px;">
+    </a>
+  </div>
 
-                <form [formGroup]="signUpForm" (ngSubmit)="onSubmit()" class="d-flex flex-column gap-2">
-                    
-                    <div class="d-flex flex-column flex-lg-row gap-2">
-                        <div class="input-group flex-column gap-1">
-                            <label for="email">First Name</label> 
-                            <input formControlName="firstName" type="text" placeholder="First Name">
-                        </div>
-                        <div class="input-group flex-column gap-1">
-                            <label for="email">Last Name</label>
-                            <input formControlName="lastName" type="text" placeholder="Last Name">
-                        </div>
-                    </div>
-                    
-                    <div class="input-group flex-column gap-1">
-                        <label for="email">Email Address</label>
-                        <input formControlName="email" type="email" placeholder="Email">
-                    </div>
-                    <div class="input-group flex-column gap-1">
-                        <label for="email">You're Signing As?</label>
-                        <select formControlName="role">
-                            <option value="mentee">Mentee</option>
-                            <option value="mentor">Mentor</option>
-                        </select>
-                    </div>
-                    <hr>
-                    <div class="input-group flex-column gap-1">
-                        <label for="email">New Password</label>
-                        <input formControlName="password" type="password" placeholder="Password">
-                    </div>
-                    <div class="input-group flex-column gap-1">
-                        <label for="email">Confirm Password</label>
-                        <input formControlName="confirmPassword" type="password" placeholder="Confirm Password">
-                    </div>
-                    
-                    <button class="btn btn-secondary mt-4" type="submit">Sign Up</button>
-                </form>
-
-                <p class="my-4 text-center">Have an account? <a href="/sign-in" class="text-default-brand-secondary">Sign In Here</a></p>
-            </div>
-        </div>
+  <div class="card w-100 max-w-4xl mx-auto border-0 bg-transparent text-white">
+    <div class="card-header bg-transparent justify-content-center border-0">
+      <h2 class="card-title fs-10">Sign Up With CareerNava</h2>
     </div>
+
+    <div class="card-body">
+      <form [formGroup]="signUpForm" (ngSubmit)="onSubmit()" class="d-flex flex-column gap-3">
+
+        <!-- Full Name -->
+        <div class="input-group flex-column gap-1">
+          <label for="fullName">Full Name</label>
+          <input class="form-control p-3 w-100"
+                 type="text"
+                 id="fullName"
+                 formControlName="fullName"
+                 placeholder="Full Name">
+          <div *ngIf="fullName.invalid && (fullName.dirty || fullName.touched)" class="text-danger small mt-1">
+            <div *ngIf="fullName.errors?.['required']">Full name is required.</div>
+          </div>
+        </div>
+
+        <!-- Email -->
+        <div class="input-group flex-column gap-1">
+          <label for="email">Email Address</label>
+          <input class="form-control p-3 w-100"
+                 type="email"
+                 id="email"
+                 formControlName="email"
+                 placeholder="Enter your email">
+          <div *ngIf="email.invalid && (email.dirty || email.touched)" class="text-danger small mt-1">
+            <div *ngIf="email.errors?.['required']">Email is required.</div>
+            <div *ngIf="email.errors?.['email']">Please enter a valid email.</div>
+          </div>
+        </div>
+
+        <hr>
+
+        <!-- Password -->
+        <div class="input-group flex-column gap-1">
+          <label for="password">New Password</label>
+          <input class="form-control w-100"
+                 type="password"
+                 id="password"
+                 formControlName="password"
+                 placeholder="Enter password">
+          <div *ngIf="password.invalid && (password.dirty || password.touched)" class="text-danger small mt-1">
+            <div *ngIf="password.errors?.['required']">Password is required.</div>
+            <div *ngIf="password.errors?.['minlength']">Password must be at least 6 characters.</div>
+          </div>
+        </div>
+
+        <!-- Confirm Password -->
+        <div class="input-group flex-column gap-1">
+          <label for="confirmPassword">Confirm Password</label>
+          <input class="form-control w-100"
+                 type="password"
+                 id="confirmPassword"
+                 formControlName="confirmPassword"
+                 placeholder="Confirm Password">
+          <div *ngIf="confirmPassword.invalid && (confirmPassword.dirty || confirmPassword.touched)" class="text-danger small mt-1">
+            <div *ngIf="confirmPassword.errors?.['required']">Please confirm your password.</div>
+            <div *ngIf="signUpForm.hasError('passwordMismatch')">Passwords do not match.</div>
+          </div>
+        </div>
+
+        <button class="btn btn-secondary mt-4" type="submit" [disabled]="signUpForm.invalid || loading">
+          <span *ngIf="!loading">Sign Up</span>
+          <span *ngIf="loading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+        </button>
+      </form>
+
+      <div *ngIf="errorMessage" class="alert alert-danger mt-3">{{ errorMessage }}</div>
+
+      <p class="my-4 text-center">
+        Have an account?
+        <a routerLink="/sign-in" class="text-default-brand-secondary">Sign In Here</a>
+      </p>
+    </div>
+  </div>
+</div>

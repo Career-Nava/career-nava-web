@@ -3,3 +3,8 @@ input, .form-control, select, option {
     border-radius: 8px !important;
     border: 1px solid rgba(0, 0, 0, .1) !important;
 }
+
+button[disabled] {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

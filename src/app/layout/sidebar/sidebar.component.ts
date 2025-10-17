@@ -1,15 +1,15 @@
 import { Component } from '@angular/core';
-import { SharedModule } from '../../shared/shared/shared.module';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faArrowRightFromBracket, faCertificate, faChartLine, faCoffee, faFile, faHouse, faLaptop, faUser, faUsers } from '@fortawesome/free-solid-svg-icons';
-import { AuthService } from '../../services/auth/auth.service';
 import { Subscription } from 'rxjs';
+import { AuthService } from "../../services/auth/auth.service";
 import { SidebarService } from '../../services/sidebar/sidebar.service';
+import { SharedModule } from '../../shared/shared/shared.module';
 
 @Component({
   selector: 'app-sidebar',
   standalone: true,
-  imports: [SharedModule, FontAwesomeModule],
+  imports: [ SharedModule, FontAwesomeModule ],
   templateUrl: './sidebar.component.html',
   styleUrl: './sidebar.component.scss'
 })
@@ -27,7 +27,8 @@ export class SidebarComponent {
   isOpen = false;
   private subscription!: Subscription;
 
-  constructor(private authService: AuthService, private sidebarService: SidebarService) {}
+  constructor(private authService: AuthService, private sidebarService: SidebarService) {
+  }
 
   ngOnInit(): void {
     this.subscription = this.sidebarService.isOpen$.subscribe(isOpen => {
@@ -36,7 +37,7 @@ export class SidebarComponent {
     });
   }
 
-  logout(){
+  logout() {
     this.authService.logout();
   }
 

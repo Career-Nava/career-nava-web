@@ -1,5 +1,5 @@
 import { IMentee } from "../mentees/IMentees";
-import { Mentor } from "../mentors/IMentor";
+import { Mentor } from "../mentor/mentor.model";
 
 export interface ISessions {
   id: number;

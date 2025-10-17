@@ -30,7 +30,7 @@
             <h3 class="card-title">My Sessions ({{sessions.length}})</h3>
             <p>Lorem ipsum dolor sit amet consectetur. Ultrices venenatis sit mi netus consectetur bibendum lacus eu parturient.</p>
           </div>
-        </div> 
+        </div>
         <div class="card-body">
           <div class="row gy-4">
             <!-- Assignments -->
@@ -65,17 +65,17 @@
                   </p>
                   <hr>
                   <div class="d-flex flex-wrap align-items-center gap-2">
-                    <img [src]="session.mentor.image" [alt]="session.mentor.name" class="w-60 h-60 object-fit-cover" style="border-radius: 50%;">
+                    <img [src]="session.mentor.profilePicture" [alt]="session.mentor.fullName" class="w-60 h-60 object-fit-cover" style="border-radius: 50%;">
                     <div>
-                      <h4>{{ session.mentor.name }}</h4>
-                      <p>{{ session.mentor.title }}</p>
+                      <h4>{{ session.mentor.fullName }}</h4>
+                      <p>{{ session.mentor.positionTitle }}</p>
                     </div>
                   </div>
                 </div>
                 <div class="card-footer bg-transparent border-0">
-                  <a [href]="session.status === 'active' ? session.link : null" 
-                    target="_blank" 
-                    class="btn btn-primary w-100" 
+                  <a [href]="session.status === 'active' ? session.link : null"
+                    target="_blank"
+                    class="btn btn-primary w-100"
                     [class.disabled]="session.status === 'inactive'"
                     (click)="session.status === 'inactive' ? $event.preventDefault() : null"
                   >
