@@ -1,0 +1,138 @@
+[
+  {
+    "id": 1,
+    "title": "Google Women Techmakers Scholarship",
+    "link": "https://scholarships.google.com/wtm",
+    "role": "Program Lead",
+    "imageThumbnail": "assets/images/scholarships/s5.jpg",
+    "date": "2025-10-01",
+    "applicationDeadline": "2025-12-15",
+    "reviews": 54,
+    "rating": 4.9,
+    "category": "STEM",
+    "description": "A scholarship designed to support women pursuing degrees in technology and computing. Includes financial support, mentorship, and networking opportunities with Google professionals.",
+    "eligibilityCriteria": "Open to women currently enrolled in undergraduate or graduate programs in computer science, software engineering, or related technical fields.",
+    "benefits": [
+      "Up to $5,000 financial award",
+      "1-year mentorship with a Google engineer",
+      "Access to exclusive community events"
+    ],
+    "status": "active",
+    "mentor": {
+      "id": 1,
+      "name": "Sophie Kim",
+      "title": "Program Manager",
+      "company": "Google",
+      "image": "assets/images/avatars/female-09.jpg",
+      "category": "STEM"
+    },
+    "menteesInterested": [
+      "assets/images/avatars/female-12.jpg",
+      "assets/images/avatars/male-05.jpg",
+      "assets/images/avatars/female-08.jpg",
+      "assets/images/avatars/female-12.jpg",
+      "assets/images/avatars/male-05.jpg",
+      "assets/images/avatars/female-08.jpg",
+      "assets/images/avatars/female-12.jpg",
+      "assets/images/avatars/male-05.jpg",
+      "assets/images/avatars/female-08.jpg"
+    ]
+  },
+  {
+    "id": 2,
+    "title": "Adobe Design Circle Scholarship",
+    "link": "https://www.adobe.com/scholarships",
+    "role": "Program Coordinator",
+    "imageThumbnail": "assets/images/scholarships/s2.jpg",
+    "date": "2025-09-15",
+    "applicationDeadline": "2025-11-30",
+    "reviews": 72,
+    "rating": 4.8,
+    "category": "Design",
+    "description": "Provides financial support and mentorship to students passionate about pursuing careers in design, including UX, motion graphics, and illustration.",
+    "eligibilityCriteria": "Open to undergraduate students aged 18–25 with a portfolio demonstrating creativity and design thinking.",
+    "benefits": [
+      "Up to $25,000 tuition coverage",
+      "Mentorship by Adobe creative leaders",
+      "Global exposure via Adobe’s creative community"
+    ],
+    "status": "active",
+    "mentor": {
+      "id": 2,
+      "name": "Carlos Mendes",
+      "title": "Senior UX Designer",
+      "company": "Adobe",
+      "image": "assets/images/avatars/male-07.jpg",
+      "category": "Design"
+    },
+    "menteesInterested": [
+      "assets/images/avatars/male-02.jpg",
+      "assets/images/avatars/female-04.jpg"
+    ]
+  },
+  {
+    "id": 3,
+    "title": "Mastercard Foundation Scholars Program",
+    "link": "https://mastercardfoundation.org/scholars",
+    "role": "Regional Coordinator",
+    "imageThumbnail": "assets/images/scholarships/s3.jpg",
+    "date": "2025-08-20",
+    "applicationDeadline": "2025-12-01",
+    "reviews": 89,
+    "rating": 4.9,
+    "category": "Leadership",
+    "description": "A fully funded scholarship for talented African students committed to driving positive change in their communities through leadership and innovation.",
+    "eligibilityCriteria": "Open to African students aged 18–30 with strong academic records and demonstrated leadership potential.",
+    "benefits": [
+      "Full tuition, accommodation, and travel",
+      "Leadership and entrepreneurship training",
+      "Global alumni network access"
+    ],
+    "status": "active",
+    "mentor": {
+      "id": 3,
+      "name": "Amina Yusuf",
+      "title": "Leadership Coach",
+      "company": "Mastercard Foundation",
+      "image": "assets/images/avatars/female-10.jpg",
+      "category": "Leadership"
+    },
+    "menteesInterested": [
+      "assets/images/avatars/female-06.jpg",
+      "assets/images/avatars/female-15.jpg",
+      "assets/images/avatars/male-08.jpg"
+    ]
+  },
+  {
+    "id": 4,
+    "title": "UNICEF Innovation Fellowship",
+    "link": "https://unicef.org/innovation/fellowship",
+    "role": "Program Mentor",
+    "imageThumbnail": "assets/images/scholarships/s4.jpg",
+    "date": "2025-09-01",
+    "applicationDeadline": "2025-10-31",
+    "reviews": 36,
+    "rating": 4.7,
+    "category": "Social Impact",
+    "description": "The UNICEF Innovation Fellowship offers young professionals an opportunity to contribute to real-world humanitarian tech projects, focusing on sustainability and inclusion.",
+    "eligibilityCriteria": "Open to innovators under 30 with experience in design, development, or policy related to humanitarian issues.",
+    "benefits": [
+      "12-month paid fellowship",
+      "Mentorship from UNICEF global innovation team",
+      "Opportunity to lead field projects"
+    ],
+    "status": "inactive",
+    "mentor": {
+      "id": 4,
+      "name": "David Lawa",
+      "title": "Innovation Lead",
+      "company": "UNICEF",
+      "image": "assets/images/avatars/male-09.jpg",
+      "category": "Social Impact"
+    },
+    "menteesInterested": [
+      "assets/images/avatars/female-18.jpg",
+      "assets/images/avatars/female-02.jpg"
+    ]
+  }
+]

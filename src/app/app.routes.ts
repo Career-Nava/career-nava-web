@@ -16,6 +16,7 @@ import { SignUpComponent } from './modules/auth/sign-up/sign-up/sign-up.componen
 import { AboutComponent } from './modules/landing/about/about.component';
 import { BlogComponent } from './modules/landing/blog/blog.component';
 import { HomeComponent } from './modules/landing/home/home.component';
+import { ScholarshipsComponent } from './modules/scholarships/scholarships/scholarships.component';
 import { MentorDetailsComponent } from './modules/student/mentors/mentor-details/mentor-details.component';
 import { MentorsComponent } from './modules/student/mentors/mentors.component';
 import { StudentSessionsComponent } from './modules/student/student-sessions/student-sessions.component';
@@ -48,6 +49,7 @@ export const routes: Routes = [
       { path: 'mentors', component: MentorsComponent },
       { path: 'mentors/mentor-details/:id', component: MentorDetailsComponent },
       { path: 'sessions', component: StudentSessionsComponent },
+      { path: 'scholarships', component: ScholarshipsComponent }
     ]
   },
 

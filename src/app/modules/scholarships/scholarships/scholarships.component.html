@@ -1,0 +1,136 @@
+<div class="container">
+
+  <div class="col-12 col-lg-6">
+    <div class="mb-4">
+      <h1>Explore Scholarships</h1>
+      <p>Lorem ipsum dolor sit amet consectetur. Ultrices venenatis sit mi netus consectetur bibendum lacus eu parturient.</p>
+    </div>
+  </div>
+
+  <ul class="nav nav-tabs">
+    <li class="nav-item">
+      <a class="nav-link active" aria-current="page" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">
+        Active
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="#">Active</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="#">Upcoming</a>
+    </li>
+  </ul>
+  <div class="tab-content">
+
+    <div class="tab-pane active" id="home" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
+
+      <div class="card border-0">
+        <div class="card-header">
+          <div>
+            <h3 class="card-title">Scholarships ({{scholarships.length}})</h3>
+          </div>
+        </div> 
+        <div class="card-body">
+          <div class="row gy-4">
+            <!-- Scholarships -->
+            <div *ngFor="let scholarship of scholarships" class="col-12 col-md-6 col-lg-4">
+              <div class="card" >
+                <ng-container *ngIf="scholarship.imageThumbnail">
+                    <div class="card-header d-block overflow-hidden p-0">
+                    <img [src]="scholarship.imageThumbnail" [alt]="scholarship.title" class="w-100 object-fit-cover" style="height: 200px;">
+                </div>
+                </ng-container>
+                
+                <div class="card-body">
+                  <div class="position-relative z-2">
+                    <h4 class="card-title">{{ scholarship.title }}</h4>
+                    <p class="card-subtitle">{{ scholarship.category }}</p>
+                    <div class="d-flex flex-column mt-4">
+                      <p>Start Date: <fa-icon [icon]="faCalendar" class="text-brand-green-500"></fa-icon> {{ scholarship.date | date:'medium' }}</p>
+                      <p>Application Deadline: <fa-icon [icon]="faCalendar" class="text-brand-green-500"></fa-icon> {{ scholarship.applicationDeadline }}</p>
+                      <p>Status: <span class="badge-sm" [ngClass]="{
+                                  'bg-brand-purple-50 text-brand-purple-500': scholarship.status === 'active',
+                                  'bg-error': scholarship.status === 'inactive'
+                                }">
+                                  {{ scholarship.status | titlecase }}
+                                </span>
+                      </p>
+                    </div>
+                  </div>
+                  <p>
+                    {{ scholarship.description }}
+                  </p>
+                  <hr>
+                  <div class="row">
+                    <div class="col-12">
+                    <h4>Elegibility:</h4>
+                    <p> {{ scholarship.eligibilityCriteria }} </p>
+                  </div>
+                  <div class="col-12">
+                    <h4>Benefits:</h4>
+                    <ol>
+                        <ng-container *ngFor="let benefit of scholarship.benefits">
+                            <li> {{ benefit }}</li>
+                        </ng-container>
+                        
+                    </ol>
+                  </div>
+                  </div>
+                  
+                  <hr>
+                  <p>Mentees Interested:</p>
+                  <div *ngIf="scholarship?.menteesInterested?.length" class="d-flex align-items-center">
+                    <ng-container *ngFor="let mentee of scholarship.menteesInterested.slice(0,5)">
+                        <img
+                        [src]="mentee"
+                        alt="Mentee Interested" 
+                        class="object-fit-cover border border-white"
+                        style="border-radius: 50%; width: 48px; height: 48px; margin-left: -8px;"
+                        />
+                    </ng-container>
+
+                    <div
+                        *ngIf="scholarship.menteesInterested.length > 5"
+                        class="d-flex justify-content-center align-items-center bg-primary text-white"
+                        style="border-radius: 50%; width: 48px; height: 48px; margin-left: -8px;"
+                    >
+                        +{{ scholarship.menteesInterested.length - 5 }}
+                    </div>
+                    </div>
+
+                  <hr> 
+
+                  <!-- <div class="d-flex flex-wrap align-items-center gap-2">
+                    <img [src]="scholarship.mentor.image" [alt]="scholarship.mentor.name" class="w-60 h-60 object-fit-cover" style="border-radius: 50%;">
+                    <div>
+                      <h4>{{ scholarship.mentor.name }}</h4>
+                      <p>{{ scholarship.mentor.title }}</p>
+                    </div>
+                  </div> -->
+                </div>
+                <div class="card-footer bg-transparent border-0">
+                  <a [href]="scholarship.status === 'active' ? scholarship.link : null" 
+                    target="_blank" 
+                    class="btn btn-primary w-100" 
+                    [ngClass]="{
+                                  'bg-default-error': scholarship.status === 'inactive'
+                                }"
+                    [class.disabled]="scholarship.status === 'inactive'"
+                    (click)="scholarship.status === 'inactive' ? $event.preventDefault() : null"
+                  >
+                    Scholarship Is {{ scholarship.status | titlecase }}
+                </a>
+
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
