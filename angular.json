@@ -60,7 +60,24 @@
                   "maximumError": "4kb"
                 }
               ],
-              "outputHashing": "all"
+              "outputHashing": "all",
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.prod.ts"
+                }
+              ]
+            },
+            "secure": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.secure.ts"
+                }
+              ]
             },
             "development": {
               "optimization": false,
@@ -75,6 +92,9 @@
           "configurations": {
             "production": {
               "buildTarget": "careernava:build:production"
+            },
+            "secure": {
+              "buildTarget": "careernava:build:secure"
             },
             "development": {
               "buildTarget": "careernava:build:development"
