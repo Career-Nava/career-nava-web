@@ -1,0 +1,8 @@
+:host {
+  pointer-events: none; /* allow clicks to pass through except on toasts */
+}
+ngb-toast {
+  pointer-events: auto;
+  margin-bottom: 0.5rem;
+  min-width: 240px;
+}

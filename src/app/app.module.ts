@@ -6,7 +6,7 @@ import { NgApexchartsModule } from "ng-apexcharts";
 import { routes } from './app.routes';
 import { AuthInterceptor } from "./services/auth/auth.interceptor";
 import { LayoutModule } from './layout/layout.module';
-import { SharedModule } from './shared/shared/shared.module';
+import { SharedModule } from "./shared/shared/shared.module";
 
 
 @NgModule({
