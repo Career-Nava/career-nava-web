@@ -43,6 +43,14 @@ hr {
             flex-direction: column;
             gap: 1rem;
     }
+    .nav-link {
+        &:hover, &:focus {
+            color: $brand-yellow-300 !important;
+        }
+        .active, &:active {
+            color: $brand-secondary !important;
+        }
+    }
 }
 
 .hero-section {
@@ -568,5 +576,19 @@ section {
                 object-fit: cover; 
             }
         }
+    }
+}
+
+.bookmark-badge {
+    @include elevation(1);
+    right: 1em; 
+    top: 1em;
+    width: 42px;
+    height: 42px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    &:hover {
+        background-color: $brand-yellow-100;
     }
 }

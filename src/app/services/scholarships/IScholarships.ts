@@ -13,10 +13,13 @@ export interface IScholarships {
   reviews: number;
   rating: number;
   category: string; // e.g. "Design", "STEM", "Leadership"
-  description: string;
+  shortDescription: string;
+  funding: 'Fully Funded' | 'Partially Funded' | 'No Funding';
+  contentDescription: string; // up to ~1200 characters (≈ 3 paragraphs)
   eligibilityCriteria: string;
   benefits: string[];
   status: 'active' | 'inactive';
+  isBookmarked: boolean;
   mentor: Mentor;
   menteesInterested: string[]; // mentee avatar URLs who bookmarked
 }
