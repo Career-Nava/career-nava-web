@@ -1,0 +1,34 @@
+.scholarships-page {
+  .image-wrapper {
+    overflow: hidden;
+  }
+
+  .scholarship-image {
+    height: 200px;
+    object-fit: cover;
+  }
+
+  .bookmark-badge {
+    cursor: pointer;
+    right: 1rem;
+    top: 1rem;
+  }
+
+  .mentee-avatar {
+    border-radius: 50%;
+    width: 48px;
+    height: 48px;
+    margin-left: -8px;
+    object-fit: cover;
+  }
+
+  .mentee-avatar.extra {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .short-description {
+    min-height: 60px;
+  }
+}

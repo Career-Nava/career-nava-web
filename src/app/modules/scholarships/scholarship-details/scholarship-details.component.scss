@@ -1,0 +1,89 @@
+.scholarship-details {
+  .header-card {
+    background: linear-gradient(135deg, #fafafa, #f0f0f0);
+    border: none;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  }
+
+  .header-image {
+    width: 350px;
+    height: 200px;
+    border-radius: 12px;
+    object-fit: cover;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .title {
+    font-weight: 700;
+    font-size: 1.75rem;
+    color: #333;
+  }
+
+  .category {
+    color: #777;
+    font-size: 1rem;
+  }
+
+  .meta p {
+    margin: 0.4rem 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .status-badge {
+    padding: 0.25rem 0.6rem;
+    border-radius: 8px;
+    font-weight: 500;
+    text-transform: capitalize;
+
+    &.active {
+      background-color: #e9e3ff;
+      color: #5c3aff;
+    }
+
+    &.inactive {
+      background-color: #fddede;
+      color: #a80000;
+    }
+  }
+
+  .section-title {
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+  }
+
+  .description {
+    line-height: 1.75;
+    font-size: 1.1em;
+    color: #444;
+  }
+
+  .mentee-avatars {
+    display: flex;
+    align-items: center;
+    margin-top: 0.5rem;
+  }
+
+  .mentee-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #fff;
+    margin-left: -8px;
+  }
+
+  .more-badge {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background-color: #007bff;
+    color: #fff;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: -8px;
+  }
+}

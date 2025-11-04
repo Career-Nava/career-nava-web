@@ -1,121 +1,113 @@
-<div class="container-fluid">
+<div class="scholarship-details container-fluid">
 
-  <!-- Header -->
-  <div class="card header-decorater mb-5" style="min-height: none;">
-
-    <div class="p-4 w-100 text-center text-lg-start" style="z-index: 5;">
-      <div class="d-flex flex-column flex-lg-row gap-4 align-items-center justify-content-lg-start">
-        <img [src]="scholarship?.imageThumbnail" [alt]="scholarship?.title"
-             class="object-fit-cover rounded" style="width: 350px; height: 200px;"/>
-          <div class="w-100">
-            <h1 class="mentor-name">{{ scholarship?.title }}</h1>
-            <p>Category: {{ scholarship?.category }}</p>
-            <a [href]="scholarship?.link" class="btn btn-primary my-4 mx-auto mx-lg-0 w-auto" style="max-width: 350px;">
-              View this scholarship</a>
-          </div>
+  <!-- Header Section -->
+  <div class="card header-card mb-5">
+    <div class="card-body p-4 d-flex flex-column flex-lg-row gap-4 align-items-center">
+      <img
+        [src]="scholarship?.imageThumbnail"
+        [alt]="scholarship?.title"
+        class="header-image"
+      />
+      <div class="w-100 text-center text-lg-start">
+        <h1 class="title">{{ scholarship?.title }}</h1>
+        <p class="category">Category: {{ scholarship?.category }}</p>
+        <a
+          [href]="scholarship?.link"
+          class="btn btn-primary mt-3 w-auto"
+          target="_blank"
+        >
+          View this scholarship
+        </a>
       </div>
     </div>
+  </div>
+
+  <div class="row gy-4">
+
+    <!-- Left Column -->
+    <div class="col-12 col-lg-7">
+      <div class="card border-0 details-card">
+        <div class="card-body">
+          <div class="meta">
+            <p>
+              <fa-icon [icon]="faCalendar"></fa-icon>
+              Start Date: {{ scholarship?.date | date:'medium' }}
+            </p>
+            <p>
+              <fa-icon [icon]="faCalendar"></fa-icon>
+              Application Deadline: {{ scholarship?.applicationDeadline }}
+            </p>
+            <p>
+              Status:
+              <span class="status-badge"
+                    [ngClass]="{
+                  'active': scholarship?.status === 'active',
+                  'inactive': scholarship?.status === 'inactive'
+                }"
+              >
+                {{ scholarship?.status | titlecase }}
+              </span>
+            </p>
+          </div>
+          <hr/>
+          <h3 class="section-title">Overview</h3>
+          <p class="description">{{ scholarship?.contentDescription }}</p>
+        </div>
+      </div>
     </div>
 
-    <div class="row gy-4">
-      <div class="col-12 col-lg-7">
+    <!-- Right Column -->
+    <div class="col-12 col-lg-5">
+
+      <!-- Benefits -->
+      <ng-container *ngIf="scholarship?.benefits?.length">
         <div class="card border-0">
-                <div class="card-body">
-                    
-                    <div class="d-flex flex-column mt-4">
-                        <p>Category: {{ scholarship?.category }}</p>
-                      <p>Start Date: <fa-icon [icon]="faCalendar" class="text-brand-green-500"></fa-icon> {{ scholarship?.date | date:'medium' }}</p>
-                      <p>Application Deadline: <fa-icon [icon]="faCalendar" class="text-brand-green-500"></fa-icon> {{ scholarship?.applicationDeadline }}</p>
-                      <p>Status: <span class="badge-sm" [ngClass]="{
-                                  'bg-brand-purple-50 text-brand-purple-500': scholarship?.status === 'active',
-                                  'bg-error': scholarship?.status === 'inactive'
-                                }">
-                                  {{ scholarship?.status | titlecase }}
-                                </span>
-                      </p>
-                    </div>
-                    <hr>
-                  <h3 class="card-title"><b>Overview</b></h3>
-                    <p class="my-4" style="line-height: 1.9; font-size: 1.15em;">{{ scholarship?.contentDescription }}</p>
-                    
-                </div>
-            </div>
-      </div>
-
-      <div class="col-12 col-lg-5">
-                    
-        <ng-container *ngIf="scholarship?.benefits">
-          <div class="card border-0">
-                <div class="card-header">
-                  <h3 class="card-title"><b>Benefits:</b></h3>
-                </div>
-                <div class="card-body">
-                    <ol>
-                        <ng-container *ngFor="let benefit of scholarship?.benefits">
-                            <li> {{ benefit }}</li>
-                        </ng-container>
-                        
-                    </ol>
-                </div>
-            </div>
-            <hr>
-        </ng-container>
-
-        <ng-container *ngIf="scholarship?.eligibilityCriteria">
-          <div class="card">
-            <div class="card-header">
-                <h3 class="card-title"><b>Eligibility</b></h3>
-              </div>
-
-                      <div class="card-body">
-
-                        <div class="py-2 d-flex align-items-center justify-content-between">
-                          <p>{{ scholarship?.eligibilityCriteria }}</p>
-                        </div>
-                        
-                      </div>
+          <div class="card-header">
+            <h3 class="section-title">Benefits</h3>
           </div>
-          <hr>
-        </ng-container>
+          <div class="card-body">
+            <ol>
+              <li *ngFor="let benefit of scholarship?.benefits">{{ benefit }}</li>
+            </ol>
+          </div>
+        </div>
+      </ng-container>
 
-        <ng-container *ngIf="scholarship?.menteesInterested">
-          <div class="card border-0">
-                <div class="card-header">
-                  <h3 class="card-title"><b>Mentees Bookmarked ({{scholarship?.menteesInterested?.length}}):</b></h3>
+      <!-- Eligibility -->
+      <ng-container *ngIf="scholarship?.eligibilityCriteria">
+        <div class="card border-0 mt-4">
+          <div class="card-header">
+            <h3 class="section-title">Eligibility</h3>
+          </div>
+          <div class="card-body">
+            <p>{{ scholarship?.eligibilityCriteria }}</p>
+          </div>
+        </div>
+      </ng-container>
+
+      <!-- Mentees -->
+      <ng-container *ngIf="scholarship?.menteesInterested?.length">
+        <div class="card border-0 mt-4">
+          <div class="card-header">
+            <h3 class="section-title">
+              Mentees Bookmarked ({{ scholarship?.menteesInterested?.length }})
+            </h3>
+          </div>
+          <div class="card-body mentees">
+            <ng-container *ngIf="scholarship?.menteesInterested as mentees">
+              <div class="mentee-avatars">
+                <ng-container *ngFor="let mentee of mentees.slice(0, 5)">
+                  <img [src]="mentee" alt="Mentee" class="mentee-avatar"/>
+                </ng-container>
+                <div *ngIf="mentees.length > 5" class="more-badge">
+                  +{{ mentees.length - 5 }}
                 </div>
-                <div class="card-body">
-                    <ng-container *ngIf="scholarship?.menteesInterested as mentees">
-                    <div *ngIf="mentees.length" class="d-flex align-items-center">
-                        
-                        <ng-container *ngFor="let mentee of mentees.slice(0,5)">
-                        <img
-                            [src]="mentee"
-                            alt="Mentee Interested"
-                            class="object-fit-cover border border-white"
-                            style="border-radius: 50%; width: 48px; height: 48px; margin-left: -8px;"
-                        />
-                        </ng-container>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+      </ng-container>
 
-                        <div
-                        *ngIf="mentees.length > 5"
-                        class="d-flex justify-content-center align-items-center bg-primary text-white"
-                        style="border-radius: 50%; width: 48px; height: 48px; margin-left: -8px;"
-                        >
-                        +{{ mentees.length - 5 }}
-                        </div>
-
-                    </div>
-                    </ng-container>
-                </div>
-            </div>
-            <hr>
-        </ng-container>
-        
-        
-      </div>
-
+    </div>
   </div>
-
-    
-
-  </div>
+</div>

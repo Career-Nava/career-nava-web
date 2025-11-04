@@ -1,134 +1,124 @@
-<div class="container-fluid">
+<div class="container-fluid scholarships-page">
 
+  <!-- Header -->
   <div class="col-12 col-lg-6">
     <div class="mb-4">
       <h1>Explore Scholarships</h1>
-      <p>Lorem ipsum dolor sit amet consectetur. Ultrices venenatis sit mi netus consectetur bibendum lacus eu parturient.</p>
+      <p>
+        Browse ongoing programs, find funding opportunities, and bookmark scholarships that match your interests.
+      </p>
     </div>
   </div>
 
+  <!-- Tabs -->
   <ul class="nav nav-tabs">
-    <li class="nav-item">
-    <a 
-      class="nav-link" 
-      [class.active]="selectedTab === 'all'" 
-      (click)="setTab('all')"
-    >All</a>
-  </li>
-
-  <li class="nav-item">
-    <a 
-      class="nav-link" 
-      [class.active]="selectedTab === 'bookmarked'" 
-      (click)="setTab('bookmarked')"
-    >Bookmarked</a>
-  </li>
-
-  <li class="nav-item">
-    <a 
-      class="nav-link" 
-      [class.active]="selectedTab === 'active'" 
-      (click)="setTab('active')"
-    >Active</a>
-  </li>
-
-  <li class="nav-item">
-    <a 
-      class="nav-link" 
-      [class.active]="selectedTab === 'inactive'" 
-      (click)="setTab('inactive')"
-    >Inactive</a>
-  </li>
+    <li class="nav-item" *ngFor="let tab of tabs">
+      <a
+        class="nav-link"
+        [class.active]="selectedTab === tab.value"
+        (click)="setTab(tab.value)">
+        {{ tab.label }}
+      </a>
+    </li>
   </ul>
-  <div class="tab-content">
 
-    <div class="tab-pane active" id="home" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
+  <!-- Tab Content -->
+  <div class="tab-content mt-4">
+    <div class="card border-0">
+      <div class="card-header">
+        <h3 class="card-title">Scholarships ({{ filteredScholarships.length }})</h3>
+      </div>
 
-      <div class="card border-0">
-        <div class="card-header">
-          <div>
-            <h3 class="card-title">Scholarships ({{filteredScholarships.length}})</h3>
-          </div>
-        </div> 
-        <div class="card-body">
-          <div class="row gy-4">
+      <div class="card-body">
+        <div class="row gy-4">
 
-            <!-- Scholarships -->
-            <div *ngFor="let scholarship of filteredScholarships" class="col-12 col-md-6 col-lg-4">
-              <div class="card position-relative">
+          <!-- Scholarships Loop -->
+          <div *ngFor="let scholarship of filteredScholarships" class="col-12 col-md-6 col-lg-4">
+            <div class="card scholarship-card position-relative">
 
-                <span (click)="toogleBookmark(scholarship)"
+              <!-- Bookmark Badge -->
+              <span
+                (click)="toggleBookmark(scholarship)"
                 class="bookmark-badge badge-rounded badge-white position-absolute b-0"
                 [ngClass]="{
-                      'bg-brand-purple-500 text-brand-yellow-500' : scholarship.isBookmarked,
-                      'bg-white text-default-muted' : !scholarship.isBookmarked
-                    }">
-                    <fa-icon 
-                    [icon]="scholarship.isBookmarked ? faBookmarkSolid : faBookmarkRegular">
-                  </fa-icon>
-                  </span>
+                  'bg-brand-purple-500 text-brand-yellow-500': scholarship.isBookmarked,
+                  'bg-white text-default-muted': !scholarship.isBookmarked
+                }">
+                <fa-icon
+                  [icon]="scholarship.isBookmarked ? faBookmarkSolid : faBookmarkRegular">
+                </fa-icon>
+              </span>
 
-                <ng-container *ngIf="scholarship.imageThumbnail">
-                    <div class="card-header d-block overflow-hidden p-0">
-                    <img [src]="scholarship.imageThumbnail" [alt]="scholarship.title" class="w-100 object-fit-cover" style="height: 200px;">
+              <!-- Thumbnail -->
+              <ng-container *ngIf="scholarship.imageThumbnail">
+                <div class="card-header image-wrapper">
+                  <img
+                    [src]="scholarship.imageThumbnail"
+                    [alt]="scholarship.title"
+                    class="w-100 object-fit-cover scholarship-image">
                 </div>
-                </ng-container>
-                
-                <div class="card-body">
-                  <div class="position-relative z-2">
-                    <h4 class="card-title">{{ scholarship.title }}</h4>
-                    <p class="card-subtitle">{{ scholarship.category }}</p>
-                    <div class="d-flex flex-column mt-4">
-                      <p>Application Deadline: <fa-icon [icon]="faCalendar" class="text-brand-green-500"></fa-icon> {{ scholarship.applicationDeadline }}</p>
-                      <p>Status: <span class="badge-sm" [ngClass]="{
-                                  'bg-brand-purple-50 text-brand-purple-500': scholarship.status === 'active',
-                                  'bg-default-error text-white': scholarship.status === 'inactive'
-                                }">
-                                 Scholarship is {{ scholarship.status | titlecase }}
-                                </span>
-                      </p>
+              </ng-container>
+
+              <!-- Scholarship Info -->
+              <div class="card-body">
+                <h4 class="card-title">{{ scholarship.title }}</h4>
+                <p class="card-subtitle">{{ scholarship.category }}</p>
+
+                <div class="details mt-4">
+                  <p>
+                    Application Deadline:
+                    <fa-icon [icon]="faCalendar" class="text-brand-green-500"></fa-icon>
+                    {{ scholarship.applicationDeadline | date:'mediumDate' }}
+                  </p>
+                  <p>
+                    Status:
+                    <span class="badge-sm" [ngClass]="{
+                      'bg-brand-purple-50 text-brand-purple-500': scholarship.status === 'active',
+                      'bg-default-error text-white': scholarship.status === 'inactive'
+                    }">
+                      {{ scholarship.status | titlecase }}
+                    </span>
+                  </p>
+                </div>
+
+                <p class="short-description">
+                  {{ scholarship.shortDescription }}
+                </p>
+
+                <hr>
+
+                <div *ngIf="scholarship.menteesInterested?.length">
+                  <p>Mentees Interested:</p>
+                  <div class="mentees-list d-flex align-items-center">
+                    <ng-container *ngFor="let mentee of scholarship.menteesInterested.slice(0, 5)">
+                      <img
+                        [src]="mentee"
+                        alt="Mentee Interested"
+                        class="mentee-avatar border border-white">
+                    </ng-container>
+                    <div
+                      *ngIf="scholarship.menteesInterested.length > 5"
+                      class="mentee-avatar extra bg-primary text-white">
+                      +{{ scholarship.menteesInterested.length - 5 }}
                     </div>
                   </div>
-                  <p>
-                    {{ scholarship.shortDescription }}
-                  </p>
-                  <hr>
-                  <p>Mentees Interested:</p>
-                  <div *ngIf="scholarship?.menteesInterested?.length" class="d-flex align-items-center">
-                    <ng-container *ngFor="let mentee of scholarship.menteesInterested.slice(0,5)">
-                        <img
-                        [src]="mentee"
-                        alt="Mentee Interested" 
-                        class="object-fit-cover border border-white"
-                        style="border-radius: 50%; width: 48px; height: 48px; margin-left: -8px;"
-                        />
-                    </ng-container>
-
-                    <div
-                        *ngIf="scholarship.menteesInterested.length > 5"
-                        class="d-flex justify-content-center align-items-center bg-primary text-white"
-                        style="border-radius: 50%; width: 48px; height: 48px; margin-left: -8px;"
-                    >
-                        +{{ scholarship.menteesInterested.length - 5 }}
-                    </div>
-                    </div>
-
-                </div>
-                <div class="card-footer bg-transparent border-0">
-                    <a [routerLink]="['/mentee/scholarship-details', scholarship?.id]" 
-                    class="btn btn-secondary w-100" >View Scholarship</a>
-
                 </div>
               </div>
-            </div>
 
+              <div class="card-footer bg-transparent border-0">
+                <a
+                  [routerLink]="['/mentee/scholarship-details', scholarship.id]"
+                  class="btn btn-secondary w-100">
+                  View Scholarship
+                </a>
+              </div>
+
+            </div>
           </div>
+          <!-- /Scholarship Loop -->
 
         </div>
       </div>
-
     </div>
-
   </div>
-
 </div>
