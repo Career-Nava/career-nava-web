@@ -1,41 +1,30 @@
 <div class="sidebar" [class.open]="isOpen">
-    <a href="/student/overview" class="d-block p-4">
-        <img src="assets/images/logo/logo.png" class="w-100 object-fit-contain" alt="Logo">
-    </a>
-    <div class="sidebar-menu">
-        <ul class="menu">
-            <li class="menu-item d-block d-sm-none">
-                <button (click)="toggleSidebar()" class="btn btn-primary">Menu</button>
-            </li>
+  <a [routerLink]="['/home']" class="d-block p-4">
+    <img src="assets/images/logo/logo.png" class="w-100 object-fit-contain" alt="Logo"/>
+  </a>
 
-            <li class="menu-item">
-               <a routerLink="/mentee/mentors" routerLinkActive="active" class="nav-link">
-                   <fa-icon [icon]="faUsers"></fa-icon>
-                   <span>Explore Mentors</span>
-                </a>
-           </li>
+  <div class="sidebar-menu">
+    <ul class="menu">
+      <!-- Small screen toggle -->
+      <li class="menu-item d-block d-sm-none">
+        <button (click)="toggleSidebar()" class="btn btn-primary">Menu</button>
+      </li>
 
-           <li class="menu-item">
-                <a routerLink="/mentee/scholarships" routerLinkActive="active" class="nav-link">
-                    <fa-icon [icon]="faCertificate"></fa-icon>
-                    <span>Scholarships</span>
-                </a>
-            </li>
+      <!-- Dynamic menu items -->
+      <li *ngFor="let item of menuItems" class="menu-item">
+        <a *ngIf="item.route; else actionItem" [routerLink]="item.route" routerLinkActive="active" class="nav-link">
+          <fa-icon [icon]="item.icon"></fa-icon>
+          <span>{{ item.label }}</span>
+        </a>
 
-            <li class="menu-item">
-                <a routerLink="/mentee/sessions" routerLinkActive="active" class="nav-link">
-                    <fa-icon [icon]="faLaptop"></fa-icon>
-                    <span>My Sessions</span>
-                </a>
-            </li>
-            
-            <li class="menu-item">
-                <a (click)="logout()" routerLinkActive="active" class="nav-link">
-                <fa-icon [icon]="faArrowRightFromBracket"></fa-icon>
-                <span>Logout</span>
-                </a>
-            </li>
-
-        </ul>
-    </div>
+        <!-- Items with actions instead of routes -->
+        <ng-template #actionItem>
+          <a (click)="item.action?.()" class="nav-link">
+            <fa-icon [icon]="item.icon"></fa-icon>
+            <span>{{ item.label }}</span>
+          </a>
+        </ng-template>
+      </li>
+    </ul>
+  </div>
 </div>
