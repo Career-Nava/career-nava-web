@@ -5,19 +5,13 @@
     "ng": "ng",
     "start": "ng serve",
     "start:dev": "ng serve --open --configuration development",
-    "start:secure": "ng serve --open --configuration secure",
     "start:prod": "ng serve --open --configuration production",
     "build": "ng build",
     "build:dev": "ng build --configuration development",
-    "build:secure": "ng build --configuration secure",
     "build:prod": "ng build --configuration production",
     "build-and-serve": "npm run build && ng serve --open",
     "build-and-serve:dev": "npm run build:dev && npm run start:dev",
-    "build-and-serve:secure": "npm run build:secure && npm run start:secure",
-    "build-and-serve:prod": "npm run build:prod && npm run start:prod",
-    "watch": "ng build --watch --configuration development",
-    "test": "ng test",
-    "serve:ssr:careernava": "node dist/careernava/server/server.mjs"
+    "build-and-serve:prod": "npm run build:prod && npm run start:prod"
   },
   "private": true,
   "dependencies": {
