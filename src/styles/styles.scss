@@ -136,7 +136,7 @@ section {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 80px 0;
+    padding: 1em 0;
 }
 
 .link {
@@ -467,8 +467,8 @@ section {
 }
 
 .logo-track img {
-  width: 150px; 
-  height: 150px; 
+  width: 80px;
+    height: 150px;
   flex: 0 0 auto; /* prevents shrinking */
   object-fit: contain;
 }
