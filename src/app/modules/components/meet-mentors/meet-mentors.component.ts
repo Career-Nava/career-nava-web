@@ -1,22 +1,22 @@
 import { Component, OnInit } from '@angular/core';
-import { faBriefcase, faComments, faStar, faStarHalfStroke } from '@fortawesome/free-solid-svg-icons';
-import { Mentor } from "../../../services/mentor/mentor.model";
-import { MentorService } from "../../../services/mentor/mentor.service";
-
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { faBriefcase, faComments, faStar as faStarFull, faStarHalfStroke as faStarHalf } from '@fortawesome/free-solid-svg-icons';
+import { Mentor } from '../../../services/mentor/mentor.model';
+import { MentorService } from '../../../services/mentor/mentor.service';
 import { SharedModule } from '../../../shared/shared/shared.module';
 
 @Component({
   selector: 'app-meet-mentors',
   standalone: true,
-  imports: [ SharedModule ],
+  imports: [ SharedModule, FontAwesomeModule ],
   templateUrl: './meet-mentors.component.html',
-  styleUrl: './meet-mentors.component.scss'
+  styleUrls: [ './meet-mentors.component.scss' ]
 })
 export class MeetMentorsComponent implements OnInit {
   faBriefcase = faBriefcase;
-  faStarFull = faStar;
-  faStarHalf = faStarHalfStroke;
   faComments = faComments;
+  faStarFull = faStarFull;
+  faStarHalf = faStarHalf;
 
   mentors: Mentor[] = [];
 
@@ -28,27 +28,32 @@ export class MeetMentorsComponent implements OnInit {
       next: (data) => {
         this.mentors = (data ?? []).map((m) => ({
           ...m,
-
+          // Keep fallbacks from your original code
           profilePicture: m.profilePicture ?? 'assets/images/avatars/male-09.jpg',
-          expertise: m.expertise ?? ["Product Design", "Design Systems"],
-          disciplines: m.disciplines ?? ["UI/UX", "Interaction Design"],
-          fluentIn: m.fluentIn ?? ["English", "French"],
-          bio: m.bio ?? "I’m a Senior Product Designer at Facebook with over 7 years of experience designing intuitive digital experiences. I’ve mentored aspiring designers on portfolio reviews, design systems, and building case studies that stand out. I can help you sharpen your design process, prepare for interviews, and grow confidence in presenting your work.",
+          expertise: m.expertise ?? [ 'Product Design', 'Design Systems' ],
+          disciplines: m.disciplines ?? [ 'UI/UX', 'Interaction Design' ],
+          fluentIn: m.fluentIn ?? [ 'English', 'French' ],
+          bio: m.bio ?? 'I’m a Senior Product Designer with over 7 years of experience designing intuitive digital experiences. I can help you sharpen your design process, prepare for interviews, and build strong portfolios.',
           experiences: m.experiences ?? [
             {
-              title: "Senior Product Designer",
-              description: "Led product design teams focusing on scalable design systems and cross-platform experiences.",
-              year: "2020 - Present",
-              companyImage: "assets/images/clients/chevening-sc.webp"
+              title: 'Senior Product Designer',
+              description: 'Led product design teams focusing on scalable design systems and cross-platform experiences.',
+              year: '2020 - Present',
+              companyImage: 'assets/images/clients/chevening-sc.webp'
             },
             {
-              title: "UI/UX Designer",
-              description: "Worked on multiple client projects delivering mobile-first solutions.",
-              year: "2017 - 2020",
-              companyImage: "assets/images/clients/google.svg"
+              title: 'UI/UX Designer',
+              description: 'Worked on multiple client projects delivering mobile-first solutions.',
+              year: '2017 - 2020',
+              companyImage: 'assets/images/clients/google.svg'
             }
-          ]
-
+          ],
+          // ensure defaults for numeric fields to avoid template issues
+          totalSessions: m.totalSessions ?? 0,
+          totalReviews: m.totalReviews ?? 0,
+          avgRating: typeof m.avgRating === 'number' ? m.avgRating : 0,
+          positionTitle: m.positionTitle ?? '',
+          company: m.company ?? ''
         }));
         console.log('Mentors loaded:', this.mentors);
       },
@@ -59,16 +64,8 @@ export class MeetMentorsComponent implements OnInit {
     });
   }
 
-  getStars(rating: number = 0): number[] {
-    return Array(Math.floor(rating)).fill(0);
-  }
-
-  get mentorGroups() {
-    const size = 3;
-    const groups = [];
-    for (let i = 0; i < this.mentors.length; i += size) {
-      groups.push(this.mentors.slice(i, i + size));
-    }
-    return groups;
+  getStars(rating: number = 0): any[] {
+    const full = Math.floor(rating);
+    return new Array(full);
   }
 }
