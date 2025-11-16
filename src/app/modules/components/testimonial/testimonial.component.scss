@@ -1,0 +1,42 @@
+.testimonial {
+  position: relative;
+  background-size: cover;
+  background-position: center;
+  padding: 5rem 1rem;
+
+  .overlay-layer-blur {
+    position: absolute;
+    inset: 0;
+    backdrop-filter: blur(3px); // subtle blur
+    z-index: 0; // below content
+  }
+
+  .container {
+    position: relative;
+    z-index: 2; // ensures content is above blur
+  }
+
+  .users-img {
+    max-height: 300px;
+    object-fit: contain;
+    border-radius: 0.5rem;
+  }
+
+  .carousel-caption {
+    z-index: 3; // text above everything
+    p {
+      font-size: 1rem;
+    }
+  }
+
+  @media (max-width: 768px) {
+    padding: 3rem 1rem;
+
+    .carousel-caption {
+      text-align: center;
+    }
+    .users-img {
+      max-height: 200px;
+    }
+  }
+}

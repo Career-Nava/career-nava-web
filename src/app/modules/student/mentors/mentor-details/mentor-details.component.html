@@ -17,20 +17,19 @@
   <!-- Mentor Details -->
   @if (!isLoading && mentor) {
     <div class="card header-decorater mb-5">
-      <img src="assets/images/pattern.png" alt="" class="pattern" />
+      <img src="assets/images/pattern.png" alt="" class="pattern"/>
       <div class="p-4 w-100 text-center text-lg-start content-layer">
         <div class="d-flex flex-column flex-lg-row gap-4 align-items-center justify-content-lg-start">
-          <img
-            [src]="mentor.profilePicture"
-            [alt]="mentor.fullName"
-            class="object-fit-cover rounded profile-pic"
-          />
+          <img [src]="mentor.profilePicture" [alt]="mentor.fullName" class="object-fit-cover rounded profile-pic"/>
+
           <div class="w-100">
             <h1 class="mentor-name">{{ mentor.fullName }}</h1>
             <p>{{ mentor.positionTitle }} at {{ mentor.company }}</p>
-            <button class="btn btn-primary my-4 mx-auto mx-lg-0">
+
+            <button class="btn btn-primary my-4 mx-auto mx-lg-0" (click)="openCalendlyPopup()">
               Book A Session With {{ mentor.fullName }}
             </button>
+
           </div>
         </div>
       </div>
@@ -41,40 +40,19 @@
       <div class="col-12 col-lg-7">
         <ul class="nav nav-tabs">
           <li class="nav-item">
-            <button
-              class="nav-link active"
-              id="home-tab"
-              data-bs-toggle="tab"
-              data-bs-target="#home"
-              type="button"
-              role="tab"
-              aria-controls="home"
-              aria-selected="true"
-            >
+            <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">
               Overview
             </button>
           </li>
           <li class="nav-item">
-            <button
-              class="nav-link"
-              type="button"
-              role="tab"
-              aria-controls="home"
-              aria-selected="true"
-            >
+            <button class="nav-link" type="button" role="tab" aria-controls="home" aria-selected="true">
               Achievements
             </button>
           </li>
         </ul>
 
         <div class="tab-content">
-          <div
-            class="tab-pane active"
-            id="home"
-            role="tabpanel"
-            aria-labelledby="home-tab"
-            tabindex="0"
-          >
+          <div class="tab-pane active" id="home" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
             <div class="card border-0">
               <div class="card-body">
                 <h3 class="card-title fw-bold">Description</h3>
@@ -91,7 +69,7 @@
                       <p class="info-label mb-0">Expertise:</p>
                       <div class="badge-group">
                         @for (e of mentor.expertise; track e) {
-                          <span class="soft-badge primary">{{ e }}</span>
+                          <span class="soft-badge primary">{{ e.expertiseName }}</span>
                         }
                       </div>
                     </div>
@@ -103,7 +81,7 @@
                       <p class="info-label mb-0">Disciplines:</p>
                       <div class="badge-group">
                         @for (d of mentor.disciplines; track d) {
-                          <span class="soft-badge light">{{ d }}</span>
+                          <span class="soft-badge light">{{ d.disciplineName }}</span>
                         }
                       </div>
                     </div>
@@ -114,8 +92,8 @@
                     <div class="info-row py-2">
                       <p class="info-label mb-0">Fluency:</p>
                       <div class="badge-group">
-                        @for (f of mentor.fluentIn; track f) {
-                          <span class="soft-badge light">{{ f }}</span>
+                        @for (f of mentor.fluency; track f) {
+                          <span class="soft-badge light">{{ f.fluencyName }}</span>
                         }
                       </div>
                     </div>
@@ -130,7 +108,7 @@
 
       <!-- Right Column -->
       <div class="col-12 col-lg-5">
-        @if (mentor.experiences.length) {
+        @if (mentor.experiences?.length) {
           <div class="card border-0">
             <div class="card-header">
               <h3 class="card-title fw-bold">Experience</h3>
@@ -139,12 +117,7 @@
               @for (experience of mentor.experiences; track experience.title) {
                 <div class="card mb-4">
                   <div class="card-header d-flex gap-3 align-items-center">
-                    <img
-                      [src]="experience.companyImage"
-                      [alt]="experience.title"
-                      class="object-fit-contain"
-                      style="width: 100px; height: 60px; border-radius: 8px;"
-                    />
+                    <img [src]="experience.companyImage" [alt]="experience.title" class="object-fit-contain" style="width: 100px; height: 60px; border-radius: 8px;"/>
                     <div>
                       <h4 class="card-title mb-0">{{ experience.title }}</h4>
                       <small class="text-muted">{{ experience.year }}</small>
