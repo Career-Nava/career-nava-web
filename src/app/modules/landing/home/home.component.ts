@@ -1,6 +1,6 @@
-import { NgClass } from "@angular/common";
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { RouterLink } from "@angular/router";
+import { PingService } from "../../../services/ping.service";
 import { FaqsComponent } from '../../components/faqs/faqs.component';
 import { MeetMentorsComponent } from '../../components/meet-mentors/meet-mentors.component';
 import { PricingComponent } from '../../components/pricing/pricing.component';
@@ -9,19 +9,18 @@ import { TestimonialComponent } from '../../components/testimonial/testimonial.c
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [
-    MeetMentorsComponent,
-    PricingComponent,
-    TestimonialComponent,
-    FaqsComponent,
-    RouterLink,
-    NgClass,
-  ],
+  imports: [ MeetMentorsComponent, PricingComponent, TestimonialComponent, FaqsComponent, RouterLink ],
   templateUrl: './home.component.html',
   styleUrls: [ './home.component.scss' ],
 })
-export class HomeComponent {
-  displayModal = false;
+export class HomeComponent implements OnInit {
+
+  constructor(private pingService: PingService) {
+  }
+
+  ngOnInit(): void {
+    this.pingService.pingServer();
+  }
 
   clientLogos = [
     'assets/images/clients/Microsoft.svg',
@@ -51,7 +50,7 @@ export class HomeComponent {
       title: 'Qualified Mentors',
       description:
         'Access top-tier guidance from experienced mentors dedicated to your growth and success.',
-    },
+    }
   ];
 
   services = [
@@ -78,10 +77,6 @@ export class HomeComponent {
       title: 'Scholarship Readiness Assessment',
       description:
         'Our readiness assessment evaluates your preparedness and provides actionable insights for success.',
-    },
+    }
   ];
-
-  joinTheWaitlistModal() {
-    this.displayModal = !this.displayModal;
-  }
 }
