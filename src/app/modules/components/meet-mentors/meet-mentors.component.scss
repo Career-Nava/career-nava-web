@@ -1,37 +1,48 @@
-.mentor-carousel {
-  overflow: hidden;
-  position: relative;
-  width: 100%;
-}
+.mentor-card {
+  border-radius: 12px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 
-.mentor-track {
-    display: flex;
-    gap: 2rem;
-    animation: scroll 30s linear infinite;
-    .card {
-    width: 300px; 
-    height: auto; 
-    flex: 0 0 auto; /* prevents shrinking */
-    object-fit: contain;
-    }
-    .mentor {
-        .card-header {
-            border-radius: 8px;
-            overflow: hidden !important;
-            height: 240px;
-        }
-        img {
-            margin: 0 auto;
-        }
-    }
-}
-
-/* Infinite scroll animation */
-@keyframes scroll {
-  from {
-    transform: translateX(0);
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
   }
-  to {
-    transform: translateX(-50%);
+}
+
+.mentor-image-wrapper {
+  width: 100%;
+  height: 200px;
+  overflow: hidden;
+  border-radius: 12px 12px 0 0;
+}
+
+.mentor-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.mentor-name {
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.mentor-tag {
+  background-color: #f2e9ff;
+  color: #5b2caf;
+  padding: 6px 10px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  margin: 2px;
+  display: inline-block;
+}
+
+/* Mobile improvements */
+@media (max-width: 575px) {
+  .mentor-image-wrapper {
+    height: 160px;
+  }
+
+  .mentor-card {
+    margin-bottom: 1rem;
   }
 }

@@ -1,0 +1,66 @@
+.pricing-section {
+  padding-top: 4rem;
+  padding-bottom: 4rem;
+}
+
+.pricing-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 2rem 1rem;
+  display: flex;
+  flex-direction: column;
+  transition: transform .25s ease, box-shadow .25s ease;
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.12);
+  }
+}
+
+.pricing-header {
+  background: linear-gradient(135deg, #6a1b9a, #8e24aa);
+  border-radius: 12px;
+  padding: 1.5rem 1rem;
+  margin-bottom: 1rem;
+}
+
+.pricing-amount {
+  color: #ffe600;
+  font-weight: 700;
+}
+
+.pricing-features li {
+  border-bottom: 1px solid #f3f3f3;
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.pricing-btn {
+  border-radius: 8px;
+  margin-top: auto;
+}
+
+/* Recommended Badge as small rounded pill */
+.recommended-badge {
+  background: #ffe600;           // bright color
+  color: #222;                   // text color
+  font-weight: 600;
+  font-size: 0.75rem;            // smaller text
+  padding: 0.25rem 0.6rem;       // pill padding
+  border-radius: 50rem;          // fully rounded
+  position: absolute;
+  top: 0.5rem;                   // slightly inset from top
+  right: 0.5rem;                 // slightly inset from right
+  text-transform: uppercase;     // optional styling
+  white-space: nowrap;           // prevent wrapping
+  z-index: 10;                   // ensure on top
+}
+
+/* Mobile Adjustments */
+@media (max-width: 575px) {
+  .pricing-header {
+    padding: 1.25rem 0.75rem;
+  }
+}

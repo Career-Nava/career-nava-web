@@ -4,27 +4,10 @@
     <div class="col-12">
       <div class="w-100">
         <h1>Explore Mentors</h1>
-        <p>
-          Discover experienced professionals ready to guide you on your career journey.
-        </p>
+        <p>Discover experienced professionals ready to guide you on your career journey.</p>
       </div>
     </div>
   </div>
-
-  <!-- Tabs -->
-  <ul class="nav nav-tabs mb-3">
-    <li class="nav-item">
-      <a class="nav-link active" data-bs-toggle="tab" data-bs-target="#all" type="button" role="tab">
-        All
-      </a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link" href="#">Active</a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link" href="#">Upcoming</a>
-    </li>
-  </ul>
 
   <div class="tab-content">
     <div class="tab-pane active" id="all" role="tabpanel" tabindex="0">
@@ -52,66 +35,33 @@
 
           <!-- Mentors grid -->
           <div class="row gy-4" *ngIf="!loading && !error">
-            <div
-              class="col-12 col-md-6 col-lg-3"
-              *ngFor="let mentor of mentors$ | async"
-            >
-              <a
-                [routerLink]="['/mentee/mentors/mentor-details', mentor.userId]"
-                class="d-block text-decoration-none text-dark"
-              >
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3" *ngFor="let mentor of mentors$ | async">
+              <a [routerLink]="['/mentee/mentors/mentor-details', mentor.userId]" class="d-block text-decoration-none text-dark">
                 <div class="card h-100 border-0 shadow-sm">
                   <!-- Image -->
-                  <div
-                    class="card-header p-0 position-relative overflow-hidden"
-                    style="height: 200px;"
-                  >
-                    <img
-                      [src]="mentor.profilePicture || 'assets/images/avatars/male-09.jpg'"
-                      [alt]="mentor.fullName"
-                      class="w-100 h-100 object-fit-cover"
-                    />
+                  <div class="card-header p-0 position-relative overflow-hidden" style="height: 200px;">
+                    <img [src]="mentor.profilePicture" [alt]="mentor.fullName" class="w-100 h-100 object-fit-cover"/>
                   </div>
-
                   <!-- Info -->
                   <div class="card-body p-4">
                     <h4 class="card-title fs-5 mb-2">{{ mentor.fullName }}</h4>
                     <p class="mb-2 text-muted">
                       <fa-icon [icon]="faBriefcase" class="text-brand-yellow-550 me-2"></fa-icon>
-                      {{ mentor.positionTitle || 'Mentor' }}
+                      {{ mentor.positionTitle }}
                       <span *ngIf="mentor.company"> at {{ mentor.company }}</span>
                     </p>
-
                     <p class="mb-2">
                       <fa-icon [icon]="faComments" class="text-brand-yellow-550 me-2"></fa-icon>
-                      {{ mentor.totalSessions || 0 }} Sessions
-                      ({{ mentor.totalReviews || 0 }} Reviews)
+                      {{ mentor.totalSessions }} Sessions ({{ mentor.totalReviews }} Reviews)
                     </p>
-
                     <p class="mb-0">
                       <ng-container *ngFor="let _ of getStars(mentor.avgRating)">
                         <fa-icon [icon]="faStarFull" class="text-brand-yellow-550"></fa-icon>
                       </ng-container>
-                      <fa-icon
-                        *ngIf="hasHalfStar(mentor.avgRating)"
-                        [icon]="faStarHalf"
-                        class="text-brand-yellow-550"
-                      ></fa-icon>
-                      <span class="ms-1 text-muted">{{ mentor.avgRating || 0 }} Stars</span>
+                      <fa-icon *ngIf="hasHalfStar(mentor.avgRating)" [icon]="faStarHalf" class="text-brand-yellow-550"></fa-icon>
+                      <span class="ms-1 text-muted">{{ mentor.avgRating }} Stars</span>
                     </p>
                   </div>
-
-                  <!-- Footer -->
-                  <!--                  <div class="card-footer d-flex justify-content-between p-3 bg-brand-purple-50">-->
-                  <!--                    <div>-->
-                  <!--                      <p class="mb-1 small text-muted">Experience</p>-->
-                  <!--                      <p class="fw-semibold mb-0">{{ mentor.experienceYears || 'N/A' }}</p>-->
-                  <!--                    </div>-->
-                  <!--                    <div>-->
-                  <!--                      <p class="mb-1 small text-muted">Avg Attendance</p>-->
-                  <!--                      <p class="fw-semibold mb-0">{{ mentor.avgAttendance || 'N/A' }}</p>-->
-                  <!--                    </div>-->
-                  <!--                  </div>-->
                 </div>
               </a>
             </div>

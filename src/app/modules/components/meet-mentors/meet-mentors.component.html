@@ -12,50 +12,49 @@
             </p>
           </div>
         </div>
-
-        <div class="w-100 mentor-carousel my-4">
-          <div class="mentor-track d-flex flex-wrap gap-3">
+        <div class="mentor-carousel w-100 my-4">
+          <div class="mentor-track row g-4">
             @for (mentor of mentors; track mentor.fullName) {
-              <div class="card bg-transparent b-0">
-                <div
-                  class="card-header position-relative align-items-center overflow-hidden p-0 teacher-img w-100">
-                  <img
-                    [src]="mentor.profilePicture"
-                    [alt]="mentor.fullName"
-                    class="w-100 h-100 mx-auto"/>
-                </div>
+              <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                <div class="card mentor-card shadow-sm h-100 border-0">
 
-                <div class="card-body p-4 text-start">
-                  <h3 class="text-center">{{ mentor.fullName }}</h3>
+                  <!-- Image -->
+                  <div class="mentor-image-wrapper">
+                    <img [src]="mentor.profilePicture" [alt]="mentor.fullName" class="mentor-image"/>
+                  </div>
 
-                  <p>
-                    <fa-icon [icon]="faBriefcase" class="text-brand-yellow-550 me-2"></fa-icon>
-                    {{ mentor.positionTitle }}
-                    <span *ngIf="mentor.company">at {{ mentor.company }}</span>
-                  </p>
+                  <!-- Body -->
+                  <div class="card-body text-start">
+                    <h5 class="mentor-name text-center mb-2">{{ mentor.fullName }}</h5>
 
-                  <p>
-                    <fa-icon [icon]="faComments" class="text-brand-yellow-550 me-2"></fa-icon>
-                    {{ mentor.totalSessions }} Sessions (<span>{{ mentor.totalReviews }}</span> Reviews)
-                  </p>
+                    <p class="text-muted small mb-2 text-center">
+                      <fa-icon [icon]="faBriefcase" class="text-brand-yellow-550 me-1"></fa-icon>
+                      {{ mentor.positionTitle }}
+                      <span *ngIf="mentor.company"> at {{ mentor.company }}</span>
+                    </p>
 
-                  <p>
-                    Rating:
-                    @for (_ of getStars(mentor.avgRating); track $index) {
-                      <fa-icon [icon]="faStarFull" class="text-brand-yellow-550"></fa-icon>
+                    <p class="small mb-2 text-center">
+                      <fa-icon [icon]="faComments" class="text-brand-yellow-550 me-1"></fa-icon>
+                      {{ mentor.totalSessions }} Sessions <span class="small">({{ mentor.totalReviews }} Reviews)</span>
+                    </p>
+
+                    <p class="small text-center mb-0">
+                      @for (_ of getStars(mentor.avgRating); track $index) {
+                        <fa-icon [icon]="faStarFull" class="text-brand-yellow-550"></fa-icon>
+                      }
+                      @if ((mentor.avgRating ?? 0) % 1 !== 0) {
+                        <fa-icon [icon]="faStarHalf" class="text-brand-yellow-550"></fa-icon>
+                      }
+                      <span class="ms-1 text-muted">{{ mentor.avgRating }} Stars</span>
+                    </p>
+                  </div>
+
+                  <!-- Tags -->
+                  <div class="card-footer bg-transparent border-0 text-center py-2">
+                    @for (e of mentor.expertise; track $index) {
+                      <span class="badge mentor-tag">{{ e.expertiseName }}</span>
                     }
-                    @if ((mentor.avgRating ?? 0) % 1 !== 0) {
-                      <fa-icon [icon]="faStarHalf" class="text-brand-yellow-550"></fa-icon>
-                    }
-                    <span class="ms-2">{{ mentor.avgRating }} Star Rating</span>
-                  </p>
-                </div>
-
-                <div
-                  class="card-footer flex-row flex-wrap justify-content-center align-items-center gap-2 h-auto p-0 b-0 bg-transparent">
-                  @for (e of mentor.expertise; track $index) {
-                    <span class="p-2 m-1 bg-brand-purple-100 rounded">{{ e }}</span>
-                  }
+                  </div>
                 </div>
               </div>
             }

@@ -6,10 +6,10 @@
 
     <div class="col-12 col-lg-6 d-none d-lg-block bg-default-brand-secondary" style="position: relative;">
       <div class="auth-content d-flex flex-column align-items-center justify-content-center h-100">
-        <div id="content-quote" class="w-100 text-white" style="z-index: 4; padding: 1em;">
+        <div class="w-100 text-white" style="z-index: 4; padding: 1em;">
           <h1 class="text-default-brand-primary fw-bold mb-3" style="font-size: 48px;">Welcome Back to <br/> CareerNava</h1>
-          <p class="fs-5 lh-lg text-light" style="font-size: 18px; line-height: 1.8;">“CareerNava connects you with expert mentors who guide you through scholarships, academics, and personal growth —
-            empowering you to achieve more.”</p>
+          <p class="fs-5 lh-lg text-light" style="font-size: 18px; line-height: 1.8;">
+            “CareerNava connects you with expert mentors who guide you through scholarships, academics, and personal growth — empowering you to achieve more.”</p>
         </div>
       </div>
 
@@ -17,7 +17,7 @@
         <div class="w-100 mentor-carousel">
           <div class="mentor-track">
             <!-- Mentors -->
-            <div id="mentor" *ngFor="let mentor of mentors" class="card">
+            <div *ngFor="let mentor of mentors" class="card">
               <img
                 [src]="mentor.profilePicture"
                 [alt]="mentor.fullName"
@@ -27,7 +27,7 @@
           </div>
           <div class="mentor-track-2">
             <!-- Mentors -->
-            <div id="mentor" *ngFor="let mentor of mentors" class="card">
+            <div *ngFor="let mentor of mentors" class="card">
               <img
                 [src]="mentor.profilePicture"
                 [alt]="mentor.fullName"
@@ -40,7 +40,7 @@
 
       <div class="d-flex flex-column align-items-center justify-content-center h-100 d-none">
         <div id="signinCarouselAutoplaying" class="carousel slide" data-bs-ride="carousel">
-          <div id="content-quote" class="position-absolute bottom-0 left-0 right-0 w-100 text-white">
+          <div class="position-absolute bottom-0 left-0 right-0 w-100 text-white">
             <h2 class="text-default-brand-secondary">Welcome Back To CareerNava</h2>
             <p>“CareerNava guided me step by step — from scholarships to mentorship — and gave me the confidence to achieve my goals.”</p>
           </div>

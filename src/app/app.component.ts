@@ -13,9 +13,7 @@ import { SharedModule } from "./shared/shared/shared.module";
 export class AppComponent implements OnInit {
   title = 'Career Nava';
 
-  constructor(
-    private pingService: PingService
-  ) {
+  constructor(private pingService: PingService) {
   }
 
   ngOnInit(): void {
