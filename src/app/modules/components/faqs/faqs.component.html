@@ -1,42 +1,44 @@
-<section class="faqs position-relative d-flex flex-column align-items-center pt-12 pb-8 px-6">
+<section class="faqs position-relative d-flex flex-column align-items-center py-12 px-4">
   <!-- Background SVG -->
-  <svg class="-z-1 position-absolute inset-0 opacity-25" style="z-index: -1;" viewBox="0 0 960 540" width="100%" height="100%" preserveAspectRatio="xMidYMax slice" xmlns="http://www.w3.org/2000/svg">
-    <g class="opacity-40 text-gray-200 dark:text-gray-800" fill="none" stroke="currentColor" stroke-width="100">
-      <circle r="234" cx="196" cy="23" class="text-brand-purple-50"></circle>
-      <circle r="234" cx="790" cy="491" class="text-brand-purple-50"></circle>
+  <svg class="position-absolute top-0 start-0 w-100 h-100 opacity-25" style="z-index: 0;" viewBox="0 0 960 540" preserveAspectRatio="xMidYMax slice" xmlns="http://www.w3.org/2000/svg">
+    <g fill="none" stroke="currentColor" stroke-width="100">
+      <circle r="234" cx="196" cy="23" class="text-brand-purple-50 opacity-40"></circle>
+      <circle r="234" cx="790" cy="491" class="text-brand-purple-50 opacity-40"></circle>
     </g>
   </svg>
 
-  <div class="container">
-    <div class="w-100 max-w-7xl">
-      <div class="text-center mb-4">
-        <h2 class="text-4xl font-extrabold tracking-tight leading-tight text-default-brand-primary">
-          Frequently Asked Questions
-        </h2>
-        <p class="mt-2 text-xl text-secondary">
-          Here are the most frequently asked questions you may check before getting started
-        </p>
-      </div>
+  <div class="container position-relative z-10">
+    <div class="text-center mb-8">
+      <h2 class="text-4xl md:text-5xl font-extrabold text-default-brand-primary">
+        Frequently Asked Questions
+      </h2>
+      <p class="mt-2 text-lg md:text-xl text-secondary">
+        Here are the most frequently asked questions you may check before getting started
+      </p>
+    </div>
 
-      <!-- Accordion -->
-      <div class="accordion mt-12" id="faqAccordion">
-
-        @for (faq of faqs; track faq.question; let i = $index) {
+    <!-- Grid for two columns on large screens -->
+    <div class="row mt-4 g-2">
+      <div class="col-12 col-lg-6" *ngFor="let faq of faqs; let i = index">
+        <div class="accordion" [id]="'faqAccordion' + i">
           <div class="accordion-item">
             <h2 class="accordion-header" [id]="'heading' + i">
-              <button class="accordion-button" [class.collapsed]="i !== 0" type="button" data-bs-toggle="collapse" [attr.data-bs-target]="'#collapse' + i" [attr.aria-expanded]="i === 0" [attr.aria-controls]="'collapse' + i">
+              <button class="accordion-button fw-bold text-default-on-primary" [class.collapsed]="i !== 0" type="button"
+                      data-bs-toggle="collapse"
+                      [attr.data-bs-target]="'#collapse' + i"
+                      [attr.aria-expanded]="i === 0"
+                      [attr.aria-controls]="'collapse' + i">
                 {{ faq.question }}
               </button>
             </h2>
-
-            <div [id]="'collapse' + i" class="accordion-collapse collapse" [class.show]="i === 0" [attr.aria-labelledby]="'heading' + i" data-bs-parent="#faqAccordion">
+            <div [id]="'collapse' + i" class="accordion-collapse collapse" [class.show]="i === 0"
+                 [attr.aria-labelledby]="'heading' + i" [attr.data-bs-parent]="'#faqAccordion' + i">
               <div class="accordion-body text-secondary">
                 {{ faq.answer }}
               </div>
             </div>
           </div>
-        }
-
+        </div>
       </div>
     </div>
   </div>

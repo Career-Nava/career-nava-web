@@ -1,19 +1,19 @@
-import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Component, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faBriefcase, faComments, faStar, faStarHalfStroke } from '@fortawesome/free-solid-svg-icons';
+import { Observable } from 'rxjs';
 import { Mentor } from "../../../services/mentor/mentor.model";
 import { MentorService } from "../../../services/mentor/mentor.service";
 import { SharedModule } from '../../../shared/shared/shared.module';
-import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-mentors',
   standalone: true,
-  imports: [CommonModule, RouterModule, FontAwesomeModule, SharedModule],
+  imports: [ CommonModule, RouterModule, FontAwesomeModule, SharedModule ],
   templateUrl: './mentors.component.html',
-  styleUrls: ['./mentors.component.scss']
+  styleUrls: [ './mentors.component.scss' ]
 })
 export class MentorsComponent implements OnInit {
 
@@ -27,7 +27,8 @@ export class MentorsComponent implements OnInit {
   loading = true;
   error: string | null = null;
 
-  constructor(private mentorService: MentorService) {}
+  constructor(private mentorService: MentorService) {
+  }
 
   ngOnInit(): void {
     this.mentors$ = this.mentorService.getAllMentors();

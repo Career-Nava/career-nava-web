@@ -10,7 +10,7 @@ export interface Toast {
   providedIn: 'root'
 })
 export class ToastService {
-toasts: Toast[] = [];
+  toasts: Toast[] = [];
 
   // show text or template
   show(textOrTpl: string | TemplateRef<any>, options: Partial<Toast> = {}) {

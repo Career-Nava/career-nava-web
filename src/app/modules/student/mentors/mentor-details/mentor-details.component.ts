@@ -1,69 +1,93 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { filter, map, switchMap, take } from 'rxjs';
+import { CalendlyService } from "../../../../services/calendly/calendly.service";
 import { Mentor } from '../../../../services/mentor/mentor.model';
 import { MentorService } from '../../../../services/mentor/mentor.service';
+import { ToastService } from "../../../../services/toast.service";
+
+declare global {
+  interface Window {
+    Calendly: any;
+  }
+}
 
 @Component({
   selector: 'app-mentor-details',
   standalone: true,
-  imports: [CommonModule],
+  imports: [ CommonModule ],
   templateUrl: './mentor-details.component.html',
-  styleUrls: ['./mentor-details.component.scss']
+  styleUrls: [ './mentor-details.component.scss' ]
 })
-export class MentorDetailsComponent implements OnInit {
+export class MentorDetailsComponent implements OnInit, AfterViewInit {
+
   mentor?: Mentor;
   isLoading = true;
   hasError = false;
 
   constructor(
     private mentorService: MentorService,
-    private route: ActivatedRoute
-  ) {}
+    private route: ActivatedRoute,
+    private calendlyService: CalendlyService,
+    private toastService: ToastService
+  ) {
+  }
 
   ngOnInit(): void {
     this.route.paramMap
-      .pipe(
-        map(params => Number(params.get('id'))),
+      .pipe(map(params => Number(params.get('id'))),
         filter(id => !isNaN(id) && id > 0),
         switchMap(id => this.mentorService.getMentorById(id)),
         take(1)
-      )
-      .subscribe({
+      ).subscribe({
         next: mentor => {
-          this.mentor = {
-            ...mentor,
-
-            profilePicture: mentor.profilePicture ?? 'assets/images/avatars/male-09.jpg',
-            expertise: mentor.expertise ?? ["Product Design", "Design Systems"],
-            disciplines: mentor.disciplines ?? ["UI/UX", "Interaction Design"],
-            fluentIn: mentor.fluentIn ?? ["English", "French"],
-            bio: mentor.bio ?? "I’m a Senior Product Designer at Facebook with over 7 years of experience designing intuitive digital experiences. I’ve mentored aspiring designers on portfolio reviews, design systems, and building case studies that stand out. I can help you sharpen your design process, prepare for interviews, and grow confidence in presenting your work.",
-            experiences: mentor.experiences ?? [
-              {
-                title: "Senior Product Designer",
-                description: "Led product design teams focusing on scalable design systems and cross-platform experiences.",
-                year: "2020 - Present",
-                companyImage: "assets/images/clients/chevening-sc.webp"
-              },
-              {
-                title: "UI/UX Designer",
-                description: "Worked on multiple client projects delivering mobile-first solutions.",
-                year: "2017 - 2020",
-                companyImage: "assets/images/clients/google.svg"
-              }
-            ]
-
-          }
+          this.mentor = mentor;
           this.isLoading = false;
-          console.log('✅ Mentor loaded successfully:', mentor);
         },
         error: err => {
-          console.error('❌ Failed to load mentor:', err);
           this.isLoading = false;
           this.hasError = true;
         }
-      });
+      }
+    );
   }
+
+  ngAfterViewInit(): void {
+    const checkCalendly = setInterval(() => {
+      if ((window as any).Calendly && (window as any).Calendly.initPopupWidget) {
+        clearInterval(checkCalendly);
+      }
+    }, 500);
+  }
+
+  openCalendlyPopup(): void {
+    if (!this.mentor) {
+      this.toastService.show('Mentor data is not available at the moment. Please try again.', {
+        classname: 'bg-soft-warning text-dark'
+      });
+      return;
+    }
+
+    this.calendlyService.getSchedulingLink(this.mentor.userId!).subscribe({
+      next: (calendlyUrl) => {
+        if ((window as any).Calendly?.initPopupWidget) {
+          (window as any).Calendly.initPopupWidget({ url: calendlyUrl });
+        } else {
+          this.toastService.show(
+            'Calendly widget is not ready yet. Opening the link in a new tab...',
+            { classname: 'bg-soft-warning text-dark', delay: 5000 }
+          );
+          window.open(calendlyUrl, '_blank');
+        }
+      },
+      error: (err) => {
+        this.toastService.show(
+          'Oops! We couldn’t load the scheduling link for this mentor. Please try again later.',
+          { classname: 'bg-soft-danger text-dark', delay: 5000 }
+        );
+      }
+    });
+  }
+
 }

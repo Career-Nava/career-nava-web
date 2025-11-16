@@ -1,25 +1,26 @@
 #meetMentorsAuth {
-    width: 100%;
-    height: auto;
-    position: absolute;
-    top: 0;
-    right: 0;
-    z-index: 1;
-    overflow: hidden;
-    padding-left: .5em;
+  width: 100%;
+  height: auto;
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 1;
+  overflow: hidden;
+  padding-left: .5em;
 
-    #mentor {
-        width: 150px;
-        height: 150px;
-        flex: 0 0 auto; /* prevents shrinking */
-        background: transparent;
-        border: 0;
-        img { 
-            border-radius: 50%;
-            object-fit: contain;
-            filter: grayscale(1);
-         }
+  #mentor {
+    width: 150px;
+    height: 150px;
+    flex: 0 0 auto; /* prevents shrinking */
+    background: transparent;
+    border: 0;
+
+    img {
+      border-radius: 50%;
+      object-fit: contain;
+      filter: grayscale(1);
     }
+  }
 }
 
 .mentor-carousel {
@@ -30,18 +31,19 @@
 }
 
 .mentor-track {
-    display: flex;
-    gap: 2rem;
-    position: absolute;
-    top: 0;
-    animation: scroll 30s linear infinite;
+  display: flex;
+  gap: 2rem;
+  position: absolute;
+  top: 0;
+  animation: scroll 30s linear infinite;
 }
+
 .mentor-track-2 {
-    display: flex;
-    gap: 2rem;
-    position: absolute;
-    bottom: 0;
-    animation: scroll-2 30s linear infinite;
+  display: flex;
+  gap: 2rem;
+  position: absolute;
+  bottom: 0;
+  animation: scroll-2 30s linear infinite;
 }
 
 /* Infinite scroll animation */
@@ -64,24 +66,19 @@
 }
 
 .auth-content {
-    &::before {
-        content: '';
-        width: 100%;
-        min-height: 100vh;
-        height: 100%;
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        background: linear-gradient( 45deg,
-                            rgba(20, 2, 38, 0.1) 0%,   
-                            rgba(119, 12, 226, 0.01) 100% 
-                            );
-        // background: linear-gradient(90deg, $default-brand-secondary 0%, transparent 100%); 
-        background: linear-gradient(45deg, rgb(119, 12, 226, 0.5) 0%, rgb(67, 7, 128, 0.01) 100%);
-        -webkit-backdrop-filter: blur(2px);
-        backdrop-filter: blur(2px);
-        z-index: 2;
-    }
+  &::before {
+    content: '';
+    width: 100%;
+    min-height: 100vh;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(45deg, rgb(119, 12, 226, 0.5) 0%, rgb(67, 7, 128, 0.01) 100%);
+    -webkit-backdrop-filter: blur(2px);
+    backdrop-filter: blur(2px);
+    z-index: 2;
+  }
 }

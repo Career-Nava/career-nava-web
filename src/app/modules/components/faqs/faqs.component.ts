@@ -1,3 +1,4 @@
+import { NgForOf } from "@angular/common";
 import { Component } from '@angular/core';
 
 interface FaqItem {
@@ -9,6 +10,7 @@ interface FaqItem {
   selector: 'app-faqs',
   standalone: true,
   templateUrl: './faqs.component.html',
+  imports: [ NgForOf ],
   styleUrls: [ './faqs.component.scss' ]
 })
 export class FaqsComponent {
