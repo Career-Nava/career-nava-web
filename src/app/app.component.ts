@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { PingService } from "./services/ping.service";
 import { SharedModule } from "./shared/shared/shared.module";
 
 @Component({
@@ -13,13 +12,11 @@ import { SharedModule } from "./shared/shared/shared.module";
 export class AppComponent implements OnInit {
   title = 'Career Nava';
 
-  constructor(
-    private pingService: PingService
-  ) {
+  constructor() {
   }
 
   ngOnInit(): void {
-    this.pingService.pingServer();
+
   }
 }
 

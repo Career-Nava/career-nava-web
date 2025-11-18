@@ -1,101 +1,45 @@
-<section class="faqs position-relative d-flex flex-column align-items-center pt-12 pb-8 px-6">
-    <!-- Background - @formatter:off -->
-    <svg class="-z-1 position-absolute inset-0 opacity-25" style="z-index: -1;"
-    viewBox="0 0 960 540" width="100%" height="100%" preserveAspectRatio="xMidYMax slice" xmlns="http://www.w3.org/2000/svg">
-        <g class="opacity-40 text-gray-200 dark:text-gray-800" fill="none" stroke="currentColor" stroke-width="100">
-            <circle r="234" cx="196" cy="23" class="text-brand-purple-50"></circle>
-            <circle r="234" cx="790" cy="491" class="text-brand-purple-50"></circle>
-        </g>
-    </svg>
-    <!-- @formatter:on -->
-    <div class="container">
-        <div class="w-100 max-w-7xl">
-            <div class="text-center mb-4">
-                <h2 class="text-4xl font-extrabold tracking-tight leading-tight text-default-brand-primary">
-                    Frequently Asked Questions
-                </h2>
-                <p class="mt-2 text-xl text-secondary">
-                    Here are the most frequently asked questions you may check before getting started
-                </p>
-            </div>
-            <!-- FAQs d-grid -->
-            <div class="d-grid faq-grid gap-x-6 gap-y-12 w-100 mt-12">
-                <div>
-                    <div class="text-xl font-semibold">
-                        What is the duration of the free trial?
-                    </div>
-                    <div class="mt-2 leading-6 text-secondary">
-                        <p>
-                            Our app is free to try for 14 days, if you want more, you can provide
-                            payment details which will extend your trial to 30 days providing you
-                            an extra 16 more days to try our app.
-                        </p>
-                    </div>
-                </div>
-                <div>
-                    <div class="text-xl font-semibold">
-                        What makes Career Nava different from other legal case management apps?
-                    </div>
-                    <div class="mt-2 leading-6 text-secondary">
-                        <p>
-                            Career Nava is uniquely designed to support both individual lawyers and law firms with tailored features that enhance productivity and communication.
-                            For individual lawyers, it offers streamlined case management and direct messaging, while law firms benefit from added functionalities like team collaboration and admin web privileges, all within one mobile application.
-                        </p>
-                    </div>
-                </div>
-                <div>
-                    <div class="text-xl font-semibold">
-                        What is the storage is for?
-                    </div>
-                    <div class="mt-2 leading-6 text-secondary">
-                        <p>
-                            Since we provide an extremely detailed reporting and analytics
-                            tool, they require quite a bit storage space. For average use, you
-                            don’t have to worry about running out of space since the
-                            Personal package limits the projects you can have.
-                        </p>
-                        <p class="mt-2">
-                            For some reason if you run out of space, contact us and we will
-                            see what can be done about it and make sure you are not
-                            generating unnecessary reports and/or analytics data.
-                        </p>
-                    </div>
-                </div>
-                <div>
-                    <div class="text-xl font-semibold">
-                        Can I use Career Nava if I am a solo practitioner?
-                    </div>
-                    <div class="mt-2 leading-6 text-secondary">
-                        <p>
-                            position-absolutely! The Individual Lawyer Plan is specifically designed for solo practitioners.
-                            It offers all the essential tools needed for efficient case management, court date alerts, and seamless communication with clients and opposing counsel, directly from your mobile device.
-                        </p>
-                    </div>
-                </div>
-                <div>
-                    <div class="text-xl font-semibold">
-                        How does the Premium Law Firm Plan enhance team collaboration?
-                    </div>
-                    <div class="mt-2 leading-6 text-secondary">
-                        <p>
-                            The Premium Law Firm Plan enables law firms to integrate teams within the app, allowing for real-time case assignments, document sharing, and updates.
-                            It also includes admin web privileges for managing team settings and department-specific organization, making it easier to oversee larger, more complex legal operations.
-                        </p>
-                    </div>
-                </div>
-                <div>
-                    <div class="text-xl font-semibold">
-                        Is my data secure with Career Nava?
-                    </div>
-                    <div class="mt-2 leading-6 text-secondary">
-                        <p>
-                            Yes, security is a top priority for us.<br>
-                            Career Nava uses advanced encryption and security protocols to ensure that all your case information and communications are protected.
-                            Additional security features in the Premium Law Firm Plan, such as enhanced access controls, provide even greater security for sensitive information.
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </div>
+<section class="faqs position-relative d-flex flex-column align-items-center py-12 px-4">
+  <!-- Background SVG -->
+  <svg class="position-absolute top-0 start-0 w-100 h-100 opacity-25" style="z-index: 0;" viewBox="0 0 960 540" preserveAspectRatio="xMidYMax slice" xmlns="http://www.w3.org/2000/svg">
+    <g fill="none" stroke="currentColor" stroke-width="100">
+      <circle r="234" cx="196" cy="23" class="text-brand-purple-50 opacity-40"></circle>
+      <circle r="234" cx="790" cy="491" class="text-brand-purple-50 opacity-40"></circle>
+    </g>
+  </svg>
+
+  <div class="container position-relative z-10">
+    <div class="text-center mb-8">
+      <h2 class="text-4xl md:text-5xl font-extrabold text-default-brand-primary">
+        Frequently Asked Questions
+      </h2>
+      <p class="mt-2 text-lg md:text-xl text-secondary">
+        Here are the most frequently asked questions you may check before getting started
+      </p>
     </div>
+
+    <!-- Grid for two columns on large screens -->
+    <div class="row mt-4 g-2">
+      <div class="col-12 col-lg-6" *ngFor="let faq of faqs; let i = index">
+        <div class="accordion" [id]="'faqAccordion' + i">
+          <div class="accordion-item">
+            <h2 class="accordion-header" [id]="'heading' + i">
+              <button class="accordion-button fw-bold text-default-on-primary" [class.collapsed]="i !== 0" type="button"
+                      data-bs-toggle="collapse"
+                      [attr.data-bs-target]="'#collapse' + i"
+                      [attr.aria-expanded]="i === 0"
+                      [attr.aria-controls]="'collapse' + i">
+                {{ faq.question }}
+              </button>
+            </h2>
+            <div [id]="'collapse' + i" class="accordion-collapse collapse" [class.show]="i === 0"
+                 [attr.aria-labelledby]="'heading' + i" [attr.data-bs-parent]="'#faqAccordion' + i">
+              <div class="accordion-body text-secondary">
+                {{ faq.answer }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </section>

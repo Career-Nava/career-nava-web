@@ -19,7 +19,7 @@ export class ScholarshipService extends RestService {
     this.loadCache();
   }
 
-  /** 🧠 Load from localStorage if still fresh */
+  // Load from localStorage if still fresh
   private loadCache(): void {
     const saved = localStorage.getItem(this.STORAGE_KEY);
     if (saved) {
@@ -35,7 +35,7 @@ export class ScholarshipService extends RestService {
     }
   }
 
-  /** 🔹 Get all scholarships — uses TTL cache */
+  // Get all scholarships — uses TTL cache
   getAllScholarships(): Observable<Scholarship[]> {
     if (this.cachedScholarships.length > 0) {
       return of(this.cachedScholarships);
@@ -59,7 +59,7 @@ export class ScholarshipService extends RestService {
     );
   }
 
-  /** 🔹 Get scholarship by ID — uses cached data when possible */
+  // Get scholarship by ID — uses cached data when possible
   getScholarshipById(id: number): Observable<Scholarship> {
     const cached = this.cachedScholarships.find(s => s.id === id);
     if (cached) {
@@ -83,7 +83,7 @@ export class ScholarshipService extends RestService {
     );
   }
 
-  /** 🔹 Update bookmark (syncs localStorage too) */
+  // Update bookmark (syncs localStorage too)
   updateBookmark(id: number, isBookmarked: boolean): Observable<Scholarship | undefined> {
     const index = this.cachedScholarships.findIndex(s => s.id === id);
     if (index !== -1) {
@@ -94,36 +94,36 @@ export class ScholarshipService extends RestService {
     return of(undefined);
   }
 
-  /** 💾 Save cache with timestamp */
+  // Save cache with timestamp
   private saveCache(data: Scholarship[]): void {
     const payload = { timestamp: Date.now(), data };
     localStorage.setItem(this.STORAGE_KEY, JSON.stringify(payload));
   }
 
-  /** 🧹 Clear cached data */
+  // Clear cached data
   clearCache(): void {
     this.cachedScholarships = [];
     localStorage.removeItem(this.STORAGE_KEY);
   }
 
-  /** 🔄 Map backend DTO → UI model */
+  // Map backend DTO → UI model
   private mapToUIModel(dto: ScholarshipDto): Scholarship {
     return {
       id: dto.scholarshipId,
       title: dto.title,
-      link: '#', // placeholder
-      role: 'Program Sponsor', // placeholder
+      link: '#', // TODO: replace placeholder
+      role: 'Program Sponsor', // TODO: replace placeholder
       imageThumbnail: dto.imageThumbnail,
-      date: new Date(),
-      applicationDeadline: new Date(),
-      reviews: 0,
-      rating: 0,
-      category: 'General',
+      date: new Date(), // TODO: replace placeholder
+      applicationDeadline: new Date(), // TODO: replace placeholder
+      reviews: 0, // TODO: replace placeholder
+      rating: 0, // TODO: replace placeholder
+      category: 'General', // TODO: replace placeholder
       shortDescription: dto.summary ?? '',
-      funding: (dto.funding as any) ?? 'No Funding',
+      funding: (dto.funding as any) ?? 'No Funding', // TODO: replace placeholder
       contentDescription: dto.description ?? '',
-      eligibilityCriteria: 'Eligibility details coming soon.',
-      benefits: [],
+      eligibilityCriteria: 'Eligibility details coming soon.', // TODO: replace placeholder
+      benefits: [], // TODO: replace placeholder
       status: (dto.status as 'active' | 'inactive') ?? 'inactive',
       isBookmarked: false,
       mentor: dto.mentor,
