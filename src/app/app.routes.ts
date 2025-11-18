@@ -71,7 +71,7 @@ export const routes: Routes = [
   {
     path: 'teacher', canActivate: [ authGuard ], component: TeacherLayoutComponent, children: [
       { path: 'overview', component: TeacherOverviewComponent },
-      { path: 'students', component: StudentsComponent },
+      { path: 'scholars', component: StudentsComponent },
     ]
   },
 

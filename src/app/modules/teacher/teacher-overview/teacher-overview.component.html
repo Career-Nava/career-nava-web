@@ -8,7 +8,7 @@
           <div class="col-12 col-lg-8">
             <h1>Welcome back, <span class="text-brand-green-500">{{ user?.fullName }}</span></h1>
             <p>
-              Lorem ipsum dolor sit amet consectetur. Ultrices venenatis sit mi netus consectetur bibendum lacus eu parturient.
+              Here’s your mentorship hub where you can follow your scholars’ journeys, offer guidance, and make a meaningful impact.
             </p>
           </div>
           <div class="col-12 col-lg-4">
@@ -16,7 +16,18 @@
           </div>
         </div>
 
-        <div class="card border-0">
+        <!--Calendly-->
+        <div class="card border-0 bg-transparent text-center" style="display: none;">
+          <div class="card-body">
+            <h2 class="card-title" style="font-size: 24px;">Connect To Calendly</h2>
+            <p>Connect my Calendly account in order to show available dates to all your scholars, It is a one time process only!</p>
+            <br>
+            <a href="#" class="btn btn-primary">Connect My Calendly</a>
+          </div>
+        </div>
+
+        <!--Assignments-->
+        <div class="card border-0" style="display: none;">
           <div class="card-header">
             <div>
               <h3 class="card-title">Assignments (3)</h3>
@@ -61,7 +72,8 @@
           </div>
         </div>
 
-        <div class="card border-0">
+        <!--Assessments-->
+        <div class="card border-0" style="display: none;">
           <div class="card-header">
             <div>
               <h3 class="card-title">Assessment (3)</h3>
@@ -92,13 +104,51 @@
           </div>
         </div>
 
+        <!-- Scholars -->
+        <div class="card border-0">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title">My Scholars ({{ students.length }})</h3>
+            </div>
+             <a routerLink="/teacher/scholars" class="btn btn-primary">See all my scholars</a>
+          </div>
+          <div class="card-body">
+            <ul class="d-flex flex-wrap gap-4">
+              <li *ngFor="let student of students">
+                <div class="d-flex flex-wrap align-items-center gap-2">
+                  <img [src]="student.avatar" [alt]="student.name" class="w-48 h-48 object-fit-cover" style="border-radius: 50%;">
+                  <div>
+                    <h4>{{ student.name }}</h4>
+                    <p>{{ student.contactInfo.email }}</p>
+                    <p>{{ student.contactInfo.phone }}</p>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+
       </div>
     </div>
 
     <div class="col-12 col-lg-4">
       <div class="d-flex flex-column gap-4">
 
+        <!--Calendly-->
         <div class="card">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title">Connect Calendly</h3>
+            </div>
+          </div>
+          <div class="card-body">
+            <p>Connect my Calendly account in order to show available dates to all your scholars, It is a one time process only!</p>
+            <br>
+            <a href="#" class="btn btn-primary">Connect My Calendly</a>
+          </div>
+        </div>
+
+        <div class="card" style="display: none;">
           <div class="card-header">
             <div>
               <h3 class="card-title">Notifications</h3>
@@ -130,13 +180,13 @@
           </div>
         </div>
 
-        <!-- Student -->
-        <div class="card">
+        <!-- Scholars -->
+        <div class="card" style="display: none;">
           <div class="card-header">
             <div>
-              <h3 class="card-title">My Student ({{ students.length }})</h3>
+              <h3 class="card-title">My Scholars ({{ students.length }})</h3>
             </div>
-             <a href="#" class="btn btn-primary">See all my students</a>
+             <a href="#" class="btn btn-primary">See all my scholars</a>
           </div>
           <div class="card-body">
             <ul>

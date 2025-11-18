@@ -1,6 +1,6 @@
 <div class="sidebar teacher-sidebar" [class.open]="isOpen">
   <a href="/home" class="d-block p-4">
-    <img src="assets/images/logo/logo.png" class="w-100 object-fit-contain" alt="Logo">
+    <img src="assets/images/logo/logo-variant.png" class="w-100 object-fit-contain" alt="Logo">
   </a>
   <div class="sidebar-menu">
     <ul class="menu">
@@ -9,47 +9,19 @@
       </li>
 
       <li class="menu-item">
-        <span class="subtitle">Teacher Dashboard</span>
+        <span class="subtitle">Mentor Dashboard</span>
         <a routerLink="/teacher/overview" routerLinkActive="active" class="nav-link">
           <fa-icon [icon]="faHouse"></fa-icon>
           <span>Home</span>
         </a>
       </li>
 
-<!--      <li class="menu-item">-->
-<!--        <a routerLink="/admin/assessment" routerLinkActive="active" class="nav-link">-->
-<!--          <fa-icon [icon]="faChartLine"></fa-icon>-->
-<!--          <span>My Assessment</span>-->
-<!--        </a>-->
-<!--      </li>-->
-
       <li class="menu-item">
-        <a routerLink="/teacher/students" routerLinkActive="active" class="nav-link">
+        <a routerLink="/teacher/scholars" routerLinkActive="active" class="nav-link">
           <fa-icon [icon]="faFile"></fa-icon>
-          <span>My Students</span>
+          <span>My Scholars</span>
         </a>
       </li>
-
-<!--      <li class="menu-item">-->
-<!--        <a routerLink="/admin/assignments" routerLinkActive="active" class="nav-link">-->
-<!--          <fa-icon [icon]="faFile"></fa-icon>-->
-<!--          <span>My Assignments</span>-->
-<!--        </a>-->
-<!--      </li>-->
-
-<!--      <li class="menu-item">-->
-<!--        <a routerLink="/admin/exams" routerLinkActive="active" class="nav-link">-->
-<!--          <fa-icon [icon]="faFile"></fa-icon>-->
-<!--          <span>My Exams</span>-->
-<!--        </a>-->
-<!--      </li>-->
-
-<!--      <li class="menu-item">-->
-<!--        <a routerLink="/admin/profile" routerLinkActive="active" class="nav-link">-->
-<!--          <fa-icon [icon]="faUser"></fa-icon>-->
-<!--          <span>My Profile</span>-->
-<!--        </a>-->
-<!--      </li>-->
 
           <li class="menu-item">
             <a (click)="logout()" routerLinkActive="active" class="nav-link">

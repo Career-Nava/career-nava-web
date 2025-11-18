@@ -3,6 +3,7 @@ import { AuthService } from "../../services/auth/auth.service";
 import { UserModel } from "../../services/user/user.model";
 import { SidebarService } from '../../services/sidebar/sidebar.service';
 import { SharedModule } from '../../shared/shared/shared.module';
+import { faCalendarCheck, faCheck } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-topbar',
@@ -12,7 +13,11 @@ import { SharedModule } from '../../shared/shared/shared.module';
   styleUrl: './topbar.component.scss'
 })
 export class TopbarComponent implements OnInit {
+  faCheckBadge = faCalendarCheck;
+  faCheck = faCheck;
+
   user: UserModel | null = null;
+  calendlyVerified: Boolean = true;
 
   constructor(
     private authService: AuthService,

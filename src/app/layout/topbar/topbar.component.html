@@ -8,16 +8,54 @@
               <!-- <button (click)="toggleSidebar()" class="btn btn-primary d-block d-lg-none">Open Menu</button> -->
           <div class="d-flex topbar-menus align-items-center justify-content-between justify-content-sm-between gap-2">
 
-            <div class="nav-item dropdown">
+            <div class="nav-item dropdown postion-relative">
               <a href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" class="nav-link dropdown-toggle d-flex flex-wrap align-items-center gap-2">
+                <div class="check-bage" [ngClass]="{
+                    'text-default-success' : calendlyVerified,
+                    'text-error-light' : !calendlyVerified 
+                  }">
+
+                  <ng-container *ngIf="calendlyVerified">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
+                      <path fill-rule="evenodd" d="M8.603 3.799A4.49 4.49 0 0 1 12 2.25c1.357 0 2.573.6 3.397 1.549a4.49 4.49 0 0 1 3.498 1.307 4.491 4.491 0 0 1 1.307 3.497A4.49 4.49 0 0 1 21.75 12a4.49 4.49 0 0 1-1.549 3.397 4.491 4.491 0 0 1-1.307 3.497 4.491 4.491 0 0 1-3.497 1.307A4.49 4.49 0 0 1 12 21.75a4.49 4.49 0 0 1-3.397-1.549 4.49 4.49 0 0 1-3.498-1.306 4.491 4.491 0 0 1-1.307-3.498A4.49 4.49 0 0 1 2.25 12c0-1.357.6-2.573 1.549-3.397a4.49 4.49 0 0 1 1.307-3.497 4.49 4.49 0 0 1 3.497-1.307Zm7.007 6.387a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z" clip-rule="evenodd" />
+                    </svg>
+                  </ng-container>
+
+                  <ng-container *ngIf="!calendlyVerified">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
+                      <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm-1.72 6.97a.75.75 0 1 0-1.06 1.06L10.94 12l-1.72 1.72a.75.75 0 1 0 1.06 1.06L12 13.06l1.72 1.72a.75.75 0 1 0 1.06-1.06L13.06 12l1.72-1.72a.75.75 0 1 0-1.06-1.06L12 10.94l-1.72-1.72Z" clip-rule="evenodd" />
+                    </svg>
+                  </ng-container>
+                  
+                </div>
                 <img [src]="user?.profilePicture ?? 'assets/images/avatars/male-09.jpg'" [alt]="user?.fullName" class="w-48 h-48 object-fit-cover" style="border-radius: 50%;">
                 <div>
                   <h4>{{ user?.fullName }}</h4>
                   <p>{{ user?.email }}</p>
                 </div>
               </a>
-                <ul class="dropdown-menu">
-                <li><a class="dropdown-item p-3" (click)="logout()"><p>Logout</p></a></li>
+                <ul class="dropdown-menu p-3">
+                  <li class="dropdown-item p-3">
+                    <p>Calendly Connection: 
+
+                    <ng-container *ngIf="calendlyVerified; else notVerified">
+                      <span class="text-default-success"><b>Verified!</b></span></ng-container>
+                    
+                    <ng-template #notVerified>
+                      <span class="text-error-light"><b>Not Verified!</b></span> <br>
+                    </ng-template>
+
+                    </p>
+                  </li>
+                  
+                    <ng-container *ngIf="!calendlyVerified">
+                      <li class="dropdown-item p-3">
+                        <a class="dropdown-item btn btn-secondary">Link My Calendly</a>
+                      </li>
+                      
+                    </ng-container>
+                  
+                  <li><a class="dropdown-item p-3" (click)="logout()"><p>Logout</p></a></li>
                 </ul>
               </div>
 

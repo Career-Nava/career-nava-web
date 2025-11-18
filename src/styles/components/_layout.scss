@@ -154,13 +154,6 @@ header.header {
     height: 100vh;
     background: linear-gradient(45deg, $brand-purple-500 0%, $brand-purple-950 100%);
 
-  &.teacher-sidebar {
-    background: linear-gradient(45deg, $brand-yellow-500 0%, $brand-yellow-950 100%);
-    background: linear-gradient(45deg, $brand-secondary 0%, #F59E0B 100%);
-  }
-  &.admin-sidebar {
-    background: linear-gradient(45deg, #000 0%, #232323 100%);
-  }
     .menu {
         overflow-y: auto;
         display: block;
@@ -208,6 +201,26 @@ header.header {
             display: inline-block;
         }
     }
+
+    &.teacher-sidebar {
+    background: linear-gradient(45deg, $brand-secondary 0%, #F59E0B 100%);
+    background: linear-gradient(45deg, #ffcd6d 0%, #ffa000 100%);
+
+        .subtitle {
+            color: $onPrimaryWhite;
+            color: $brand-purple-500;
+            opacity: 1;
+        }
+        .nav-link{
+            color: $onPrimaryWhite;
+            svg {
+                    color: $brand-purple-500;
+                }
+        }
+  }
+  &.admin-sidebar {
+    background: linear-gradient(45deg, #000 0%, #232323 100%);
+  }
 }
 
 .sidebar.open {

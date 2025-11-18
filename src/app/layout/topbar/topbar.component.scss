@@ -2,6 +2,23 @@
     width: 100%;
 }
 
+.dropdown-menu[data-bs-popper] {
+    left: auto;
+    right: 0;
+}
+
+.check-bage {
+    position: absolute;
+    bottom: 12px;
+    left: 6px;
+    background: white;
+    border-radius: 50%;
+    
+    svg {
+        width: 24px;
+    }
+}
+
 @media screen and (min-width: 576px) {
     .topbar-menus {
         width: auto;
