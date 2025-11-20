@@ -17,8 +17,11 @@
   }
 
   .users-img {
-    max-height: 300px;
-    object-fit: contain;
+    max-height: 400px;
+    max-width: none;
+    width: 100%;
+    object-fit: cover;
+    object-position: top center;
     border-radius: 0.5rem;
   }
 

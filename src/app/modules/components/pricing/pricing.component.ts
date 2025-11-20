@@ -25,7 +25,7 @@ export class PricingComponent {
       title: "Basic",
       price: "$40",
       features: [
-        "5 Guidance Sessions - 45min each",
+        "4 Guidance Sessions - 45min each",
         "Individual/Group Sessions",
         "Complete Within 3 Weeks",
         "* All Free Services"
@@ -41,7 +41,6 @@ export class PricingComponent {
         "Guidance Sessions - Unlimited",
         "Document Creation & Reviews",
         "Interview Preparation",
-        "* All Basic Services"
       ],
       button: "Check Out End-to-End Package"
     },
@@ -52,7 +51,6 @@ export class PricingComponent {
         "Document Reviews",
         "Document Creation & Reviews",
         "Interview Preparation",
-        "* Stand Alone Services"
       ],
       button: "Check Stand Alone Package",
       recommended: false

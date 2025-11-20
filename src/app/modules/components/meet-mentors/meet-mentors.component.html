@@ -27,18 +27,33 @@
                   <div class="card-body text-start">
                     <h5 class="mentor-name text-center mb-2">{{ mentor.fullName }}</h5>
 
+                    <!-- Name & Company -->
                     <p class="text-muted small mb-2 text-center">
                       <fa-icon [icon]="faBriefcase" class="text-brand-yellow-550 me-1"></fa-icon>
                       {{ mentor.positionTitle }}
                       <span *ngIf="mentor.company"> at {{ mentor.company }}</span>
                     </p>
 
+                    <!-- Sessions done -->
                     <p class="small mb-2 text-center">
                       <fa-icon [icon]="faComments" class="text-brand-yellow-550 me-1"></fa-icon>
                       {{ mentor.totalSessions }} Sessions <span class="small">({{ mentor.totalReviews }} Reviews)</span>
                     </p>
 
-                    <p class="small text-center mb-0">
+                    <!-- Scholarships done -->
+                    <ng-container *ngIf="mentor?.scholarshipsAttained">
+                      <ul style="display: inline-flex;">
+                        <li *ngFor="let scholarship of mentor?.scholarshipsAttained">
+                          <p class="small mb-2 text-center">
+                            {{ scholarship }} , 
+                          </p>
+                        </li>
+                      </ul>
+                      
+                    </ng-container>
+
+                    <!-- Star rating -->
+                    <p class="small text-center mb-0" style="display: none;"> 
                       @for (_ of getStars(mentor.avgRating); track $index) {
                         <fa-icon [icon]="faStarFull" class="text-brand-yellow-550"></fa-icon>
                       }
@@ -47,6 +62,7 @@
                       }
                       <span class="ms-1 text-muted">{{ mentor.avgRating }} Stars</span>
                     </p>
+
                   </div>
 
                   <!-- Tags -->

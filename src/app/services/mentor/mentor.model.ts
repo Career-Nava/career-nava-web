@@ -35,6 +35,7 @@ export interface Mentor {
   disciplines?: MentorDiscipline[];
   fluency?: MentorFluency[];
   experiences?: MentorExperience[];
+  scholarshipsAttained?: []
 }
 
 export interface MentorExperience {

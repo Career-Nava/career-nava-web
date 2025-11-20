@@ -19,14 +19,14 @@
 
 @media screen and (min-width: 960px) {
     .hero-section {
-        .cta-img-1, .cta-img-2 {
-            display: block;
-        }
+        // .cta-img-1, .cta-img-2 {
+        //     display: block;
+        // }
         h1 {
-            font-size: 3.5em; 
+            font-size: 3.25em; 
         }
         p {
-            font-size: 1.5em;
+            font-size: 1.25em;
         }
     }
     .fuse-vertical-navigation-item-wrapper {
@@ -117,5 +117,13 @@
     }
     #authLayout {
     height: auto;
+    }
+}
+
+@media screen and (min-width: 1200px) {
+    .hero-section {
+        .cta-img-1, .cta-img-2 {
+            display: block;
+        }
     }
 }

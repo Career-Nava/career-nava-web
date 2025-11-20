@@ -1,0 +1,51 @@
+<section class="bg-dark-brand-secondary">
+    <div id="foundersCarousel" class="carousel slide" data-bs-ride="carousel">
+        <div class="container">
+            <!-- Section Header -->
+            <div class="mb-5 px-3 px-md-0 text-center">
+            <h2 class="fw-bold">Meet Our Founders</h2>
+            <p>
+                Learn more about our founders
+            </p>
+            </div>
+
+            <div class="carousel-inner">
+
+                <div
+                class="carousel-item"
+                *ngFor="let founder of founders; let i = index"
+                [class.active]="i === 0"
+                >
+                <div class="row align-items-center">
+                    
+                    <!-- Image Column -->
+                    <div class="col-12 col-md-6 text-center">
+                    <img
+                        [src]="founder.image"
+                        class="founder-img"
+                        [class.animate]="activeIndex === i"
+                        alt="Founder Image"
+                    />
+                    </div>
+
+                    <!-- Content Column -->
+                    <div class="col-12 col-md-6">
+                    <h2 class="fw-bold">{{ founder.name }}</h2>
+                    <p>"{{ founder.message }}"</p>
+                    </div>
+
+                </div>
+                </div>
+
+            </div>
+        </div>
+  <!-- Controls -->
+            <button class="carousel-control-prev" type="button" data-bs-target="#foundersCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon"></span>
+            </button>
+
+            <button class="carousel-control-next" type="button" data-bs-target="#foundersCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon"></span>
+            </button>
+</div>
+</section>
