@@ -11,7 +11,7 @@
             <img src="assets/images/landing-page/person-cta-1.png" alt="Image" class="object-fit-contain h-100"/>
           </div>
 
-          <div class="col-12 col-lg-5 text-center" style="z-index: 12;">
+          <div class="col-12 col-lg-10 col-xl-5 text-center" style="z-index: 20; background: rgb(255, 255, 255, .01); backdrop-filter: blur(2px); border-radius: 8px;">
             <h1 class="text-custom-light-50">Unlock Your Scholarship Potential</h1>
             <div>
               <a class="btn btn-secondary w-100" [routerLink]="['/sign-in']">
@@ -20,6 +20,9 @@
               <p>
                 We support you through every stage of the scholarship application — from finding the right opportunities and meeting requirements to essay reviews and interview prep.
               </p>
+              <!-- <p>
+                We guide you through every step of the scholarship application process, empowering you with proven insights that boost your chances of securing a scholarship.  From identifying suitable scholarships and meeting requirements to essay reviews and interview preparation, we provide the comprehensive support you need to secure your scholarship.
+              </p> -->
             </div>
           </div>
 
@@ -68,15 +71,16 @@
 
       <!-- Cards Grid -->
       <div class="col-12 col-lg-12 mx-auto">
-        <div class="row justify-content-center gap-4">
+        <div class="row justify-content-center gap-y-4">
 
           @for (value of values; track value.number) {
-            <div class="col-12 col-md-6 col-lg-4 mb-4">
+            <div class="col-12 col-md-4 col-lg-4 mb-4">
               <div class="card h-100 shadow-sm">
                 <div class="card-body text-center">
-                  <h5 class="card-title text-dark">
-                    <span class="text-accent-light font-fasthand">{{ value.number }}.</span> {{ value.title }}
-                  </h5>
+                  <img [src]="value.icon" style="width: 200px; margin: 0 auto;">
+                  <h3 class="card-title text-dark">
+                    <span class="text-default-brand-primary font-fasthand">{{ value.number }}.</span> {{ value.title }}
+                  </h3>
                   <p class="card-text text-secondary">{{ value.description }}</p>
                 </div>
               </div>
@@ -105,14 +109,15 @@
 
       <!-- Cards Grid -->
       <div class="col-12 col-lg-12 mx-auto">
-        <div class="row justify-content-center gap-4">
+        <div class="row justify-content-center gap-y-4">
 
           @for (service of services; track service.number) {
-            <div class="col-12 col-md-6 col-lg-4 mb-4">
-              <div class="card h-100 shadow-sm">
+            <div class="col-12 col-md-4 col-lg-4 mb-4">
+              <div class="card h-100 shadow-sm p-4">
+                <img [src]='service.icon' style="width: 200px; margin: 0 auto;">
                 <div class="card-body">
-                  <h5 class="card-title">
-                    <span class="text-default-info font-fasthand">{{ service.number }}.</span> {{ service.title }}
+                  <h5 class="card-title text-dark">
+                    <span class="text-default-brand-primary font-fasthand">{{ service.number }}.</span> {{ service.title }}
                   </h5>
                   <p class="card-text">{{ service.description }}</p>
                 </div>
@@ -122,11 +127,13 @@
 
         </div>
       </div>
-
+ 
     </div>
   </div>
 </section>
 
+<!-- Founders -->
+<app-founders></app-founders>
 
 <!-- Meet mentors -->
 <app-meet-mentors></app-meet-mentors>

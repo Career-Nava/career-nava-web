@@ -46,7 +46,7 @@ export const routes: Routes = [
 
   // Mentee Dashboard
   {
-    path: 'mentee', canActivate: [ authGuard ], component: LayoutComponent, children: [
+    path: 'mentee', component: LayoutComponent, children: [
       { path: 'mentors', component: MentorsComponent },
       { path: 'mentors/mentor-details/:id', component: MentorDetailsComponent },
       { path: 'sessions', component: StudentSessionsComponent },

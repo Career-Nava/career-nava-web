@@ -28,7 +28,24 @@
                   </ng-container>
                   
                 </div>
-                <img [src]="user?.profilePicture ?? 'assets/images/avatars/male-09.jpg'" [alt]="user?.fullName" class="w-48 h-48 object-fit-cover" style="border-radius: 50%;">
+                
+                 <div class="w-32 h-32 rounded-circle overflow-hidden d-flex align-items-center justify-content-center bg-brand-purple-50 text-brand-purple-500"
+                    style="font-size:2rem;">
+
+                  <!-- If profile picture exists, show image -->
+                  <img *ngIf="user?.profilePicture"
+                      [src]="user?.profilePicture"
+                      [alt]="user?.fullName"
+                      class="w-100 h-100 object-fit-cover">
+
+                  <!-- Otherwise show first letter -->
+                  <span *ngIf="!user?.profilePicture">
+                    <b>{{ user?.fullName?.charAt(0) }}</b>
+                  </span>
+
+                </div>
+
+                <!-- <img [src]="user?.profilePicture ?? 'assets/images/logo/favicon.png'" [alt]="user?.fullName" class="w-32 h-32 object-fit-cover" style="border-radius: 50%;"> -->
                 <div>
                   <h4>{{ user?.fullName }}</h4>
                   <p>{{ user?.email }}</p>

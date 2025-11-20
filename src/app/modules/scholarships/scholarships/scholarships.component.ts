@@ -34,6 +34,9 @@ export class ScholarshipsComponent implements OnInit, OnDestroy {
   scholarships: Scholarship[] = [];
   private subscriptions = new Subscription();
 
+  searchTerm = '';
+  searchFilteredScholarships: Scholarship[] = [];
+
   constructor(
     private scholarshipsService: ScholarshipService,
     private toastService: ToastService
@@ -44,12 +47,39 @@ export class ScholarshipsComponent implements OnInit, OnDestroy {
     this.loadScholarships();
   }
 
+  searchFilterScholarships(event: any) {
+  this.searchTerm = event.target.value.toLowerCase();
+
+  this.searchFilteredScholarships = this.scholarships.filter(sch => 
+    sch.title.toLowerCase().includes(this.searchTerm) ||
+    sch.category?.toLowerCase().includes(this.searchTerm)
+  );
+}
+
+get finalScholarships(): Scholarship[] {
+  // 1. Apply tab filter first
+  let list = this.filteredScholarships;
+
+  // 2. Then apply search filter
+  if (this.searchTerm.trim() !== '') {
+    list = list.filter(sch =>
+      sch.title.toLowerCase().includes(this.searchTerm) ||
+      sch.category.toLowerCase().includes(this.searchTerm) ||
+      sch.shortDescription.toLowerCase().includes(this.searchTerm)
+    );
+  }
+
+  return list;
+}
+
+
   /** 🔹 Fetch all scholarships from backend */
   private loadScholarships(): void {
     this.subscriptions.add(
       this.scholarshipsService.getAllScholarships().subscribe({
         next: (data) => {
           this.scholarships = data;
+          this.searchFilteredScholarships = data;
           console.log('Scholarships loaded:', this.scholarships);
         },
         error: (err) => {

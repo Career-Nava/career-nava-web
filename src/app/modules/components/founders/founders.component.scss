@@ -1,0 +1,18 @@
+/* Image zoom effect */
+.founder-img {
+  width: 100%;
+  height: 500px;
+  object-fit: contain;
+  transform: scale(0.8); /* Start at 80% size */
+  opacity: 0;
+  transition: transform 0.8s ease-in-out, opacity 0.8s ease-in-out;
+}
+
+.founder-img.animate {
+  transform: scale(1);
+  opacity: 1;
+}
+
+.carousel-item {
+  padding: 40px 0;
+}

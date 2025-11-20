@@ -3,7 +3,7 @@
   <div class="row align-items-center justify-content-lg-start mb-4">
     <div class="col-12">
       <div class="w-100">
-        <h1>Explore Mentors</h1>
+        <h1>Explore Coaches & Book Session</h1>
         <p>Discover experienced professionals ready to guide you on your career journey.</p>
       </div>
     </div>
@@ -24,13 +24,15 @@
           </div>
 
           <!-- Error state -->
-          <div *ngIf="!loading && error" class="alert alert-danger text-center">
-            {{ error }}
+          <div *ngIf="!loading && error" class="text-center p-3">
+            <img src="assets/icons/Problem.png" alt="Error" style="width: 300px; margin: 0 auto;">
+            <p>{{ error }}</p>
           </div>
 
           <!-- Empty state -->
           <div *ngIf="!loading && !error && (mentors$ | async)?.length === 0" class="text-center text-muted py-5">
-            No mentors available at the moment.
+            <img src="assets/icons/Video-Call.png" alt="Error" style="width: 300px; margin: 0 auto;">
+            <p>No mentors available at the moment.</p>
           </div>
 
           <!-- Mentors grid -->
