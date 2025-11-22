@@ -1,9 +1,10 @@
+import { NgIf } from "@angular/common";
 import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-pricing',
   standalone: true,
-  imports: [],
+  imports: [ NgIf ],
   templateUrl: './pricing.component.html',
   styleUrl: './pricing.component.scss'
 })

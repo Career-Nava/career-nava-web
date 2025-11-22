@@ -1,0 +1,223 @@
+.hero-section {
+  background: linear-gradient(45deg, #770CE2 0%, #430780 100%);
+  position: relative;
+  padding-top: 4rem;
+  padding-bottom: 4rem;
+  overflow: hidden;
+}
+
+/* Background Glow Elements */
+.hero-glow {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(120px);
+  opacity: 0.45;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.hero-glow-1 {
+  width: 480px;
+  height: 480px;
+  background: rgba(122, 92, 255, 0.35);
+  top: -120px;
+  left: -150px;
+}
+
+.hero-glow-2 {
+  width: 520px;
+  height: 520px;
+  background: rgba(255, 118, 235, 0.28);
+  bottom: -140px;
+  right: -160px;
+}
+
+/* Hero Layout */
+.hero-content {
+  position: relative;
+  z-index: 10;
+}
+
+/* Images */
+.hero-img {
+  height: auto;
+  max-height: 600px;
+  object-fit: contain;
+  filter: drop-shadow(0 10px 25px rgba(0, 0, 0, 0.35));
+}
+
+/* Hero Text Block */
+.hero-text-block {
+  padding: 2rem;
+  border-radius: 24px;
+  background: rgba(0, 0, 0, 0.35); // soft frosted panel
+  backdrop-filter: blur(22px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 16px 38px rgba(0, 0, 0, 0.25), 0 4px 12px rgba(0, 0, 0, 0.12);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  z-index: 10;
+  max-width: 500px;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 46px rgba(0, 0, 0, 0.28), 0 6px 16px rgba(0, 0, 0, 0.15);
+  }
+}
+
+/* Title Styling */
+.hero-title {
+  font-size: 3rem;
+  line-height: 1.1;
+  color: #fafafa;
+  margin-bottom: 1.5rem;
+
+  .highlight-gradient {
+    background: linear-gradient(90deg, #6a1b9a, #b15cff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    display: inline-block;
+    border-radius: 6px;
+  }
+}
+
+/* Description */
+.hero-description {
+  color: #fafafa;
+  margin-bottom: 2rem;
+}
+
+/* CTA Button */
+.hero-cta {
+  font-size: 1.05rem;
+  font-weight: 600;
+  border-radius: 14px;
+  padding: 0.9rem 1.5rem;
+  background: linear-gradient(90deg, #6a1b9a, #b15cff);
+  color: #fff;
+  box-shadow: 0 8px 22px rgba(106, 27, 154, 0.4), 0 4px 12px rgba(0, 0, 0, 0.12);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 32px rgba(106, 27, 154, 0.45), 0 6px 16px rgba(0, 0, 0, 0.15);
+  }
+}
+
+/* Gradient Orbs (Background Blobs) */
+.orb {
+  position: absolute;
+  width: 420px;
+  height: 420px;
+  filter: blur(110px);
+  opacity: 0.45;
+  border-radius: 50%;
+  z-index: 0;
+
+  &.orb-left {
+    top: -120px;
+    left: -140px;
+    background: #b15cff;
+  }
+
+  &.orb-right {
+    bottom: -140px;
+    right: -140px;
+    background: #6a1b9a;
+  }
+}
+
+.bg-default-primary .container {
+  position: relative;
+  z-index: 1;
+}
+
+.section-title {
+  font-size: 2.6rem;
+  font-weight: 500;
+  color: #1e1e1e;
+  margin-bottom: 0.75rem;
+  text-align: center;
+  position: relative;
+}
+
+/* Gradient Underline */
+.section-title-underline {
+  width: 200px;
+  height: 5px;
+  border-radius: 4px;
+  margin: 0.75rem auto 2rem auto;
+  background: linear-gradient(90deg, #6a1b9a, #b15cff);
+  box-shadow: 0 4px 18px rgba(140, 75, 255, 0.35);
+}
+
+/* Subtitle */
+.section-subtitle {
+  font-size: 1.10rem;
+  color: #575757;
+  max-width: 620px;
+  margin: 0 auto 3rem;
+  text-align: center;
+}
+
+.info-card-title {
+  font-size: 1.35rem;
+  font-weight: 600;
+  color: #444;
+  margin-bottom: 0.75rem;
+  text-align: center;
+}
+
+.info-card-text {
+  font-size: 0.98rem;
+  color: #656565;
+  line-height: 1.65;
+  font-weight: 400;
+  text-align: center;
+}
+
+.info-card {
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.06);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  z-index: 2;
+
+  &:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 14px 34px rgba(90, 55, 155, 0.12);
+  }
+}
+
+.icon-wrapper {
+  border-radius: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  z-index: 2;
+
+  img {
+    object-fit: contain;
+    filter: saturate(1.15);
+  }
+}
+
+.icon-lg {
+  width: 300px;
+  height: 300px;
+
+  img {
+    width: 300px;
+    height: 300px;
+  }
+}
+
+.icon-md {
+  width: 220px;
+  height: 220px;
+
+  img {
+    width: 220px;
+    height: 220px;
+  }
+}

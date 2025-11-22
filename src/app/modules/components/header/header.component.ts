@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../../../services/auth/auth.service';
 
@@ -10,10 +10,22 @@ import { AuthService } from '../../../services/auth/auth.service';
   styleUrl: './header.component.scss',
 })
 export class HeaderComponent {
+  isScrolled = false;
+
   constructor(private authService: AuthService) {
   }
 
-  // Wrap AuthService method for template use
+  @HostListener('window:scroll', [])
+  onWindowScroll() {
+    const scrollThreshold: number = 100;
+
+    if (window.scrollY > scrollThreshold && !this.isScrolled) {
+      this.isScrolled = true;
+    } else if (window.scrollY <= scrollThreshold && this.isScrolled) {
+      this.isScrolled = false;
+    }
+  }
+
   isAuthenticated(): boolean {
     return this.authService.isAuthenticated();
   }

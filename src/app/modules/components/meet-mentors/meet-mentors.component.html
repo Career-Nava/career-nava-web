@@ -1,82 +1,54 @@
-<section class="text-center overflow-hidden">
+<section class="text-center overflow-hidden py-12 bg-white">
   <div class="container">
-    <div class="w-100 max-w-md mx-auto d-flex flex-column justify-content-center align-items-center gap-2">
-      <div class="row align-items-center justify-content-center">
-        <div class="col-12 col-lg-12">
-          <div class="mb-4">
-            <h2 class="text-5xl font-bold">Meet Our Mentors</h2>
-            <p>
-              Career Nava connects mentees with expert mentors across industries —
-              guiding you through career growth, personal development, and
-              professional transformation.
-            </p>
-          </div>
-        </div>
-        <div class="mentor-carousel w-100 my-4">
-          <div class="mentor-track row g-4">
-            @for (mentor of mentors; track mentor.fullName) {
-              <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-                <div class="card mentor-card shadow-sm h-100 border-0">
 
-                  <!-- Image -->
-                  <div class="mentor-image-wrapper">
-                    <img [src]="mentor.profilePicture" [alt]="mentor.fullName" class="mentor-image"/>
-                  </div>
-
-                  <!-- Body -->
-                  <div class="card-body text-start">
-                    <h5 class="mentor-name text-center mb-2">{{ mentor.fullName }}</h5>
-
-                    <!-- Name & Company -->
-                    <p class="text-muted small mb-2 text-center">
-                      <fa-icon [icon]="faBriefcase" class="text-brand-yellow-550 me-1"></fa-icon>
-                      {{ mentor.positionTitle }}
-                      <span *ngIf="mentor.company"> at {{ mentor.company }}</span>
-                    </p>
-
-                    <!-- Sessions done -->
-                    <p class="small mb-2 text-center">
-                      <fa-icon [icon]="faComments" class="text-brand-yellow-550 me-1"></fa-icon>
-                      {{ mentor.totalSessions }} Sessions <span class="small">({{ mentor.totalReviews }} Reviews)</span>
-                    </p>
-
-                    <!-- Scholarships done -->
-                    <ng-container *ngIf="mentor?.scholarshipsAttained">
-                      <ul style="display: inline-flex;">
-                        <li *ngFor="let scholarship of mentor?.scholarshipsAttained">
-                          <p class="small mb-2 text-center">
-                            {{ scholarship }} , 
-                          </p>
-                        </li>
-                      </ul>
-                      
-                    </ng-container>
-
-                    <!-- Star rating -->
-                    <p class="small text-center mb-0" style="display: none;"> 
-                      @for (_ of getStars(mentor.avgRating); track $index) {
-                        <fa-icon [icon]="faStarFull" class="text-brand-yellow-550"></fa-icon>
-                      }
-                      @if ((mentor.avgRating ?? 0) % 1 !== 0) {
-                        <fa-icon [icon]="faStarHalf" class="text-brand-yellow-550"></fa-icon>
-                      }
-                      <span class="ms-1 text-muted">{{ mentor.avgRating }} Stars</span>
-                    </p>
-
-                  </div>
-
-                  <!-- Tags -->
-                  <div class="card-footer bg-transparent border-0 text-center py-2">
-                    @for (e of mentor.expertise; track $index) {
-                      <span class="badge mentor-tag">{{ e.expertiseName }}</span>
-                    }
-                  </div>
-                </div>
-              </div>
-            }
-          </div>
-        </div>
-      </div>
+    <!-- Header -->
+    <div class="col-12 col-lg-8 mx-auto mb-5">
+      <h2 class="section-title">Meet Our Mentors</h2>
+      <div class="section-title-underline animate-underline"></div>
+      <p class="section-subtitle mt-2">
+        Career Nava connects mentees with expert mentors across industries — helping you grow professionally and personally.
+      </p>
     </div>
+
+    <!-- Mentor Grid -->
+    <div class="row justify-content-center g-4">
+
+      @for (mentor of mentors; track mentor.fullName) {
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+
+          <div class="info-card mentor-card h-100 text-center p-4">
+
+            <!-- Floating Photo -->
+            <div class="mentor-photo-wrapper mx-auto mb-3">
+              <img [src]="mentor.profilePicture" class="mentor-photo" [alt]="mentor.fullName"/>
+            </div>
+
+            <h5 class="mentor-name mb-1">{{ mentor.fullName }}</h5>
+
+            <p class="small text-muted mb-1">
+              <fa-icon [icon]="faBriefcase" class="text-brand-yellow-550 me-1"></fa-icon>
+              {{ mentor.positionTitle }}
+              <span *ngIf="mentor.company"> at {{ mentor.company }}</span>
+            </p>
+
+            <p class="small text-muted mb-2">
+              <fa-icon [icon]="faComments" class="text-brand-yellow-550 me-1"></fa-icon>
+              {{ mentor.totalSessions }} Sessions • {{ mentor.totalReviews }} Reviews
+            </p>
+
+            <!-- Expertise Chips -->
+            <div class="mentor-tags mt-3">
+              @for (e of mentor.expertise; track $index) {
+                <span class="mentor-tag">{{ e.expertiseName }}</span>
+              }
+            </div>
+
+          </div>
+
+        </div>
+      }
+
+    </div>
+
   </div>
 </section>

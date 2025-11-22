@@ -1,63 +1,50 @@
-<footer class="footer bg-default-brand-primary overflow-hidden position-relative text-custom-light-50">
-  <div class="ellipsis first"></div>
+<footer class="footer position-relative text-white">
 
-  <div class="ellipsis second"></div>
-  <img src="assets/images/illustrations/graduants-2.svg" class="position-absolute graduants" alt="" style="bottom: 60px"/>
+  <!-- Backdrop Illustration -->
+  <img src="assets/images/illustrations/graduants-2.svg" class="footer-backdrop position-absolute" alt=""/>
 
-  <div class="container mx-auto position-relative z-3">
-    <div class="row justify-content-between pb-4">
+  <!-- Frosted Container -->
+  <div class="footer-container container position-relative z-3 py-5 px-4 mb-5">
 
-      <!-- Column 1 -->
-      <div class="col-12 col-lg-5">
-        <div class="w-100 d-flex flex-column gap-4">
-          <a [routerLink]="logo.link" class="d-block">
-            <img [src]="logo.src" class="w-100 max-w-240 object-fit-contain" [alt]="logo.alt"/>
-          </a>
+    <!-- Top Section -->
+    <div class="row justify-content-between align-items-start gy-4">
 
-          <h2>{{ mainHeading }}</h2>
-          <p>{{ mainText }}</p>
-
-        </div>
+      <!-- Branding -->
+      <div class="col-12 col-lg-4 d-flex flex-column gap-3">
+        <a [routerLink]="logo.link" class="footer-logo d-block">
+          <img [src]="logo.src" alt="logo"/>
+        </a>
+        <h3 class="footer-heading">{{ mainHeading }}</h3>
+        <p class="footer-text">{{ mainText }}</p>
       </div>
 
-      <!-- Column 2 -->
-      <div class="col-12 col-lg-3">
-        <div class="d-flex flex-column gap-4">
-          <div>
-            <ul>
-              @for (link of companyLinks; track link.label) {
-                <li><p><a [routerLink]="[link.path]">{{ link.label }}</a></p></li>
-              }
-            </ul>
-            <hr>
-            <ul>
-              @for (link of legalLinks; track link.label) {
-                <li><p><a [routerLink]="link.path">{{ link.label }}</a></p></li>
-              }
-            </ul>
-          </div>
-        </div>
+      <!-- Quick Links -->
+      <div class="col-6 col-lg-2 d-flex flex-column gap-2">
+        <h5 class="footer-subheading">Quick Links</h5>
+        <ul class="footer-links list-unstyled mb-0">
+          @for (link of companyLinks; track link.label) {
+            <li><a [routerLink]="[link.path]">{{ link.label }}</a></li>
+          }
+          @for (link of legalLinks; track link.label) {
+            <li><a [routerLink]="link.path">{{ link.label }}</a></li>
+          }
+        </ul>
       </div>
 
-      <!-- Column 3 -->
-      <div class="col-12 col-lg-3">
-        <div class="w-100 d-flex flex-column gap-4">
-          <div>
-            <h5>Contact Us</h5>
-            <p>{{ contact.address }}</p>
-            <a [href]="'mailto:' + contact.email" class="link hover:text-accent-light">
-              <p>{{ contact.email }}</p>
-            </a>
-            <a [href]="'tel:' + contact.phone" class="link hover:text-accent-light">
-              <p>{{ contact.phone }}</p>
-            </a>
-          </div>
-        </div>
+      <!-- Contact -->
+      <div class="col-6 col-lg-3 d-flex flex-column gap-2">
+        <h5 class="footer-subheading">Contact Us</h5>
+        <p class="footer-text mb-1">{{ contact.address }}</p>
+        <a [href]="'mailto:' + contact.email" class="footer-contact d-block mb-1">{{ contact.email }}</a>
+        <a [href]="'tel:' + contact.phone" class="footer-contact d-block">{{ contact.phone }}</a>
       </div>
+
     </div>
-  </div>
 
-  <div class="bg-dark-primary p-2 text-center text-sm text-white position-relative z-3 d-flex align-items-center justify-content-center" style="height: 60px">
-    <p>{{ currentYear }} © Career Nava.</p>
+    <!-- Bottom Section -->
+    <div class="footer-bottom text-center mt-5 pt-4 border-top border-white-10">
+      <p class="m-0">{{ currentYear }} © Career Nava.</p>
+    </div>
+
   </div>
 </footer>

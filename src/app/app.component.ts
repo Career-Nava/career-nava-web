@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
+import { filter } from "rxjs";
 import { SharedModule } from "./shared/shared/shared.module";
 
 @Component({
@@ -10,13 +11,16 @@ import { SharedModule } from "./shared/shared/shared.module";
   styleUrl: './app.component.scss'
 })
 export class AppComponent implements OnInit {
-  title = 'Career Nava';
-
-  constructor() {
+  constructor(private router: Router) {
   }
 
-  ngOnInit(): void {
-
+  ngOnInit() {
+    // Scroll to top on every route change
+    this.router.events
+      .pipe(filter(event => event instanceof NavigationEnd))
+      .subscribe(() => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
   }
 }
 

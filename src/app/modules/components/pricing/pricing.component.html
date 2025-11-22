@@ -1,49 +1,50 @@
-<section class="pricing-section text-center bg-default-brand-secondary py-5">
+<section class="bg-default-primary py-12">
+
   <div class="container">
-    <div class="row justify-content-center mb-5">
-      <div class="col-12">
-        <h2 class="fw-bold">Our Pricing Packages</h2>
-        <p class="">We provide suitable pricing for your individual needs.</p>
-      </div>
+    <!-- Header -->
+    <div class="col-12 col-lg-8 mx-auto mb-5 text-center">
+      <h2 class="section-title">Our Pricing Packages</h2>
+      <div class="section-title-underline"></div>
+      <p class="section-subtitle">
+        Choose the plan that best supports your journey.
+      </p>
     </div>
 
+    <!-- Pricing Grid -->
     <div class="row g-4 justify-content-center">
       @for (item of pricingPackages; track item.title) {
         <div class="col-12 col-sm-6 col-lg-3">
-          <div class="pricing-card shadow-sm h-100 position-relative">
+
+          <div class="info-card pricing-card d-flex flex-column position-relative h-100">
 
             <!-- Recommended Badge -->
             @if (item.recommended) {
-              <div class="recommended-badge">
-                Recommended
-              </div>
+              <div class="recommended-pill">Recommended</div>
             }
 
-            <!-- Header -->
-            <div class="pricing-header text-white">
-              <h4 class="fw-bold">{{ item.title }}</h4>
-              @if (item.price) {
-                <h3 class="pricing-amount">{{ item.price }}</h3>
-              }
+            <!-- Floating Icon/Glow Header -->
+            <div class="icon-wrapper icon-lg mb-3 mx-auto">
+              <h4 class="info-card-title mb-1" *ngIf="item.price">{{ item.title }}</h4>
+              <h3 class="pricing-amount">{{ item.price || 'Free' }}</h3>
             </div>
 
-            <!-- Content -->
-            <ul class="pricing-features list-unstyled text-start px-3">
-              @for (item of item.features; track $index) {
-                <li class="py-1">
-                  <p class="m-0">{{ item }}</p>
-                </li>
+            <!-- Feature List -->
+            <ul class="pricing-features list-unstyled mt-3 mb-4 px-3 text-center">
+              @for (feature of item.features; track $index) {
+                <li class="feature-item">{{ feature }}</li>
               }
             </ul>
 
-            <!-- Footer -->
+            <!-- CTA Button -->
             <a class="btn btn-primary w-100 mt-auto pricing-btn">
               {{ item.button }}
             </a>
 
           </div>
+
         </div>
       }
     </div>
+
   </div>
 </section>

@@ -26,10 +26,10 @@
   <div class="tab-content mt-4">
 
     <!-- Empty state -->
-          <div *ngIf="!scholarships" class="text-center text-muted py-5">
-            <img src="assets/icons/Video-Call.png" alt="Error" style="width: 300px; margin: 0 auto;">
-            <p>No scholarships available at the moment.</p>
-          </div>
+    <div *ngIf="!scholarships" class="text-center text-muted py-5">
+      <img src="assets/icons/Video-Call.png" alt="Error" style="width: 300px; margin: 0 auto;">
+      <p>No scholarships available at the moment.</p>
+    </div>
 
     <div class="card border-0">
       <div class="card-header">
@@ -46,9 +46,8 @@
       <div class="card-body">
         <div class="row gy-4">
 
-          <!-- Scholarships Loop -->   
-           <!-- filteredScholarships is the old one 
-            finalScholarships is a filter of both tab and search -->
+          <!-- Scholarships Loop -->
+          <!-- filteredScholarships is the old one finalScholarships is a filter of both tab and search -->
           <div *ngFor="let scholarship of finalScholarships" class="col-12 col-md-6 col-lg-4">
             <div class="card scholarship-card position-relative">
 

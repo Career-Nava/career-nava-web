@@ -1,5 +1,66 @@
 .header {
+  width: 100%;
+  z-index: 1000;
+  transition: background 0.5s ease, box-shadow 0.5s ease, opacity 0.5s ease, transform 0.8s ease;
+
+  // initial state (before scroll)
+  transform: translateY(-5px);
+
+  &.scrolled {
     position: sticky;
     top: 0;
-    background: #350368;
+    background: rgba(53, 3, 104, 0.9);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.22);
+    backdrop-filter: blur(14px);
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Utility */
+.object-fit-contain {
+  object-fit: contain;
+}
+
+/* Active Nav Link */
+.nav-link.active {
+  font-weight: 600;
+}
+
+.hero-btn {
+  font-size: 1.05rem;
+  font-weight: 600;
+  border-radius: 14px;
+  padding: 0.9rem 1.6rem;
+  white-space: nowrap;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none !important;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+  /* Sign In Variant */
+  &.sign-in {
+    color: #000 !important;
+    background: linear-gradient(90deg, #f6c360, #ffdd95);
+    box-shadow: 0 4px 14px rgba(246, 195, 96, 0.28);
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(246, 195, 96, 0.33);
+    }
+  }
+
+  /* Book Session Variant */
+  &.book {
+    color: #fff !important;
+    background: linear-gradient(90deg, #6a1b9a, #b15cff);
+    box-shadow: 0 4px 14px rgba(106, 27, 154, 0.28);
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(106, 27, 154, 0.33);
+    }
+  }
 }

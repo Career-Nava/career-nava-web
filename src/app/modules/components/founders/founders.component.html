@@ -1,51 +1,67 @@
-<section class="bg-dark-brand-secondary">
-    <div id="foundersCarousel" class="carousel slide" data-bs-ride="carousel">
-        <div class="container">
-            <!-- Section Header -->
-            <div class="mb-5 px-3 px-md-0 text-center">
-            <h2 class="fw-bold">Meet Our Founders</h2>
-            <p>
-                Learn more about our founders
-            </p>
+<section class="founders-section position-relative overflow-hidden">
+
+  <!-- Background Gradient Orbs -->
+  <div class="orb orb-left"></div>
+  <div class="orb orb-right"></div>
+
+  <div class="container position-relative z-2">
+
+    <!-- Header -->
+    <div class="founders-header text-center mb-6">
+      <h2 class="founders-title">Meet Our Founders</h2>
+      <div class="founders-underline mx-auto"></div>
+      <p class="founders-subtitle">
+        The visionaries shaping CareerNava’s mission to unlock scholarship access for all.
+      </p>
+    </div>
+
+    <!-- Carousel -->
+    <div id="foundersCarousel"
+         #foundersCarousel
+         class="carousel carousel-fade slide"
+         data-bs-ride="carousel">
+
+      <div class="carousel-inner">
+
+        <div class="carousel-item"
+             *ngFor="let founder of founders; let i = index"
+             [class.active]="i === 0">
+
+          <div class="founder-card mx-auto">
+
+            <div class="row g-4 align-items-center justify-content-center">
+
+              <!-- Founder Image -->
+              <div class="col-12 col-md-5 text-center">
+                <div class="founder-image-frame">
+                  <img [src]="founder.image" class="founder-photo" alt="{{ founder.name }}">
+                </div>
+              </div>
+
+              <!-- Founder Details -->
+              <div class="col-12 col-md-7 text-center text-md-start">
+                <h3 class="founder-name">{{ founder.name }}</h3>
+                <p class="founder-message">“{{ founder.message }}”</p>
+              </div>
+
             </div>
 
-            <div class="carousel-inner">
+          </div>
 
-                <div
-                class="carousel-item"
-                *ngFor="let founder of founders; let i = index"
-                [class.active]="i === 0"
-                >
-                <div class="row align-items-center">
-                    
-                    <!-- Image Column -->
-                    <div class="col-12 col-md-6 text-center">
-                    <img
-                        [src]="founder.image"
-                        class="founder-img"
-                        [class.animate]="activeIndex === i"
-                        alt="Founder Image"
-                    />
-                    </div>
-
-                    <!-- Content Column -->
-                    <div class="col-12 col-md-6">
-                    <h2 class="fw-bold">{{ founder.name }}</h2>
-                    <p>"{{ founder.message }}"</p>
-                    </div>
-
-                </div>
-                </div>
-
-            </div>
         </div>
-  <!-- Controls -->
-            <button class="carousel-control-prev" type="button" data-bs-target="#foundersCarousel" data-bs-slide="prev">
-                <span class="carousel-control-prev-icon"></span>
-            </button>
 
-            <button class="carousel-control-next" type="button" data-bs-target="#foundersCarousel" data-bs-slide="next">
-                <span class="carousel-control-next-icon"></span>
-            </button>
-</div>
+      </div>
+
+      <!-- Carousel Controls -->
+      <button class="carousel-control-prev founders-nav" type="button" data-bs-target="#foundersCarousel" data-bs-slide="prev">
+        <span class="nav-icon">&larr;</span>
+      </button>
+
+      <button class="carousel-control-next founders-nav" type="button" data-bs-target="#foundersCarousel" data-bs-slide="next">
+        <span class="nav-icon">&rarr;</span>
+      </button>
+
+    </div>
+
+  </div>
 </section>

@@ -1,4 +1,4 @@
-<header class="header w-100 py-2">
+<header class="header w-100 py-2" [class.scrolled]="isScrolled">
   <nav class="navbar navbar-expand-lg">
     <div class="container">
       <!-- Logo -->
@@ -7,15 +7,7 @@
       </a>
 
       <!-- Mobile Toggler -->
-      <button
-        class="navbar-toggler"
-        type="button"
-        data-bs-toggle="collapse"
-        data-bs-target="#navbarNav"
-        aria-controls="navbarNav"
-        aria-expanded="false"
-        aria-label="Toggle navigation"
-      >
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
 
@@ -37,14 +29,14 @@
         <div class="nav-action d-flex gap-2 ms-auto">
           <!-- Show Sign In when NOT authenticated -->
           @if (!isAuthenticated()) {
-            <a [routerLink]="['/sign-in']" class="btn btn-secondary" mat-button>
+            <a [routerLink]="['/sign-in']" class="btn hero-btn sign-in">
               <span>Sign In</span>
             </a>
           }
 
           <!-- Show Book Session when authenticated -->
           @if (isAuthenticated()) {
-            <a [routerLink]="['mentee/mentors']" class="btn btn-primary" mat-button>
+            <a [routerLink]="['mentee/mentors']" class="btn hero-btn book">
               <span>Book a Session</span>
             </a>
           }

@@ -6,18 +6,10 @@ import { SharedModule } from '../../shared/shared/shared.module';
 @Component({
   selector: 'app-home-layout',
   standalone: true,
-  imports: [
-    SharedModule,
-    HeaderComponent,
-    FooterComponent,
-  ],
+  imports: [ SharedModule, HeaderComponent, FooterComponent ],
   templateUrl: './home-layout.component.html',
   styleUrl: './home-layout.component.scss'
 })
 export class HomeLayoutComponent {
-
-  constructor() {
-  }
-
 
 }

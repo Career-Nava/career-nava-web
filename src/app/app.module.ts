@@ -4,8 +4,8 @@ import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { NgApexchartsModule } from "ng-apexcharts";
 import { routes } from './app.routes';
-import { AuthInterceptor } from "./services/auth/auth.interceptor";
 import { LayoutModule } from './layout/layout.module';
+import { AuthInterceptor } from "./services/auth/auth.interceptor";
 import { SharedModule } from "./shared/shared/shared.module";
 
 
