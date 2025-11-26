@@ -12,6 +12,9 @@
     width: 150px;
     height: 150px;
     }
+    // .hero-section {
+    //     padding-top: calc(64px + 2em);
+    // }
     section {
         padding: 80px 0;
     }
@@ -66,6 +69,9 @@
     }
     .faq-grid {
         grid-template-columns: 1fr 1fr;
+    }
+    .section-title {
+        font-size: 2.2em;
     }
 }
 

@@ -1,4 +1,4 @@
-<section class="bg-default-primary py-12">
+<section class="bg-default-primary" id="pricingSection">
 
   <div class="container">
     <!-- Header -->
@@ -13,23 +13,23 @@
     <!-- Pricing Grid -->
     <div class="row g-4 justify-content-center">
       @for (item of pricingPackages; track item.title) {
-        <div class="col-12 col-sm-6 col-lg-3">
+        <div class="col-12 col-md-6 col-lg-3">
 
           <div class="info-card pricing-card d-flex flex-column position-relative h-100">
 
             <!-- Recommended Badge -->
             @if (item.recommended) {
-              <div class="recommended-pill">Recommended</div>
+              <div class="recommended-pill text-default-brand-primary bg-brand-yellow-300">Recommended</div>
             }
 
             <!-- Floating Icon/Glow Header -->
             <div class="icon-wrapper icon-lg mb-3 mx-auto">
               <h4 class="info-card-title mb-1" *ngIf="item.price">{{ item.title }}</h4>
-              <h3 class="pricing-amount">{{ item.price || 'Free' }}</h3>
+              <h3 class="pricing-amount text-brand-yellow-400">{{ item.price || 'Free' }}</h3>
             </div>
 
             <!-- Feature List -->
-            <ul class="pricing-features list-unstyled mt-3 mb-4 px-3 text-center">
+            <ul class="pricing-features list-unstyled mt-3 mb-4 text-center">
               @for (feature of item.features; track $index) {
                 <li class="feature-item">{{ feature }}</li>
               }

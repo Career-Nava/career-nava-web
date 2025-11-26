@@ -58,11 +58,17 @@ span {
 .font-regular {
     font-weight: $regular;
 }
+.font-semibold {
+    font-weight: $semibold;
+}
 .font-bold {
     font-weight: $semibold;
 }
 .font-extrabold {
     font-weight: $bold;
+}
+.font-inherit {
+    font-weight: inherit;
 }
 
 @media screen and (max-width: 767px) {

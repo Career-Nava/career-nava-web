@@ -61,30 +61,34 @@ hr {
 
 .hero-section {
   // padding-top: 80px;
+  padding-top: calc(64px + 2em);
   background: linear-gradient(45deg, #770CE2 0%, #430780 100%);
 
   .cta-img-1, .cta-img-2 {
     position: absolute;
-    z-index: 10;
+    z-index: 6;
     bottom: 10px;
+    width: 40% !important;
     display: none;
   }
 
   .cta-img-1 {
     left: 0;
-    left: -4vw;
+    left: -10vw;
 
     img {
       max-height: 640px;
+      max-height: 84vh;
     }
   }
 
   .cta-img-2 {
     right: 0;
-    right: -4vw;
+    right: -5vw;
 
     img {
       max-height: 740px;
+      max-height: 94vh;
     }
   }
 
@@ -153,7 +157,7 @@ section {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 1em 0;
+  padding: 2em 0;
 }
 
 .link {
@@ -685,4 +689,66 @@ section {
 .toast-leave-active {
   opacity: 0;
   transform: translateY(-10px);
+}
+
+.section-title {
+  font-size: 1.8em;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+}
+
+/* Gradient Underline */
+.section-title-underline {
+  width: 100%;
+  max-width: 200px;
+  height: 4px;
+  border-radius: 4px;
+  margin: 0.75rem auto 2rem auto;
+  background: linear-gradient(90deg, #6a1b9a, #b15cff);
+}
+
+/* Subtitle */
+.section-subtitle {
+  font-size: 1.10em;
+  max-width: 620px;
+  margin: 0 auto 3rem;
+  text-align: center;
+}
+
+.info-card {
+  background: $custom-light-50;
+  border-radius: 16px;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.06);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+  &:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 14px 34px rgba(90, 55, 155, 0.12);
+  }
+}
+
+// Odd cards
+  > div:nth-child(odd) .info-card {
+    background: $custom-light-50;
+  }
+
+  // Even cards
+  > div:nth-child(even) .info-card {
+    background: $brand-yellow-500;
+    background: red;
+  }
+
+.icon-wrapper {
+  border-radius: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+  img {
+    height: 200px;
+    width: 100%;
+    object-fit: contain;
+    // filter: saturate(1.15);
+  }
 }

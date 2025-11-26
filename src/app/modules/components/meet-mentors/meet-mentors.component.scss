@@ -1,29 +1,3 @@
-.section-title {
-  font-size: 2.6rem;
-  font-weight: 500;
-  color: #111;
-  line-height: 1.15;
-  margin-bottom: 0.75rem;
-  position: relative;
-}
-
-.section-subtitle {
-  font-size: 1.10rem;
-  color: #575757;
-  line-height: 1.7;
-  max-width: 620px;
-  margin: 0 auto 2.5rem;
-}
-
-.section-title-underline {
-  width: 200px;
-  height: 5px;
-  border-radius: 4px;
-  margin: 0.75rem auto 2rem auto;
-  background: linear-gradient(90deg, #6a1b9a, #b15cff);
-  box-shadow: 0 4px 14px rgba(140, 75, 255, 0.35);
-}
-
 /* Animate underline: grow from center */
 .animate-underline {
   width: 0;

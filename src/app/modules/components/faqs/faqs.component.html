@@ -20,27 +20,44 @@
 
     <!-- Grid -->
     <div class="row mt-4 g-3">
-      <div class="col-12 col-lg-6" *ngFor="let faq of faqs; let i = index">
-        <div class="accordion" [id]="'faqAccordion' + i">
+  <div class="col-12">
+    <div class="accordion" id="faqAccordion">
+      <div class="row m-0">
+        <div class="col-12 col-lg-6" *ngFor="let faq of faqs; let i = index">
           <div class="accordion-item info-card">
-            <h2 class="accordion-header" [id]="'heading' + i">
-              <button class="accordion-button fw-bold info-card-title text-default-on-primary" [class.collapsed]="i !== 0" type="button"
-                      data-bs-toggle="collapse"
-                      [attr.data-bs-target]="'#collapse' + i"
-                      [attr.aria-expanded]="i === 0"
-                      [attr.aria-controls]="'collapse' + i">
-                {{ faq.question }}
-              </button>
-            </h2>
-            <div [id]="'collapse' + i" class="accordion-collapse collapse" [class.show]="i === 0"
-                 [attr.aria-labelledby]="'heading' + i" [attr.data-bs-parent]="'#faqAccordion' + i">
-              <div class="accordion-body info-card-text">
-                {{ faq.answer }}
-              </div>
-            </div>
+        <div class="accordion-header" [id]="'heading' + i">
+          <button
+            class="accordion-button fw-bold info-card-title text-default-on-primary"
+            [class.collapsed]="i !== 0"
+            type="button"
+            data-bs-toggle="collapse"
+            [attr.data-bs-target]="'#collapse' + i"
+            [attr.aria-expanded]="i === 0"
+            [attr.aria-controls]="'collapse' + i"
+          >
+            {{ faq.question }}
+          </button>
+        </div> 
+
+        <div
+          [id]="'collapse' + i"
+          class="accordion-collapse collapse"
+          [class.show]="i === 0"
+          [attr.aria-labelledby]="'heading' + i"
+          data-bs-parent="#faqAccordion"
+        >
+          <div class="accordion-body info-card-text">
+            <p>{{ faq.answer }}</p>
           </div>
         </div>
       </div>
+        </div>
+      </div>
+      
     </div>
+  </div>
+</div>
+
+
   </div>
 </section>

@@ -3,6 +3,7 @@
   background: linear-gradient(90deg, #3806dc 0%, #770ce2 50%, #3806dc 100%);
   color: #fff;
   overflow: hidden;
+  padding-top: 40px;
 
   .footer-backdrop {
     position: absolute;
@@ -15,16 +16,16 @@
     mix-blend-mode: screen;
   }
 
-  .footer-container {
-    background: rgba(255, 255, 255, 0.06);
-    backdrop-filter: blur(1px);
-    border-radius: 20px;
-    padding: 3rem 2rem;
-    box-shadow: 0 6px 40px rgba(0, 0, 0, 0.15);
-  }
+  // .footer-container {
+  //   background: rgba(255, 255, 255, 0.06);
+  //   backdrop-filter: blur(1px);
+  //   border-radius: 20px;
+  //   padding: 3rem 2rem;
+  //   box-shadow: 0 6px 40px rgba(0, 0, 0, 0.15);
+  // }
 
   .footer-logo img {
-    width: 180px;
+    width: 280px;
     object-fit: contain;
   }
 
@@ -64,5 +65,11 @@
     padding-top: 1rem;
     border-top: 1px solid rgba(255, 255, 255, 0.12);
     font-size: 0.9rem;
+  }
+}
+
+@media screen and (min-width: 992px) {
+    .footer-logo img {
+    width: 100%;
   }
 }

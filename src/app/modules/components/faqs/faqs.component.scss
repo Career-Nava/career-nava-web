@@ -2,81 +2,53 @@
   position: relative;
   overflow: hidden;
 
-  /* Section Typography */
-  .section-title {
-    font-size: 2.6rem;
-    font-weight: 500;
-    color: #111;
-    line-height: 1.15;
-    margin-bottom: 0.75rem;
-    text-align: center;
-  }
-
-  .section-title-underline {
-    width: 200px;
-    height: 5px;
-    border-radius: 4px;
-    margin: 0.75rem auto 2rem auto;
-    background: linear-gradient(90deg, #6a1b9a, #b15cff);
-    box-shadow: 0 4px 14px rgba(140, 75, 255, 0.35);
-  }
-
-  .section-subtitle {
-    font-size: 1.05rem;
-    font-weight: 500;
-    color: #444;
-    line-height: 1.7;
-    max-width: 620px;
-    margin: 0 auto 3rem;
-  }
-
   /* Accordion Cards */
   .accordion-item {
-    background-color: #ffffff;
-    border-radius: 20px;
-    box-shadow: 0 8px 22px rgba(0,0,0,0.06);
-    margin-bottom: 1rem;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-
+    overflow: hidden;
+    border-radius: 1em;
+    margin-bottom: 1em;
     &:hover {
       transform: translateY(-4px);
-      box-shadow: 0 14px 34px rgba(0,0,0,0.12);
     }
 
     .accordion-button {
-      &::after { display: none; }
-      font-size: 1.1rem;
-      font-weight: 500;
-      color: #222;
-      background: #f7f5ff;
-      border-radius: 1rem;
-      padding: 1rem 1.25rem;
+    font-size: 1.1em;
+    background: #f7f5ff;
+    border-radius: 1em 0 0;
+    padding: 1rem 1.25rem;
+
+    &::after {
+      font-family: "Font Awesome 6 Free";
+      content: '\f107';
+      font-size: 0.9rem;
+      margin-left: auto; 
+      transition: transform 0.2s ease;
+      display: none;
+    }
 
       &:not(.collapsed) {
         background: linear-gradient(90deg, #6a1b9a, #b15cff);
         color: #fff;
+
+        &::after {
+          content: '\f106'; // ▲ up
+          // color: $brand-yellow-500;
+        }
       }
     }
 
+
     .accordion-body {
       background-color: #faf8ff;
-      font-size: 1rem;
-      font-weight: 400;
-      line-height: 1.65;
-      color: #555;
       padding: 1rem 1.25rem;
     }
   }
 
   @media (max-width: 768px) {
-    padding: 3rem 1rem;
 
     .accordion-button {
-      font-size: 1rem;
+      font-size: 1em;
     }
 
-    .accordion-body {
-      font-size: 0.95rem;
-    }
   }
 }
