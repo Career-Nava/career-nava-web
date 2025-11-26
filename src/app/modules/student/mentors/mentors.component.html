@@ -1,73 +1,99 @@
-<div class="container-fluid">
+<div class="container-fluid mentors-page">
   <!-- Header -->
-  <div class="row align-items-center justify-content-lg-start mb-4">
+  <div class="row align-items-center justify-content-lg-start page-header mb-4">
     <div class="col-12">
-      <div class="w-100">
-        <h1>Explore Coaches & Book Session</h1>
-        <p>Discover experienced professionals ready to guide you on your career journey.</p>
+      <div class="header-content">
+        <h1 class="page-title">Explore Coaches & Book Session</h1>
+        <p class="page-subtitle">
+          Discover experienced professionals ready to guide you on your career journey.
+        </p>
       </div>
     </div>
   </div>
 
-  <div class="tab-content">
-    <div class="tab-pane active" id="all" role="tabpanel" tabindex="0">
-      <div class="card border-0">
-        <div class="card-header bg-transparent">
-          <h3 class="card-title">Mentors</h3>
-        </div>
+  <!-- Mentors Card -->
+  <div class="mentors-card">
+    <div class="card-header-section mb-4">
+      <h3 class="section-title">Mentors</h3>
+    </div>
 
-        <div class="card-body">
+    <div class="tab-content">
+      <div class="tab-pane active" id="all" role="tabpanel">
+        <div class="card-body px-0">
           <!-- Loading state -->
-          <div *ngIf="loading" class="text-center py-5">
+          <div *ngIf="loading" class="loading-state text-center py-5">
             <div class="spinner-border text-primary" role="status"></div>
             <p class="mt-3 mb-0 text-muted">Loading mentors...</p>
           </div>
 
           <!-- Error state -->
-          <div *ngIf="!loading && error" class="text-center p-3">
-            <img src="assets/icons/Problem.png" alt="Error" style="width: 300px; margin: 0 auto;">
+          <div *ngIf="!loading && error" class="error-state text-center p-3">
+            <img src="assets/icons/Problem.png" alt="Error"/>
             <p>{{ error }}</p>
           </div>
 
           <!-- Empty state -->
-          <div *ngIf="!loading && !error && (mentors$ | async)?.length === 0" class="text-center text-muted py-5">
-            <img src="assets/icons/Video-Call.png" alt="Error" style="width: 300px; margin: 0 auto;">
+          <div *ngIf="!loading && !error && (mentors$ | async)?.length === 0"
+               class="empty-state text-center text-muted py-5">
+            <img src="assets/icons/Video-Call.png" alt="No mentors"/>
             <p>No mentors available at the moment.</p>
           </div>
 
           <!-- Mentors grid -->
-          <div class="row gy-4" *ngIf="!loading && !error">
-            <div class="col-12 col-sm-6 col-md-4 col-lg-3" *ngFor="let mentor of mentors$ | async">
-              <a [routerLink]="['/mentee/mentors/mentor-details', mentor.userId]" class="d-block text-decoration-none text-dark">
-                <div class="card h-100 border-0 shadow-sm">
+          <div *ngIf="!loading && !error" class="row gy-4 mentor-grid">
+            <div
+              class="col-12 col-sm-6 col-md-4 col-lg-3"
+              *ngFor="let mentor of mentors$ | async">
+
+              <a
+                [routerLink]="['/mentee/mentors/mentor-details', mentor.userId]"
+                class="mentor-card d-block text-decoration-none">
+
+                <div class="card h-100 border-0 mentor-card-inner">
+
                   <!-- Image -->
-                  <div class="card-header p-0 position-relative overflow-hidden" style="height: 200px;">
-                    <img [src]="mentor.profilePicture" [alt]="mentor.fullName" class="w-100 h-100 object-fit-cover"/>
+                  <div class="mentor-img-wrapper">
+                    <img
+                      [src]="mentor.profilePicture"
+                      [alt]="mentor.fullName"
+                      class="mentor-img"/>
                   </div>
+
                   <!-- Info -->
                   <div class="card-body p-4">
-                    <h4 class="card-title fs-5 mb-2">{{ mentor.fullName }}</h4>
-                    <p class="mb-2 text-muted">
-                      <fa-icon [icon]="faBriefcase" class="text-brand-yellow-550 me-2"></fa-icon>
+                    <h4 class="mentor-name">{{ mentor.fullName }}</h4>
+
+                    <p class="mentor-role text-muted">
+                      <fa-icon [icon]="faBriefcase" class="icon-accent"></fa-icon>
                       {{ mentor.positionTitle }}
                       <span *ngIf="mentor.company"> at {{ mentor.company }}</span>
                     </p>
-                    <p class="mb-2">
-                      <fa-icon [icon]="faComments" class="text-brand-yellow-550 me-2"></fa-icon>
+
+                    <p class="mentor-sessions">
+                      <fa-icon [icon]="faComments" class="icon-accent"></fa-icon>
                       {{ mentor.totalSessions }} Sessions ({{ mentor.totalReviews }} Reviews)
                     </p>
-                    <p class="mb-0">
+
+                    <p class="mentor-rating mb-0">
                       <ng-container *ngFor="let _ of getStars(mentor.avgRating)">
-                        <fa-icon [icon]="faStarFull" class="text-brand-yellow-550"></fa-icon>
+                        <fa-icon [icon]="faStarFull" class="icon-rating"></fa-icon>
                       </ng-container>
-                      <fa-icon *ngIf="hasHalfStar(mentor.avgRating)" [icon]="faStarHalf" class="text-brand-yellow-550"></fa-icon>
-                      <span class="ms-1 text-muted">{{ mentor.avgRating }} Stars</span>
+
+                      <fa-icon
+                        *ngIf="hasHalfStar(mentor.avgRating)"
+                        [icon]="faStarHalf"
+                        class="icon-rating"></fa-icon>
+
+                      <span class="rating-text">{{ mentor.avgRating }} Stars</span>
                     </p>
                   </div>
+
                 </div>
               </a>
+
             </div>
           </div>
+
         </div>
       </div>
     </div>

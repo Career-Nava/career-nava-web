@@ -23,6 +23,8 @@ declare global {
 export class MentorDetailsComponent implements OnInit, AfterViewInit {
 
   mentor?: Mentor;
+  calendlyVerified: boolean = false;
+
   isLoading = true;
   hasError = false;
 
@@ -43,6 +45,8 @@ export class MentorDetailsComponent implements OnInit, AfterViewInit {
       ).subscribe({
         next: mentor => {
           this.mentor = mentor;
+          this.calendlyVerified = mentor?.calendlyConnected ?? false;
+
           this.isLoading = false;
         },
         error: err => {

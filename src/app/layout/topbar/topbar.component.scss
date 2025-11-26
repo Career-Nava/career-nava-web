@@ -1,26 +1,115 @@
-.topbar-menus {
-    width: 100%;
-}
+.topbar {
+  .topbar-menus {
+    gap: 0.75rem;
+  }
 
-.dropdown-menu[data-bs-popper] {
-    left: auto;
-    right: 0;
-}
+  .logo-sm {
+    height: 40px;
+  }
 
-.check-bage {
+  .check-badge {
     position: absolute;
-    bottom: 12px;
-    left: 6px;
-    background: white;
+    bottom: 0;
+    left: 0;
+    width: 25px;
+    height: 25px;
+    background: #fff;
     border-radius: 50%;
-    
-    svg {
-        width: 24px;
-    }
-}
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.15s;
 
-@media screen and (min-width: 576px) {
-    .topbar-menus {
-        width: auto;
+    &:hover {
+      transform: scale(1.1);
     }
+  }
+
+  .avatar-wrapper {
+    width: 50px;
+    height: 50px;
+    overflow: hidden;
+    border-radius: 50%;
+    font-size: 1.2rem;
+    background: linear-gradient(135deg, #e8e0ff, #f5e8ff);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: box-shadow 0.2s;
+
+    &:hover {
+      box-shadow: 0 4px 12px rgba(123, 95, 255, 0.2);
+    }
+  }
+
+  .avatar-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .user-info h5 {
+    font-size: 1.2rem;
+    margin: 0;
+    font-weight: 500;
+    color: #2c2c2c;
+  }
+
+  .user-info p {
+    font-size: 0.85rem;
+    margin: 0;
+    color: #6c757d;
+  }
+
+  .dropdown-menu {
+    min-width: 200px;
+    padding: 0.75rem;
+    border-radius: 12px;
+    background-color: #fff;
+    border: 1px solid #e0e0e0;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+    transition: transform 0.15s;
+
+    &:hover {
+      transform: translateY(-1px);
+    }
+
+    .dropdown-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 0.75rem;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      transition: background 0.15s;
+
+      .status-indicator {
+
+        &.verified {
+          background-color: #28a745;
+        }
+
+        &.not-verified {
+          background-color: #dc3545;
+        }
+      }
+    }
+  }
+
+  .btn-gradient-purple {
+    background: linear-gradient(135deg, #7b5fff, #b13cff);
+    color: #fff;
+    border: none;
+    padding: 0.35rem 0.8rem;
+    font-weight: 500;
+    font-size: 0.85rem;
+    border-radius: 8px;
+    transition: transform 0.15s, box-shadow 0.15s;
+
+    &:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 10px rgba(123, 95, 255, 0.3);
+    }
+  }
 }

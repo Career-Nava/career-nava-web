@@ -20,6 +20,7 @@ export interface Mentor {
   email?: string;
   role?: string;
   isActive?: boolean;
+  calendlyConnected: boolean;
 
   company?: string;
   positionTitle?: string;

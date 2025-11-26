@@ -7,5 +7,6 @@ export interface UserModel {
   isActive: boolean;
   createdAt: any;
   updatedAt: any;
-  profilePicture?: string
+  profilePicture?: string;
+  calendlyConnected: boolean;
 }

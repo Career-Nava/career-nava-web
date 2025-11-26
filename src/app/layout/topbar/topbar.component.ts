@@ -1,40 +1,51 @@
-import { Component, OnInit } from '@angular/core';
-import { AuthService } from "../../services/auth/auth.service";
-import { UserModel } from "../../services/user/user.model";
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
+import { AuthService } from '../../services/auth/auth.service';
+import { CalendlyService } from "../../services/calendly/calendly.service";
 import { SidebarService } from '../../services/sidebar/sidebar.service';
+import { UserModel } from '../../services/user/user.model';
 import { SharedModule } from '../../shared/shared/shared.module';
-import { faCalendarCheck, faCheck } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-topbar',
   standalone: true,
   imports: [ SharedModule ],
   templateUrl: './topbar.component.html',
-  styleUrl: './topbar.component.scss'
+  styleUrls: [ './topbar.component.scss' ]
 })
-export class TopbarComponent implements OnInit {
-  faCheckBadge = faCalendarCheck;
-  faCheck = faCheck;
+export class TopbarComponent implements OnInit, OnDestroy {
 
   user: UserModel | null = null;
-  calendlyVerified: Boolean = true;
+  calendlyVerified: boolean = false;
+  private subscriptions = new Subscription();
 
   constructor(
     private authService: AuthService,
+    private calendlyService: CalendlyService,
     private sidebarService: SidebarService
   ) {
   }
 
   ngOnInit(): void {
-    this.user = this.authService.getUser();
-    // console.log("User data:", this.user);
+    // subscribe to reactive user
+    this.subscriptions.add(
+      this.authService.userObservable.subscribe(user => {
+        this.user = user;
+        this.calendlyVerified = user?.calendlyConnected ?? false;
+      })
+    );
   }
 
-  logout() {
-    this.authService.logout();
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
   }
 
   toggleSidebar(): void {
     this.sidebarService.toggle();
+  }
+
+  connectCalendly(userId: number): void {
+    // Navigate to the backend connect endpoint
+    window.location.href = this.calendlyService.getConnectUrl(userId);
   }
 }

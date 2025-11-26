@@ -140,6 +140,7 @@ export class MentorService extends RestService {
       expertise: dto.expertise,
       disciplines: dto.disciplines,
       fluency: dto.fluency,
+      calendlyConnected: dto.calendlyConnected,
       experiences: dto.experiences?.map(e => ({
         ...e,
         year: e.startDate ? `${ new Date(e.startDate).getFullYear() } - ${ e.endDate ? new Date(e.endDate).getFullYear() : 'Present' }` : 'N/A'

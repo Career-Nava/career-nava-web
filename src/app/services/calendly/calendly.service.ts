@@ -15,25 +15,10 @@ export class CalendlyService extends RestService {
     super(http, 'calendly', config.get<any>('api').baseUrl);
   }
 
-  connectCalendly(mentorId: number): Observable<string> {
-    return this.http.get(`${ this.baseUrl }/connect`, { params: { mentorId }, responseType: 'text' });
-  }
-
-  handleCallback(code: string, state: string): Observable<any> {
-    return this.http.get<ApiResponse<any>>(`${ this.baseUrl }/callback`, { params: { code, state } }).pipe(map(res => res.data), catchError(err => {
-      console.error('Callback error:', err);
-      return throwError(() => err);
-    }));
-  }
-
-  refreshToken(mentorId: number): Observable<any> {
-    return this.http.post<ApiResponse<any>>(`${ this.baseUrl }/refresh`, mentorId).pipe(
-      map(res => res.data),
-      catchError(err => {
-        console.error('Failed to refresh Calendly token:', err);
-        return throwError(() => err);
-      })
-    );
+  // Returns the URL to redirect the user to Calendly OAuth
+  getConnectUrl(mentorId: number): string {
+    const params = this.buildParams({ mentorId });
+    return `${ this.baseUrl }/connect?${ params.toString() }`;
   }
 
   getSchedulingLink(mentorId: number): Observable<string> {

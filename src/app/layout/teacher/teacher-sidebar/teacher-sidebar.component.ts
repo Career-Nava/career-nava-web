@@ -1,15 +1,15 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { AuthService } from "../../../services/auth/auth.service";
-import {SharedModule} from "../../../shared/shared/shared.module";
-import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
-import {faArrowRightFromBracket, faChartLine, faFile, faHouse, faUser } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
+import { faArrowRightFromBracket, faChartLine, faFile, faHouse, faUser } from '@fortawesome/free-solid-svg-icons';
 import { Subscription } from 'rxjs';
+import { AuthService } from "../../../services/auth/auth.service";
 import { SidebarService } from '../../../services/sidebar/sidebar.service';
+import { SharedModule } from "../../../shared/shared/shared.module";
 
 @Component({
   selector: 'app-teacher-sidebar',
   standalone: true,
-  imports: [SharedModule, FontAwesomeModule],
+  imports: [ SharedModule, FontAwesomeModule ],
   templateUrl: './teacher-sidebar.component.html',
   styleUrl: './teacher-sidebar.component.scss'
 })
@@ -23,7 +23,8 @@ export class TeacherSidebarComponent implements OnInit, OnDestroy {
   isOpen = false;
   private subscription!: Subscription;
 
-  constructor(private authService: AuthService, private sidebarService: SidebarService) {}
+  constructor(private authService: AuthService, private sidebarService: SidebarService) {
+  }
 
   ngOnInit(): void {
     this.subscription = this.sidebarService.isOpen$.subscribe(isOpen => {
@@ -36,11 +37,11 @@ export class TeacherSidebarComponent implements OnInit, OnDestroy {
     this.subscription.unsubscribe();
   }
 
-  logout(){
+  logout() {
     this.authService.logout();
   }
 
-  onToggleSidebar(){
+  onToggleSidebar() {
     this.sidebarService.toggle();
   }
 }

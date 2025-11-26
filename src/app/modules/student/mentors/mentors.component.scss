@@ -1,0 +1,116 @@
+.mentors-page {
+  padding-bottom: 3rem;
+
+  .page-header {
+    .header-content {
+      padding: 1rem 0;
+    }
+
+    .page-title {
+      font-size: 2.4rem;
+      font-weight: 800;
+      color: #222; /* dark neutral text */
+      margin-bottom: 0.25rem;
+    }
+
+    .page-subtitle {
+      font-size: 1.1rem;
+      color: #151515; /* softer muted text */
+      opacity: 0.85;
+    }
+  }
+
+  .mentors-card {
+    background: #fffdfd;
+    border-radius: 1rem;
+    padding: 2rem;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    margin-bottom: 2rem;
+
+    .card-header-section {
+      margin-bottom: 1.5rem;
+
+      .section-title {
+        font-size: 1.6rem;
+        font-weight: 700;
+        color: #222;
+      }
+    }
+  }
+
+  .mentor-grid {
+    justify-content: center;
+  }
+
+  .mentor-card {
+    transition: transform .2s ease, box-shadow .2s ease;
+    border-radius: 1rem;
+
+    .mentor-card-inner {
+      border-radius: 1rem;
+      overflow: hidden;
+      background: #fff;
+      transition: inherit;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+    }
+
+    &:hover .mentor-card-inner {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 26px rgba(0, 0, 0, 0.12);
+    }
+  }
+
+  .mentor-img-wrapper {
+    position: relative;
+    height: 200px;
+    overflow: hidden;
+  }
+
+  .mentor-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform .35s ease;
+  }
+
+  .mentor-card:hover .mentor-img {
+    transform: scale(1.05);
+  }
+
+  .mentor-name {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: .35rem;
+  }
+
+  .mentor-role {
+    font-size: .93rem;
+
+    .icon-accent {
+      color: #fd7e14;
+      margin-right: .35rem;
+    }
+  }
+
+  .mentor-sessions {
+    font-size: .92rem;
+
+    .icon-accent {
+      color: #ffa94d;
+      margin-right: .35rem;
+    }
+  }
+
+  .mentor-rating {
+    .icon-rating {
+      color: #ffd43b;
+      margin-right: 2px;
+    }
+
+    .rating-text {
+      margin-left: .35rem;
+      color: #777;
+      font-size: .85rem;
+    }
+  }
+}
