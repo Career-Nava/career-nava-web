@@ -5,7 +5,7 @@ import { Subscription } from 'rxjs';
 import { ScholarshipService } from '../../../services/scholarship/scholarship.service';
 import { Scholarship } from '../../../services/scholarship/shcolarship.model';
 import { ToastService } from '../../../services/toast.service';
-import { SharedModule } from '../../../shared/shared/shared.module';
+import { SharedModule } from '../../../shared/shared.module';
 
 @Component({
   selector: 'app-scholarships',
@@ -50,7 +50,7 @@ export class ScholarshipsComponent implements OnInit, OnDestroy {
   searchFilterScholarships(event: any) {
   this.searchTerm = event.target.value.toLowerCase();
 
-  this.searchFilteredScholarships = this.scholarships.filter(sch => 
+  this.searchFilteredScholarships = this.scholarships.filter(sch =>
     sch.title.toLowerCase().includes(this.searchTerm) ||
     sch.category?.toLowerCase().includes(this.searchTerm)
   );

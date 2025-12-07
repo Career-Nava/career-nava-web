@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import {SharedModule} from "../../../shared/shared/shared.module";
+import {SharedModule} from "../../../shared/shared.module";
 import {Subscription} from "rxjs";
 import {AssignmentsService} from "../../../services/assignments/assignments.service";
 import {faCalendar, faClock, faEllipsisV} from '@fortawesome/free-solid-svg-icons';

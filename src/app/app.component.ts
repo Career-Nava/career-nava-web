@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { filter } from "rxjs";
-import { SharedModule } from "./shared/shared/shared.module";
+import { SharedModule } from "./shared/shared.module";
 
 @Component({
   selector: 'app-root',

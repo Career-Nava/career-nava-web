@@ -1,6 +1,6 @@
 import { Component, TemplateRef } from '@angular/core';
 import { ToastService } from '../../../../services/toast.service';
-import { SharedModule } from '../../../../shared/shared/shared.module';
+import { SharedModule } from '../../../../shared/shared.module';
 
 @Component({
   selector: 'app-toast-container',

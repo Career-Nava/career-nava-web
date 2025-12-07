@@ -6,7 +6,7 @@ import { Subscription } from "rxjs";
 import { AuthService } from "../../../services/auth/auth.service";
 import { ToastService } from "../../../services/toast.service";
 import { UserModel } from "../../../services/user/user.model";
-import { SharedModule } from "../../../shared/shared/shared.module";
+import { SharedModule } from "../../../shared/shared.module";
 
 @Component({
   selector: 'app-teacher-overview',

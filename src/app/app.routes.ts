@@ -4,8 +4,6 @@ import { AdminLayoutComponent } from "./layout/admin/admin-layout/admin-layout.c
 import { HomeLayoutComponent } from './layout/home-layout/home-layout.component';
 import { LayoutComponent } from './layout/layout.component';
 import { TeacherLayoutComponent } from "./layout/teacher/teacher-layout/teacher-layout.component";
-import { AssessmentComponent } from './modules/admin/assessment/assessment.component';
-import { AssignmentsComponent } from './modules/admin/assignments/assignments.component';
 import { ClassesComponent } from './modules/admin/classes/classes.component';
 import { ExamsComponent } from './modules/admin/exams/exams.component';
 import { OverviewComponent } from './modules/admin/overview/overview.component';
@@ -58,10 +56,8 @@ export const routes: Routes = [
   // Admin Dashboard
   {
     path: 'admin', canActivate: [ authGuard ], component: AdminLayoutComponent, children: [
-      { path: 'assessment', component: AssessmentComponent },
       { path: 'overview', component: OverviewComponent },
       { path: 'classes', component: ClassesComponent },
-      { path: 'assignments', component: AssignmentsComponent },
       { path: 'exams', component: ExamsComponent },
       { path: 'profile', component: ProfileComponent },
     ]

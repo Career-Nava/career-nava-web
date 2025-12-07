@@ -4,7 +4,7 @@ import { AuthService } from '../../services/auth/auth.service';
 import { CalendlyService } from "../../services/calendly/calendly.service";
 import { SidebarService } from '../../services/sidebar/sidebar.service';
 import { UserModel } from '../../services/user/user.model';
-import { SharedModule } from '../../shared/shared/shared.module';
+import { SharedModule } from '../../shared/shared.module';
 
 @Component({
   selector: 'app-topbar',

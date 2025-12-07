@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { Mentor } from "../../../services/mentor/mentor.model";
 import { MentorService } from "../../../services/mentor/mentor.service";
-import { SharedModule } from '../../../shared/shared/shared.module';
+import { SharedModule } from '../../../shared/shared.module';
 
 @Component({
   selector: 'app-auth-layout',

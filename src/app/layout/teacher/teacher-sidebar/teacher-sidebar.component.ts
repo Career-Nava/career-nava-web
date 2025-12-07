@@ -4,7 +4,7 @@ import { faArrowRightFromBracket, faChartLine, faFile, faHouse, faUser } from '@
 import { Subscription } from 'rxjs';
 import { AuthService } from "../../../services/auth/auth.service";
 import { SidebarService } from '../../../services/sidebar/sidebar.service';
-import { SharedModule } from "../../../shared/shared/shared.module";
+import { SharedModule } from "../../../shared/shared.module";
 
 @Component({
   selector: 'app-teacher-sidebar',

@@ -56,9 +56,25 @@
 
             <p>{{ mentor.positionTitle }} at {{ mentor.company }}</p>
 
-            <button class="btn btn-primary my-4 mx-auto mx-lg-0" (click)="openCalendlyPopup()">
+            <!-- Book Session Button -->
+            <button class="btn btn-primary my-4 mx-auto mx-lg-0" (click)="openCalendlyModal()">
               Book A Session With {{ mentor.fullName }}
             </button>
+
+            <!-- Calendly Modal -->
+            <div class="calendly-modal-backdrop" *ngIf="showCalendlyModal">
+              <div class="calendly-modal">
+                <button class="calendly-close-btn" (click)="closeCalendlyModal()">×</button>
+
+                <div #calendlyContainer class="calendly-widget-container"></div>
+
+                <div *ngIf="isLoadingCalendly" class="text-center my-3">
+                  <div class="spinner-border text-primary" role="status"></div>
+                  <p class="mt-2 text-muted small">Preparing your scheduling experience…</p>
+                </div>
+              </div>
+            </div>
+
           </div>
         </div>
       </div>
@@ -133,7 +149,6 @@
           </div>
         </div>
       </div>
-
 
       <!-- Right Column -->
       <div class="col-12 col-lg-5">

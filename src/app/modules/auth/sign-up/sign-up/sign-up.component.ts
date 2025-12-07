@@ -3,7 +3,7 @@ import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators }
 import { Router } from '@angular/router';
 import { AuthResponse } from "../../../../services/auth/auth.model";
 import { AuthService } from "../../../../services/auth/auth.service";
-import { SharedModule } from "../../../../shared/shared/shared.module";
+import { SharedModule } from "../../../../shared/shared.module";
 
 @Component({
   selector: 'app-sign-up',

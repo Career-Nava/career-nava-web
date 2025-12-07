@@ -3,95 +3,128 @@
   <div class="col-12 col-lg-6">
     <div class="mb-4">
       <h1>My Sessions</h1>
-      <p>Lorem ipsum dolor sit amet consectetur. Ultrices venenatis sit mi netus consectetur bibendum lacus eu parturient.</p>
+      <p *ngIf="!error">All your career coaching sessions booked are listed below.</p>
+      <p *ngIf="error" class="text-danger">{{ error }}</p>
     </div>
   </div>
 
+  <!-- Tabs -->
   <ul class="nav nav-tabs">
     <li class="nav-item">
-      <a class="nav-link active" aria-current="page" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">
-        Active
-      </a>
+      <a class="nav-link" [class.active]="tab === 'active'" (click)="tab='active'; $event.preventDefault()">Active</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" href="#">Active</a>
+      <a class="nav-link" [class.active]="tab === 'upcoming'" (click)="tab='upcoming'; $event.preventDefault()">Upcoming</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" href="#">Upcoming</a>
+      <a class="nav-link" [class.active]="tab === 'past'" (click)="tab='past'; $event.preventDefault()">Past</a>
     </li>
   </ul>
-  <div class="tab-content">
 
-    <div class="tab-pane active" id="home" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
+  <div class="tab-content">
+    <div class="tab-pane active">
 
       <div class="card border-0">
         <div class="card-header">
-          <div>
-            <h3 class="card-title">My Sessions ({{sessions.length}})</h3>
-            <p>Lorem ipsum dolor sit amet consectetur. Ultrices venenatis sit mi netus consectetur bibendum lacus eu parturient.</p>
-          </div>
+          <h3 class="card-title">My Sessions</h3>
+          <p>Overview of your booked career coaching sessions.</p>
         </div>
+
         <div class="card-body">
           <div class="row gy-4">
-            <!-- Assignments -->
-            <div *ngFor="let session of sessions" class="col-12 col-md-6 col-lg-4">
-              <div class="card" >
-                <div class="card-header d-block overflow-hidden p-0">
-                    <ng-container *ngIf="session.imageThumbnail || session.imageThumbnail; else noImageThumbnailSet">
-                      <img [src]="session.imageThumbnail" [alt]="session.title" class="w-100 object-fit-cover" style="height: 200px;">
-                    </ng-container>
-                  <ng-template #noImageThumbnailSet>
-                    <img src="assets/images/sessions/empty.png" [alt]="session.title" class="w-100 object-fit-cover" style="height: 200px;">
-                  </ng-template>
-                </div>
-                <div class="card-body">
-                  <div class="position-relative z-2">
-                    <h4 class="card-title">{{ session.title }}</h4>
-                    <p class="card-subtitle">{{ session.category }}</p>
-                    <div class="d-flex flex-column mt-4">
-                      <p><fa-icon [icon]="faCalendar" class="text-brand-green-500"></fa-icon> {{ session.date | date:'medium' }}</p>
-                      <p><fa-icon [icon]="faClock" class="text-brand-green-500"></fa-icon> {{ session.time }} ({{ session.sessionDuration }})</p>
-                      <!-- <p>Status: <span class="badge-sm" [ngClass]="{
-                                  'bg-success': session.status === 'active',
-                                  'bg-secondary': session.status === 'inactive'
-                                }">
-                                  {{ session.status | titlecase }}
-                                </span>
-                      </p> -->
-                    </div>
-                  </div>
-                  <p>
-                    {{ session.description }}
-                  </p>
-                  <hr>
-                  <div class="d-flex flex-wrap align-items-center gap-2">
-                    <img [src]="session.mentor.profilePicture" [alt]="session.mentor.fullName" class="w-60 h-60 object-fit-cover" style="border-radius: 50%;">
-                    <div>
-                      <h4>{{ session.mentor.fullName }}</h4>
-                      <p>{{ session.mentor.positionTitle }}</p>
-                    </div>
-                  </div>
-                </div>
-                <div class="card-footer bg-transparent border-0">
-                  <a [href]="session.status === 'active' ? session.link : null"
-                    target="_blank"
-                    class="btn btn-primary w-100"
-                    [class.disabled]="session.status === 'inactive'"
-                    (click)="session.status === 'inactive' ? $event.preventDefault() : null"
-                  >
-                    Session Is {{ session.status | titlecase }}
-                </a>
 
+            <!-- Loading skeleton -->
+            <ng-container *ngIf="loading; else sessionsLoaded">
+              <card-skeleton [skeletonCount]="3"></card-skeleton>
+            </ng-container>
+
+            <!-- Render sessions -->
+            <ng-template #sessionsLoaded>
+              <ng-container *ngIf="sessions.length > 0; else noSessions">
+                <div *ngFor="let session of filterSessions(sessions)" class="col-12 col-md-6 col-lg-4">
+                  <div class="card">
+
+                    <!-- Thumbnail -->
+                    <div class="card-header d-block overflow-hidden p-0">
+                      <img [src]="session.thumbnailUrl || 'assets/images/sessions/empty.png'"
+                           [alt]="session.title" class="w-100 object-fit-cover" style="height: 200px;">
+                    </div>
+
+                    <!-- Content -->
+                    <div class="card-body">
+                      <div class="position-relative z-2">
+                        <h4 class="card-title">{{ session.title || 'Career Coaching' }}</h4>
+
+                        <div class="d-flex flex-column mt-4">
+                          <p>
+                            <fa-icon [icon]="faCalendar" class="text-brand-green-500"></fa-icon>
+                            {{ session.calendlyStartAt ? (session.calendlyStartAt | date:'mediumDate') + ', ' + (session.calendlyStartAt | date:'shortTime') : 'TBD' }}
+                          </p>
+                          <p>
+                            <fa-icon [icon]="faClock" class="text-brand-green-500"></fa-icon>
+                            {{ formatDuration(session.durationMinutes) }}
+                          </p>
+                        </div>
+                      </div>
+
+                      <p>{{ session.description || 'One-on-one career coaching focused on resume, interview prep, and career guidance.' }}</p>
+
+                      <hr>
+
+                      <!--                      &lt;!&ndash; Mentor / Mentee IDs &ndash;&gt;-->
+                      <!--                      <div class="d-flex flex-wrap align-items-center gap-2">-->
+                      <!--                        <div>-->
+                      <!--                          <h6>Mentor ID: {{ session.mentorId }}</h6>-->
+                      <!--                          <h6>Mentee ID: {{ session.menteeId }}</h6>-->
+                      <!--                        </div>-->
+                      <!--                      </div>-->
+                    </div>
+
+                    <div class="card-footer bg-transparent border-0">
+                      <button class="btn btn-primary w-100" (click)="handleSessionClick(session)"
+                              [attr.title]="session.status === 'pending' ? 'This session is pending payment' : ''">
+                        Join Session
+                      </button>
+                    </div>
+
+                  </div>
                 </div>
-              </div>
-            </div>
+              </ng-container>
+
+              <ng-template #noSessions>
+                <div class="col-12 text-center py-5">
+                  <p>You have no sessions booked yet.</p>
+                </div>
+              </ng-template>
+            </ng-template>
+
           </div>
-
         </div>
       </div>
 
     </div>
+  </div>
+</div>
+
+<!-- Payment Modal -->
+<div class="payment-modal-backdrop" *ngIf="showPaymentModal">
+  <div class="payment-modal">
+    <button class="payment-close-btn" (click)="closePaymentModal()">×</button>
+
+    <div *ngIf="isLoadingPayment" class="payment-loading">
+      <div class="spinner-border text-primary" role="status"></div>
+      <p class="mt-2 text-muted small">Preparing payment window…</p>
+    </div>
+
+    <div class="payment-iframe-container" *ngIf="!isLoadingPayment">
+      <iframe
+        class="payment-iframe"
+        [src]="safePaymentUrl"
+        allow="clipboard-write; payment; camera; microphone; fullscreen"
+        sandbox="allow-forms allow-scripts allow-same-origin allow-popups allow-modals">
+      </iframe>
+    </div>
 
   </div>
-
 </div>
+

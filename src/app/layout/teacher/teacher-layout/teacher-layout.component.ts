@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { SharedModule } from "../../../shared/shared/shared.module";
+import { SharedModule } from "../../../shared/shared.module";
 import { SidebarComponent } from "../../sidebar/sidebar.component";
 import { TopbarComponent } from "../../topbar/topbar.component";
 import { TeacherSidebarComponent } from "../teacher-sidebar/teacher-sidebar.component";

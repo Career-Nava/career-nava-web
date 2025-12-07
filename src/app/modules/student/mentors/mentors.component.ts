@@ -6,12 +6,13 @@ import { faBriefcase, faComments, faStar, faStarHalfStroke } from '@fortawesome/
 import { Observable } from 'rxjs';
 import { Mentor } from "../../../services/mentor/mentor.model";
 import { MentorService } from "../../../services/mentor/mentor.service";
-import { SharedModule } from '../../../shared/shared/shared.module';
+import { CardSkeletonComponent } from "../../../shared/components/card-skeleton/card-skeleton.component";
+import { SharedModule } from '../../../shared/shared.module';
 
 @Component({
   selector: 'app-mentors',
   standalone: true,
-  imports: [ CommonModule, RouterModule, FontAwesomeModule, SharedModule ],
+  imports: [ CommonModule, RouterModule, FontAwesomeModule, SharedModule, CardSkeletonComponent ],
   templateUrl: './mentors.component.html',
   styleUrls: [ './mentors.component.scss' ]
 })

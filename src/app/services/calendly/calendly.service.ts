@@ -32,4 +32,15 @@ export class CalendlyService extends RestService {
       })
     );
   }
+
+  // Fetch booking link
+  getBookingLink(mentorId: number): Observable<string> {
+    return this.http.get<ApiResponse<string>>(`${ this.baseUrl }/booking-link`, { params: { mentorId } }).pipe(
+      map(res => {
+        if (res?.data) return res.data;
+        throw new Error('Invalid Calendly booking link response');
+      }),
+      catchError(err => throwError(() => err))
+    );
+  }
 }

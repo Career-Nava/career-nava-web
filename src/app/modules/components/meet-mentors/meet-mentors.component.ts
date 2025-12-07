@@ -3,7 +3,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faBriefcase, faComments } from '@fortawesome/free-solid-svg-icons';
 import { Mentor } from '../../../services/mentor/mentor.model';
 import { MentorService } from '../../../services/mentor/mentor.service';
-import { SharedModule } from '../../../shared/shared/shared.module';
+import { SharedModule } from '../../../shared/shared.module';
 
 @Component({
   selector: 'app-meet-mentors',

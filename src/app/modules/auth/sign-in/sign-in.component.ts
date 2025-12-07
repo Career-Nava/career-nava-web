@@ -4,7 +4,7 @@ import { Router } from "@angular/router";
 import { GoogleAuthRequest, LoginRequest } from "../../../services/auth/auth.model";
 import { AuthService } from "../../../services/auth/auth.service";
 import { ConfigurationService } from "../../../services/configuration.service";
-import { SharedModule } from '../../../shared/shared/shared.module';
+import { SharedModule } from '../../../shared/shared.module';
 
 declare const google: any;
 

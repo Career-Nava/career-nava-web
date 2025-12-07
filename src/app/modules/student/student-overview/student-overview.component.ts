@@ -6,7 +6,7 @@ import { AuthService } from "../../../services/auth/auth.service";
 import { Student } from "../../../services/students/IStudent";
 import { StudentsService } from "../../../services/students/students.service";
 import { UserModel } from "../../../services/user/user.model";
-import { SharedModule } from "../../../shared/shared/shared.module";
+import { SharedModule } from "../../../shared/shared.module";
 
 @Component({
   selector: 'app-student-overview',

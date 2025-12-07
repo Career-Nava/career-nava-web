@@ -5,7 +5,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { ToastContainerComponent } from '../../modules/shared/toast-container/toast-container/toast-container.component';
+import { ToastContainerComponent } from '../modules/shared/toast-container/toast-container/toast-container.component';
 
 @NgModule({
   declarations: [ToastContainerComponent],

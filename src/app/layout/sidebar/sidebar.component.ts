@@ -4,7 +4,7 @@ import { faArrowRightFromBracket, faCertificate, faLaptop, faUsers } from '@fort
 import { Subscription } from 'rxjs';
 import { AuthService } from '../../services/auth/auth.service';
 import { SidebarService } from '../../services/sidebar/sidebar.service';
-import { SharedModule } from '../../shared/shared/shared.module';
+import { SharedModule } from '../../shared/shared.module';
 
 interface SidebarItem {
   label: string;

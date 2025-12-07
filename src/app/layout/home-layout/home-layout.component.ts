@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FooterComponent } from '../../modules/components/footer/footer.component';
 import { HeaderComponent } from '../../modules/components/header/header.component';
-import { SharedModule } from '../../shared/shared/shared.module';
+import { SharedModule } from '../../shared/shared.module';
 
 @Component({
   selector: 'app-home-layout',

@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import {Student} from "../../../services/students/IStudent";
 import {Subscription} from "rxjs";
 import {StudentsService} from "../../../services/students/students.service";
-import {SharedModule} from "../../../shared/shared/shared.module";
+import {SharedModule} from "../../../shared/shared.module";
 import * as Icons from '@fortawesome/free-solid-svg-icons';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 
