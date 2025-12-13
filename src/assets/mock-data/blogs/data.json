@@ -1,0 +1,56 @@
+[
+  {
+    "id": 1,
+    "title": "Top 10 Fully Funded Scholarships for African Students in 2025",
+    "image": "assets/images/landing-page/graduates.png",
+    "short_description": "A breakdown of the best fully funded opportunities for African students looking to study abroad.",
+    "long_description": [
+      "If you’re planning to study abroad, 2025 offers a wide range of fully funded scholarships from top institutions. These programs cover tuition, living expenses, travel, and even research grants.",
+      "Most of these scholarships are offered by governments, global organizations, and top universities in Europe, the UK, Canada, and Asia. Whether you're applying for undergraduate, master's, or PhD programs, the opportunities are endless.",
+      "Be sure to prepare a strong motivation letter, updated CV, academic transcripts, and recommendation letters. Competition is high, so start early and review all required documents carefully."
+    ],
+    "author": {
+      "name": "Clarice Kibii",
+      "image": "assets/images/avatars/female-08.jpg"
+    },
+    "upload_date": "2025-01-10",
+    "category": "Scholarships",
+    "reading_time": "4 min"
+  },
+  {
+    "id": 2,
+    "title": "How to Write a Strong Scholarship Motivation Letter",
+    "image": "assets/images/landing-page/bg-mesh-2.png",
+    "short_description": "Your motivation letter can make or break your scholarship application—here's how to craft it right.",
+    "long_description": [
+      "A motivation letter tells the selection committee who you are and why you deserve funding. It should express your academic interests, achievements, career goals, and what you hope to contribute to your field.",
+      "Start with a powerful introduction that gives the committee a reason to keep reading. Provide examples of leadership, volunteer work, research, or community involvement.",
+      "Finally, end with a clear statement of how the scholarship will help you achieve your long-term academic and career goals. Remember to keep it honest, passionate, and well-structured."
+    ],
+    "author": {
+      "name": "Ted Mwangi",
+      "image": "assets/images/avatars/male-08.jpg"
+    },
+    "upload_date": "2025-02-01",
+    "category": "Guides",
+    "reading_time": "3 min"
+  },
+  {
+    "id": 3,
+    "title": "Breaking Down GPA Requirements for International Scholarships",
+    "image": "",
+    "short_description": "Understanding how GPA calculations work can increase your chances when applying for scholarships.",
+    "long_description": [
+      "Scholarships often list specific GPA requirements, but different countries calculate GPA differently. Understanding conversion tools and how evaluators interpret your academic performance is crucial.",
+      "Some scholarships do not focus purely on GPA—they also assess leadership, extracurricular activities, and work experience. So even if your grades are not perfect, you still have a chance.",
+      "Before applying, check whether your scholarship requires a WES evaluation or transcript conversion. This ensures your academic qualifications are presented correctly."
+    ],
+    "author": {
+      "name": "Linda Maritim",
+      "image": ""
+    },
+    "upload_date": "2025-02-15",
+    "category": "Education",
+    "reading_time": "5 min"
+  }
+]

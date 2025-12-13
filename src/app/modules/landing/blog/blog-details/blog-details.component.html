@@ -1,0 +1,62 @@
+<ng-container>
+  <!-- Blog Header Image -->
+  <section class="bg-default-brand-primary position-relative d-flex align-items-center blog-section">
+    <div class="overlay dark-overlay"></div>
+  </section>
+
+  <section *ngIf="blog" class="blog blog-container">
+    <div class="container">
+      <div class="row g-4">
+        <div class="col-lg-9 justify-content-center align-content-center">
+
+          <!-- Blog Image -->
+          <div class="blog-thumb">
+            <img [src]="blog.image || 'assets/images/sessions/empty.png'" alt="Blog Image">
+          </div>
+
+          <div class="blog-meta">
+            <div class="blog-author">
+              <img [src]="blog.author.image || 'assets/icons/user.svg'" alt="Author">
+              <span>{{ blog.author.name || 'Unknown Author' }}</span>
+            </div>
+            <div class="blog-date">
+              <img src="assets/icons/calendar.svg" alt="Date">
+              <span>{{ blog.upload_date | date:'mediumDate' || 'No date' }}</span>
+            </div>
+            <div class="blog-reading-time">
+              <img src="assets/icons/clock.svg" alt="Reading Time">
+              <span>{{ blog.reading_time }}</span>
+            </div>
+          </div>
+
+          <!-- Blog Title -->
+          <div class="blog-title">
+            <h2>{{ blog.title }}</h2>
+          </div>
+
+          <!-- Blog Description -->
+          <div class="blog-desc" *ngFor="let paragraph of blog.long_description">
+            <p>{{ paragraph }}</p>
+          </div>
+
+          <!-- Quote Block -->
+          <div class="blog-quote">
+            <img src="assets/icons/quoteLg.svg" alt="Quote">
+            <p>{{ blog.short_description }}</p>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Blog Not Found / 404 -->
+  <section *ngIf="!blog" class="not-found d-flex align-items-center justify-content-center">
+    <div class="text-center">
+      <img src="assets/icons/Page-Not-Found.png" class="mb-4 not-found-img" alt="Error">
+      <h1 class="mb-3">Oops! Blog Doesn't Exist</h1>
+      <p class="mb-4 text-muted">The blog you are looking for might have been removed or never existed.</p>
+      <a routerLink="/blog" class="btn btn-primary btn-lg">Go Back To Blogs</a>
+    </div>
+  </section>
+</ng-container>

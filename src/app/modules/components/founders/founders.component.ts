@@ -20,7 +20,7 @@ export class FoundersComponent implements AfterViewInit {
       message: 'At CareerNava, we believe that every scholar deserves access to the resources and support they need to achieve their educational goals. Our mission is to empower students from all backgrounds to unlock their full scholarship potential and pursue their dreams without financial barriers.'
     },
     {
-      name: 'Odour Kevin',
+      name: 'Oduor Kevin',
       image: 'assets/images/avatars/founders/kevin.png',
       message: 'Scholarships changed our lives. At CareerNava, we’re committed to helping you unlock the same opportunities and achieve your full potential.'
     }

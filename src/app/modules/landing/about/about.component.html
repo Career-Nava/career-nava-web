@@ -1,64 +1,68 @@
 <!-- Hero Section -->
 <section class="bg-dark-primary text-default-primary hero-section position-relative min-vh-100  overflow-hidden d-flex align-items-center">
-    <div class="ellipsis first"></div>
-    <div class="ellipsis second"></div>
+  <div class="ellipsis first"></div>
+  <div class="ellipsis second"></div>
 
-    <div class="d-flex flex-column align-items-center w-100 z-10 pt-10 md:pt-0">
-        <div class="container">
-            <div class="w-100">
-                <div class="row align-items-center justify-content-center position-relative row-gap-4" style="z-index: 12;">
-                    <div class="col-12 col-lg-7">                     
-                        <div class="text-center text-lg-start">
-                        <h1 class="text-custom-light-50">Finding great coaches to succeed in your career</h1>  
-                            <p>At CareerNava, we firmly believe in the power of community voices. They are the driving force behind the verification of your social impact, distinguishing us from traditional third-party registries.</p>
-                            <a class="btn btn-secondary w-100 max-w-240 mx-auto ms-lg-0" href="/sign-in">
-                            <span>Book a Session</span>
-                            </a>
-                        </div> 
-                    
-                    </div>
-                    <div class="col-12 col-lg-5">
-                        <img src="assets/images/landing-page/bg-mesh-2.png" alt="Image" class="object-fit-contain w-100 h-100" style="max-height: 450px;">
-                    </div>
-                </div>
-        </div>
-    </div>
-    </div>
-
-    <div class="overlay dark-overlay"></div>
-</section>
-
-<!-- CTA Section -->
-<section class="statistics bg-default-brand-secondary">
+  <div class="d-flex flex-column align-items-center w-100 z-10 pt-10 md:pt-0">
     <div class="container">
-    <div class="w-100 max-w-md mx-auto">
-        <div class="row align-items-center justify-content-around gap-4">
-            <div class="col-12 col-lg-5">
-                <div class="text-center text-md-start">
-                    <h2 class="title font-bold">View How Far We've Reached</h2>
-                    <p>Check how many mentors and mentees we have impacted with this program.</p>
-                </div>
+      <div class="w-100">
+        <div class="row align-items-center justify-content-center position-relative row-gap-4" style="z-index: 12;">
+          <div class="col-12 col-lg-7">
+            <div class="text-center text-lg-start">
+              <h1 class="text-custom-light-50">Finding great coaches to succeed in your career</h1>
+              <p>At CareerNava, we firmly believe in the power of community voices. They are the driving force behind the verification of your social impact, distinguishing us from traditional
+                third-party registries.</p>
+              <a class="btn btn-secondary w-100 max-w-240 mx-auto ms-lg-0" [routerLink]="['/sign-in']">
+                <span>Book a Session</span>
+              </a>
             </div>
-            <div class="col-12 col-lg-6">
-                <div class="row text-center">
-                    <div class="col-12 col-md-6 col-lg-6">
-                        <h2 class="numbers font-bold text-default-brand-primary ">{{ coachesCount | number }} +</h2>
-                        <p>Coaches</p>
-                    </div>
-                    <div class="col-12 col-md-6 col-lg-6">
-                        <h2 class="numbers font-bold text-default-brand-primary ">{{ scholarshipsCount | number }} +</h2>
-                        <p>Scholarships</p>
-                    </div>
-                </div>
-            </div>
-            
+
+          </div>
+          <div class="col-12 col-lg-5">
+            <img src="assets/images/landing-page/bg-mesh-2.png" alt="Image" class="object-fit-contain w-100 h-100" style="max-height: 450px;">
+          </div>
         </div>
+      </div>
     </div>
-    </div>
+  </div>
+
+  <div class="overlay dark-overlay"></div>
 </section>
+
+<!-- Vision Beliefs-->
+<app-vision></app-vision>
 
 <!-- Meet Mentors -->
- <app-meet-mentors></app-meet-mentors>
+<app-meet-mentors></app-meet-mentors>
+
+<!-- Statistics Section -->
+<section class="statistics bg-default-brand-secondary">
+  <div class="container">
+    <div class="w-100 max-w-md mx-auto">
+      <div class="row align-items-center justify-content-around gap-4">
+        <div class="col-12 col-lg-5">
+          <div class="text-center text-md-start">
+            <h2 class="title font-bold">View How Far We've Reached</h2>
+            <p>Check how many mentors and mentees we have impacted with this program.</p>
+          </div>
+        </div>
+        <div class="col-12 col-lg-6">
+          <div class="row text-center">
+            <div class="col-12 col-md-6 col-lg-6">
+              <h2 class="numbers font-bold text-default-brand-primary ">{{ coachesCount | number }} +</h2>
+              <p>Coaches</p>
+            </div>
+            <div class="col-12 col-md-6 col-lg-6">
+              <h2 class="numbers font-bold text-default-brand-primary ">{{ scholarshipsCount | number }} +</h2>
+              <p>Scholarships</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
 
 <!-- FAQs -->
 <app-faqs></app-faqs>

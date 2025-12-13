@@ -4,14 +4,12 @@ import { AdminLayoutComponent } from "./layout/admin/admin-layout/admin-layout.c
 import { HomeLayoutComponent } from './layout/home-layout/home-layout.component';
 import { LayoutComponent } from './layout/layout.component';
 import { TeacherLayoutComponent } from "./layout/teacher/teacher-layout/teacher-layout.component";
-import { ClassesComponent } from './modules/admin/classes/classes.component';
-import { ExamsComponent } from './modules/admin/exams/exams.component';
 import { OverviewComponent } from './modules/admin/overview/overview.component';
-import { ProfileComponent } from './modules/admin/profile/profile.component';
 import { AuthLayoutComponent } from './modules/auth/auth-layout/auth-layout.component';
 import { SignInComponent } from "./modules/auth/sign-in/sign-in.component";
 import { SignUpComponent } from './modules/auth/sign-up/sign-up/sign-up.component';
 import { AboutComponent } from './modules/landing/about/about.component';
+import { BlogDetailsComponent } from './modules/landing/blog/blog-details/blog-details.component';
 import { BlogComponent } from './modules/landing/blog/blog.component';
 import { HomeComponent } from './modules/landing/home/home.component';
 import { ScholarshipDetailsComponent } from './modules/scholarships/scholarship-details/scholarship-details.component';
@@ -30,7 +28,8 @@ export const routes: Routes = [
       [
         { path: 'home', component: HomeComponent },
         { path: 'about', component: AboutComponent },
-        { path: 'blog', component: BlogComponent }
+        { path: 'blog', component: BlogComponent },
+        { path: 'blog/:id', component: BlogDetailsComponent }
       ]
   },
 
@@ -57,9 +56,6 @@ export const routes: Routes = [
   {
     path: 'admin', canActivate: [ authGuard ], component: AdminLayoutComponent, children: [
       { path: 'overview', component: OverviewComponent },
-      { path: 'classes', component: ClassesComponent },
-      { path: 'exams', component: ExamsComponent },
-      { path: 'profile', component: ProfileComponent },
     ]
   },
 
@@ -70,16 +66,6 @@ export const routes: Routes = [
       { path: 'scholars', component: StudentsComponent },
     ]
   },
-
-  // Student Dashboard
-  // {path: 'student', component: LayoutComponent, children: [
-  //     {path: 'overview', component: StudentOverviewComponent},
-  //     {path: 'assignments', component: StudentAssignmentComponent},
-  //     { path:'mentors', component: MentorsComponent },
-  //     { path:'mentors/mentor-details/:id', component: MentorDetailsComponent },
-  //     { path:'sessions', component: StudentSessionsComponent },
-  //   ]
-  // },
 
 
 //   { path: '**', component: PageNotFoundComponent },  // Wildcard route for a 404 page

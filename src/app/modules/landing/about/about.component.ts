@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
+import { RouterLink } from "@angular/router";
 import { MeetMentorsComponent } from '../../components/meet-mentors/meet-mentors.component';
 import { CommonModule } from '@angular/common';
 import { FaqsComponent } from '../../components/faqs/faqs.component';
+import { VisionComponent } from '../vision/vision.component';
 
 @Component({
   selector: 'app-about',
@@ -9,7 +11,9 @@ import { FaqsComponent } from '../../components/faqs/faqs.component';
   imports: [
     CommonModule,
     MeetMentorsComponent,
-    FaqsComponent
+    FaqsComponent,
+    VisionComponent,
+    RouterLink
   ],
   templateUrl: './about.component.html',
   styleUrl: './about.component.scss'

@@ -31,7 +31,7 @@ export class FooterComponent {
 
   contact = {
     address: 'Karen Village, Nairobi (Kenya)',
-    email: 'career.nava.app@gmail.com',
+    email: 'careernava.app@gmail.com',
     phone: '+254 715 429 997',
   };
 

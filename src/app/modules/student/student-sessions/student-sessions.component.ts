@@ -8,11 +8,12 @@ import { Session } from "../../../services/session/session.model";
 import { SessionService } from "../../../services/session/session.service";
 import { UserModel } from "../../../services/user/user.model";
 import { CardSkeletonComponent } from "../../../shared/components/card-skeleton/card-skeleton.component";
+import { SharedModule } from "../../../shared/shared.module";
 
 @Component({
   selector: 'app-student-sessions',
   standalone: true,
-  imports: [ NgIf, AsyncPipe, NgForOf, FaIconComponent, DatePipe, CardSkeletonComponent ],
+  imports: [ NgIf, AsyncPipe, NgForOf, FaIconComponent, DatePipe, CardSkeletonComponent, SharedModule ],
   templateUrl: './student-sessions.component.html',
   styleUrls: [ './student-sessions.component.scss' ]
 })
