@@ -11,21 +11,21 @@
 
           <!-- Blog Image -->
           <div class="blog-thumb">
-            <img [src]="blog.image || 'assets/images/sessions/empty.png'" alt="Blog Image">
+            <img [src]="blog.coverImage" alt="Blog Image">
           </div>
 
           <div class="blog-meta">
             <div class="blog-author">
-              <img [src]="blog.author.image || 'assets/icons/user.svg'" alt="Author">
-              <span>{{ blog.author.name || 'Unknown Author' }}</span>
+              <img [src]="blog.author?.profilePicture || 'assets/icons/user.svg'" alt="Author">
+              <span>{{ blog.author?.fullName || 'Unknown Author' }}</span>
             </div>
             <div class="blog-date">
               <img src="assets/icons/calendar.svg" alt="Date">
-              <span>{{ blog.upload_date | date:'mediumDate' || 'No date' }}</span>
+              <span>{{ blog.createdAt | date:'mediumDate' || 'No date' }}</span>
             </div>
             <div class="blog-reading-time">
               <img src="assets/icons/clock.svg" alt="Reading Time">
-              <span>{{ blog.reading_time }}</span>
+              <span>{{ blog.readingTime }}</span>
             </div>
           </div>
 
@@ -35,14 +35,14 @@
           </div>
 
           <!-- Blog Description -->
-          <div class="blog-desc" *ngFor="let paragraph of blog.long_description">
-            <p>{{ paragraph }}</p>
+          <div class="blog-desc" *ngFor="let content of blog.contents">
+            <p>{{ content.contentText }}</p>
           </div>
 
           <!-- Quote Block -->
           <div class="blog-quote">
             <img src="assets/icons/quoteLg.svg" alt="Quote">
-            <p>{{ blog.short_description }}</p>
+            <p>{{ blog.blockQuote }}</p>
           </div>
 
         </div>

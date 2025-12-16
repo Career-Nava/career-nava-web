@@ -12,16 +12,11 @@ export interface LoginRequest {
 }
 
 export interface GoogleAuthRequest {
-  idToken: string; // Google credential token
+  idToken: string;
 }
 
-
-export interface AuthResponse {
-  success: boolean;
-  statusCode: number;
-  message: string;
-  data: {
-    token: string;
-    user: UserModel;
-  };
+// Auth payload returned by API
+export interface AuthPayload {
+  token: string;
+  user: UserModel;
 }

@@ -17,7 +17,6 @@ import { ScholarshipsComponent } from './modules/scholarships/scholarships/schol
 import { MentorDetailsComponent } from './modules/student/mentors/mentor-details/mentor-details.component';
 import { MentorsComponent } from './modules/student/mentors/mentors.component';
 import { StudentSessionsComponent } from './modules/student/student-sessions/student-sessions.component';
-import { StudentsComponent } from "./modules/teacher/students/students.component";
 import { TeacherOverviewComponent } from "./modules/teacher/teacher-overview/teacher-overview.component";
 
 export const routes: Routes = [
@@ -29,7 +28,7 @@ export const routes: Routes = [
         { path: 'home', component: HomeComponent },
         { path: 'about', component: AboutComponent },
         { path: 'blog', component: BlogComponent },
-        { path: 'blog/:id', component: BlogDetailsComponent }
+        { path: 'blog/:slug', component: BlogDetailsComponent }
       ]
   },
 
@@ -63,7 +62,6 @@ export const routes: Routes = [
   {
     path: 'teacher', canActivate: [ authGuard ], component: TeacherLayoutComponent, children: [
       { path: 'overview', component: TeacherOverviewComponent },
-      { path: 'scholars', component: StudentsComponent },
     ]
   },
 

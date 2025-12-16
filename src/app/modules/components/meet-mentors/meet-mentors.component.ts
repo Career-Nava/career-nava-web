@@ -23,8 +23,17 @@ export class MeetMentorsComponent implements OnInit {
 
   ngOnInit(): void {
     this.mentorService.getAllMentors().subscribe({
-      next: (data) => (this.mentors = data),
+      next: (data) => {
+        this.mentors = this.getRandomMentors(data, 4);
+      },
       error: () => (this.mentors = [])
     });
+  }
+
+  private getRandomMentors(mentors: Mentor[], count: number): Mentor[] {
+    return mentors
+      .slice() // avoid mutating original array
+      .sort(() => Math.random() - 0.5)
+      .slice(0, count);
   }
 }

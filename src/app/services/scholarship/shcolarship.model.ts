@@ -1,39 +1,30 @@
 import { Mentor } from "../mentor/mentor.model";
 
-// DTOs that match the backend
-export interface MentorBasicDto {
-  userId: number;
-  fullName: string;
-  email: string;
-}
-
+// Backend DTOs
 export interface ScholarshipDto {
   scholarshipId: number;
   title: string;
-  imageThumbnail: string;
-  summary: string;
-  description: string;
-  funding: string;
-  status: string;
-  mentor: Mentor;
+  imageThumbnail?: string;
+  summary?: string;
+  description?: string;
+  funding?: 'Fully Funded' | 'Partially Funded' | 'No Funding';
+  status?: 'active' | 'inactive';
+  mentor?: Mentor;
+  date?: string;               // ISO string
+  applicationDeadline?: string; // ISO string
+  benefits?: string[];
+  menteesInterested?: string[];
 }
 
-// Generic API Response wrapper
-export interface ApiResponse<T> {
-  success: boolean;
-  message: string;
-  data: T;
-}
-
-// UI model (kept as-is)
+// UI Model
 export interface Scholarship {
   id: number;
   title: string;
   link: string;
   role: string;
   imageThumbnail: string;
-  date: string | Date;
-  applicationDeadline: string | Date;
+  date: Date;
+  applicationDeadline: Date;
   time?: string;
   sessionDuration?: string;
   reviews: number;
@@ -46,6 +37,6 @@ export interface Scholarship {
   benefits: string[];
   status: 'active' | 'inactive';
   isBookmarked: boolean;
-  mentor: Mentor;
+  mentor: Mentor | null;
   menteesInterested: string[];
 }

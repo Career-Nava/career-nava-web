@@ -1,9 +1,7 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Component } from '@angular/core';
 import { AuthService } from '../../services/auth/auth.service';
 import { CalendlyService } from "../../services/calendly/calendly.service";
 import { SidebarService } from '../../services/sidebar/sidebar.service';
-import { UserModel } from '../../services/user/user.model';
 import { SharedModule } from '../../shared/shared.module';
 
 @Component({
@@ -13,11 +11,10 @@ import { SharedModule } from '../../shared/shared.module';
   templateUrl: './topbar.component.html',
   styleUrls: [ './topbar.component.scss' ]
 })
-export class TopbarComponent implements OnInit, OnDestroy {
+export class TopbarComponent {
 
-  user: UserModel | null = null;
-  calendlyVerified: boolean = false;
-  private subscriptions = new Subscription();
+  // Expose reactive user directly
+  readonly user$ = this.authService.user$;
 
   constructor(
     private authService: AuthService,
@@ -26,26 +23,11 @@ export class TopbarComponent implements OnInit, OnDestroy {
   ) {
   }
 
-  ngOnInit(): void {
-    // subscribe to reactive user
-    this.subscriptions.add(
-      this.authService.userObservable.subscribe(user => {
-        this.user = user;
-        this.calendlyVerified = user?.calendlyConnected ?? false;
-      })
-    );
-  }
-
-  ngOnDestroy(): void {
-    this.subscriptions.unsubscribe();
-  }
-
   toggleSidebar(): void {
     this.sidebarService.toggle();
   }
 
   connectCalendly(userId: number): void {
-    // Navigate to the backend connect endpoint
     window.location.href = this.calendlyService.getConnectUrl(userId);
   }
 }

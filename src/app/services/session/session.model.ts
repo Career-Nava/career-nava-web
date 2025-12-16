@@ -18,10 +18,3 @@ export interface Session {
   category?: string | null;
   thumbnailUrl?: string | null;
 }
-
-export interface ApiResponse<T> {
-  success: boolean;
-  statusCode: number;
-  message: string;
-  data: T;
-}

@@ -1,25 +1,31 @@
-<!-- Hero Section -->
-<section class="bg-dark-primary text-default-primary hero-section position-relative min-vh-100  overflow-hidden d-flex align-items-center">
+<section class="bg-dark-primary text-default-primary hero-section position-relative d-flex align-items-center">
   <div class="ellipsis first"></div>
   <div class="ellipsis second"></div>
 
   <div class="d-flex flex-column align-items-center w-100 z-10 pt-10 md:pt-0">
     <div class="container">
       <div class="w-100">
-        <div class="row align-items-center justify-content-center position-relative row-gap-4" style="z-index: 12;">
+        <div class="row align-items-center justify-content-center position-relative row-gap-4">
           <div class="col-12 col-lg-7">
             <div class="text-center text-lg-start">
-              <h1 class="text-custom-light-50">Insights on Scholarships</h1>
-              <p>At CareerNava, we firmly believe in the power of community voices. They are the driving force behind the verification of your social impact, distinguishing us from traditional
-                third-party registries.</p>
+              <h1 class="text-custom-light-50">
+                Scholarship & Career Insights
+              </h1>
+              <p class="mt-3">
+                Explore expert articles, practical guides, and real-world insights
+                designed to help you navigate scholarships, education, and career
+                growth with confidence.
+              </p>
               <a class="btn btn-secondary w-100 max-w-240 mx-auto ms-lg-0" [routerLink]="['/sign-in']">
                 <span>Book a Session</span>
               </a>
             </div>
-
           </div>
-          <div class="col-12 col-lg-5">
-            <img src="assets/images/landing-page/graduates.png" alt="Image" class="object-fit-contain w-100 h-100" style="max-height: 450px;">
+
+          <div class="col-12 col-lg-5 text-center">
+            <img src="assets/images/landing-page/graduates.png"
+                 alt="Students celebrating academic success"
+                 class="object-fit-contain w-100 h-100 graduate-image"/>
           </div>
         </div>
       </div>
@@ -29,53 +35,53 @@
   <div class="overlay dark-overlay"></div>
 </section>
 
-<!-- Blogs Section -->
 <section class="blog bg-default-brand-secondary">
   <div class="container">
     <div class="w-100">
       <div class="row align-items-center justify-content-around gap-4 m-0">
         <div class="col-12 col-lg-12">
-          <div class="text-center">
-            <h2 class="title font-bold">View How Far We've Reached</h2>
-            <p>Check how many mentors and mentees we have impacted with this program.</p>
+          <div class="text-center mb-4">
+            <h2 class="title font-bold">
+              Latest Articles
+            </h2>
+            <p class="text-muted">
+              Stay up to date with the newest insights, tips, and opportunities.
+            </p>
           </div>
         </div>
+
         <div class="col-12 col-lg-12">
           <div class="row text-center row-gap-4">
-
-            <!-- Blog Item -->
             <div *ngFor="let blog of blogs" class="col-12 col-lg-4">
               <div class="blog-item card mb-4">
-                <div class="card-header justify-content-center align-items-end position-relative text-center">
-
-                  <ng-container *ngIf="blog.image; else thumbnail;">
-                    <img [src]="blog.image" [alt]="blog.title">
-                  </ng-container>
-
-                  <ng-template #thumbnail>
-                    <img src="assets/images/sessions/empty.png" alt=Image>
-                  </ng-template>
-
-                  <!-- <h2 class="card-title font-bold text-white">{{ blog.title }}</h2> -->
+                <div class="card-header p-0 position-relative">
+                  <img [src]="blog.coverImage" [alt]="blog.title" class="w-100 object-fit-cover"/>
                 </div>
-                <div class="card-body">
-                  <h2 class="card-title font-bold">{{ blog.title }}</h2>
-                  <p>
-                    {{ blog.short_description }}
+
+                <div class="card-body d-flex flex-column">
+                  <div class="mb-2 text-muted small">
+                    <span *ngIf="blog.category">{{ blog.category }}</span>
+                    <span *ngIf="blog.readingTime"> • {{ blog.readingTime }}</span>
+                  </div>
+
+                  <h3 class="card-title font-bold">
+                    {{ blog.title }}
+                  </h3>
+
+                  <p class="card-text text-muted flex-grow-1">
+                    {{ blog.blockQuote }}
                   </p>
                 </div>
+
                 <div class="card-footer bg-transparent p-0">
-                  <button [routerLink]="['/blog', blog.id]" class="btn btn-primary w-100 h-100" style="border-radius: 0;">
-                    View More
+                  <button [routerLink]="['/blog', blog.slug]" class="btn btn-primary w-100 h-100">
+                    Read Article
                   </button>
                 </div>
               </div>
-
             </div>
-
           </div>
         </div>
-
       </div>
     </div>
   </div>

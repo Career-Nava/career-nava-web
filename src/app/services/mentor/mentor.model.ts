@@ -47,30 +47,3 @@ export interface MentorExperience {
   startDate?: string;  // ISO string
   endDate?: string | null; // null = Present
 }
-
-// --- Request DTOs ---
-export interface CreateMentorRequest {
-  fullName: string;
-  email: string;
-  plainPassword: string;
-  company?: string;
-  positionTitle?: string;
-  linkedInUrl?: string;
-}
-
-export interface UpdateMentorRequest {
-  fullName?: string;
-  email?: string;
-  company?: string;
-  positionTitle?: string;
-  linkedInUrl?: string;
-  isActive?: boolean;
-}
-
-// --- Generic API Response wrapper ---
-export interface ApiResponse<Mentor> {
-  success: boolean;
-  statusCode: number;
-  message: string;
-  data: Mentor;
-}
