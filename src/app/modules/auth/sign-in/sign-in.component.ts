@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, OnInit } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
-import { GoogleAuthRequest, LoginRequest } from "../../../services/auth/auth.model";
+import { LoginRequest } from "../../../services/auth/auth.model";
 import { AuthService } from "../../../services/auth/auth.service";
 import { ConfigurationService } from "../../../services/configuration.service";
 import { SharedModule } from "../../../shared/shared.module";
@@ -21,8 +21,7 @@ export class SignInComponent implements OnInit, AfterViewInit {
   loading = false;
   errorMessage = '';
 
-  private googleClientId?: string;
-  isGoogleSignInAvailable: boolean = false;
+  isGoogleSignInAvailable: boolean = true;
 
   constructor(
     private fb: FormBuilder,
@@ -33,73 +32,35 @@ export class SignInComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
-    const user = this.authService.getUser();
-    if (user) this.navigateByRole(user.role);
-
     this.signInForm = this.fb.group({
       email: [ '', [ Validators.required, Validators.email ] ],
       password: [ '', [ Validators.required, Validators.minLength(6) ] ]
     });
 
-    const apiConfig: any = this.config.get<any>('api');
-    this.googleClientId = apiConfig?.googleClientId;
+    // already logged in
+    const existingUser = this.authService.getUser();
+    if (existingUser) {
+      this.navigateByRole(existingUser.role);
+      return;
+    }
+
+    // OAuth redirect handling
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get('token');
+
+    if (token) {
+      const user = this.authService.restoreSessionFromToken(token);
+      this.navigateByRole(user.role);
+    }
   }
 
   ngAfterViewInit(): void {
     const user = this.authService.getUser();
     if (user) this.navigateByRole(user.role);
-
-    if (!this.googleClientId) return;
-
-    if (typeof google === 'undefined' || !google?.accounts?.id) {
-      setTimeout(() => this.initGoogleSDK(), 1000);
-    } else {
-      this.initGoogleSDK();
-    }
   }
 
-  private initGoogleSDK(): void {
-    if (!this.googleClientId || typeof google === 'undefined' || !google.accounts?.id) return;
-
-    google.accounts.id.initialize({
-      client_id: this.googleClientId,
-      callback: (response: any) => this.handleGoogleCredentialResponse(response),
-      ux_mode: 'popup'
-    });
-  }
-
-  async onGoogleSignIn(): Promise<void> {
-    if (!this.googleClientId || typeof google === 'undefined' || !google?.accounts?.id) return;
-
-    try {
-      google.accounts.id.prompt();
-    } catch (err) {
-      this.errorMessage = 'Google sign-in failed to start.';
-      console.error(err);
-    }
-  }
-
-  private handleGoogleCredentialResponse(response: any): void {
-    const idToken = response?.credential;
-    if (!idToken) {
-      this.errorMessage = 'Failed to obtain Google token.';
-      return;
-    }
-
-    this.loading = true;
-    const payload: GoogleAuthRequest = { idToken };
-
-    this.authService.googleLogin(payload).subscribe({
-      next: (res) => {
-        // session already saved inside authService
-        this.navigateByRole(res.user.role);
-        this.loading = false;
-      },
-      error: (err) => {
-        this.errorMessage = err?.error?.message || 'Google login failed.';
-        this.loading = false;
-      }
-    });
+  onGoogleSignIn(): void {
+    window.location.href = this.authService.getGoogleConnectUrl();
   }
 
   onSubmit(): void {

@@ -81,10 +81,8 @@
                     </div>
 
                     <div class="card-footer bg-transparent border-0">
-                      <button class="btn w-100" 
-                      [ngClass]="session.status === 'pending' ? 'btn-secondary btn-disabled' : 'btn-primary' "
-                      (click)="handleSessionClick(session)"
-                              [attr.title]="session.status === 'pending' ? 'This session is pending payment' : ''">
+                      <button class="btn w-100 'btn-primary'"
+                              (click)="handleSessionClick(session)" [attr.title]="session.status === 'pending' ? 'This session is pending payment' : ''">
                         Join Session
                       </button>
                     </div>

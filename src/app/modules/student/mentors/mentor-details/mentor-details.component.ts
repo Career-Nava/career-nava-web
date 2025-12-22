@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { filter, map, switchMap, take } from 'rxjs';
+import { AuthService } from "../../../../services/auth/auth.service";
 import { CalendlyService } from '../../../../services/calendly/calendly.service';
 import { Mentor } from '../../../../services/mentor/mentor.model';
 import { MentorService } from '../../../../services/mentor/mentor.service';
@@ -35,7 +36,8 @@ export class MentorDetailsComponent implements OnInit, AfterViewInit {
     private mentorService: MentorService,
     private route: ActivatedRoute,
     private calendlyService: CalendlyService,
-    private toastService: ToastService
+    private toastService: ToastService,
+    private authService: AuthService
   ) {
   }
 
@@ -92,6 +94,12 @@ export class MentorDetailsComponent implements OnInit, AfterViewInit {
   openCalendlyModal(): void {
     if (!this.mentor) return;
 
+    const user = this.authService.getUser();
+    if (!user) {
+      this.toastService.show('You must be logged in to book a session.', { classname: 'bg-soft-warning text-dark' });
+      return;
+    }
+
     this.showCalendlyModal = true;
     this.isLoadingCalendly = true;
 
@@ -109,20 +117,27 @@ export class MentorDetailsComponent implements OnInit, AfterViewInit {
           // Clear previous widget
           this.calendlyContainer.nativeElement.innerHTML = '';
 
-          // Init widget full size
+          // Initialize Calendly inline widget
           window.Calendly.initInlineWidget({
             url,
             parentElement: this.calendlyContainer.nativeElement,
-            prefill: {},
+            prefill: {
+              name: `${ user.fullName }`,
+              email: user.email,
+            },
+            readOnly: {
+              email: true // prevents the user from changing the email
+            },
             utm: {}
           });
 
           this.isLoadingCalendly = false;
         },
         error: err => {
-          console.error('Error fetching booking link', err);
+          console.warn('Error fetching booking link: ', err.error.message);
           this.isLoadingCalendly = false;
           this.toastService.show('Unable to load scheduling link. Please try again later.', { classname: 'bg-soft-danger text-dark' });
+          this.closeCalendlyModal();
         }
       });
     });

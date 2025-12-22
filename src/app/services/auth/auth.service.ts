@@ -1,12 +1,13 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Router } from "@angular/router";
+import { jwtDecode } from "jwt-decode";
 import { BehaviorSubject, catchError, map, Observable, throwError } from "rxjs";
 import { ApiResponse } from "../api-response";
 import { ConfigurationService } from "../configuration.service";
 import { RestService } from "../rest.service";
 import { UserModel } from "../user/user.model";
-import { AuthPayload, GoogleAuthRequest, LoginRequest, RegisterRequest } from "./auth.model";
+import { AuthPayload, JwtClaims, LoginRequest, RegisterRequest } from "./auth.model";
 
 @Injectable({ providedIn: 'root' })
 export class AuthService extends RestService {
@@ -33,8 +34,8 @@ export class AuthService extends RestService {
     return this.authenticate(`${ this.baseUrl }/login`, payload);
   }
 
-  googleLogin(payload: GoogleAuthRequest): Observable<AuthPayload> {
-    return this.authenticate(`${ this.baseUrl }/google`, payload);
+  getGoogleConnectUrl(userId: number = 0): string {
+    return `${ this.baseUrl }/google/connect?userId=${ userId }`;
   }
 
   logout(): void {
@@ -63,24 +64,31 @@ export class AuthService extends RestService {
     this.userSubject.next(updated);
   }
 
-  /* -------------------- Internal Helpers -------------------- */
+  restoreSessionFromToken(token: string): UserModel {
+    const jwtClaims = jwtDecode<JwtClaims>(token);
 
-  private authenticate<T>(
-    endpoint: string,
-    payload: T
-  ): Observable<AuthPayload> {
-    return this.http
-      .post<ApiResponse<AuthPayload>>(endpoint, payload)
-      .pipe(
-        map(res => {
-          if (!res?.data) {
-            throw new Error('Invalid authentication response');
-          }
-          this.saveSession(res.data);
-          return res.data;
-        }),
-        catchError(err => throwError(() => err))
-      );
+    const user: UserModel = {
+      userId: +jwtClaims.nameid,
+      fullName: jwtClaims.unique_name,
+      email: jwtClaims.email,
+      role: jwtClaims.role,
+      isActive: true,
+      calendlyConnected: false // TODO: fix hardcoded data
+    };
+
+    this.saveSession({ token, user });
+    return user;
+  }
+
+
+  private authenticate<T>(endpoint: string, payload: T): Observable<AuthPayload> {
+    return this.http.post<ApiResponse<AuthPayload>>(endpoint, payload).pipe(
+      map(res => {
+        if (!res?.data) throw new Error('Invalid authentication response');
+        this.saveSession(res.data);
+        return res.data;
+      })
+    );
   }
 
   private saveSession({ token, user }: AuthPayload): void {
