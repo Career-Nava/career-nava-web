@@ -12,7 +12,7 @@ export class PingService extends RestService {
   private readonly CACHE_TTL = 15 * 60 * 1000; // 15 minutes
 
   constructor(http: HttpClient, config: ConfigurationService) {
-    super(http, '', config.get<any>('api').baseUrl);
+    super(http, 'Health', config.get<any>('api').baseUrl);
   }
 
   // Pings the base API URL to wake backend if needed (only in production)
