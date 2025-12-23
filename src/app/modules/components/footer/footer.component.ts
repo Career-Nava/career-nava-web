@@ -15,8 +15,8 @@ export class FooterComponent {
     link: '/home',
   };
 
-  mainHeading = 'Integrate, Align & Optimize your social learning with us!';
-  mainText = 'With Career Nava, we have a science-backed platform. You can now learn and improve.';
+  mainHeading = 'Unlock Your Scholarship Potential!';
+  mainText = '';
 
   companyLinks = [
     { label: 'Home', path: '/home' },

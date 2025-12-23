@@ -57,7 +57,7 @@ export class HomeComponent implements OnInit {
   services = [
     {
       number: '01',
-      title: 'Our Services',
+      title: 'Scholarship Application Guidance',
       icon: 'assets/icons/Quality-Check.png',
       description: 'Book a Career Nava guidance session and get expert, personalized support to identify the right scholarship opportunities and craft a strong, competitive application that stands out.',
     },

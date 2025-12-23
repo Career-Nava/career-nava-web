@@ -131,10 +131,12 @@ export class StudentSessionsComponent implements OnInit {
     this.showPaymentModal = false;
     document.body.style.overflow = '';
 
-    if (this.activeSessionToJoin?.meetingLink) {
-      window.open(this.activeSessionToJoin.meetingLink, '_blank');
-      this.activeSessionToJoin = null;
-    }
+    // if (this.activeSessionToJoin?.meetingLink) {
+    //   window.open(this.activeSessionToJoin.meetingLink, '_blank');
+    //   this.activeSessionToJoin = null;
+    // }
+
+    this.showJoinConfirmModal = true;
   }
 
   closeJoinConfirmModal() {
