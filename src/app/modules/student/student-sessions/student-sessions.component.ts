@@ -2,7 +2,7 @@ import { AsyncPipe, DatePipe, NgForOf, NgIf } from "@angular/common";
 import { Component, OnInit } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from "@angular/platform-browser";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
-import { faCalendar, faClock, faEllipsisV } from '@fortawesome/free-solid-svg-icons';
+import { faCalendar, faClock, faEllipsisV, faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
 import { AuthService } from "../../../services/auth/auth.service";
 import { Session } from "../../../services/session/session.model";
 import { SessionService } from "../../../services/session/session.service";
@@ -22,8 +22,10 @@ export class StudentSessionsComponent implements OnInit {
   faCalendar = faCalendar;
   faClock = faClock;
   faDotVertical = faEllipsisV;
+  faWarning = faExclamationTriangle;
 
   sessions: Session[] = [];
+  activeSessionToJoin: Session | null = null;
 
   loading = true;
   error: string | null = null;
@@ -33,6 +35,8 @@ export class StudentSessionsComponent implements OnInit {
   // Payment modal state
   showPaymentModal = false;
   isLoadingPayment = false;
+
+  showJoinConfirmModal = false;
 
   paymentUrl = 'https://paystack.shop/pay/careernava_scholarship_coaching';
   safePaymentUrl!: SafeResourceUrl;
@@ -89,25 +93,34 @@ export class StudentSessionsComponent implements OnInit {
     return mins === 0 ? `${ hrs }h` : `${ hrs }h ${ mins }m`;
   }
 
-  handleSessionClick(session: any) {
-    if (session.status === 'pending') {
-      this.openPaymentModal(session);
-      return;
-    }
-
+  handleSessionClick(session: Session) {
     if (!session.meetingLink) {
-      alert('Meeting link not available yet.');
+      this.error = 'Meeting link not available yet.';
       return;
     }
 
-    window.open(session.meetingLink, '_blank');
+    // Unpaid session → show confirmation modal
+    if (session.status === 'pending') {
+      this.activeSessionToJoin = session;
+      this.showJoinConfirmModal = true;
+      document.body.style.overflow = 'hidden';
+      return;
+    }
+
+    // Paid or confirmed
+    this.joinSession(session);
   }
 
-  openPaymentModal(session: any): void {
+  joinSession(session: Session) {
+    window.open(session.meetingLink!, '_blank');
+  }
+
+  openPaymentModal(session: Session): void {
+    this.activeSessionToJoin = session;
     this.showPaymentModal = true;
     this.isLoadingPayment = true;
 
-    document.body.style.overflow = 'hidden'; // prevent background scroll
+    document.body.style.overflow = 'hidden';
 
     setTimeout(() => {
       this.isLoadingPayment = false;
@@ -116,6 +129,30 @@ export class StudentSessionsComponent implements OnInit {
 
   closePaymentModal(): void {
     this.showPaymentModal = false;
-    document.body.style.overflow = ''; // restore scroll
+    document.body.style.overflow = '';
+
+    if (this.activeSessionToJoin?.meetingLink) {
+      window.open(this.activeSessionToJoin.meetingLink, '_blank');
+      this.activeSessionToJoin = null;
+    }
+  }
+
+  closeJoinConfirmModal() {
+    this.showJoinConfirmModal = false;
+    document.body.style.overflow = '';
+  }
+
+  joinWithoutPayment() {
+    if (this.activeSessionToJoin) {
+      this.closeJoinConfirmModal();
+      this.joinSession(this.activeSessionToJoin);
+    }
+  }
+
+  payBeforeJoining() {
+    if (this.activeSessionToJoin) {
+      this.showJoinConfirmModal = false;
+      this.openPaymentModal(this.activeSessionToJoin);
+    }
   }
 }

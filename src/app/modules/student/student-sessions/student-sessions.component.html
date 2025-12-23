@@ -44,6 +44,18 @@
                 <div *ngFor="let session of filterSessions(sessions)" class="col-12 col-md-6 col-lg-4">
                   <div class="card">
 
+                    <!-- Pending payment ribbon -->
+                    <div class="session-ribbon ribbon--pending" *ngIf="session.status === 'pending'; else approvedRibbon">
+                      Pending
+                    </div>
+
+                    <!-- Approved ribbon -->
+                    <ng-template #approvedRibbon>
+                      <div class="session-ribbon ribbon--approved">
+                        Approved
+                      </div>
+                    </ng-template>
+
                     <!-- Thumbnail -->
                     <div class="card-header d-block overflow-hidden p-0">
                       <img [src]="session.thumbnailUrl || 'assets/images/sessions/empty.png'"
@@ -69,20 +81,10 @@
 
                       <p>{{ session.description || 'One-on-one career coaching focused on resume, interview prep, and career guidance.' }}</p>
 
-                      <hr>
-
-                      <!--                      &lt;!&ndash; Mentor / Mentee IDs &ndash;&gt;-->
-                      <!--                      <div class="d-flex flex-wrap align-items-center gap-2">-->
-                      <!--                        <div>-->
-                      <!--                          <h6>Mentor ID: {{ session.mentorId }}</h6>-->
-                      <!--                          <h6>Mentee ID: {{ session.menteeId }}</h6>-->
-                      <!--                        </div>-->
-                      <!--                      </div>-->
                     </div>
 
                     <div class="card-footer bg-transparent border-0">
-                      <button class="btn w-100 'btn-primary'"
-                              (click)="handleSessionClick(session)" [attr.title]="session.status === 'pending' ? 'This session is pending payment' : ''">
+                      <button class="btn w-100 btn-primary" (click)="handleSessionClick(session)">
                         Join Session
                       </button>
                     </div>
@@ -125,6 +127,44 @@
       </iframe>
     </div>
 
+  </div>
+</div>
+
+<!-- Join Confirmation Modal -->
+<div class="modal-backdrop fade show" *ngIf="showJoinConfirmModal"></div>
+
+<div class="modal fade show d-block" tabindex="-1" *ngIf="showJoinConfirmModal">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title d-flex gap-2">
+          <fa-icon [icon]="faWarning" class="text-warning"></fa-icon>
+          Payment Required
+        </h5>
+        <button type="button" class="btn-close" (click)="closeJoinConfirmModal()"></button>
+      </div>
+
+      <div class="modal-body px-4">
+        <p class="fw-semibold mb-2">
+          This session has not been paid for yet.
+        </p>
+        <p class="text-muted mb-0">
+          You can join now, or complete payment before joining.
+        </p>
+      </div>
+
+      <div class="modal-footer justify-content-between px-4">
+        <button class="btn btn-outline-secondary flex-fill me-2" (click)="joinWithoutPayment()">
+          Join Session
+        </button>
+
+        <button class="btn btn-primary flex-fill" (click)="payBeforeJoining()">
+          Pay & Join
+        </button>
+      </div>
+
+    </div>
   </div>
 </div>
 

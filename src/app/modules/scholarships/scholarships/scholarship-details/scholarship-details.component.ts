@@ -2,10 +2,10 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { faBookBookmark, faCalendar, faClock } from '@fortawesome/free-solid-svg-icons';
 import { Subscription } from 'rxjs';
-import { ScholarshipService } from '../../../services/scholarship/scholarship.service';
-import { Scholarship } from '../../../services/scholarship/shcolarship.model';
-import { ToastService } from '../../../services/toast.service';
-import { SharedModule } from '../../../shared/shared.module';
+import { ScholarshipService } from '../../../../services/scholarship/scholarship.service';
+import { Scholarship } from '../../../../services/scholarship/shcolarship.model';
+import { ToastService } from '../../../../services/toast.service';
+import { SharedModule } from '../../../../shared/shared.module';
 
 @Component({
   selector: 'app-scholarship-details',

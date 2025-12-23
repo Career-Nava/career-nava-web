@@ -7,8 +7,7 @@ import { environment } from "../../environments/environment";
 export class ConfigurationService {
   private config = {
     api: {
-      baseUrl: environment.apiBaseUrl,
-      googleClientId: environment.googleClientId
+      baseUrl: environment.apiBaseUrl
     }
   };
 

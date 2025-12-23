@@ -73,18 +73,18 @@
                       {{ mentor.totalSessions }} Sessions ({{ mentor.totalReviews }} Reviews)
                     </p>
 
-                    <p class="mentor-rating mb-0">
-                      <ng-container *ngFor="let _ of getStars(mentor.avgRating)">
-                        <fa-icon [icon]="faStarFull" class="icon-rating"></fa-icon>
-                      </ng-container>
+<!--                    <p class="mentor-rating mb-0">-->
+<!--                      <ng-container *ngFor="let _ of getStars(mentor.avgRating)">-->
+<!--                        <fa-icon [icon]="faStarFull" class="icon-rating"></fa-icon>-->
+<!--                      </ng-container>-->
 
-                      <fa-icon
-                        *ngIf="hasHalfStar(mentor.avgRating)"
-                        [icon]="faStarHalf"
-                        class="icon-rating"></fa-icon>
+<!--                      <fa-icon-->
+<!--                        *ngIf="hasHalfStar(mentor.avgRating)"-->
+<!--                        [icon]="faStarHalf"-->
+<!--                        class="icon-rating"></fa-icon>-->
 
-                      <span class="rating-text">{{ mentor.avgRating }} Stars</span>
-                    </p>
+<!--                      <span class="rating-text">{{ mentor.avgRating }} Stars</span>-->
+<!--                    </p>-->
                   </div>
 
                 </div>

@@ -12,7 +12,7 @@ import { AboutComponent } from './modules/landing/about/about.component';
 import { BlogDetailsComponent } from './modules/landing/blog/blog-details/blog-details.component';
 import { BlogComponent } from './modules/landing/blog/blog.component';
 import { HomeComponent } from './modules/landing/home/home.component';
-import { ScholarshipDetailsComponent } from './modules/scholarships/scholarship-details/scholarship-details.component';
+import { ScholarshipDetailsComponent } from './modules/scholarships/scholarships/scholarship-details/scholarship-details.component';
 import { ScholarshipsComponent } from './modules/scholarships/scholarships/scholarships.component';
 import { MentorDetailsComponent } from './modules/student/mentors/mentor-details/mentor-details.component';
 import { MentorsComponent } from './modules/student/mentors/mentors.component';
