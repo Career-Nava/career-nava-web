@@ -22,10 +22,21 @@
               <div class="recommended-pill text-default-brand-primary bg-brand-yellow-300">Recommended</div>
             }
 
-            <!-- Floating Icon/Glow Header -->
             <div class="icon-wrapper icon-lg mb-3 mx-auto">
-              <h4 class="info-card-title mb-1" *ngIf="item.price">{{ item.title }}</h4>
-              <h3 class="pricing-amount text-brand-yellow-400">{{ item.price || 'Free' }}</h3>
+
+              <!-- Title (shown for all except Free if you want) -->
+              <h4 class="info-card-title mb-1" *ngIf="item.title !== 'Free'">
+                {{ item.title }}
+              </h4>
+
+              <!-- Price / Label -->
+              @if (item.price) {
+                <h3 class="pricing-amount text-brand-yellow-400">{{ item.price }}</h3>
+              } @else if (item.title === 'Starter') {
+                <span class="small text-brand-yellow-400">Free</span>
+              } @else {
+                <span class="small text-brand-yellow-400">per service</span>
+              }
             </div>
 
             <!-- Feature List -->

@@ -12,14 +12,14 @@ export class PricingComponent {
 
   pricingPackages = [
     {
-      title: "Free",
+      title: "Starter",
       price: null,
       features: [
         "Unlimited Scholarship Opportunities",
         "Readiness Assessment",
         "Limited Application Resources"
       ],
-      button: "Check Out Free Package",
+      button: "Get Started",
       recommended: false
     },
     {
@@ -47,7 +47,7 @@ export class PricingComponent {
     },
     {
       title: "Stand Alone",
-      price: "$100",
+      price: null,
       features: [
         "Document Reviews",
         "Document Creation & Reviews",
@@ -57,5 +57,4 @@ export class PricingComponent {
       recommended: false
     }
   ];
-
 }
