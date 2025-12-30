@@ -26,6 +26,5 @@ export class OverviewComponent {
 
   ngOnInit(): void {
     this.user = this.authService.getUser();
-    console.log("User data:", this.user);
   }
 }

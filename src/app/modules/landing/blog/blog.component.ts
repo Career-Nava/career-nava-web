@@ -29,6 +29,6 @@ export class BlogComponent implements OnInit {
     return blogs
       .filter(blog => blog.createdAt) // safety check
       .sort((a, b) => new Date(b.createdAt!).getTime() - new Date(a.createdAt!).getTime())
-      .slice(0, count);
+    // .slice(0, count);
   }
 }

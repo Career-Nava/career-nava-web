@@ -40,7 +40,6 @@ export class BlogDetailsComponent implements OnInit {
             this.isLoading = false;
           },
           error: err => {
-            console.error('Error loading blog', err);
             this.isLoading = false;
             // this.hasError = true;
           }

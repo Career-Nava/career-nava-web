@@ -1,0 +1,87 @@
+/* Section Text */
+.section-text {
+  font-size: 1.25rem;
+  line-height: 1.6;
+  color: #770ce2;
+  margin-top: 1rem;
+  margin-bottom: 2rem;
+}
+
+/* Beliefs */
+.belief-card {
+  background: #f7f0ff;
+  border-radius: 1rem;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+  .card-text {
+    color: #770ce2;
+    font-weight: 500;
+    font-size: 1rem;
+  }
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(119, 12, 226, 0.25);
+  }
+}
+
+/* Core Values */
+.value-card {
+  background: linear-gradient(135deg, #770ce2, #5a00b8);
+  color: #fff;
+  border-radius: 1.25rem;
+  font-weight: 600;
+  font-size: 1.15rem;
+  letter-spacing: 0.3px;
+  padding: 0.5rem;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+
+  /* subtle glow accent */
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+        circle at top left,
+        rgba(255, 255, 255, 0.15),
+        transparent 60%
+    );
+    opacity: 0;
+    transition: opacity 0.25s ease;
+  }
+
+  .card-body {
+    padding: 1.75rem 1.5rem;
+  }
+
+  .card-text {
+    margin: 0;
+  }
+
+  &:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 18px 30px rgba(119, 12, 226, 0.35);
+
+    &::after {
+      opacity: 1;
+    }
+  }
+}
+
+/* Vision Images */
+.vision-image {
+  overflow: hidden;
+
+  img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+
+    &:hover {
+      transform: scale(1.05);
+    }
+  }
+}

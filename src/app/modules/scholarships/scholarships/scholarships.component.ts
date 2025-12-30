@@ -80,10 +80,8 @@ get finalScholarships(): Scholarship[] {
         next: (data) => {
           this.scholarships = data;
           this.searchFilteredScholarships = data;
-          console.log('Scholarships loaded:', this.scholarships);
         },
         error: (err) => {
-          console.error('Failed to load scholarships:', err);
           this.toastService.show('Failed to load scholarships', {
             classname: 'bg-danger text-light',
             delay: 4000

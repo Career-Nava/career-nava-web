@@ -1,0 +1,73 @@
+<!-- Vision Section -->
+<section class="vision-section bg-default-brand-secondary py-5">
+  <div class="container">
+    <div class="row">
+
+      <div class="col-12 d-flex align-items-center gap-5">
+
+        <div class="flex-fill">
+          <h2 class="section-title">Our Vision</h2>
+          <p class="section-text">
+            A world of equality in access to opportunities for millions of youths.<br/>
+            A future where the youth find themselves exactly where they wish to be
+            regardless of economics, background, or ethnicity.
+          </p>
+        </div>
+
+        <div class="flex-fill">
+          <img src="assets/images/landing-page/graduants-vision.jpg" alt="Vision Image" class="img-fluid rounded-3 w-100"/>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- Belief Section -->
+<section class="belief-section py-5">
+  <div class="container">
+    <h2 class="section-title text-center mb-4">Our Beliefs</h2>
+    <div class="row g-4">
+      <div class="col-12 col-md-6" *ngFor="let belief of beliefs">
+        <div class="card h-100 shadow-sm border-0 belief-card">
+          <div class="card-body">
+            <p class="card-text">{{ belief }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Core Values Section -->
+<section class="core-values-section bg-default-brand-secondary py-5">
+  <div class="container">
+    <div class="row align-items-center g-4">
+
+      <div class="col-12 col-lg-6">
+        <h2 class="section-title">Our Core Values</h2>
+        <p class="section-text">
+          Our core values guide how we operate, make decisions, and show up for the young people we serve.
+        </p>
+        <div class="row g-3">
+          <div class="col-12 col-md-6" *ngFor="let value of coreValues">
+            <div class="card h-100 text-center shadow-sm border-0 value-card">
+              <div class="card-body">
+                <p class="card-text mb-0">{{ value }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12 col-lg-6">
+        <div class="vision-image w-75 mx-auto">
+          <img src="assets/images/landing-page/student-2.jpg" alt="Student Image" class="img-fluid rounded-3"
+          />
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
