@@ -1,0 +1,65 @@
+/* Card visual polish */
+.scholarship-card {
+  background: linear-gradient(180deg, #ffffff, #f8f9ff);
+  border-radius: 1.25rem;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+
+  &:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 18px 40px rgba(119, 12, 226, 0.15);
+  }
+}
+
+/* Floating bookmark button */
+.bookmark-btn {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  width: 42px;
+  height: 42px;
+  border: none;
+  border-radius: 50%;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+}
+
+/* Image sizing */
+.scholarship-img {
+  height: 200px;
+  object-fit: cover;
+}
+
+/* Description height consistency */
+.description {
+  min-height: 60px;
+}
+
+/* Mentee avatars overlap */
+.mentee-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-left: -8px;
+  border: 2px solid #fff;
+  object-fit: cover;
+
+  &.extra {
+    background: #770ce2;
+    color: #fff;
+    font-size: 0.8rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+/* Empty state image */
+.empty-img {
+  width: 260px;
+  opacity: 0.9;
+}

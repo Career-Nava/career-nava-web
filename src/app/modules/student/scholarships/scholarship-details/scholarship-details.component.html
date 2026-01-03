@@ -1,0 +1,121 @@
+<div class="container-fluid pb-5" *ngIf="scholarship as s">
+
+  <!-- Header -->
+  <section class="scholarship-header mb-5">
+    <div class="d-flex flex-column flex-lg-row gap-4 align-content-center">
+      <img
+        *ngIf="s.imageThumbnail"
+        [src]="s.imageThumbnail"
+        [alt]="s.title"
+        class="header-img"/>
+
+      <div class="text-center text-lg-start">
+        <h1 class="fw-bold mb-2">{{ s.title }}</h1>
+        <p class="text-muted mb-3">{{ s.category }}</p>
+
+        <a
+          [href]="s.link"
+          target="_blank"
+          class="btn btn-secondary">
+          View Scholarship
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <div class="row g-4">
+
+    <!-- Main Content -->
+    <div class="col-12 col-lg-7">
+      <article class="content-card h-100">
+        <div class="p-4">
+
+          <!-- Meta -->
+          <div class="d-flex flex-column gap-2 small text-muted mb-3">
+            <span>
+              <fa-icon [icon]="faCalendar" class="me-1"></fa-icon>
+              Posted: {{ s.datePosted | date:'mediumDate' }}
+            </span>
+
+            <span>
+              <fa-icon [icon]="faCalendar" class="me-1"></fa-icon>
+              Deadline: {{ s.applicationDeadline | date:'mediumDate' }}
+            </span>
+
+            <span>
+              Status:
+              <span
+                class="badge rounded-pill ms-1"
+                [class.bg-success-subtle]="s.status === 'active'"
+                [class.text-success]="s.status === 'active'"
+                [class.bg-danger]="s.status === 'inactive'"
+                [class.text-white]="s.status === 'inactive'">
+                {{ s.status | titlecase }}
+              </span>
+            </span>
+          </div>
+
+          <hr/>
+
+          <h3 class="fw-semibold mb-3">Overview</h3>
+          <p class="description">
+            {{ s.contentDescription }}
+          </p>
+        </div>
+      </article>
+    </div>
+
+    <!-- Side Panel -->
+    <div class="col-12 col-lg-5 d-flex flex-column gap-3">
+
+      <!-- Benefits -->
+      <section *ngIf="s.benefits?.length" class="content-card">
+        <div class="p-0">
+          <h3 class="fw-semibold mb-3">Benefits</h3>
+
+          <ul class="list-unstyled mb-0 benefit-list">
+            <li
+              *ngFor="let b of s.benefits"
+              class="d-flex align-items-start gap-2">
+              <span class="benefit-icon">✓</span>
+              <span>{{ b.benefitText }}</span>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- Eligibility -->
+      <section *ngIf="s.eligibilityCriteria" class="content-card">
+        <div class="px-4">
+          <h3 class="fw-semibold mb-3">Eligibility</h3>
+          <p class="mb-0">
+            {{ s.eligibilityCriteria }}
+          </p>
+        </div>
+      </section>
+
+      <!-- Mentees -->
+      <div class="px-4">
+        <h5 class="fw-semibold mb-3">
+          Mentees Bookmarked ({{ s.menteesInterested.length }})
+        </h5>
+
+        <div class="d-flex align-items-center">
+          <ng-container *ngFor="let m of s.menteesInterested.slice(0,5)">
+            <img
+              [src]="m.profilePicture"
+              [alt]="m.fullName"
+              class="mentee-avatar"/>
+          </ng-container>
+
+          <span
+            *ngIf="s.menteesInterested.length > 5"
+            class="mentee-avatar extra">
+              +{{ s.menteesInterested.length - 5 }}
+            </span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

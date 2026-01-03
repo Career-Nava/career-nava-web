@@ -1,0 +1,138 @@
+<div class="container-fluid pb-5">
+
+  <!-- Header -->
+  <header class="mb-4">
+    <h1 class="fw-bold">Explore Scholarships</h1>
+    <p class="text-muted col-lg-6 px-0">
+      Find funding opportunities and bookmark what matters to you.
+    </p>
+  </header>
+
+  <!-- Tabs -->
+  <ul class="nav nav-tabs">
+    <li class="nav-item" *ngFor="let tab of tabs">
+      <button
+        class="nav-link"
+        [class.active]="selectedTab === tab.value"
+        (click)="setTab(tab.value)">
+        {{ tab.label }}
+      </button>
+    </li>
+  </ul>
+
+  <!-- Toolbar -->
+  <div class="d-flex justify-content-between align-items-center my-4 gap-3 flex-wrap">
+    <h4 class="mb-0 fw-semibold">
+      Scholarships ({{ visibleScholarships.length }})
+    </h4>
+
+    <input
+      type="search"
+      class="form-control w-50"
+      placeholder="Search scholarships..."
+      (input)="onSearch($any($event.target).value)"/>
+  </div>
+
+  <!-- Empty State -->
+  <div
+    *ngIf="!visibleScholarships.length"
+    class="text-center text-muted py-5">
+
+    <img
+      src="../../../../assets/icons/Video-Call.png"
+      alt="No scholarships"
+      class="mb-3 empty-img"/>
+
+    <p class="mb-0">
+      No scholarships match your criteria.
+    </p>
+  </div>
+
+  <!-- Grid -->
+  <div class="row g-4" *ngIf="visibleScholarships.length">
+    <div
+      class="col-12 col-md-6 col-lg-4"
+      *ngFor="let scholarship of visibleScholarships">
+
+      <article class="scholarship-card h-100 position-relative">
+
+        <!-- Bookmark -->
+        <button
+          class="bookmark-btn"
+          (click)="toggleBookmark(scholarship)">
+          <fa-icon
+            [icon]="scholarship.isBookmarked ? faBookmarkSolid : faBookmarkRegular">
+          </fa-icon>
+        </button>
+
+        <!-- Image -->
+        <img
+          *ngIf="scholarship.imageThumbnail"
+          [src]="scholarship.imageThumbnail"
+          [alt]="scholarship.title"
+          class="w-100 scholarship-img"/>
+
+        <!-- Content -->
+        <div class="p-3">
+          <h5 class="fw-semibold mb-1">
+            {{ scholarship.title }}
+          </h5>
+
+          <small class="text-muted">
+            {{ scholarship.category }}
+          </small>
+
+          <div class="d-flex justify-content-between align-items-center my-3 small">
+            <span class="text-muted">
+              <fa-icon [icon]="faCalendar" class="me-1"></fa-icon>
+              {{ scholarship.applicationDeadline | date:'mediumDate' }}
+            </span>
+
+            <span
+              class="badge rounded-pill"
+              [class.bg-success-subtle]="scholarship.status === 'active'"
+              [class.text-success]="scholarship.status === 'active'"
+              [class.bg-danger]="scholarship.status === 'inactive'"
+              [class.text-white]="scholarship.status === 'inactive'">
+              {{ scholarship.status | titlecase }}
+            </span>
+          </div>
+
+          <p class="text-muted small mb-3 description">
+            {{ scholarship.shortDescription }}
+          </p>
+
+          <!-- Mentees -->
+          <div
+            class="d-flex align-items-center"
+            *ngIf="scholarship.menteesInterested?.length">
+
+            <ng-container
+              *ngFor="let m of scholarship.menteesInterested.slice(0,5)">
+              <img
+                [src]="m.profilePicture"
+                alt="Mentee"
+                class="mentee-avatar"/>
+            </ng-container>
+
+            <span
+              *ngIf="scholarship.menteesInterested.length > 5"
+              class="mentee-avatar extra">
+              +{{ scholarship.menteesInterested.length - 5 }}
+            </span>
+          </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="p-3 pt-0">
+          <a
+            class="btn btn-secondary w-100"
+            [routerLink]="['/mentee/scholarship-details', scholarship.scholarshipId]">
+            View Scholarship
+          </a>
+        </div>
+
+      </article>
+    </div>
+  </div>
+</div>

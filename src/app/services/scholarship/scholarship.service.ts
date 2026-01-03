@@ -5,12 +5,12 @@ import { ApiResponse } from "../api-response";
 import { ConfigurationService } from "../configuration.service";
 import { LocalStorageCache } from "../local-storage-cache";
 import { RestService } from "../rest.service";
-import { Scholarship, ScholarshipDto } from "./shcolarship.model";
+import { ScholarshipDto } from "./shcolarship.model";
 
 @Injectable({ providedIn: 'root' })
 export class ScholarshipService extends RestService {
 
-  private readonly cache = new LocalStorageCache<Scholarship>(
+  private readonly cache = new LocalStorageCache<ScholarshipDto>(
     'scholarships',
     15 * 60 * 1000 // 15 minutes
   );
@@ -19,7 +19,7 @@ export class ScholarshipService extends RestService {
     super(http, 'Scholarship', config.get<any>('api').baseUrl);
   }
 
-  getAllScholarships(): Observable<Scholarship[]> {
+  getAllScholarships(): Observable<ScholarshipDto[]> {
     const cached = this.cache.get();
     if (cached) return of(cached);
 
@@ -33,8 +33,8 @@ export class ScholarshipService extends RestService {
     );
   }
 
-  getScholarshipById(id: number): Observable<Scholarship> {
-    const cached = this.cache.get()?.find(s => s.id === id);
+  getScholarshipById(id: number): Observable<ScholarshipDto> {
+    const cached = this.cache.get()?.find(s => s.scholarshipId === id);
     if (cached) return of(cached);
 
     return this.http.get<ApiResponse<ScholarshipDto>>(`${ this.baseUrl }/GetScholarshipById/${ id }`).pipe(
@@ -49,9 +49,9 @@ export class ScholarshipService extends RestService {
     );
   }
 
-  updateBookmark(id: number, isBookmarked: boolean): Observable<Scholarship | undefined> {
+  updateBookmark(id: number, isBookmarked: boolean): Observable<ScholarshipDto | undefined> {
     const all = this.cache.get() ?? [];
-    const index = all.findIndex(s => s.id === id);
+    const index = all.findIndex(s => s.scholarshipId === id);
     if (index !== -1) {
       all[index].isBookmarked = isBookmarked;
       this.cache.set(all);
@@ -64,27 +64,9 @@ export class ScholarshipService extends RestService {
     this.cache.clear();
   }
 
-  private mapScholarship(dto: ScholarshipDto): Scholarship {
+  private mapScholarship(dto: ScholarshipDto): ScholarshipDto {
     return {
-      id: dto.scholarshipId,
-      title: dto.title ?? 'Untitled',
-      link: '#', // placeholder if backend doesn't provide
-      role: 'Program Sponsor', // placeholder
-      imageThumbnail: dto.imageThumbnail ?? '',
-      date: dto.date ? new Date(dto.date) : new Date(),
-      applicationDeadline: dto.applicationDeadline ? new Date(dto.applicationDeadline) : new Date(),
-      reviews: 0,
-      rating: 0,
-      category: 'General',
-      shortDescription: dto.summary ?? '',
-      funding: dto.funding ?? 'No Funding',
-      contentDescription: dto.description ?? '',
-      eligibilityCriteria: 'Eligibility details coming soon.',
-      benefits: dto.benefits ?? [],
-      status: (dto.status as 'active' | 'inactive') ?? 'inactive',
-      isBookmarked: false,
-      mentor: dto.mentor ?? null,
-      menteesInterested: dto.menteesInterested ?? []
+      ...dto
     };
   }
 }
