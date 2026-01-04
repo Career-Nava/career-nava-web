@@ -40,8 +40,10 @@
 
             <!-- Render sessions -->
             <ng-template #sessionsLoaded>
-              <ng-container *ngIf="sessions.length > 0; else noSessions">
-                <div *ngFor="let session of filterSessions(sessions)" class="col-12 col-md-6 col-lg-4">
+              <ng-container *ngIf="filterSessions(sessions).length; else emptyState">
+                <div
+                  *ngFor="let session of filterSessions(sessions)"
+                  class="col-12 col-md-6 col-lg-4">
                   <div class="card">
 
                     <!-- Pending payment ribbon -->
@@ -84,7 +86,10 @@
                     </div>
 
                     <div class="card-footer bg-transparent border-0">
-                      <button class="btn w-100 btn-primary" (click)="handleSessionClick(session)">
+                      <button
+                        class="btn w-100 btn-primary"
+                        [disabled]="isPastSession(session)"
+                        (click)="handleSessionClick(session)">
                         Join Session
                       </button>
                     </div>
@@ -93,9 +98,29 @@
                 </div>
               </ng-container>
 
-              <ng-template #noSessions>
-                <div class="col-12 text-center py-5">
-                  <p>You have no sessions booked yet.</p>
+              <ng-template #emptyState>
+                <div class="col-12 text-center text-muted p-3">
+
+                  <img
+                    src="assets/icons/Virtual-Meeting.png"
+                    alt="No sessions"
+                    class="mb-3 empty-img"/>
+
+                  <p class="mb-0">
+                    <ng-container [ngSwitch]="tab">
+                      <span *ngSwitchCase="'active'">
+                        You have no sessions scheduled for today.
+                      </span>
+
+                      <span *ngSwitchCase="'upcoming'">
+                        You have no upcoming sessions.
+                      </span>
+
+                      <span *ngSwitchCase="'past'">
+                        You have no past sessions.
+                      </span>
+                    </ng-container>
+                  </p>
                 </div>
               </ng-template>
             </ng-template>

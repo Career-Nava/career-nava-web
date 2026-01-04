@@ -40,28 +40,28 @@
             </div>
           </a>
 
-          <!-- Dropdown Menu -->
-          <ul class="dropdown-menu p-3 shadow-lg border-0 rounded">
-            <!-- Calendly Status -->
-            <li class="dropdown-item p-3 d-flex align-items-center gap-2">
-              <span class="status-indicator" [ngClass]="user.calendlyConnected ? 'verified' : 'not-verified'"></span>
-              <div>
-                <p class="mb-1 fw-semibold">
-                  Calendly Status:
-                  <span [ngClass]="user.calendlyConnected ? 'text-success' : 'text-danger'">
-                    {{ user.calendlyConnected ? 'Verified' : 'Not-Verified' }}
-                  </span>
-                </p>
-              </div>
-            </li>
+          <!--          &lt;!&ndash; Dropdown Menu &ndash;&gt;-->
+          <!--          <ul class="dropdown-menu p-3 shadow-lg border-0 rounded">-->
+          <!--            &lt;!&ndash; Calendly Status &ndash;&gt;-->
+          <!--            <li class="dropdown-item p-3 d-flex align-items-center gap-2">-->
+          <!--              <span class="status-indicator" [ngClass]="user.calendlyConnected ? 'verified' : 'not-verified'"></span>-->
+          <!--              <div>-->
+          <!--                <p class="mb-1 fw-semibold">-->
+          <!--                  Calendly Status:-->
+          <!--                  <span [ngClass]="user.calendlyConnected ? 'text-success' : 'text-danger'">-->
+          <!--                              {{ user.calendlyConnected ? 'Verified' : 'Not-Verified' }}-->
+          <!--                            </span>-->
+          <!--                </p>-->
+          <!--              </div>-->
+          <!--            </li>-->
 
-            <!-- Link Button (if not verified) -->
-            <li *ngIf="!user.calendlyConnected && user.role === 'mentor'" class="dropdown-item p-3">
-              <button class="btn btn-gradient-purple w-100 fw-semibold" (click)="connectCalendly(user.userId)">
-                Link My Calendly
-              </button>
-            </li>
-          </ul>
+          <!--            &lt;!&ndash; Link Button (if not verified) &ndash;&gt;-->
+          <!--            <li *ngIf="!user.calendlyConnected && user.role === 'mentor'" class="dropdown-item p-3">-->
+          <!--              <button class="btn btn-gradient-purple w-100 fw-semibold" (click)="connectCalendly(user.userId)">-->
+          <!--                Link My Calendly-->
+          <!--              </button>-->
+          <!--            </li>-->
+          <!--          </ul>-->
         </div>
 
         <!-- Sidebar toggle for mobile -->

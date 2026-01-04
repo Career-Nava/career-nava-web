@@ -86,6 +86,12 @@
   padding: 1rem;
 }
 
+/* Empty state image */
+.empty-img {
+  width: 300px;
+  opacity: 0.9;
+}
+
 /* ===== Animations ===== */
 @keyframes fadeIn {
   from {

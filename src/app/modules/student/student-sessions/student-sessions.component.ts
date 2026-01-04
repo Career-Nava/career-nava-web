@@ -75,11 +75,40 @@ export class StudentSessionsComponent implements OnInit {
 
   filterSessions(sessions: Session[]): Session[] {
     const now = new Date();
+
+    const startOfToday = new Date(
+      now.getFullYear(),
+      now.getMonth(),
+      now.getDate()
+    );
+
+    const endOfToday = new Date(
+      now.getFullYear(),
+      now.getMonth(),
+      now.getDate(),
+      23, 59, 59, 999
+    );
+
     switch (this.tab) {
+      case 'active':
+        return sessions.filter(s =>
+          s.calendlyStartAt &&
+          new Date(s.calendlyStartAt) >= startOfToday &&
+          new Date(s.calendlyStartAt) <= endOfToday
+        );
+
       case 'upcoming':
-        return sessions.filter(s => s.calendlyStartAt && new Date(s.calendlyStartAt) > now);
+        return sessions.filter(s =>
+          s.calendlyStartAt &&
+          new Date(s.calendlyStartAt) > endOfToday
+        );
+
       case 'past':
-        return sessions.filter(s => s.calendlyEndAt && new Date(s.calendlyEndAt) < now);
+        return sessions.filter(s =>
+          s.calendlyEndAt &&
+          new Date(s.calendlyEndAt) < startOfToday
+        );
+
       default:
         return sessions;
     }
@@ -113,6 +142,11 @@ export class StudentSessionsComponent implements OnInit {
 
   joinSession(session: Session) {
     window.open(session.meetingLink!, '_blank');
+  }
+
+  isPastSession(session: Session): boolean {
+    if (!session.calendlyEndAt) return false;
+    return new Date(session.calendlyEndAt) < new Date();
   }
 
   openPaymentModal(session: Session): void {

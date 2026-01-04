@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { faBookmark as faBookmarkRegular } from '@fortawesome/free-regular-svg-icons';
-import { faBookmark, faCalendar } from '@fortawesome/free-solid-svg-icons';
+import { faBookmark, faCalendar, faClock } from '@fortawesome/free-solid-svg-icons';
 import { Subscription } from 'rxjs';
 import { ScholarshipService } from '../../../services/scholarship/scholarship.service';
 import { ScholarshipDto } from '../../../services/scholarship/shcolarship.model';
@@ -127,4 +127,6 @@ export class ScholarshipsComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.subs.unsubscribe();
   }
+
+  protected readonly faClock = faClock;
 }

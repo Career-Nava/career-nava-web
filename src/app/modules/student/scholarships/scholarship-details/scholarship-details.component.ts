@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { faCalendar } from '@fortawesome/free-solid-svg-icons';
+import { faCalendar, faClock } from '@fortawesome/free-solid-svg-icons';
 import { Subscription } from 'rxjs';
 import { ScholarshipService } from '../../../../services/scholarship/scholarship.service';
 import { ScholarshipDto } from '../../../../services/scholarship/shcolarship.model';
@@ -15,7 +15,6 @@ import { SharedModule } from '../../../../shared/shared.module';
   styleUrls: [ './scholarship-details.component.scss' ]
 })
 export class ScholarshipDetailsComponent implements OnInit, OnDestroy {
-  faCalendar = faCalendar;
 
   scholarship?: ScholarshipDto;
   private subs = new Subscription();
@@ -48,4 +47,7 @@ export class ScholarshipDetailsComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.subs.unsubscribe();
   }
+
+  protected readonly faClock = faClock;
+  protected readonly faCalendar = faCalendar;
 }

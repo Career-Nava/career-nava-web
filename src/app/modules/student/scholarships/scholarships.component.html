@@ -39,7 +39,7 @@
     class="text-center text-muted py-5">
 
     <img
-      src="../../../../assets/icons/Video-Call.png"
+      src="assets/icons/Video-Call.png"
       alt="No scholarships"
       class="mb-3 empty-img"/>
 
@@ -84,12 +84,12 @@
 
           <div class="d-flex justify-content-between align-items-center my-3 small">
             <span class="text-muted">
-              <fa-icon [icon]="faCalendar" class="me-1"></fa-icon>
+              <fa-icon [icon]="faClock" class="me-1"></fa-icon>
               {{ scholarship.applicationDeadline | date:'mediumDate' }}
             </span>
 
             <span
-              class="badge rounded-pill"
+              class="badge-sm rounded-pill"
               [class.bg-success-subtle]="scholarship.status === 'active'"
               [class.text-success]="scholarship.status === 'active'"
               [class.bg-danger]="scholarship.status === 'inactive'"

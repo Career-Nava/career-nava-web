@@ -31,27 +31,39 @@
         <div class="p-4">
 
           <!-- Meta -->
-          <div class="d-flex flex-column gap-2 small text-muted mb-3">
+          <div class="d-flex flex-column gap-2 small text-muted mb-3 position-relative">
             <span>
               <fa-icon [icon]="faCalendar" class="me-1"></fa-icon>
               Posted: {{ s.datePosted | date:'mediumDate' }}
             </span>
 
             <span>
-              <fa-icon [icon]="faCalendar" class="me-1"></fa-icon>
+              <fa-icon [icon]="faClock" class="me-1"></fa-icon>
               Deadline: {{ s.applicationDeadline | date:'mediumDate' }}
             </span>
 
             <span>
               Status:
               <span
-                class="badge rounded-pill ms-1"
+                class="badge-sm rounded-pill ms-1"
                 [class.bg-success-subtle]="s.status === 'active'"
                 [class.text-success]="s.status === 'active'"
                 [class.bg-danger]="s.status === 'inactive'"
                 [class.text-white]="s.status === 'inactive'">
                 {{ s.status | titlecase }}
               </span>
+            </span>
+
+            <!-- Funding badge -->
+            <span
+              class="badge-sm rounded-pill position-absolute top-0 end-0"
+              [class.bg-success]="s.funding === 'Fully Funded'"
+              [class.bg-warning]="s.funding === 'Partially Funded'"
+              [class.bg-danger]="s.funding === 'No Funding'"
+
+              [class.text-white]="s.funding === 'Fully Funded' || s.funding === 'No Funding'"
+              [class.text-dark]="s.funding === 'Partially Funded'">
+              {{ s.funding | titlecase }}
             </span>
           </div>
 
@@ -70,7 +82,7 @@
 
       <!-- Benefits -->
       <section *ngIf="s.benefits?.length" class="content-card">
-        <div class="p-0">
+        <div class="px-4">
           <h3 class="fw-semibold mb-3">Benefits</h3>
 
           <ul class="list-unstyled mb-0 benefit-list">
