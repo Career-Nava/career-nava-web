@@ -49,11 +49,22 @@
         <!-- Password -->
         <div class="input-group flex-column gap-1">
           <label for="password">New Password</label>
-          <input class="form-control w-100"
-                 type="password"
-                 id="password"
-                 formControlName="password"
-                 placeholder="Enter password">
+          <div class="password-wrapper">
+            <input class="form-control w-100 pe-5"
+                   [type]="showPasswords ? 'text' : 'password'"
+                   id="password"
+                   formControlName="password"
+                   placeholder="Enter password">
+
+            <button
+              type="button"
+              class="password-toggle"
+              (click)="togglePasswords()"
+              aria-label="Toggle password visibility">
+
+              <fa-icon [icon]="faEye"></fa-icon>
+            </button>
+          </div>
           <div *ngIf="password.invalid && (password.dirty || password.touched)" class="text-danger small mt-1">
             <div *ngIf="password.errors?.['required']">Password is required.</div>
             <div *ngIf="password.errors?.['minlength']">Password must be at least 6 characters.</div>
@@ -64,7 +75,7 @@
         <div class="input-group flex-column gap-1">
           <label for="confirmPassword">Confirm Password</label>
           <input class="form-control w-100"
-                 type="password"
+                 [type]="showPasswords ? 'text' : 'password'"
                  id="confirmPassword"
                  formControlName="confirmPassword"
                  placeholder="Confirm Password">
