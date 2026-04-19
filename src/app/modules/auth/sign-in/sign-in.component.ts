@@ -1,6 +1,7 @@
 import { AfterViewInit, Component, OnInit } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
+import { faEye } from "@fortawesome/free-solid-svg-icons";
 import { LoginRequest } from "../../../services/auth/auth.model";
 import { AuthService } from "../../../services/auth/auth.service";
 import { ConfigurationService } from "../../../services/configuration.service";
@@ -16,10 +17,12 @@ declare const google: any;
   styleUrls: [ './sign-in.component.scss' ]
 })
 export class SignInComponent implements OnInit, AfterViewInit {
+  protected readonly faEye = faEye;
 
   signInForm!: FormGroup;
   loading = false;
   errorMessage = '';
+  showPassword = false;
 
   isGoogleSignInAvailable: boolean = true;
 
@@ -106,5 +109,9 @@ export class SignInComponent implements OnInit, AfterViewInit {
 
   get password() {
     return this.signInForm.get('password')!;
+  }
+
+  togglePassword(): void {
+    this.showPassword = !this.showPassword;
   }
 }

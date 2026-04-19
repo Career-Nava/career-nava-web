@@ -1,6 +1,7 @@
 import { AfterViewInit, Component, OnInit } from "@angular/core";
 import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
+import { faEye } from "@fortawesome/free-solid-svg-icons";
 import { AuthService } from "../../../services/auth/auth.service";
 import { SharedModule } from "../../../shared/shared.module";
 
@@ -12,9 +13,12 @@ import { SharedModule } from "../../../shared/shared.module";
   styleUrls: [ './sign-up.component.scss' ] // fixed typo
 })
 export class SignUpComponent implements OnInit, AfterViewInit {
+  protected readonly faEye = faEye;
+
   signUpForm!: FormGroup;
   loading = false;
   errorMessage = '';
+  showPasswords = false;
 
   constructor(
     private fb: FormBuilder,
@@ -48,8 +52,8 @@ export class SignUpComponent implements OnInit, AfterViewInit {
     const password = form.get('password')?.value;
     const confirmPassword = form.get('confirmPassword')?.value;
     return password && confirmPassword && password !== confirmPassword
-      ? { passwordMismatch: true }
-      : null;
+           ? { passwordMismatch: true }
+           : null;
   }
 
   onSubmit(): void {
@@ -115,5 +119,9 @@ export class SignUpComponent implements OnInit, AfterViewInit {
 
   get confirmPassword() {
     return this.signUpForm.get('confirmPassword')!;
+  }
+
+  togglePasswords(): void {
+    this.showPasswords = !this.showPasswords;
   }
 }
