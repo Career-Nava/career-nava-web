@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { NgbModule, NgbToastModule } from '@ng-bootstrap/ng-bootstrap';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { HttpClientModule } from '@angular/common/http';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { ToastContainerComponent } from '../modules/shared/toast-container/toast-container.component';
 
@@ -15,7 +14,6 @@ import { ToastContainerComponent } from '../modules/shared/toast-container/toast
     NgbToastModule,
     ReactiveFormsModule,
     RouterModule,
-    HttpClientModule,
     FontAwesomeModule,
   ],
   exports: [
@@ -24,7 +22,6 @@ import { ToastContainerComponent } from '../modules/shared/toast-container/toast
     NgbToastModule,
     ReactiveFormsModule,
     RouterModule,
-    HttpClientModule,
     FontAwesomeModule,
     ToastContainerComponent
   ]

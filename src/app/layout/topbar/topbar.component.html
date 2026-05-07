@@ -30,7 +30,7 @@
             <!-- Avatar -->
             <div class="avatar-wrapper bg-gradient-purple text-white rounded-circle d-flex align-items-center justify-content-center">
               <img *ngIf="user.profilePicture" [src]="user.profilePicture" [alt]="user.fullName" class="avatar-img">
-              <span *ngIf="!user.profilePicture"><b>{{ user.fullName?.charAt(0) }}</b></span>
+              <span *ngIf="!user.profilePicture"><b>{{ user.fullName.charAt(0) }}</b></span>
             </div>
 
             <!-- User Info -->

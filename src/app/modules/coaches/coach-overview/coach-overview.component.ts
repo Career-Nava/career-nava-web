@@ -54,6 +54,6 @@ export class CoachOverviewComponent implements OnInit, OnDestroy {
     }
 
     // Navigate to same page without query params
-    void this.router.navigate([ '/teacher/overview' ], { queryParams: {} });
+    void this.router.navigate([ '/mentor/overview' ], { queryParams: {} });
   }
 }
