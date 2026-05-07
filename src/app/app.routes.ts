@@ -42,7 +42,7 @@ export const routes: Routes = [
 
   // Mentee Dashboard
   {
-    path: 'mentee', component: LayoutComponent, children: [
+    path: 'mentee', canActivate: [ authGuard ], data: { roles: [ 'mentee' ] }, component: LayoutComponent, children: [
       { path: 'mentors', component: MentorsComponent },
       { path: 'mentors/mentor-details/:id', component: MentorDetailsComponent },
       { path: 'sessions', component: StudentSessionsComponent },
@@ -53,14 +53,14 @@ export const routes: Routes = [
 
   // Admin Dashboard
   {
-    path: 'admin', canActivate: [ authGuard ], component: AdminLayoutComponent, children: [
+    path: 'admin', canActivate: [ authGuard ], data: { roles: [ 'admin' ] }, component: AdminLayoutComponent, children: [
       { path: 'overview', component: OverviewComponent },
     ]
   },
 
   // Teacher Dashboard
   {
-    path: 'mentor', canActivate: [ authGuard ], component: MentorLayoutComponent, children: [
+    path: 'mentor', canActivate: [ authGuard ], data: { roles: [ 'mentor' ] }, component: MentorLayoutComponent, children: [
       { path: 'overview', component: CoachOverviewComponent },
     ]
   },

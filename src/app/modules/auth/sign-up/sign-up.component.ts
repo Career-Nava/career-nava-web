@@ -1,6 +1,5 @@
 import { AfterViewInit, Component, OnInit } from "@angular/core";
 import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators } from "@angular/forms";
-import { Router } from "@angular/router";
 import { faEye } from "@fortawesome/free-solid-svg-icons";
 import { AuthService } from "../../../services/auth/auth.service";
 import { SharedModule } from "../../../shared/shared.module";
@@ -22,8 +21,7 @@ export class SignUpComponent implements OnInit, AfterViewInit {
 
   constructor(
     private fb: FormBuilder,
-    private authService: AuthService,
-    private router: Router
+    private authService: AuthService
   ) {
   }
 
@@ -31,7 +29,7 @@ export class SignUpComponent implements OnInit, AfterViewInit {
     // Redirect if already logged in
     const user = this.authService.getUser();
     if (user) {
-      this.navigateByRole(user.role);
+      this.authService.navigateByRole(user.role);
     }
 
     // Initialize form
@@ -45,7 +43,7 @@ export class SignUpComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit(): void {
     const user = this.authService.getUser();
-    if (user) this.navigateByRole(user.role);
+    if (user) this.authService.navigateByRole(user.role);
   }
 
   passwordMatchValidator(form: AbstractControl): ValidationErrors | null {
@@ -71,7 +69,7 @@ export class SignUpComponent implements OnInit, AfterViewInit {
         this.authService.login({ email, password }).subscribe({
           next: ({ token, user }) => {
             // Session is automatically saved by authService
-            this.navigateByRole(user.role);
+            this.authService.navigateByRole(user.role);
             this.loading = false;
           },
           error: err => {
@@ -87,21 +85,6 @@ export class SignUpComponent implements OnInit, AfterViewInit {
         this.loading = false;
       }
     });
-  }
-
-  private navigateByRole(role: string | undefined): void {
-    switch (role) {
-      case 'mentor':
-        void this.router.navigate([ '/teacher/overview' ]);
-        break;
-      case 'admin':
-        void this.router.navigate([ '/admin/overview' ]);
-        break;
-      case 'mentee':
-      default:
-        void this.router.navigate([ '/mentee/mentors' ]);
-        break;
-    }
   }
 
   // convenience getters for template

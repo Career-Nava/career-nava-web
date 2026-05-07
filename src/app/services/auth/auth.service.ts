@@ -48,11 +48,35 @@ export class AuthService extends RestService {
   }
 
   getToken(): string | null {
-    return localStorage.getItem(this.TOKEN_KEY);
+    const token = localStorage.getItem(this.TOKEN_KEY);
+    if (!token) return null;
+
+    if (!this.isTokenValid(token)) {
+      this.clearSession();
+      return null;
+    }
+
+    return token;
   }
 
   isAuthenticated(): boolean {
-    return !!this.getToken();
+    return !!this.getToken() && !!this.getUser();
+  }
+
+  getRedirectUrlForRole(role: string | undefined): string {
+    switch (role) {
+      case 'mentor':
+        return '/mentor/overview';
+      case 'admin':
+        return '/admin/overview';
+      case 'mentee':
+      default:
+        return '/mentee/mentors';
+    }
+  }
+
+  navigateByRole(role: string | undefined): void {
+    void this.router.navigate([ this.getRedirectUrlForRole(role) ]);
   }
 
   updateUser(patch: Partial<UserModel>): void {
@@ -64,20 +88,36 @@ export class AuthService extends RestService {
     this.userSubject.next(updated);
   }
 
-  restoreSessionFromToken(token: string): UserModel {
-    const jwtClaims = jwtDecode<JwtClaims>(token);
+  restoreSessionFromToken(token: string): UserModel | null {
+    try {
+      if (!this.isTokenValid(token)) {
+        this.clearSession();
+        return null;
+      }
 
-    const user: UserModel = {
-      userId: +jwtClaims.nameid,
-      fullName: jwtClaims.unique_name,
-      email: jwtClaims.email,
-      role: jwtClaims.role,
-      isActive: true,
-      calendlyConnected: false // TODO: fix hardcoded data
-    };
+      const jwtClaims = jwtDecode<JwtClaims>(token);
+      const userId = +jwtClaims.nameid;
 
-    this.saveSession({ token, user });
-    return user;
+      if (!userId || !jwtClaims.email || !jwtClaims.role) {
+        this.clearSession();
+        return null;
+      }
+
+      const user: UserModel = {
+        userId,
+        fullName: jwtClaims.unique_name,
+        email: jwtClaims.email,
+        role: jwtClaims.role,
+        isActive: true,
+        calendlyConnected: false // TODO: fix hardcoded data
+      };
+
+      this.saveSession({ token, user });
+      return user;
+    } catch {
+      this.clearSession();
+      return null;
+    }
   }
 
 
@@ -85,6 +125,7 @@ export class AuthService extends RestService {
     return this.http.post<ApiResponse<AuthPayload>>(endpoint, payload).pipe(
       map(res => {
         if (!res?.data) throw new Error('Invalid authentication response');
+        if (!this.isTokenValid(res.data.token)) throw new Error('Invalid authentication token');
         this.saveSession(res.data);
         return res.data;
       })
@@ -98,13 +139,48 @@ export class AuthService extends RestService {
   }
 
   private clearSession(): void {
-    localStorage.removeItem(this.TOKEN_KEY);
-    localStorage.removeItem(this.USER_KEY);
+    this.clearStoredSession();
     this.userSubject.next(null);
   }
 
+  private clearStoredSession(): void {
+    localStorage.removeItem(this.TOKEN_KEY);
+    localStorage.removeItem(this.USER_KEY);
+  }
+
   private loadUserFromStorage(): UserModel | null {
+    const token = localStorage.getItem(this.TOKEN_KEY);
+    if (!token || !this.isTokenValid(token)) {
+      this.clearStoredSession();
+      return null;
+    }
+
     const raw = localStorage.getItem(this.USER_KEY);
-    return raw ? JSON.parse(raw) : null;
+    if (!raw) {
+      this.clearStoredSession();
+      return null;
+    }
+
+    try {
+      const user = JSON.parse(raw) as UserModel;
+      if (!user?.userId || !user.email || !user.role) {
+        this.clearStoredSession();
+        return null;
+      }
+
+      return user;
+    } catch {
+      this.clearStoredSession();
+      return null;
+    }
+  }
+
+  private isTokenValid(token: string): boolean {
+    try {
+      const jwtClaims = jwtDecode<JwtClaims>(token);
+      return typeof jwtClaims.exp === 'number' && jwtClaims.exp * 1000 > Date.now();
+    } catch {
+      return false;
+    }
   }
 }

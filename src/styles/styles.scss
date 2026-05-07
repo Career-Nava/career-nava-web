@@ -24,7 +24,6 @@ ul {
 
 hr {
   width: 100%;
-  min-width: none;
   max-width: none;
   height: 1px;
   background-color: $custom-light-200;
@@ -727,17 +726,6 @@ section {
   }
 }
 
-// Odd cards
-  > div:nth-child(odd) .info-card {
-    background: $custom-light-50;
-  }
-
-  // Even cards
-  > div:nth-child(even) .info-card {
-    background: $brand-yellow-500;
-    background: red;
-  }
-
 .icon-wrapper {
   border-radius: 16px;
   display: flex;
@@ -752,14 +740,15 @@ section {
     // filter: saturate(1.15);
   }
 }
+
 .user-info {
   h5 {
     text-transform: capitalize;
   }
 }
- 
 
-#user-info-mobile{
+
+#user-info-mobile {
   display: none;
 
   h5 {

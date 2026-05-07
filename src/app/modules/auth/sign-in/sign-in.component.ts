@@ -1,10 +1,8 @@
 import { AfterViewInit, Component, OnInit } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { Router } from "@angular/router";
 import { faEye } from "@fortawesome/free-solid-svg-icons";
 import { LoginRequest } from "../../../services/auth/auth.model";
 import { AuthService } from "../../../services/auth/auth.service";
-import { ConfigurationService } from "../../../services/configuration.service";
 import { SharedModule } from "../../../shared/shared.module";
 
 declare const google: any;
@@ -28,9 +26,7 @@ export class SignInComponent implements OnInit, AfterViewInit {
 
   constructor(
     private fb: FormBuilder,
-    private authService: AuthService,
-    private router: Router,
-    private config: ConfigurationService
+    private authService: AuthService
   ) {
   }
 
@@ -43,7 +39,7 @@ export class SignInComponent implements OnInit, AfterViewInit {
     // already logged in
     const existingUser = this.authService.getUser();
     if (existingUser) {
-      this.navigateByRole(existingUser.role);
+      this.authService.navigateByRole(existingUser.role);
       return;
     }
 
@@ -53,13 +49,17 @@ export class SignInComponent implements OnInit, AfterViewInit {
 
     if (token) {
       const user = this.authService.restoreSessionFromToken(token);
-      this.navigateByRole(user.role);
+      if (user) {
+        this.authService.navigateByRole(user.role);
+      } else {
+        this.errorMessage = 'Login failed';
+      }
     }
   }
 
   ngAfterViewInit(): void {
     const user = this.authService.getUser();
-    if (user) this.navigateByRole(user.role);
+    if (user) this.authService.navigateByRole(user.role);
   }
 
   onGoogleSignIn(): void {
@@ -78,7 +78,7 @@ export class SignInComponent implements OnInit, AfterViewInit {
     this.authService.login(payload).subscribe({
       next: (res) => {
         // session already saved inside authService
-        this.navigateByRole(res.user.role);
+        this.authService.navigateByRole(res.user.role);
         this.loading = false;
       },
       error: (err) => {
@@ -86,21 +86,6 @@ export class SignInComponent implements OnInit, AfterViewInit {
         this.loading = false;
       }
     });
-  }
-
-  private navigateByRole(role: string | undefined): void {
-    switch (role) {
-      case 'mentor':
-        void this.router.navigate([ '/teacher/overview' ]);
-        break;
-      case 'admin':
-        void this.router.navigate([ '/admin/overview' ]);
-        break;
-      case 'mentee':
-      default:
-        void this.router.navigate([ '/mentee/mentors' ]);
-        break;
-    }
   }
 
   get email() {
