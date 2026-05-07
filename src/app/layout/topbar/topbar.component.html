@@ -6,7 +6,7 @@
         <img src="assets/images/logo/logo-variant.png" alt="Career Nava Logo" class="logo-sm">
       </a>
 
-      <div class="d-flex topbar-menus align-items-center gap-3">
+      <div class="d-flex topbar-menus align-items-center gap-3 flex-wrap">
 
         <div class="nav-item dropdown position-relative">
           <a href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"
@@ -40,28 +40,46 @@
             </div>
           </a>
 
-          <!--          &lt;!&ndash; Dropdown Menu &ndash;&gt;-->
-          <!--          <ul class="dropdown-menu p-3 shadow-lg border-0 rounded">-->
-          <!--            &lt;!&ndash; Calendly Status &ndash;&gt;-->
-          <!--            <li class="dropdown-item p-3 d-flex align-items-center gap-2">-->
-          <!--              <span class="status-indicator" [ngClass]="user.calendlyConnected ? 'verified' : 'not-verified'"></span>-->
-          <!--              <div>-->
-          <!--                <p class="mb-1 fw-semibold">-->
-          <!--                  Calendly Status:-->
-          <!--                  <span [ngClass]="user.calendlyConnected ? 'text-success' : 'text-danger'">-->
-          <!--                              {{ user.calendlyConnected ? 'Verified' : 'Not-Verified' }}-->
-          <!--                            </span>-->
-          <!--                </p>-->
-          <!--              </div>-->
-          <!--            </li>-->
+                   <!-- Dropdown Menu -->
+                   <ul class="dropdown-menu p-0 shadow-lg border-0 rounded">
 
-          <!--            &lt;!&ndash; Link Button (if not verified) &ndash;&gt;-->
-          <!--            <li *ngIf="!user.calendlyConnected && user.role === 'mentor'" class="dropdown-item p-3">-->
-          <!--              <button class="btn btn-gradient-purple w-100 fw-semibold" (click)="connectCalendly(user.userId)">-->
-          <!--                Link My Calendly-->
-          <!--              </button>-->
-          <!--            </li>-->
-          <!--          </ul>-->
+                    <!-- User Info - ONLY SHOW ON MEDIA SCREEN 567PX AND BELOW -->
+                    <li class="dropdown-item p-3 bg-custom-light-50" id="user-info-mobile">
+                      <div>
+                        <h5 class="mb-0">{{ user.fullName }}</h5>
+                        <p class="mb-0 text-muted small">{{ user.email }}</p>
+                      </div>
+                    </li>
+
+                    <!-- Logout -->
+                      <a (click)="logout()" routerLinkActive="active" class="dropdown-item p-3 text-default-error">
+                        <li class=" nav-link w-100 fw-semibold">
+                          <fa-icon [icon]="faArrowRightFromBracket"></fa-icon>
+                        <span>Logout</span>
+                        </li>
+                      </a>
+
+                    <!-- Calendly Status NOT USING THIS -->
+                     <!-- <li class="dropdown-item p-3 d-flex align-items-center gap-2">
+                       <span class="status-indicator" [ngClass]="user.calendlyConnected ? 'verified' : 'not-verified'"></span>
+                       <div>
+                         <p class="mb-1 fw-semibold">
+                           Calendly Status:
+                           <span [ngClass]="user.calendlyConnected ? 'text-success' : 'text-danger'">
+                                       {{ user.calendlyConnected ? 'Verified' : 'Not-Verified' }}
+                                     </span>
+                         </p>
+                       </div>
+                     </li> -->
+
+                     <!-- Link Button (if not verified) -->
+                     <!-- <li *ngIf="!user.calendlyConnected && user.role === 'mentor'" class="dropdown-item p-3">
+                       <button class="btn btn-gradient-purple w-100 fw-semibold" (click)="connectCalendly(user.userId)">
+                         Link My Calendly
+                       </button>
+                     </li> -->
+
+                   </ul>
         </div>
 
         <!-- Sidebar toggle for mobile -->
