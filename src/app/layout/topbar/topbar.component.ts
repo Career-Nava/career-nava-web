@@ -3,6 +3,7 @@ import { AuthService } from '../../services/auth/auth.service';
 import { CalendlyService } from "../../services/calendly/calendly.service";
 import { SidebarService } from '../../services/sidebar/sidebar.service';
 import { SharedModule } from '../../shared/shared.module';
+import { faArrowRightFromBracket } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-topbar',
@@ -15,6 +16,7 @@ export class TopbarComponent {
 
   // Expose reactive user directly
   readonly user$ = this.authService.user$;
+faArrowRightFromBracket = faArrowRightFromBracket;
 
   constructor(
     private authService: AuthService,
@@ -29,5 +31,9 @@ export class TopbarComponent {
 
   connectCalendly(userId: number): void {
     window.location.href = this.calendlyService.getConnectUrl(userId);
+  }
+
+  logout() {
+    this.authService.logout();
   }
 }
