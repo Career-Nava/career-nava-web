@@ -10,7 +10,7 @@
     <div class="row justify-content-between align-items-start gy-4">
 
       <!-- Branding -->
-      <div class="col-12 col-lg-4 d-flex flex-column gap-3">
+      <div class="col-12 col-md-12 col-lg-4 d-flex flex-column gap-3">
         <a [routerLink]="logo.link" class="footer-logo d-block">
           <img [src]="logo.src" alt="logo"/>
         </a>
@@ -19,7 +19,7 @@
       </div>
 
       <!-- Quick Links -->
-      <div class="col-6 col-lg-2 d-flex flex-column gap-2">
+      <div class="col-12 col-md-6 col-lg-2 d-flex flex-column gap-2">
         <h5 class="footer-subheading">Quick Links</h5>
         <ul class="footer-links list-unstyled mb-0">
           @for (link of companyLinks; track link.label) {
@@ -32,7 +32,7 @@
       </div>
 
       <!-- Contact -->
-      <div class="col-6 col-lg-3 d-flex flex-column gap-2">
+      <div class="col-12 col-md-6 col-lg-3 d-flex flex-column gap-2">
         <h5 class="footer-subheading">Contact Us</h5>
         <p class="footer-text mb-1">{{ contact.address }}</p>
         <a [href]="'mailto:' + contact.email" class="footer-contact d-block mb-1">{{ contact.email }}</a>
