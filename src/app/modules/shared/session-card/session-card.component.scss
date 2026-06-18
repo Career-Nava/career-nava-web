@@ -1,5 +1,7 @@
 .session-card {
   position: relative;
+  min-width: 0;
+  overflow: hidden;
 }
 
 .session-ribbon {
@@ -31,4 +33,31 @@
 
 .session-meta {
   gap: 0.125rem;
+}
+
+.card-title,
+.card-body p,
+.session-meta p {
+  overflow-wrap: anywhere;
+}
+
+.card-footer .btn {
+  min-height: 44px;
+  white-space: normal;
+}
+
+@media (max-width: 575.98px) {
+  .session-ribbon {
+    right: -34px;
+    padding: 5px 36px;
+    font-size: 11px;
+  }
+
+  .session-image {
+    height: 170px;
+  }
+
+  .card-body {
+    padding: 1rem;
+  }
 }

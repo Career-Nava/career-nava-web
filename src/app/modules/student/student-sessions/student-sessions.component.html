@@ -1,4 +1,4 @@
-<div class="container">
+<div class="container student-sessions-page">
 
   <div class="col-12 col-lg-6">
     <div class="mb-4">
@@ -9,7 +9,7 @@
   </div>
 
   <!-- Tabs -->
-  <ul class="nav nav-tabs">
+  <ul class="nav nav-tabs sessions-tabs flex-nowrap overflow-auto">
     <li class="nav-item">
       <a class="nav-link" [class.active]="tab === 'active'" (click)="tab='active'; $event.preventDefault()">Active</a>
     </li>
@@ -31,7 +31,7 @@
         </div>
 
         <div class="card-body">
-          <div class="row gy-4">
+          <div class="row g-4">
 
             <!-- Loading skeleton -->
             <ng-container *ngIf="loading; else sessionsLoaded">
@@ -49,7 +49,7 @@
               <ng-container *ngIf="!error && filterSessions(sessions).length; else emptyState">
                 <div
                   *ngFor="let session of filterSessions(sessions)"
-                  class="col-12 col-md-6 col-lg-4">
+                  class="col-12 col-md-6 col-xl-4">
                   <app-session-card
                     [session]="session"
                     context="mentee"

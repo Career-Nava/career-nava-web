@@ -19,3 +19,23 @@
   border: 1px dashed rgba(71, 90, 112, 0.25);
   border-radius: 0.875rem;
 }
+
+.sessions-tabs {
+  -webkit-overflow-scrolling: touch;
+  gap: 0.25rem;
+  scrollbar-width: thin;
+}
+
+.sessions-tabs .nav-link {
+  white-space: nowrap;
+}
+
+@media (max-width: 575.98px) {
+  .session-page {
+    padding: 1rem 0 2rem;
+  }
+
+  .session-card {
+    padding: 1rem !important;
+  }
+}

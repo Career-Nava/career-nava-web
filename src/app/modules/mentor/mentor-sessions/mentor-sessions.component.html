@@ -26,16 +26,39 @@
       </p>
     </div>
 
-    <div *ngIf="!loading && !error && sessions.length" class="row gy-4">
-      <div *ngFor="let session of sessions; trackBy: trackSession" class="col-12 col-md-6 col-lg-4">
-        <app-session-card
-          [session]="session"
-          context="mentor"
-          [actionLabel]="session.meetingLink ? 'Open meeting' : 'No meeting link yet'"
-          [actionDisabled]="!session.meetingLink"
-          (action)="openMeeting($event)">
-        </app-session-card>
+    <ng-container *ngIf="!loading && !error && sessions.length">
+      <ul class="nav nav-tabs sessions-tabs flex-nowrap overflow-auto">
+        <li class="nav-item">
+          <a class="nav-link" [class.active]="tab === 'active'" (click)="tab='active'; $event.preventDefault()">Active</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" [class.active]="tab === 'upcoming'" (click)="tab='upcoming'; $event.preventDefault()">Upcoming</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" [class.active]="tab === 'past'" (click)="tab='past'; $event.preventDefault()">Past</a>
+        </li>
+      </ul>
+
+      <div class="pt-4">
+        <div *ngIf="filterSessions(sessions).length; else groupedEmptyState" class="row g-4">
+          <div *ngFor="let session of filterSessions(sessions); trackBy: trackSession" class="col-12 col-md-6 col-xl-4">
+            <app-session-card
+              [session]="session"
+              context="mentor"
+              [actionLabel]="session.meetingLink ? 'Open meeting' : 'No meeting link yet'"
+              [actionDisabled]="!session.meetingLink"
+              (action)="openMeeting($event)">
+            </app-session-card>
+          </div>
+        </div>
       </div>
-    </div>
+
+      <ng-template #groupedEmptyState>
+        <div class="session-state p-4 text-center">
+          <h2 class="h5 mb-2">No sessions in this group</h2>
+          <p class="text-muted mb-0">{{ getEmptyStateMessage() }}</p>
+        </div>
+      </ng-template>
+    </ng-container>
   </section>
 </div>

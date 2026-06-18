@@ -16,6 +16,7 @@ export class MentorSessionsComponent implements OnInit {
   sessions: Session[] = [];
   loading = true;
   error: string | null = null;
+  tab: 'active' | 'upcoming' | 'past' = 'active';
 
   constructor(private sessionService: SessionService) {
   }
@@ -37,6 +38,60 @@ export class MentorSessionsComponent implements OnInit {
 
   trackSession(_: number, session: Session): number {
     return session.sessionId;
+  }
+
+  filterSessions(sessions: Session[]): Session[] {
+    const now = new Date();
+
+    const startOfToday = new Date(
+      now.getFullYear(),
+      now.getMonth(),
+      now.getDate()
+    );
+
+    const endOfToday = new Date(
+      now.getFullYear(),
+      now.getMonth(),
+      now.getDate(),
+      23, 59, 59, 999
+    );
+
+    switch (this.tab) {
+      case 'active':
+        return sessions.filter(s =>
+          s.calendlyStartAt &&
+          new Date(s.calendlyStartAt) >= startOfToday &&
+          new Date(s.calendlyStartAt) <= endOfToday
+        );
+
+      case 'upcoming':
+        return sessions.filter(s =>
+          s.calendlyStartAt &&
+          new Date(s.calendlyStartAt) > endOfToday
+        );
+
+      case 'past':
+        return sessions.filter(s =>
+          s.calendlyEndAt &&
+          new Date(s.calendlyEndAt) < startOfToday
+        );
+
+      default:
+        return sessions;
+    }
+  }
+
+  getEmptyStateMessage(): string {
+    switch (this.tab) {
+      case 'active':
+        return 'You have no sessions scheduled for today.';
+      case 'upcoming':
+        return 'You have no upcoming booked sessions.';
+      case 'past':
+        return 'You have no completed or past sessions yet.';
+      default:
+        return 'No sessions are available.';
+    }
   }
 
   openMeeting(session: Session): void {
