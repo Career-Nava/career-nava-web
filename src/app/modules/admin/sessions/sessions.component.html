@@ -1,0 +1,72 @@
+<div class="container session-page">
+  <section class="card border-0 shadow-sm p-4 session-card">
+    <p class="text-uppercase text-muted small fw-semibold mb-2 session-eyebrow">Admin</p>
+    <div class="d-flex flex-column flex-lg-row justify-content-between gap-3 mb-4">
+      <div>
+        <h1 class="mb-2">Sessions</h1>
+        <p class="text-muted mb-0">
+          View sessions booked by mentees across Career Nava. This page is read-only for now.
+        </p>
+      </div>
+    </div>
+
+    <div *ngIf="loading" class="session-state p-4 text-center">
+      <div class="spinner-border text-primary" role="status" aria-label="Loading platform sessions"></div>
+      <p class="text-muted mb-0 mt-3">Loading sessions...</p>
+    </div>
+
+    <div *ngIf="!loading && error" class="alert alert-danger" role="alert">
+      {{ error }}
+    </div>
+
+    <div *ngIf="!loading && !error && !sessions.length" class="session-state p-4">
+      <h2 class="h5 mb-2">No sessions found</h2>
+      <p class="text-muted mb-0">
+        Platform sessions will appear here after mentees book time with mentors.
+      </p>
+    </div>
+
+    <div *ngIf="!loading && !error && sessions.length" class="table-responsive session-table-wrap">
+      <table class="table align-middle mb-0 session-table">
+        <thead>
+          <tr>
+            <th scope="col">Mentee</th>
+            <th scope="col">Mentor</th>
+            <th scope="col">Date and time</th>
+            <th scope="col">Duration</th>
+            <th scope="col">Status</th>
+            <th scope="col">Meeting</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let session of sessions; trackBy: trackSession">
+            <td>
+              <div class="fw-semibold">{{ session.menteeName || 'Mentee' }}</div>
+              <div class="text-muted small">{{ session.menteeEmail || 'Email unavailable' }}</div>
+            </td>
+            <td>
+              <div class="fw-semibold">{{ session.mentorName || 'Mentor' }}</div>
+              <div class="text-muted small">{{ session.mentorEmail || 'Email unavailable' }}</div>
+            </td>
+            <td>
+              {{ session.calendlyStartAt ? (session.calendlyStartAt | date:'medium') : 'To be scheduled' }}
+            </td>
+            <td>{{ formatDuration(session.durationMinutes) }}</td>
+            <td><span class="badge text-bg-light text-capitalize">{{ session.status || 'unknown' }}</span></td>
+            <td>
+              <a
+                *ngIf="session.meetingLink"
+                class="btn btn-sm btn-outline-primary"
+                [href]="session.meetingLink"
+                target="_blank"
+                rel="noopener noreferrer">
+                Open
+              </a>
+              <span *ngIf="!session.meetingLink" class="text-muted small">Unavailable</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</div>

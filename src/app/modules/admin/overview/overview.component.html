@@ -1,135 +1,26 @@
-<div class="container">
-    <div class="row gap-4 gap-lg-0">
-
-        <div class="col-12 col-lg-8">
-            <div class="d-flex flex-column gap-4">
-
-                <div class="row gap-4 gap-lg-0 align-items-center text-center text-lg-start">
-                    <div class="col-12 col-lg-8">
-                        <h1>Welcome back, <span class="text-brand-green-500">{{ user?.fullName }}</span></h1>
-                        <p>
-                            Lorem ipsum dolor sit amet consectetur. Ultrices venenatis sit mi netus consectetur bibendum lacus eu parturient.
-                        </p>
-                    </div>
-                    <div class="col-12 col-lg-4">
-                        <img src="assets/images/illustrations/web-development-flatline-1.svg" alt="" class="w-100 max-w-3xl mx-auto object-fit-contain">
-                    </div>
-                </div>
-
-                <div class="card border-0">
-                    <div class="card-header">
-                        <div>
-                            <h3 class="card-title">Assignments (3)</h3>
-                            <p>Lorem ipsum dolor sit amet consectetur. Ultrices venenatis sit mi netus consectetur bibendum lacus eu parturient.</p>
-                        </div>
-                        <a href="#" class="btn btn-primary">See all assignments</a>
-                    </div>
-                    <div class="card-body">
-
-                        <div class="card">
-                            <div class="card-header align-items-start">
-                                <div>
-                                    <h4 class="card-title">Assignment Title</h4>
-                                    <p class="card-subtitle">Computer Science</p>
-                                    <div class="d-flex flex-column mt-4">
-                                        <p><fa-icon [icon]="faCalendar" class="text-brand-green-500"></fa-icon> 10-11-2023</p>
-                                        <p><fa-icon [icon]="faClock" class="text-brand-green-500"></fa-icon> 02:00pm</p>
-                                        <p>Status: <span class="badge badge-primary">Active</span></p>
-                                    </div>
-                                </div>
-                                <a href="#" class="w-24 h-24 d-flex justify-content-center align-items-center"><fa-icon [icon]="faDotVertical"></fa-icon></a>
-                            </div>
-                            <div class="card-body">
-                                <p>
-                                    Lorem ipsum dolor sit amet consectetur. Ultrices venenatis sit mi netus consectetur bibendum lacus eu parturient.
-                                </p>
-                                <!-- <h4>Teacher:</h4> -->
-                                <hr>
-                                <div class="d-flex flex-wrap align-items-center gap-2">
-                                    <img src="assets/images/avatars/female-01.jpg" alt="teacher" class="w-60 h-60 object-fit-cover" style="border-radius: 50%;">
-                                    <div>
-                                        <h4>Brian Okere</h4>
-                                        <p>brian.okeregmail.com</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="card-footer bg-transparent border-0">
-                                <a href="#" class="btn btn-primary w-100">Download Assignment</a>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-
-                <div class="card border-0">
-                    <div class="card-header">
-                        <div>
-                            <h3 class="card-title">Assessment (3)</h3>
-                            <p>Lorem ipsum dolor sit amet consectetur. Ultrices venenatis sit mi netus consectetur bibendum lacus eu parturient.</p>
-                        </div>
-                        <a href="#" class="btn btn-primary">See all assessments</a>
-                    </div>
-                    <div class="card-body">
-
-                        <a href="#">
-                            <div class="card hovering-zoom">
-                                <div class="card-body d-flex justify-content-center bg-brand-green-50">
-                                    <img src="assets/images/doc-thumb.jpg" alt="" class="w-100 object-fit-contain" style="max-width: 200px;">
-                                </div>
-                                <div class="card-header align-items-start">
-                                    <div>
-                                        <h4 class="card-title">Strengths & Weakness Analysis</h4>
-                                        <p>Status: <span class="badge badge-primary">Ready for review</span></p>
-                                    </div>
-                                    <a href="#" class="w-24 h-24 d-flex justify-content-center align-items-center"><fa-icon [icon]="faDotVertical"></fa-icon></a>
-                                </div>
-                                <!-- <div class="card-footer bg-transparent border-0">
-                                    <a href="#" class="btn btn-primary w-100">Download Assignment</a>
-                                </div> -->
-                            </div>
-                        </a>
-
-                    </div>
-                </div>
-
-            </div>
-        </div>
-
-        <div class="col-12 col-lg-4">
-            <div class="d-flex flex-column gap-4">
-
-                <div class="card">
-                    <div class="card-header">
-                        <div>
-                            <h3 class="card-title">Notifications</h3>
-                            <p>Lorem ipsum dolor sit amet consectetur. Ultrices venenatis sit mi netus consectetur bibendum lacus eu parturient.</p>
-                        </div>
-                        <!-- <a href="#" class="btn btn-primary">See all assignments</a> -->
-                    </div>
-                    <div class="card-body">
-                        <ul>
-                            <li>
-                                <a href="#" class="d-flex justify-content-between align-items-center">
-                                    <span><fa-icon [icon]="faFile" class="text-brand-green-500"></fa-icon> Assignments (2)</span>
-                                    <fa-icon [icon]="faArrowRight"></fa-icon>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#" class="d-flex justify-content-between align-items-center">
-                                    <span><fa-icon [icon]="faFile" class="text-brand-green-500"></fa-icon> Exams (1)</span>
-                                    <fa-icon [icon]="faArrowRight"></fa-icon>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#" class="d-flex justify-content-between align-items-center">
-                                    <span><fa-icon [icon]="faFile" class="text-brand-green-500"></fa-icon> Assessments (0)</span>
-                                    <fa-icon [icon]="faArrowRight"></fa-icon>
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
+﻿<div class="container shell-page">
+  <section class="card border-0 shadow-sm p-4 shell-card">
+    <div class="row align-items-center gy-4">
+      <div class="col-12 col-lg-8">
+        <p class="text-uppercase text-muted small fw-semibold mb-2 shell-eyebrow">Admin Overview</p>
+        <h1 class="mb-3">Career Nava admin command center</h1>
+        <p class="text-muted mb-0">
+          This area is the future workspace for managing platform content and operational activity across mentors, sessions, scholarships, and blogs.
+        </p>
+      </div>
+      <div class="col-12 col-lg-4 text-center">
+        <img src="assets/images/illustrations/web-development-flatline-1.svg" alt="Admin dashboard illustration" class="w-100 max-w-3xl mx-auto object-fit-contain">
+      </div>
     </div>
+
+    <div class="shell-empty-state p-4 mt-4">
+      <h2 class="h5 mb-3">Planned admin areas</h2>
+      <ul class="shell-list mb-0">
+        <li>Review and manage mentor profiles and platform status.</li>
+        <li>View sessions booked by mentees across the platform.</li>
+        <li>Manage scholarships shown to mentees.</li>
+        <li>Manage blog and resource content.</li>
+      </ul>
+    </div>
+  </section>
 </div>

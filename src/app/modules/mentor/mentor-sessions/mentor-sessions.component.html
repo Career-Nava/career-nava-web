@@ -1,0 +1,68 @@
+<div class="container session-page">
+  <section class="card border-0 shadow-sm p-4 session-card">
+    <p class="text-uppercase text-muted small fw-semibold mb-2 session-eyebrow">Mentor</p>
+    <div class="d-flex flex-column flex-lg-row justify-content-between gap-3 mb-4">
+      <div>
+        <h1 class="mb-2">My Sessions</h1>
+        <p class="text-muted mb-0">
+          Sessions booked with you will appear here. This view uses your signed-in mentor account and does not require a mentor ID in the URL.
+        </p>
+      </div>
+    </div>
+
+    <div *ngIf="loading" class="session-state p-4 text-center">
+      <div class="spinner-border text-primary" role="status" aria-label="Loading mentor sessions"></div>
+      <p class="text-muted mb-0 mt-3">Loading sessions...</p>
+    </div>
+
+    <div *ngIf="!loading && error" class="alert alert-danger" role="alert">
+      {{ error }}
+    </div>
+
+    <div *ngIf="!loading && !error && !sessions.length" class="session-state p-4">
+      <h2 class="h5 mb-2">No booked sessions yet</h2>
+      <p class="text-muted mb-0">
+        Once mentees book time with you, upcoming and completed sessions will be listed here.
+      </p>
+    </div>
+
+    <div *ngIf="!loading && !error && sessions.length" class="session-list">
+      <article *ngFor="let session of sessions; trackBy: trackSession" class="session-row">
+        <div>
+          <p class="text-muted small mb-1">Mentee</p>
+          <h2 class="h5 mb-1">{{ session.menteeName || 'Mentee' }}</h2>
+          <p class="text-muted small mb-0">{{ session.menteeEmail || 'Email unavailable' }}</p>
+        </div>
+
+        <div>
+          <p class="text-muted small mb-1">Date and time</p>
+          <p class="mb-0">
+            {{ session.calendlyStartAt ? (session.calendlyStartAt | date:'medium') : 'To be scheduled' }}
+          </p>
+        </div>
+
+        <div>
+          <p class="text-muted small mb-1">Duration</p>
+          <p class="mb-0">{{ formatDuration(session.durationMinutes) }}</p>
+        </div>
+
+        <div>
+          <p class="text-muted small mb-1">Status</p>
+          <span class="badge text-bg-light text-capitalize">{{ session.status || 'unknown' }}</span>
+        </div>
+
+        <div class="session-actions">
+          <a
+            *ngIf="session.meetingLink"
+            class="btn btn-sm btn-outline-primary"
+            [href]="session.meetingLink"
+            target="_blank"
+            rel="noopener noreferrer">
+            Open meeting
+          </a>
+          <span *ngIf="!session.meetingLink" class="text-muted small">No meeting link yet</span>
+        </div>
+      </article>
+    </div>
+  </section>
+</div>

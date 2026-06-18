@@ -32,6 +32,27 @@ export class SessionService extends RestService {
     );
   }
 
+  getAdminSessions(): Observable<Session[]> {
+    return this.http.get<ApiResponse<Session[]>>(this.baseUrl).pipe(
+      map(res => res.data.map(this.mapSession)),
+      catchError(err => throwError(() => err))
+    );
+  }
+
+  getMyMenteeSessions(): Observable<Session[]> {
+    return this.http.get<ApiResponse<Session[]>>(`${ this.baseUrl }/me/mentee`).pipe(
+      map(res => res.data.map(this.mapSession)),
+      catchError(err => throwError(() => err))
+    );
+  }
+
+  getMyMentorSessions(): Observable<Session[]> {
+    return this.http.get<ApiResponse<Session[]>>(`${ this.baseUrl }/me/mentor`).pipe(
+      map(res => res.data.map(this.mapSession)),
+      catchError(err => throwError(() => err))
+    );
+  }
+
   getSessionById(sessionId: number): Observable<Session> {
     const cached = this.cache.get();
     const found = cached?.find(s => s.sessionId === sessionId);

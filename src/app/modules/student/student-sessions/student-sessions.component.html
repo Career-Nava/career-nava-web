@@ -40,7 +40,13 @@
 
             <!-- Render sessions -->
             <ng-template #sessionsLoaded>
-              <ng-container *ngIf="filterSessions(sessions).length; else emptyState">
+              <div *ngIf="error" class="col-12">
+                <div class="alert alert-danger" role="alert">
+                  {{ error }}
+                </div>
+              </div>
+
+              <ng-container *ngIf="!error && filterSessions(sessions).length; else emptyState">
                 <div
                   *ngFor="let session of filterSessions(sessions)"
                   class="col-12 col-md-6 col-lg-4">
@@ -71,6 +77,10 @@
 
                         <div class="d-flex flex-column mt-4">
                           <p>
+                            Mentor:
+                            <span class="fw-semibold">{{ session.mentorName || 'Mentor' }}</span>
+                          </p>
+                          <p>
                             <fa-icon [icon]="faCalendar" class="text-brand-green-500"></fa-icon>
                             {{ session.calendlyStartAt ? (session.calendlyStartAt | date:'mediumDate') + ', ' + (session.calendlyStartAt | date:'shortTime') : 'TBD' }}
                           </p>
@@ -99,7 +109,7 @@
               </ng-container>
 
               <ng-template #emptyState>
-                <div class="col-12 text-center text-muted p-3">
+                <div *ngIf="!error" class="col-12 text-center text-muted p-3">
 
                   <img
                     src="assets/icons/Virtual-Meeting.png"

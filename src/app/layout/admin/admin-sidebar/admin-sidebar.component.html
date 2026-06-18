@@ -1,63 +1,56 @@
-<div class="sidebar admin-sidebar" [class.open]="isOpen">
-  <a href="/home" class="d-block p-4">
-    <img src="assets/images/logo/logo.png" class="w-100 object-fit-contain" alt="Logo">
+﻿<div class="sidebar admin-sidebar" [class.open]="isOpen">
+  <a routerLink="/home" class="d-block p-4">
+    <img src="assets/images/logo/logo.png" class="w-100 object-fit-contain" alt="Career Nava Logo">
   </a>
+
   <div class="sidebar-menu">
     <ul class="menu">
       <li class="menu-item d-block d-sm-none">
-        <button (click)="toggleSidebar()" class="btn btn-primary">Menu</button>
+        <button type="button" (click)="toggleSidebar()" class="btn btn-primary">Close Menu</button>
       </li>
 
       <li class="menu-item">
         <span class="subtitle">Admin Dashboard</span>
-        <a routerLink="/admin/overview" routerLinkActive="active" class="nav-link">
+        <a routerLink="/admin/overview" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" class="nav-link">
           <fa-icon [icon]="faHouse"></fa-icon>
-          <span>Home</span>
+          <span>Overview</span>
         </a>
       </li>
 
       <li class="menu-item">
-        <a routerLink="/admin/assignments" routerLinkActive="active" class="nav-link">
-          <fa-icon [icon]="faFile"></fa-icon>
-          <span>My Assignments</span>
+        <a routerLink="/admin/mentors" routerLinkActive="active" class="nav-link">
+          <fa-icon [icon]="faUser"></fa-icon>
+          <span>Mentors</span>
         </a>
       </li>
 
       <li class="menu-item">
-        <a routerLink="/admin/assessment" routerLinkActive="active" class="nav-link">
+        <a routerLink="/admin/sessions" routerLinkActive="active" class="nav-link">
           <fa-icon [icon]="faChartLine"></fa-icon>
-          <span>My Assessment</span>
+          <span>Sessions</span>
         </a>
       </li>
 
-      <!--      <li class="menu-item">-->
-      <!--        <a routerLink="/admin/classes" routerLinkActive="active" class="nav-link">-->
-      <!--          <fa-icon [icon]="faFile"></fa-icon>-->
-      <!--          <span>My Class</span>-->
-      <!--        </a>-->
-      <!--      </li>-->
-
-      <!--      <li class="menu-item">-->
-      <!--        <a routerLink="/admin/exams" routerLinkActive="active" class="nav-link">-->
-      <!--          <fa-icon [icon]="faFile"></fa-icon>-->
-      <!--          <span>My Exams</span>-->
-      <!--        </a>-->
-      <!--      </li>-->
-
-      <!--      <li class="menu-item">-->
-      <!--        <a routerLink="/admin/profile" routerLinkActive="active" class="nav-link">-->
-      <!--          <fa-icon [icon]="faUser"></fa-icon>-->
-      <!--          <span>My Profile</span>-->
-      <!--        </a>-->
-      <!--      </li>-->
+      <li class="menu-item">
+        <a routerLink="/admin/scholarships" routerLinkActive="active" class="nav-link">
+          <fa-icon [icon]="faFile"></fa-icon>
+          <span>Scholarships</span>
+        </a>
+      </li>
 
       <li class="menu-item">
-        <a (click)="logout()" routerLinkActive="active" class="nav-link">
+        <a routerLink="/admin/blogs" routerLinkActive="active" class="nav-link">
+          <fa-icon [icon]="faFile"></fa-icon>
+          <span>Blogs</span>
+        </a>
+      </li>
+
+      <li class="menu-item">
+        <button type="button" (click)="logout()" class="nav-link border-0 bg-transparent text-start">
           <fa-icon [icon]="faArrowRightFromBracket"></fa-icon>
           <span>Logout</span>
-        </a>
+        </button>
       </li>
-
     </ul>
   </div>
 </div>

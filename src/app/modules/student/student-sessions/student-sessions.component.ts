@@ -3,10 +3,8 @@ import { Component, OnInit } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from "@angular/platform-browser";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { faCalendar, faClock, faEllipsisV, faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
-import { AuthService } from "../../../services/auth/auth.service";
 import { Session } from "../../../services/session/session.model";
 import { SessionService } from "../../../services/session/session.service";
-import { UserModel } from "../../../services/user/user.model";
 import { CardSkeletonComponent } from "../../../shared/components/card-skeleton/card-skeleton.component";
 import { SharedModule } from "../../../shared/shared.module";
 
@@ -41,11 +39,8 @@ export class StudentSessionsComponent implements OnInit {
   paymentUrl = 'https://paystack.shop/pay/careernava_scholarship_coaching';
   safePaymentUrl!: SafeResourceUrl;
 
-  user: UserModel | null = null;
-
   constructor(
     private sessionService: SessionService,
-    private authService: AuthService,
     private sanitizer: DomSanitizer
   ) {
   }
@@ -53,21 +48,15 @@ export class StudentSessionsComponent implements OnInit {
   ngOnInit(): void {
     this.safePaymentUrl = this.sanitizer.bypassSecurityTrustResourceUrl(this.paymentUrl);
 
-    const user = this.authService.getUser();
-    if (!user) {
-      this.loading = false;
-      return;
-    }
-
-    const menteeId = user.userId;
-
-    this.sessionService.getSessionsByMentee(menteeId).subscribe({
+    this.sessionService.getMyMenteeSessions().subscribe({
       next: sessions => {
         this.sessions = sessions;
+        this.error = null;
         this.loading = false;
       },
       error: err => {
         this.sessions = [];
+        this.error = this.getSessionLoadError(err);
         this.loading = false;
       }
     });
@@ -190,5 +179,17 @@ export class StudentSessionsComponent implements OnInit {
       this.showJoinConfirmModal = false;
       this.openPaymentModal(this.activeSessionToJoin);
     }
+  }
+
+  private getSessionLoadError(err: any): string {
+    if (err?.status === 401) {
+      return 'Please sign in again to view your sessions.';
+    }
+
+    if (err?.status === 403) {
+      return 'You do not have permission to view these sessions.';
+    }
+
+    return 'Unable to load your sessions right now. Please try again later.';
   }
 }

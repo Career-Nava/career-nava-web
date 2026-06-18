@@ -1,4 +1,4 @@
-.header {
+﻿.header {
     position: absolute;
     z-index: 9999;
     min-height: 80px;
@@ -202,7 +202,7 @@ header.header {
         }
     }
 
-    &.teacher-sidebar {
+    &.mentor-sidebar {
     background: linear-gradient(45deg, $brand-secondary 0%, #F59E0B 100%);
     background: linear-gradient(45deg, #ffcd6d 0%, #ffa000 100%);
 
@@ -363,3 +363,4 @@ header.header {
 .auth-main {
     height: 100vh;
 }
+

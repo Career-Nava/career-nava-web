@@ -1,20 +1,19 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+﻿import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subscription } from "rxjs";
-import { AuthService } from "../../../services/auth/auth.service";
-import { ToastService } from "../../../services/toast.service";
-import { UserModel } from "../../../services/user/user.model";
-import { SharedModule } from "../../../shared/shared.module";
+import { Subscription } from 'rxjs';
+import { AuthService } from '../../../services/auth/auth.service';
+import { ToastService } from '../../../services/toast.service';
+import { UserModel } from '../../../services/user/user.model';
+import { SharedModule } from '../../../shared/shared.module';
 
 @Component({
   selector: 'app-mentor-overview',
   standalone: true,
   imports: [ SharedModule ],
-  templateUrl: './coach-overview.component.html',
-  styleUrls: [ './coach-overview.component.scss' ]
+  templateUrl: './mentor-overview.component.html',
+  styleUrls: [ './mentor-overview.component.scss' ]
 })
-export class CoachOverviewComponent implements OnInit, OnDestroy {
-
+export class MentorOverviewComponent implements OnInit, OnDestroy {
   user: UserModel | null = null;
   private subscriptions = new Subscription();
 
@@ -27,7 +26,6 @@ export class CoachOverviewComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    // Subscribe to reactive user
     this.subscriptions.add(
       this.authService.user$.subscribe(user => this.user = user)
     );
@@ -53,7 +51,6 @@ export class CoachOverviewComponent implements OnInit, OnDestroy {
       this.toastService.show(`Error linking Calendly: ${ message }`, { classname: 'bg-danger text-light', delay: 7000 });
     }
 
-    // Navigate to same page without query params
     void this.router.navigate([ '/mentor/overview' ], { queryParams: {} });
   }
 }

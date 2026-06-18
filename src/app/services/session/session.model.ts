@@ -1,7 +1,11 @@
 export interface Session {
   sessionId: number;
   menteeId: number;
+  menteeName?: string | null;
+  menteeEmail?: string | null;
   mentorId: number;
+  mentorName?: string | null;
+  mentorEmail?: string | null;
   durationMinutes: number;
   status: string;
   calendlyEventUuid?: string | null;

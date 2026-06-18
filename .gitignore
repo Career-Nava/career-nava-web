@@ -1,4 +1,4 @@
-# Angular build output
+﻿# Angular build output
 /dist/
 /out-tsc/
 /tmp/
@@ -31,3 +31,7 @@ testem.log
 # System files
 .DS_Store
 Thumbs.db
+
+# AI session handoff notes
+/.ai/
+

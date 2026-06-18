@@ -1,0 +1,56 @@
+:host {
+  display: block;
+}
+
+.session-page {
+  padding: 1.5rem 0 3rem;
+}
+
+.session-card {
+  border-radius: 1rem;
+}
+
+.session-eyebrow {
+  letter-spacing: 0.08em;
+}
+
+.session-state {
+  background: rgba(250, 251, 255, 0.9);
+  border: 1px dashed rgba(71, 90, 112, 0.25);
+  border-radius: 0.875rem;
+}
+
+.session-list {
+  display: grid;
+  gap: 1rem;
+}
+
+.session-row {
+  display: grid;
+  grid-template-columns: minmax(180px, 1.4fr) minmax(180px, 1.2fr) minmax(90px, 0.7fr) minmax(90px, 0.7fr) auto;
+  gap: 1rem;
+  align-items: center;
+  background: #fff;
+  border: 1px solid rgba(71, 90, 112, 0.12);
+  border-radius: 0.875rem;
+  padding: 1rem;
+}
+
+.session-actions {
+  justify-self: end;
+}
+
+@media (max-width: 991.98px) {
+  .session-row {
+    grid-template-columns: 1fr;
+    align-items: start;
+  }
+
+  .session-actions {
+    justify-self: stretch;
+  }
+
+  .session-actions .btn {
+    width: 100%;
+  }
+}

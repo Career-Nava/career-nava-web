@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+﻿import { Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 @Component({
@@ -21,13 +21,10 @@ export class FooterComponent {
   companyLinks = [
     { label: 'Home', path: '/home' },
     { label: 'About Us', path: '/about' },
-    { label: 'Services', path: '/services' },
+    { label: 'Blog', path: '/blog' },
   ];
 
-  legalLinks = [
-    { label: 'Privacy Policy', path: '/privacy-policy' },
-    { label: 'Terms and Conditions', path: '/terms' },
-  ];
+  legalLinks: { label: string; path: string }[] = [];
 
   contact = {
     address: 'Karen Village, Nairobi (Kenya)',

@@ -1,10 +1,10 @@
-import { Component } from '@angular/core';
-import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
+﻿import { Component, OnDestroy, OnInit } from '@angular/core';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faArrowRightFromBracket, faChartLine, faFile, faHouse, faUser } from '@fortawesome/free-solid-svg-icons';
 import { Subscription } from 'rxjs';
-import { AuthService } from "../../../services/auth/auth.service";
+import { AuthService } from '../../../services/auth/auth.service';
 import { SidebarService } from '../../../services/sidebar/sidebar.service';
-import { SharedModule } from "../../../shared/shared.module";
+import { SharedModule } from '../../../shared/shared.module';
 
 @Component({
   selector: 'app-admin-sidebar',
@@ -13,7 +13,7 @@ import { SharedModule } from "../../../shared/shared.module";
   templateUrl: './admin-sidebar.component.html',
   styleUrl: './admin-sidebar.component.scss'
 })
-export class AdminSidebarComponent {
+export class AdminSidebarComponent implements OnInit, OnDestroy {
   faHouse = faHouse;
   faFile = faFile;
   faUser = faUser;
@@ -21,7 +21,7 @@ export class AdminSidebarComponent {
   faArrowRightFromBracket = faArrowRightFromBracket;
 
   isOpen = false;
-  private subscription!: Subscription;
+  private subscription?: Subscription;
 
   constructor(private authService: AuthService, private sidebarService: SidebarService) {
   }
@@ -29,11 +29,14 @@ export class AdminSidebarComponent {
   ngOnInit(): void {
     this.subscription = this.sidebarService.isOpen$.subscribe(isOpen => {
       this.isOpen = isOpen;
-      // Apply CSS class changes or direct styles as needed
     });
   }
 
-  logout() {
+  ngOnDestroy(): void {
+    this.subscription?.unsubscribe();
+  }
+
+  logout(): void {
     this.authService.logout();
   }
 
