@@ -1,5 +1,6 @@
-import { DatePipe, NgForOf, NgIf } from '@angular/common';
+import { NgForOf, NgIf } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
+import { SessionCardComponent } from '../../shared/session-card/session-card.component';
 import { Session } from '../../../services/session/session.model';
 import { SessionService } from '../../../services/session/session.service';
 import { SharedModule } from '../../../shared/shared.module';
@@ -7,7 +8,7 @@ import { SharedModule } from '../../../shared/shared.module';
 @Component({
   selector: 'app-mentor-sessions',
   standalone: true,
-  imports: [ DatePipe, NgForOf, NgIf, SharedModule ],
+  imports: [ NgForOf, NgIf, SessionCardComponent, SharedModule ],
   templateUrl: './mentor-sessions.component.html',
   styleUrl: './mentor-sessions.component.scss'
 })
@@ -34,16 +35,13 @@ export class MentorSessionsComponent implements OnInit {
     });
   }
 
-  formatDuration(minutes: number): string {
-    if (!minutes) return 'N/A';
-    if (minutes < 60) return `${ minutes } min`;
-    const hrs = Math.floor(minutes / 60);
-    const mins = minutes % 60;
-    return mins === 0 ? `${ hrs }h` : `${ hrs }h ${ mins }m`;
-  }
-
   trackSession(_: number, session: Session): number {
     return session.sessionId;
+  }
+
+  openMeeting(session: Session): void {
+    if (!session.meetingLink) return;
+    window.open(session.meetingLink, '_blank', 'noopener,noreferrer');
   }
 
   private getSessionLoadError(err: any): string {

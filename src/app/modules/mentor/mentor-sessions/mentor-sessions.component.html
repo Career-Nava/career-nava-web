@@ -26,43 +26,16 @@
       </p>
     </div>
 
-    <div *ngIf="!loading && !error && sessions.length" class="session-list">
-      <article *ngFor="let session of sessions; trackBy: trackSession" class="session-row">
-        <div>
-          <p class="text-muted small mb-1">Mentee</p>
-          <h2 class="h5 mb-1">{{ session.menteeName || 'Mentee' }}</h2>
-          <p class="text-muted small mb-0">{{ session.menteeEmail || 'Email unavailable' }}</p>
-        </div>
-
-        <div>
-          <p class="text-muted small mb-1">Date and time</p>
-          <p class="mb-0">
-            {{ session.calendlyStartAt ? (session.calendlyStartAt | date:'medium') : 'To be scheduled' }}
-          </p>
-        </div>
-
-        <div>
-          <p class="text-muted small mb-1">Duration</p>
-          <p class="mb-0">{{ formatDuration(session.durationMinutes) }}</p>
-        </div>
-
-        <div>
-          <p class="text-muted small mb-1">Status</p>
-          <span class="badge text-bg-light text-capitalize">{{ session.status || 'unknown' }}</span>
-        </div>
-
-        <div class="session-actions">
-          <a
-            *ngIf="session.meetingLink"
-            class="btn btn-sm btn-outline-primary"
-            [href]="session.meetingLink"
-            target="_blank"
-            rel="noopener noreferrer">
-            Open meeting
-          </a>
-          <span *ngIf="!session.meetingLink" class="text-muted small">No meeting link yet</span>
-        </div>
-      </article>
+    <div *ngIf="!loading && !error && sessions.length" class="row gy-4">
+      <div *ngFor="let session of sessions; trackBy: trackSession" class="col-12 col-md-6 col-lg-4">
+        <app-session-card
+          [session]="session"
+          context="mentor"
+          [actionLabel]="session.meetingLink ? 'Open meeting' : 'No meeting link yet'"
+          [actionDisabled]="!session.meetingLink"
+          (action)="openMeeting($event)">
+        </app-session-card>
+      </div>
     </div>
   </section>
 </div>

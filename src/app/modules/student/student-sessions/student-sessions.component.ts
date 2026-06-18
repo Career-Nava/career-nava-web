@@ -1,8 +1,9 @@
-import { AsyncPipe, DatePipe, NgForOf, NgIf } from "@angular/common";
+import { AsyncPipe, NgForOf, NgIf } from "@angular/common";
 import { Component, OnInit } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from "@angular/platform-browser";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
-import { faCalendar, faClock, faEllipsisV, faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
+import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
+import { SessionCardComponent } from "../../shared/session-card/session-card.component";
 import { Session } from "../../../services/session/session.model";
 import { SessionService } from "../../../services/session/session.service";
 import { CardSkeletonComponent } from "../../../shared/components/card-skeleton/card-skeleton.component";
@@ -11,15 +12,12 @@ import { SharedModule } from "../../../shared/shared.module";
 @Component({
   selector: 'app-student-sessions',
   standalone: true,
-  imports: [ NgIf, AsyncPipe, NgForOf, FaIconComponent, DatePipe, CardSkeletonComponent, SharedModule ],
+  imports: [ NgIf, AsyncPipe, NgForOf, FaIconComponent, CardSkeletonComponent, SessionCardComponent, SharedModule ],
   templateUrl: './student-sessions.component.html',
   styleUrls: [ './student-sessions.component.scss' ]
 })
 export class StudentSessionsComponent implements OnInit {
 
-  faCalendar = faCalendar;
-  faClock = faClock;
-  faDotVertical = faEllipsisV;
   faWarning = faExclamationTriangle;
 
   sessions: Session[] = [];
@@ -101,14 +99,6 @@ export class StudentSessionsComponent implements OnInit {
       default:
         return sessions;
     }
-  }
-
-  formatDuration(minutes: number): string {
-    if (!minutes) return 'N/A';
-    if (minutes < 60) return `${ minutes } min`;
-    const hrs = Math.floor(minutes / 60);
-    const mins = minutes % 60;
-    return mins === 0 ? `${ hrs }h` : `${ hrs }h ${ mins }m`;
   }
 
   handleSessionClick(session: Session) {

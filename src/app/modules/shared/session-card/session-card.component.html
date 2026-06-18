@@ -1,0 +1,48 @@
+<div class="card session-card h-100">
+  <div class="session-ribbon" [ngClass]="statusClass">
+    {{ statusLabel }}
+  </div>
+
+  <div class="card-header d-block overflow-hidden p-0">
+    <img
+      [src]="session.thumbnailUrl || 'assets/images/sessions/empty.png'"
+      [alt]="session.title || 'Career Nava session'"
+      class="w-100 object-fit-cover session-image">
+  </div>
+
+  <div class="card-body">
+    <div class="position-relative z-2">
+      <h4 class="card-title">{{ session.title || 'Career Coaching' }}</h4>
+
+      <div class="d-flex flex-column mt-4 session-meta">
+        <p>
+          {{ participantLabel }}:
+          <span class="fw-semibold">{{ participantName }}</span>
+        </p>
+        <p *ngIf="participantEmail" class="text-muted small">
+          {{ participantEmail }}
+        </p>
+        <p>
+          <fa-icon [icon]="faCalendar" class="text-brand-green-500"></fa-icon>
+          {{ session.calendlyStartAt ? (session.calendlyStartAt | date:'mediumDate') + ', ' + (session.calendlyStartAt | date:'shortTime') : 'TBD' }}
+        </p>
+        <p>
+          <fa-icon [icon]="faClock" class="text-brand-green-500"></fa-icon>
+          {{ formatDuration(session.durationMinutes) }}
+        </p>
+      </div>
+    </div>
+
+    <p>{{ session.description || fallbackDescription }}</p>
+  </div>
+
+  <div class="card-footer bg-transparent border-0" *ngIf="showAction">
+    <button
+      type="button"
+      class="btn w-100 btn-primary"
+      [disabled]="actionDisabled"
+      (click)="handleAction()">
+      {{ actionLabel }}
+    </button>
+  </div>
+</div>

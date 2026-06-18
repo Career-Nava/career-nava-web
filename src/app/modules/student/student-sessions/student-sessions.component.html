@@ -50,61 +50,13 @@
                 <div
                   *ngFor="let session of filterSessions(sessions)"
                   class="col-12 col-md-6 col-lg-4">
-                  <div class="card">
-
-                    <!-- Pending payment ribbon -->
-                    <div class="session-ribbon ribbon--pending" *ngIf="session.status === 'pending'; else approvedRibbon">
-                      Pending
-                    </div>
-
-                    <!-- Approved ribbon -->
-                    <ng-template #approvedRibbon>
-                      <div class="session-ribbon ribbon--approved">
-                        Approved
-                      </div>
-                    </ng-template>
-
-                    <!-- Thumbnail -->
-                    <div class="card-header d-block overflow-hidden p-0">
-                      <img [src]="session.thumbnailUrl || 'assets/images/sessions/empty.png'"
-                           [alt]="session.title" class="w-100 object-fit-cover" style="height: 200px;">
-                    </div>
-
-                    <!-- Content -->
-                    <div class="card-body">
-                      <div class="position-relative z-2">
-                        <h4 class="card-title">{{ session.title || 'Career Coaching' }}</h4>
-
-                        <div class="d-flex flex-column mt-4">
-                          <p>
-                            Mentor:
-                            <span class="fw-semibold">{{ session.mentorName || 'Mentor' }}</span>
-                          </p>
-                          <p>
-                            <fa-icon [icon]="faCalendar" class="text-brand-green-500"></fa-icon>
-                            {{ session.calendlyStartAt ? (session.calendlyStartAt | date:'mediumDate') + ', ' + (session.calendlyStartAt | date:'shortTime') : 'TBD' }}
-                          </p>
-                          <p>
-                            <fa-icon [icon]="faClock" class="text-brand-green-500"></fa-icon>
-                            {{ formatDuration(session.durationMinutes) }}
-                          </p>
-                        </div>
-                      </div>
-
-                      <p>{{ session.description || 'One-on-one career coaching focused on resume, interview prep, and career guidance.' }}</p>
-
-                    </div>
-
-                    <div class="card-footer bg-transparent border-0">
-                      <button
-                        class="btn w-100 btn-primary"
-                        [disabled]="isPastSession(session)"
-                        (click)="handleSessionClick(session)">
-                        Join Session
-                      </button>
-                    </div>
-
-                  </div>
+                  <app-session-card
+                    [session]="session"
+                    context="mentee"
+                    actionLabel="Join Session"
+                    [actionDisabled]="isPastSession(session)"
+                    (action)="handleSessionClick($event)">
+                  </app-session-card>
                 </div>
               </ng-container>
 
