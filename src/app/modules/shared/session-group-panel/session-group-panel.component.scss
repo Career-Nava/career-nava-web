@@ -1,0 +1,40 @@
+.session-panel-page {
+  overflow-x: hidden;
+}
+
+.sessions-tabs {
+  -webkit-overflow-scrolling: touch;
+  gap: 0.25rem;
+  scrollbar-width: thin;
+}
+
+.sessions-tabs .nav-link {
+  white-space: nowrap;
+}
+
+.session-panel-card {
+  min-width: 0;
+}
+
+.empty-img {
+  max-width: min(300px, 80vw);
+  width: 100%;
+  opacity: 0.9;
+}
+
+.session-empty-state {
+  min-height: 220px;
+}
+
+@media (max-width: 575.98px) {
+  .session-panel-page {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+
+  .session-panel-card .card-header,
+  .session-panel-card .card-body {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}

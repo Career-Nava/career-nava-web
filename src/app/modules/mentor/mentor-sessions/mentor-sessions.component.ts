@@ -1,6 +1,5 @@
-import { NgForOf, NgIf } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { SessionCardComponent } from '../../shared/session-card/session-card.component';
+import { SessionGroup, SessionGroupPanelComponent } from '../../shared/session-group-panel/session-group-panel.component';
 import { Session } from '../../../services/session/session.model';
 import { SessionService } from '../../../services/session/session.service';
 import { SharedModule } from '../../../shared/shared.module';
@@ -8,7 +7,7 @@ import { SharedModule } from '../../../shared/shared.module';
 @Component({
   selector: 'app-mentor-sessions',
   standalone: true,
-  imports: [ NgForOf, NgIf, SessionCardComponent, SharedModule ],
+  imports: [ SessionGroupPanelComponent, SharedModule ],
   templateUrl: './mentor-sessions.component.html',
   styleUrl: './mentor-sessions.component.scss'
 })
@@ -16,7 +15,6 @@ export class MentorSessionsComponent implements OnInit {
   sessions: Session[] = [];
   loading = true;
   error: string | null = null;
-  tab: 'active' | 'upcoming' | 'past' = 'active';
 
   constructor(private sessionService: SessionService) {
   }
@@ -36,11 +34,33 @@ export class MentorSessionsComponent implements OnInit {
     });
   }
 
-  trackSession(_: number, session: Session): number {
-    return session.sessionId;
+  get sessionGroups(): SessionGroup[] {
+    return [
+      {
+        key: 'active',
+        label: 'Active',
+        sessions: this.filterSessions(this.sessions, 'active'),
+        emptyMessage: 'You have no sessions scheduled for today.'
+      },
+      {
+        key: 'upcoming',
+        label: 'Upcoming',
+        sessions: this.filterSessions(this.sessions, 'upcoming'),
+        emptyMessage: 'You have no upcoming booked sessions.'
+      },
+      {
+        key: 'past',
+        label: 'Past',
+        sessions: this.filterSessions(this.sessions, 'past'),
+        emptyMessage: 'You have no completed or past sessions yet.'
+      }
+    ];
   }
 
-  filterSessions(sessions: Session[]): Session[] {
+  getSessionActionLabel = (session: Session): string => session.meetingLink ? 'Open meeting' : 'No meeting link yet';
+  isSessionActionDisabled = (session: Session): boolean => !session.meetingLink;
+
+  private filterSessions(sessions: Session[], group: 'active' | 'upcoming' | 'past'): Session[] {
     const now = new Date();
 
     const startOfToday = new Date(
@@ -56,7 +76,7 @@ export class MentorSessionsComponent implements OnInit {
       23, 59, 59, 999
     );
 
-    switch (this.tab) {
+    switch (group) {
       case 'active':
         return sessions.filter(s =>
           s.calendlyStartAt &&
@@ -78,19 +98,6 @@ export class MentorSessionsComponent implements OnInit {
 
       default:
         return sessions;
-    }
-  }
-
-  getEmptyStateMessage(): string {
-    switch (this.tab) {
-      case 'active':
-        return 'You have no sessions scheduled for today.';
-      case 'upcoming':
-        return 'You have no upcoming booked sessions.';
-      case 'past':
-        return 'You have no completed or past sessions yet.';
-      default:
-        return 'No sessions are available.';
     }
   }
 

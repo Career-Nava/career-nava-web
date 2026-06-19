@@ -1,17 +1,3 @@
-.student-sessions-page {
-  overflow-x: hidden;
-}
-
-.sessions-tabs {
-  -webkit-overflow-scrolling: touch;
-  gap: 0.25rem;
-  scrollbar-width: thin;
-}
-
-.sessions-tabs .nav-link {
-  white-space: nowrap;
-}
-
 .payment-modal-backdrop {
   position: fixed;
   inset: 0;
@@ -72,13 +58,6 @@
   justify-content: center;
   flex-direction: column;
   padding: 1rem;
-}
-
-/* Empty state image */
-.empty-img {
-  max-width: min(300px, 80vw);
-  width: 100%;
-  opacity: 0.9;
 }
 
 @media (max-width: 575.98px) {

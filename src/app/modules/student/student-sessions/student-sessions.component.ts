@@ -1,18 +1,16 @@
-import { AsyncPipe, NgForOf, NgIf } from "@angular/common";
 import { Component, OnInit } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from "@angular/platform-browser";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
-import { SessionCardComponent } from "../../shared/session-card/session-card.component";
+import { SessionGroup, SessionGroupPanelComponent } from "../../shared/session-group-panel/session-group-panel.component";
 import { Session } from "../../../services/session/session.model";
 import { SessionService } from "../../../services/session/session.service";
-import { CardSkeletonComponent } from "../../../shared/components/card-skeleton/card-skeleton.component";
 import { SharedModule } from "../../../shared/shared.module";
 
 @Component({
   selector: 'app-student-sessions',
   standalone: true,
-  imports: [ NgIf, AsyncPipe, NgForOf, FaIconComponent, CardSkeletonComponent, SessionCardComponent, SharedModule ],
+  imports: [ FaIconComponent, SessionGroupPanelComponent, SharedModule ],
   templateUrl: './student-sessions.component.html',
   styleUrls: [ './student-sessions.component.scss' ]
 })
@@ -25,8 +23,6 @@ export class StudentSessionsComponent implements OnInit {
 
   loading = true;
   error: string | null = null;
-
-  tab: 'active' | 'upcoming' | 'past' = 'active';
 
   // Payment modal state
   showPaymentModal = false;
@@ -60,7 +56,33 @@ export class StudentSessionsComponent implements OnInit {
     });
   }
 
-  filterSessions(sessions: Session[]): Session[] {
+  get sessionGroups(): SessionGroup[] {
+    return [
+      {
+        key: 'active',
+        label: 'Active',
+        sessions: this.filterSessions(this.sessions, 'active'),
+        emptyMessage: 'You have no sessions scheduled for today.'
+      },
+      {
+        key: 'upcoming',
+        label: 'Upcoming',
+        sessions: this.filterSessions(this.sessions, 'upcoming'),
+        emptyMessage: 'You have no upcoming sessions.'
+      },
+      {
+        key: 'past',
+        label: 'Past',
+        sessions: this.filterSessions(this.sessions, 'past'),
+        emptyMessage: 'You have no past sessions.'
+      }
+    ];
+  }
+
+  isSessionActionDisabled = (session: Session): boolean => this.isPastSession(session);
+  getSessionActionLabel = (): string => 'Join Session';
+
+  private filterSessions(sessions: Session[], group: 'active' | 'upcoming' | 'past'): Session[] {
     const now = new Date();
 
     const startOfToday = new Date(
@@ -76,7 +98,7 @@ export class StudentSessionsComponent implements OnInit {
       23, 59, 59, 999
     );
 
-    switch (this.tab) {
+    switch (group) {
       case 'active':
         return sessions.filter(s =>
           s.calendlyStartAt &&

@@ -1,0 +1,69 @@
+<div class="container session-panel-page">
+  <div class="col-12 col-lg-6">
+    <div class="mb-4">
+      <h1>{{ pageTitle }}</h1>
+      <p *ngIf="!errorMessage">{{ pageDescription }}</p>
+      <p *ngIf="errorMessage" class="text-danger">{{ errorMessage }}</p>
+    </div>
+  </div>
+
+  <ul class="nav nav-tabs sessions-tabs flex-nowrap overflow-auto">
+    <li class="nav-item" *ngFor="let group of groups; trackBy: trackGroup">
+      <a
+        class="nav-link"
+        [class.active]="activeGroup?.key === group.key"
+        (click)="setActiveGroup(group); $event.preventDefault()">
+        {{ group.label }}
+      </a>
+    </li>
+  </ul>
+
+  <div class="tab-content">
+    <div class="tab-pane active">
+      <div class="card border-0 session-panel-card">
+        <div class="card-header">
+          <h3 class="card-title">{{ panelTitle }}</h3>
+          <p>{{ panelDescription }}</p>
+        </div>
+
+        <div class="card-body">
+          <ng-container *ngIf="loading; else sessionsLoaded">
+            <card-skeleton [skeletonCount]="skeletonCount"></card-skeleton>
+          </ng-container>
+
+          <ng-template #sessionsLoaded>
+            <div *ngIf="errorMessage" class="alert alert-danger" role="alert">
+              {{ errorMessage }}
+            </div>
+
+            <ng-container *ngIf="!errorMessage && activeGroup as group">
+              <div *ngIf="group.sessions.length; else emptyState" class="row g-4">
+                <div *ngFor="let session of group.sessions; trackBy: trackSession" class="col-12 col-md-6 col-xl-4">
+                  <app-session-card
+                    [session]="session"
+                    [context]="context"
+                    [actionLabel]="actionLabel(session)"
+                    [actionDisabled]="actionDisabled(session)"
+                    (action)="sessionAction.emit($event)">
+                  </app-session-card>
+                </div>
+              </div>
+
+              <ng-template #emptyState>
+                <div class="text-center text-muted p-3 session-empty-state">
+                  <img
+                    [src]="emptyImageSrc"
+                    [alt]="emptyImageAlt"
+                    class="mb-3 empty-img"/>
+
+                  <h2 class="h5 mb-2" *ngIf="group.emptyTitle">{{ group.emptyTitle }}</h2>
+                  <p class="mb-0">{{ group.emptyMessage }}</p>
+                </div>
+              </ng-template>
+            </ng-container>
+          </ng-template>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

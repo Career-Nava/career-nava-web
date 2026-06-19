@@ -1,64 +1,13 @@
-<div class="container session-page">
-  <section class="card border-0 shadow-sm p-4 session-card">
-    <p class="text-uppercase text-muted small fw-semibold mb-2 session-eyebrow">Mentor</p>
-    <div class="d-flex flex-column flex-lg-row justify-content-between gap-3 mb-4">
-      <div>
-        <h1 class="mb-2">My Sessions</h1>
-        <p class="text-muted mb-0">
-          Sessions booked with you will appear here. This view uses your signed-in mentor account and does not require a mentor ID in the URL.
-        </p>
-      </div>
-    </div>
-
-    <div *ngIf="loading" class="session-state p-4 text-center">
-      <div class="spinner-border text-primary" role="status" aria-label="Loading mentor sessions"></div>
-      <p class="text-muted mb-0 mt-3">Loading sessions...</p>
-    </div>
-
-    <div *ngIf="!loading && error" class="alert alert-danger" role="alert">
-      {{ error }}
-    </div>
-
-    <div *ngIf="!loading && !error && !sessions.length" class="session-state p-4">
-      <h2 class="h5 mb-2">No booked sessions yet</h2>
-      <p class="text-muted mb-0">
-        Once mentees book time with you, upcoming and completed sessions will be listed here.
-      </p>
-    </div>
-
-    <ng-container *ngIf="!loading && !error && sessions.length">
-      <ul class="nav nav-tabs sessions-tabs flex-nowrap overflow-auto">
-        <li class="nav-item">
-          <a class="nav-link" [class.active]="tab === 'active'" (click)="tab='active'; $event.preventDefault()">Active</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" [class.active]="tab === 'upcoming'" (click)="tab='upcoming'; $event.preventDefault()">Upcoming</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" [class.active]="tab === 'past'" (click)="tab='past'; $event.preventDefault()">Past</a>
-        </li>
-      </ul>
-
-      <div class="pt-4">
-        <div *ngIf="filterSessions(sessions).length; else groupedEmptyState" class="row g-4">
-          <div *ngFor="let session of filterSessions(sessions); trackBy: trackSession" class="col-12 col-md-6 col-xl-4">
-            <app-session-card
-              [session]="session"
-              context="mentor"
-              [actionLabel]="session.meetingLink ? 'Open meeting' : 'No meeting link yet'"
-              [actionDisabled]="!session.meetingLink"
-              (action)="openMeeting($event)">
-            </app-session-card>
-          </div>
-        </div>
-      </div>
-
-      <ng-template #groupedEmptyState>
-        <div class="session-state p-4 text-center">
-          <h2 class="h5 mb-2">No sessions in this group</h2>
-          <p class="text-muted mb-0">{{ getEmptyStateMessage() }}</p>
-        </div>
-      </ng-template>
-    </ng-container>
-  </section>
-</div>
+﻿<app-session-group-panel
+  pageTitle="My Sessions"
+  pageDescription="Sessions booked with you will appear here. This view uses your signed-in mentor account and does not require a mentor ID in the URL."
+  panelTitle="My Sessions"
+  panelDescription="Overview of sessions booked with you by mentees."
+  context="mentor"
+  [groups]="sessionGroups"
+  [loading]="loading"
+  [errorMessage]="error"
+  [actionLabel]="getSessionActionLabel"
+  [actionDisabled]="isSessionActionDisabled"
+  (sessionAction)="openMeeting($event)">
+</app-session-group-panel>
