@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { faCalendar, faClock } from '@fortawesome/free-solid-svg-icons';
+import { faArrowLeft, faArrowUpRightFromSquare, faCalendar, faClock } from '@fortawesome/free-solid-svg-icons';
 import { Subscription } from 'rxjs';
 import { ScholarshipService } from '../../../../services/scholarship/scholarship.service';
 import { ScholarshipDto } from '../../../../services/scholarship/shcolarship.model';
@@ -17,6 +17,8 @@ import { SharedModule } from '../../../../shared/shared.module';
 export class ScholarshipDetailsComponent implements OnInit, OnDestroy {
 
   scholarship?: ScholarshipDto;
+  isLoading = true;
+  loadFailed = false;
   private subs = new Subscription();
 
   constructor(
@@ -27,19 +29,40 @@ export class ScholarshipDetailsComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    const id = Number(this.route.snapshot.paramMap.get('id'));
-    if (id) this.fetchScholarship(id);
+    this.subs.add(
+      this.route.paramMap.subscribe(params => {
+        const id = Number(params.get('id'));
+        if (id) {
+          this.fetchScholarship(id);
+          return;
+        }
+
+        this.scholarship = undefined;
+        this.isLoading = false;
+        this.loadFailed = true;
+      })
+    );
   }
 
   private fetchScholarship(id: number): void {
+    this.isLoading = true;
+    this.loadFailed = false;
+
     this.subs.add(
       this.scholarshipService.getScholarshipById(id).subscribe({
-        next: data => (this.scholarship = data),
-        error: () =>
+        next: data => {
+          this.scholarship = data;
+          this.isLoading = false;
+        },
+        error: () => {
+          this.scholarship = undefined;
+          this.isLoading = false;
+          this.loadFailed = true;
           this.toast.show('Failed to load scholarship details', {
             classname: 'bg-danger text-light',
             delay: 4000
-          })
+          });
+        }
       })
     );
   }
@@ -50,4 +73,6 @@ export class ScholarshipDetailsComponent implements OnInit, OnDestroy {
 
   protected readonly faClock = faClock;
   protected readonly faCalendar = faCalendar;
+  protected readonly faArrowLeft = faArrowLeft;
+  protected readonly faArrowUpRightFromSquare = faArrowUpRightFromSquare;
 }

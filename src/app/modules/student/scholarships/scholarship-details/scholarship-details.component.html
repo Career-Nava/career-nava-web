@@ -1,133 +1,264 @@
-<div class="container-fluid pb-5" *ngIf="scholarship as s">
+<div class="schd-page container-fluid pb-5">
+  <div class="schd-shell d-flex flex-column gap-4">
+    <a routerLink="/mentee/scholarships" class="schd-back">
+      <fa-icon [icon]="faArrowLeft"></fa-icon>
+      <span>Back to scholarships</span>
+    </a>
 
-  <!-- Header -->
-  <section class="scholarship-header mb-5">
-    <div class="d-flex flex-column flex-lg-row gap-4 align-content-center">
-      <img
-        *ngIf="s.imageThumbnail"
-        [src]="s.imageThumbnail"
-        [alt]="s.title"
-        class="header-img"/>
-
-      <div class="text-center text-lg-start">
-        <h1 class="fw-bold mb-2">{{ s.title }}</h1>
-        <p class="text-muted mb-3">{{ s.category }}</p>
-
-        <a
-          [href]="s.link"
-          target="_blank"
-          class="btn btn-secondary">
-          View Scholarship
-        </a>
-      </div>
-    </div>
-  </section>
-
-  <div class="row g-4">
-
-    <!-- Main Content -->
-    <div class="col-12 col-lg-7">
-      <article class="content-card h-100">
-        <div class="p-4">
-
-          <!-- Meta -->
-          <div class="d-flex flex-column gap-2 small text-muted mb-3 position-relative">
-            <span>
-              <fa-icon [icon]="faCalendar" class="me-1"></fa-icon>
-              Posted: {{ s.datePosted | date:'mediumDate' }}
-            </span>
-
-            <span>
-              <fa-icon [icon]="faClock" class="me-1"></fa-icon>
-              Deadline: {{ s.applicationDeadline | date:'mediumDate' }}
-            </span>
-
-            <span>
-              Status:
-              <span
-                class="badge-sm rounded-pill ms-1"
-                [class.bg-success-subtle]="s.status === 'active'"
-                [class.text-success]="s.status === 'active'"
-                [class.bg-danger]="s.status === 'inactive'"
-                [class.text-white]="s.status === 'inactive'">
-                {{ s.status | titlecase }}
-              </span>
-            </span>
-
-            <!-- Funding badge -->
-            <span
-              class="badge-sm rounded-pill position-absolute top-0 end-0"
-              [class.bg-success]="s.funding === 'Fully Funded'"
-              [class.bg-warning]="s.funding === 'Partially Funded'"
-              [class.bg-danger]="s.funding === 'No Funding'"
-
-              [class.text-white]="s.funding === 'Fully Funded' || s.funding === 'No Funding'"
-              [class.text-dark]="s.funding === 'Partially Funded'">
-              {{ s.funding | titlecase }}
-            </span>
+    <ng-container *ngIf="isLoading">
+      <section class="schd-hero schd-card placeholder-wave mb-4">
+        <div class="row g-4 align-items-stretch">
+          <div class="col-12 col-xl-7">
+            <div class="schd-hero__body">
+              <span class="placeholder col-3 mb-3"></span>
+              <span class="placeholder col-9 mb-2"></span>
+              <span class="placeholder col-10 mb-2"></span>
+              <span class="placeholder col-8 mb-4"></span>
+              <div class="d-flex flex-wrap gap-2 mb-4">
+                <span class="placeholder col-3"></span>
+                <span class="placeholder col-2"></span>
+                <span class="placeholder col-2"></span>
+              </div>
+              <span class="placeholder col-5"></span>
+            </div>
           </div>
 
-          <hr/>
-
-          <h3 class="fw-semibold mb-3">Overview</h3>
-          <p class="description">
-            {{ s.contentDescription }}
-          </p>
-        </div>
-      </article>
-    </div>
-
-    <!-- Side Panel -->
-    <div class="col-12 col-lg-5 d-flex flex-column gap-3">
-
-      <!-- Benefits -->
-      <section *ngIf="s.benefits?.length" class="content-card">
-        <div class="px-4">
-          <h3 class="fw-semibold mb-3">Benefits</h3>
-
-          <ul class="list-unstyled mb-0 benefit-list">
-            <li
-              *ngFor="let b of s.benefits"
-              class="d-flex align-items-start gap-2">
-              <span class="benefit-icon">âœ“</span>
-              <span>{{ b.benefitText }}</span>
-            </li>
-          </ul>
+          <div class="col-12 col-xl-5">
+            <div class="schd-hero__media schd-media-skel">
+              <span class="placeholder w-100 h-100"></span>
+            </div>
+          </div>
         </div>
       </section>
 
-      <!-- Eligibility -->
-      <section *ngIf="s.eligibilityCriteria" class="content-card">
-        <div class="px-4">
-          <h3 class="fw-semibold mb-3">Eligibility</h3>
-          <p class="mb-0">
-            {{ s.eligibilityCriteria }}
-          </p>
+      <div class="row g-4">
+        <div class="col-12 col-xl-8">
+          <section class="schd-card p-4 placeholder-wave">
+            <span class="placeholder col-4 mb-3"></span>
+            <span class="placeholder col-12 mb-2"></span>
+            <span class="placeholder col-11 mb-2"></span>
+            <span class="placeholder col-10"></span>
+          </section>
         </div>
-      </section>
 
-      <!-- Mentees -->
-      <div class="px-4">
-        <h5 class="fw-semibold mb-3">
-          Mentees Bookmarked ({{ s.menteesInterested.length }})
-        </h5>
-
-        <div class="d-flex align-items-center">
-          <ng-container *ngFor="let m of s.menteesInterested.slice(0,5)">
-            <img
-              [src]="m.profilePicture"
-              [alt]="m.fullName"
-              class="mentee-avatar"/>
-          </ng-container>
-
-          <span
-            *ngIf="s.menteesInterested.length > 5"
-            class="mentee-avatar extra">
-              +{{ s.menteesInterested.length - 5 }}
-            </span>
+        <div class="col-12 col-xl-4">
+          <section class="schd-card p-4 placeholder-wave">
+            <span class="placeholder col-6 mb-3"></span>
+            <span class="placeholder col-12 mb-2"></span>
+            <span class="placeholder col-12 mb-2"></span>
+            <span class="placeholder col-10"></span>
+          </section>
         </div>
       </div>
+    </ng-container>
 
-    </div>
+    <section *ngIf="!isLoading && (loadFailed || !scholarship)" class="schd-empty schd-card text-center">
+      <span class="schd-kicker">Scholarship unavailable</span>
+      <h1 class="schd-empty__title">We couldn’t load this scholarship right now.</h1>
+      <p class="text-muted mb-4">
+        It may have been removed, expired, or there was a temporary loading issue. Return to your scholarships list to keep exploring other opportunities.
+      </p>
+      <a routerLink="/mentee/scholarships" class="btn btn-secondary">Back to scholarships</a>
+    </section>
+
+    <ng-container *ngIf="!isLoading && scholarship as s">
+      <section class="schd-hero schd-card mb-4">
+        <div class="row g-4 align-items-stretch">
+          <div class="col-12 col-xl-7">
+            <div class="schd-hero__body">
+              <span class="schd-kicker">Scholarship spotlight</span>
+
+              <div class="schd-pill-row mb-3">
+                <span class="schd-pill schd-pill--soft">{{ s.category || 'Scholarship Opportunity' }}</span>
+                <span class="schd-pill schd-pill--soft" *ngIf="s.role">{{ s.role }}</span>
+                <span
+                  class="schd-pill"
+                  *ngIf="s.status"
+                  [class.schd-pill--success]="s.status === 'active'"
+                  [class.schd-pill--muted]="s.status === 'inactive'">
+                  {{ s.status | titlecase }}
+                </span>
+              </div>
+
+              <h1 class="schd-title">{{ s.title }}</h1>
+              <p class="schd-copy text-muted mb-4">{{ s.shortDescription || s.contentDescription }}</p>
+
+              <div class="schd-facts mb-4">
+                <div class="schd-fact" *ngIf="s.funding">
+                  <span class="schd-fact__label">Funding</span>
+                  <strong>{{ s.funding }}</strong>
+                </div>
+
+                <div class="schd-fact" *ngIf="s.applicationDeadline">
+                  <span class="schd-fact__label">Deadline</span>
+                  <strong>{{ s.applicationDeadline | date:'mediumDate' }}</strong>
+                </div>
+
+                <div class="schd-fact" *ngIf="s.menteesInterested?.length">
+                  <span class="schd-fact__label">Shortlisted by mentees</span>
+                  <strong>{{ s.menteesInterested.length }}</strong>
+                </div>
+              </div>
+
+              <div class="schd-actions">
+                <a
+                  *ngIf="s.link; else unavailableLink"
+                  [href]="s.link"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="btn btn-secondary schd-cta">
+                  <span>Visit scholarship</span>
+                  <fa-icon [icon]="faArrowUpRightFromSquare"></fa-icon>
+                </a>
+
+                <ng-template #unavailableLink>
+                  <button type="button" class="btn btn-outline-secondary schd-cta" disabled>
+                    Application link unavailable
+                  </button>
+                </ng-template>
+
+                <p class="schd-note mb-0 text-muted">
+                  Review the criteria carefully before applying so your shortlist stays focused on strong-fit opportunities.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-12 col-xl-5">
+            <div class="schd-hero__media">
+              <img
+                *ngIf="s.imageThumbnail; else heroFallback"
+                [src]="s.imageThumbnail"
+                [alt]="s.title"
+                class="schd-hero__img"/>
+
+              <ng-template #heroFallback>
+                <div class="schd-hero__fallback">
+                  <span class="schd-fallback__tag">Career Nava</span>
+                  <strong>{{ s.category || 'Scholarship opportunity' }}</strong>
+                  <p class="mb-0">Curated funding support for your next academic or career move.</p>
+                </div>
+              </ng-template>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="row g-4 align-items-start">
+        <div class="col-12 col-xl-8 d-flex flex-column gap-4">
+          <section class="schd-card p-4" *ngIf="s.contentDescription || s.shortDescription">
+            <span class="schd-section-label">About this scholarship</span>
+            <h2 class="schd-section-title">Overview</h2>
+            <p class="schd-body-copy mb-0">{{ s.contentDescription || s.shortDescription }}</p>
+          </section>
+
+          <section class="schd-card p-4" *ngIf="s.benefits?.length">
+            <span class="schd-section-label">What you gain</span>
+            <h2 class="schd-section-title">Benefits</h2>
+
+            <ul class="schd-benefits mb-0">
+              <li *ngFor="let benefit of s.benefits">
+                <span class="schd-benefits__dot"></span>
+                <span>{{ benefit.benefitText }}</span>
+              </li>
+            </ul>
+          </section>
+
+          <section class="schd-card p-4" *ngIf="s.eligibilityCriteria">
+            <span class="schd-section-label">Who it suits best</span>
+            <h2 class="schd-section-title">Eligibility</h2>
+            <p class="schd-body-copy mb-0">{{ s.eligibilityCriteria }}</p>
+          </section>
+        </div>
+
+        <div class="col-12 col-xl-4 d-flex flex-column gap-4">
+          <section class="schd-card p-4">
+            <span class="schd-section-label">Quick facts</span>
+            <h2 class="schd-section-title">At a glance</h2>
+
+            <div class="schd-quick-list">
+              <div class="schd-quick-item" *ngIf="s.category">
+                <span>Category</span>
+                <strong>{{ s.category }}</strong>
+              </div>
+
+              <div class="schd-quick-item" *ngIf="s.funding">
+                <span>Funding</span>
+                <strong>{{ s.funding }}</strong>
+              </div>
+
+              <div class="schd-quick-item" *ngIf="s.status">
+                <span>Status</span>
+                <strong>{{ s.status | titlecase }}</strong>
+              </div>
+
+              <div class="schd-quick-item" *ngIf="s.datePosted">
+                <span>Posted</span>
+                <strong>{{ s.datePosted | date:'mediumDate' }}</strong>
+              </div>
+
+              <div class="schd-quick-item" *ngIf="s.applicationDeadline">
+                <span>Deadline</span>
+                <strong>{{ s.applicationDeadline | date:'mediumDate' }}</strong>
+              </div>
+
+              <div class="schd-quick-item" *ngIf="s.role">
+                <span>Audience</span>
+                <strong>{{ s.role }}</strong>
+              </div>
+            </div>
+          </section>
+
+          <section class="schd-card p-4" *ngIf="s.menteesInterested?.length">
+            <span class="schd-section-label">Community signal</span>
+            <h2 class="schd-section-title">Shortlisted by mentees</h2>
+
+            <div class="schd-interest">
+              <div class="schd-avatars">
+                <ng-container *ngFor="let mentee of s.menteesInterested.slice(0, 5)">
+                  <img
+                    [src]="mentee.profilePicture"
+                    [alt]="mentee.fullName || 'Mentee'"
+                    class="schd-avatar"/>
+                </ng-container>
+
+                <span *ngIf="s.menteesInterested.length > 5" class="schd-avatar schd-avatar--extra">
+                  +{{ s.menteesInterested.length - 5 }}
+                </span>
+              </div>
+
+              <p class="text-muted mb-0">
+                {{ s.menteesInterested.length }} mentee{{ s.menteesInterested.length === 1 ? '' : 's' }} bookmarked this scholarship.
+              </p>
+            </div>
+          </section>
+
+          <section class="schd-card p-4">
+            <span class="schd-section-label">Next step</span>
+            <h2 class="schd-section-title">Application action</h2>
+            <p class="text-muted mb-3">
+              Keep your shortlist practical. Review the deadline, confirm eligibility, and move to the official listing when you are ready.
+            </p>
+
+            <a
+              *ngIf="s.link; else noActionLink"
+              [href]="s.link"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="btn btn-secondary w-100 schd-cta">
+              <span>Open official scholarship page</span>
+              <fa-icon [icon]="faArrowUpRightFromSquare"></fa-icon>
+            </a>
+
+            <ng-template #noActionLink>
+              <button type="button" class="btn btn-outline-secondary w-100 schd-cta" disabled>
+                Official scholarship link unavailable
+              </button>
+            </ng-template>
+          </section>
+        </div>
+      </div>
+    </ng-container>
   </div>
 </div>
+
