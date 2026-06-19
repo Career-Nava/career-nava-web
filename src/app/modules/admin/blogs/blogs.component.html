@@ -1,18 +1,68 @@
-﻿<div class="container shell-page">
-  <section class="card border-0 shadow-sm p-4 shell-card">
-    <p class="text-uppercase text-muted small fw-semibold mb-2 shell-eyebrow">Admin</p>
-    <h1 class="mb-3">Blogs</h1>
-    <p class="text-muted mb-4">Manage Career Nava blog and resource content.</p>
+<div class="container blog-page">
+  <section class="card border-0 shadow-sm p-4 blog-card">
+    <p class="text-uppercase text-muted small fw-semibold mb-2 blog-eyebrow">Admin</p>
+    <div class="d-flex flex-column flex-lg-row justify-content-between gap-3 mb-4">
+      <div>
+        <h1 class="mb-2">Blogs</h1>
+        <p class="text-muted mb-0">
+          View all blog and resource records available to administrators. This page is read-only for now.
+        </p>
+      </div>
+    </div>
 
-    <div class="shell-empty-state p-4">
-      <h2 class="h5 mb-2">Shell page</h2>
-      <p class="text-muted mb-4">No blog management tools are wired in yet.</p>
-      <h3 class="h6 mb-3">Future scope</h3>
-      <ul class="shell-list mb-0">
-        <li>Draft and publish resource content.</li>
-        <li>Manage blog metadata and article visibility.</li>
-        <li>Prepare content workflows for application guidance resources.</li>
-      </ul>
+    <div *ngIf="loading" class="blog-state p-4 text-center">
+      <div class="spinner-border text-primary" role="status" aria-label="Loading blogs"></div>
+      <p class="text-muted mb-0 mt-3">Loading blogs...</p>
+    </div>
+
+    <div *ngIf="!loading && error" class="alert alert-danger" role="alert">
+      {{ error }}
+    </div>
+
+    <div *ngIf="!loading && !error && !blogs.length" class="blog-state p-4">
+      <h2 class="h5 mb-2">No blogs found</h2>
+      <p class="text-muted mb-0">
+        Blog and resource records will appear here once the backend returns admin-visible content data.
+      </p>
+    </div>
+
+    <div *ngIf="!loading && !error && blogs.length" class="table-responsive blog-table-wrap">
+      <table class="table align-middle mb-0 blog-table">
+        <thead>
+          <tr>
+            <th scope="col">Blog / Resource</th>
+            <th scope="col">Category</th>
+            <th scope="col">Author</th>
+            <th scope="col">Reading Time</th>
+            <th scope="col">Created</th>
+            <th scope="col">Content Blocks</th>
+            <th scope="col">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let blog of blogs; trackBy: trackBlog">
+            <td>
+              <div class="fw-semibold">{{ blog.title || '-' }}</div>
+              <div *ngIf="blog.slug" class="text-muted small">{{ blog.slug }}</div>
+            </td>
+            <td>{{ blog.category || '-' }}</td>
+            <td>{{ blog.authorName || '-' }}</td>
+            <td>{{ blog.readingTime || '-' }}</td>
+            <td>
+              <span *ngIf="blog.createdDate; else noCreatedDate">
+                {{ blog.createdDate | date:'mediumDate' }}
+              </span>
+              <ng-template #noCreatedDate>-</ng-template>
+            </td>
+            <td>{{ getContentBlockCount(blog) }}</td>
+            <td>
+              <span class="badge text-capitalize" [ngClass]="getStatusBadgeClass(blog)">
+                {{ getStatusLabel(blog) }}
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </section>
 </div>

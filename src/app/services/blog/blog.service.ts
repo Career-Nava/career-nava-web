@@ -6,7 +6,7 @@ import { ConfigurationService } from '../configuration.service';
 import { LocalStorageCache } from '../local-storage-cache';
 import { RestService } from '../rest.service';
 import { UserService } from "../user/user.service";
-import { Blog } from './blog.model';
+import { AdminBlog, Blog } from './blog.model';
 
 @Injectable({ providedIn: 'root' })
 export class BlogService extends RestService {
@@ -46,6 +46,13 @@ export class BlogService extends RestService {
       );
   }
 
+  getAdminBlogs(): Observable<AdminBlog[]> {
+    return this.http.get<ApiResponse<Array<Partial<AdminBlog> & Partial<Blog>>>>(`${ this.baseUrl }/GetAllBlogsForAdmin`).pipe(
+      map(res => (res.data ?? []).map(dto => this.mapAdminBlog(dto))),
+      catchError(err => throwError(() => err))
+    );
+  }
+
   clearCache(): void {
     this.cache.clear();
   }
@@ -55,6 +62,25 @@ export class BlogService extends RestService {
       ...dto,
       coverImage: dto.coverImage || 'assets/images/sessions/empty.png',
       contents: dto.contents?.sort((a, b) => a.contentOrder - b.contentOrder)
+    };
+  }
+
+  private mapAdminBlog(dto: Partial<AdminBlog> & Partial<Blog>): AdminBlog {
+    return {
+      blogId: dto.blogId,
+      title: dto.title,
+      slug: dto.slug,
+      authorId: dto.authorId ?? dto.author?.userId ?? undefined,
+      authorName: dto.authorName ?? dto.author?.fullName ?? undefined,
+      category: dto.category,
+      coverImage: dto.coverImage || 'assets/images/sessions/empty.png',
+      quote: dto.quote ?? dto.blockQuote,
+      readingTime: dto.readingTime,
+      createdDate: dto.createdDate ?? dto.createdAt,
+      updatedAt: dto.updatedAt,
+      contentBlockCount: typeof dto.contentBlockCount === 'number' ? dto.contentBlockCount : dto.contents?.length ?? 0,
+      status: dto.status,
+      isPublished: dto.isPublished
     };
   }
 }

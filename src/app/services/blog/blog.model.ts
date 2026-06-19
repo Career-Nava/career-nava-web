@@ -24,3 +24,20 @@ export interface Blog {
   /** Child entities */
   contents?: BlogContent[];
 }
+
+export interface AdminBlog {
+  blogId?: number;
+  title?: string;
+  slug?: string;
+  authorId?: number;
+  authorName?: string;
+  category?: string;
+  coverImage?: string;
+  quote?: string;
+  readingTime?: string;
+  createdDate?: string;
+  updatedAt?: string;
+  contentBlockCount?: number;
+  status?: string;
+  isPublished?: boolean;
+}
