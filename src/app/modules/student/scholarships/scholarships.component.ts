@@ -56,22 +56,6 @@ export class ScholarshipsComponent implements OnInit, OnDestroy {
       .filter(s => this.matchesSearch(s));
   }
 
-  get totalScholarships(): number {
-    return this.scholarships.length;
-  }
-
-  get bookmarkedScholarships(): number {
-    return this.scholarships.filter(s => s.isBookmarked).length;
-  }
-
-  get activeScholarships(): number {
-    return this.scholarships.filter(s => s.status === 'active').length;
-  }
-
-  get inactiveScholarships(): number {
-    return this.scholarships.filter(s => s.status === 'inactive').length;
-  }
-
   get isFiltered(): boolean {
     return this.selectedTab !== 'all' || !!this.searchQuery.trim();
   }

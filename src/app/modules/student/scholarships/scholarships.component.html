@@ -1,53 +1,17 @@
 <div class="sch-page container-fluid pb-5">
   <section class="mb-4">
-    <div class="row g-4 align-items-stretch">
-      <div class="col-12 col-xl-7">
-        <div class="sch-intro h-100">
-          <span class="sch-kicker">Career Funding Guide</span>
-          <h1 class="sch-title">Scholarships curated for your next move</h1>
-          <p class="sch-copy text-muted mb-0">
-            Discover high-value opportunities, track what is still open, and keep your shortlist ready for the next application cycle.
-          </p>
-        </div>
-      </div>
-
-      <div class="col-12 col-xl-5">
-        <div class="row g-3">
-          <div class="col-6">
-            <div class="sch-stat">
-              <span class="sch-label">Available</span>
-              <strong class="sch-value">{{ totalScholarships }}</strong>
-            </div>
-          </div>
-
-          <div class="col-6">
-            <div class="sch-stat">
-              <span class="sch-label">Saved</span>
-              <strong class="sch-value">{{ bookmarkedScholarships }}</strong>
-            </div>
-          </div>
-
-          <div class="col-6">
-            <div class="sch-stat">
-              <span class="sch-label">Open now</span>
-              <strong class="sch-value">{{ activeScholarships }}</strong>
-            </div>
-          </div>
-
-          <div class="col-6">
-            <div class="sch-stat">
-              <span class="sch-label">Closed</span>
-              <strong class="sch-value">{{ inactiveScholarships }}</strong>
-            </div>
-          </div>
-        </div>
-      </div>
+    <div class="sch-intro">
+      <span class="sch-kicker">Career Funding Guide</span>
+      <h1 class="sch-title">Scholarships curated for your next move</h1>
+      <p class="sch-copy text-muted mb-0">
+        Discover high-value opportunities, track what is still open, and keep your shortlist ready for the next application cycle.
+      </p>
     </div>
   </section>
 
   <section class="sch-toolbar mb-4">
     <div class="row g-3 align-items-center">
-      <div class="col-12 col-lg-5">
+      <div class="col-12 col-lg-8">
         <label class="sch-search">
           <fa-icon [icon]="faMagnifyingGlass" class="sch-search-icon"></fa-icon>
           <input
@@ -59,7 +23,7 @@
         </label>
       </div>
 
-      <div class="col-12 col-lg-7">
+      <div class="col-12 col-lg-4 sch-tabs-wrap">
         <div class="sch-tabs" role="tablist" aria-label="Scholarship filters">
           <button
             *ngFor="let tab of tabs"
@@ -73,13 +37,9 @@
       </div>
     </div>
 
-    <div class="sch-meta">
-      <h2 class="mb-0 fw-bold">
-        {{ visibleScholarships.length }} opportunity{{ visibleScholarships.length === 1 ? '' : 'ies' }}
-      </h2>
-
+    <div class="sch-meta mt-3 pt-3 border-top">
       <p class="sch-copy text-muted mb-0">
-        Keep bookmarks close so you can compare funding, deadlines, and fit at a glance.
+        Showing {{ visibleScholarships.length }} match{{ visibleScholarships.length === 1 ? '' : 'es' }} for your current shortlist.
       </p>
     </div>
   </section>
