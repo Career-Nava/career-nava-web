@@ -7,6 +7,21 @@
     padding: 80px 0 0;
 }
 
+.auth-content {
+    overflow-x: hidden;
+}
+
+.auth-content > * {
+    min-width: 0;
+}
+
+.auth-content section {
+    display: block;
+    align-items: initial;
+    justify-content: initial;
+    padding: 0;
+}
+
 .main-content {
     padding: 0 1em;
     min-height: 100vh;
@@ -361,6 +376,6 @@ header.header {
 }
 
 .auth-main {
-    height: 100vh;
+    min-height: 100vh;
 }
 

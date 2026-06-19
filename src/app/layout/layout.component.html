@@ -1,13 +1,13 @@
-<!-- Sidebar -->
-<app-sidebar></app-sidebar>
+<div class="auth-layout bg-brand-purple-50">
+  <app-sidebar
+    [config]="sidebarConfig">
+  </app-sidebar>
 
-<main class="main-content bg-brand-purple-50">
+  <main class="auth-main">
+    <app-topbar [homeRoute]="sidebarConfig.homeRoute"></app-topbar>
 
-  <!-- Topbar -->
-  <app-topbar></app-topbar>
-
-  <section class="p-3 pt-4 min-vh-100 d-block">
-    <!-- Main Content -->
-    <router-outlet></router-outlet>
-  </section>
-</main>
+    <div class="auth-content">
+      <router-outlet></router-outlet>
+    </div>
+  </main>
+</div>

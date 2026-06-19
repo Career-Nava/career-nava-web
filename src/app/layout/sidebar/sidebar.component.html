@@ -1,37 +1,50 @@
-<div class="sidebar" [class.open]="isOpen">
-  <a [routerLink]="['/home']" class="d-block p-4">
-    <img src="assets/images/logo/logo.png" class="w-100 object-fit-contain" alt="Logo"/>
-  </a>
+<aside
+  class="auth-sidebar"
+  [class.open]="isOpen"
+  [ngClass]="config.themeClass">
+  <div class="auth-sidebar__header">
+    <a [routerLink]="config.homeRoute" class="auth-sidebar__brand d-block p-4" (click)="closeSidebar()">
+      <img [src]="config.logoSrc" class="w-100 object-fit-contain" [alt]="config.logoAlt"/>
+    </a>
 
-  <div class="sidebar-menu">
+    <button
+      type="button"
+      class="auth-sidebar__close d-lg-none"
+      (click)="closeSidebar()"
+      aria-label="Close sidebar">
+      <fa-icon [icon]="faXmark"></fa-icon>
+    </button>
+  </div>
+
+  <div class="auth-sidebar__menu">
     <ul class="menu">
-      <!-- Small screen toggle -->
-      <li class="menu-item d-block d-sm-none">
-        <button (click)="toggleSidebar()" class="btn btn-secondary">Close Menu</button>
+      <li class="menu-item" *ngIf="config.title">
+        <span class="subtitle">{{ config.title }}</span>
       </li>
 
-      <!-- Dynamic menu items -->
-      <li *ngFor="let item of menuItems" class="menu-item">
-        <a *ngIf="item.route; else actionItem" [routerLink]="item.route" routerLinkActive="active" class="nav-link">
+      <li *ngFor="let item of config.items" class="menu-item">
+        <a
+          [routerLink]="item.route"
+          [class.active]="isItemActive(item)"
+          class="nav-link"
+          (click)="closeSidebar()">
           <fa-icon [icon]="item.icon"></fa-icon>
           <span>{{ item.label }}</span>
         </a>
+      </li>
 
-        <!-- Items with actions instead of routes -->
-        <ng-template #actionItem>
-          <a (click)="item.action?.()" class="nav-link">
-            <fa-icon [icon]="item.icon"></fa-icon>
-            <span>{{ item.label }}</span>
-          </a>
-        </ng-template>
+      <li class="menu-item auth-sidebar__logout">
+        <button type="button" (click)="logout()" class="nav-link border-0 bg-transparent text-start">
+          <fa-icon [icon]="faArrowRightFromBracket"></fa-icon>
+          <span>Logout</span>
+        </button>
       </li>
     </ul>
   </div>
-</div>
+</aside>
 
-<!-- Sidebar overlay -->
 <div
-  class="sidebar-overlay"
+  class="auth-sidebar-overlay"
   [class.show]="isOpen"
-  (click)="toggleSidebar()"
-></div>
+  (click)="closeSidebar()">
+</div>

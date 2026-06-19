@@ -1,17 +1,12 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { NavigationEnd, Router } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faArrowRightFromBracket, faCertificate, faLaptop, faUsers } from '@fortawesome/free-solid-svg-icons';
-import { Subscription } from 'rxjs';
+import { faArrowRightFromBracket, faXmark } from '@fortawesome/free-solid-svg-icons';
+import { filter, Subscription } from 'rxjs';
 import { AuthService } from '../../services/auth/auth.service';
 import { SidebarService } from '../../services/sidebar/sidebar.service';
 import { SharedModule } from '../../shared/shared.module';
-
-interface SidebarItem {
-  label: string;
-  icon: any;
-  route?: string;
-  action?: () => void;
-}
+import { SidebarNavItem, SidebarRoleConfig } from './sidebar.config';
 
 @Component({
   selector: 'app-sidebar',
@@ -21,27 +16,55 @@ interface SidebarItem {
   styleUrls: [ './sidebar.component.scss' ]
 })
 export class SidebarComponent implements OnInit, OnDestroy {
-  isOpen = false;
-  private subscription!: Subscription;
+  @Input({ required: true }) config!: SidebarRoleConfig;
 
-  // Define all menu items declaratively
-  menuItems: SidebarItem[] = [
-    { label: 'Explore Mentors', icon: faUsers, route: '/mentee/mentors' },
-    { label: 'Scholarships', icon: faCertificate, route: '/mentee/scholarships' },
-    { label: 'My Sessions', icon: faLaptop, route: '/mentee/sessions' },
-    { label: 'Logout', icon: faArrowRightFromBracket, action: () => this.logout() }
-  ];
+  readonly faArrowRightFromBracket = faArrowRightFromBracket;
+  readonly faXmark = faXmark;
+
+  isOpen = false;
+  private readonly subscription = new Subscription();
 
   constructor(
     private authService: AuthService,
+    private router: Router,
     private sidebarService: SidebarService
   ) {
   }
 
   ngOnInit(): void {
-    this.subscription = this.sidebarService.isOpen$.subscribe(isOpen => {
-      this.isOpen = isOpen;
+    this.subscription.add(
+      this.sidebarService.isOpen$.subscribe(isOpen => {
+        this.isOpen = isOpen;
+      })
+    );
+
+    this.subscription.add(
+      this.router.events
+        .pipe(filter((event): event is NavigationEnd => event instanceof NavigationEnd))
+        .subscribe(() => this.sidebarService.close())
+    );
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
+  }
+
+  isItemActive(item: SidebarNavItem): boolean {
+    const currentUrl = this.normalizedUrl(this.router.url);
+    const activePrefixes = item.activePrefixes?.length ? item.activePrefixes : [ item.route ];
+
+    if (item.exact) {
+      return currentUrl === this.normalizedUrl(item.route);
+    }
+
+    return activePrefixes.some(prefix => {
+      const normalizedPrefix = this.normalizedUrl(prefix);
+      return currentUrl === normalizedPrefix || currentUrl.startsWith(`${ normalizedPrefix }/`);
     });
+  }
+
+  closeSidebar(): void {
+    this.sidebarService.close();
   }
 
   toggleSidebar(): void {
@@ -49,10 +72,11 @@ export class SidebarComponent implements OnInit, OnDestroy {
   }
 
   logout(): void {
+    this.sidebarService.close();
     this.authService.logout();
   }
 
-  ngOnDestroy(): void {
-    this.subscription?.unsubscribe();
+  private normalizedUrl(url: string): string {
+    return url.split('?')[ 0 ].split('#')[ 0 ].replace(/\/+$/, '') || '/';
   }
 }

@@ -1,9 +1,7 @@
 ﻿import { Routes } from '@angular/router';
 import { authGuard } from './guards/auth.guard';
-import { AdminLayoutComponent } from './layout/admin/admin-layout/admin-layout.component';
 import { HomeLayoutComponent } from './layout/home/home-layout.component';
 import { LayoutComponent } from './layout/layout.component';
-import { MentorLayoutComponent } from './layout/mentor/mentor-layout/mentor-layout.component';
 import { AdminBlogsComponent } from './modules/admin/blogs/blogs.component';
 import { AdminMentorsComponent } from './modules/admin/mentors/mentors.component';
 import { OverviewComponent } from './modules/admin/overview/overview.component';
@@ -46,18 +44,19 @@ export const routes: Routes = [
   },
 
   {
-    path: 'mentee', canActivate: [ authGuard ], data: { roles: [ 'mentee' ] }, component: LayoutComponent, children: [
+    path: 'mentee', canActivate: [ authGuard ], data: { roles: [ 'mentee' ], layoutRole: 'mentee' }, component: LayoutComponent, children: [
       { path: '', redirectTo: 'mentors', pathMatch: 'full' },
       { path: 'mentors', component: MentorsComponent },
       { path: 'mentors/mentor-details/:id', component: MentorDetailsComponent },
       { path: 'sessions', component: StudentSessionsComponent },
+      { path: 'scholarships/:id', component: ScholarshipDetailsComponent },
       { path: 'scholarships', component: ScholarshipsComponent },
       { path: 'scholarship-details/:id', component: ScholarshipDetailsComponent }
     ]
   },
 
   {
-    path: 'admin', canActivate: [ authGuard ], data: { roles: [ 'admin' ] }, component: AdminLayoutComponent, children: [
+    path: 'admin', canActivate: [ authGuard ], data: { roles: [ 'admin' ], layoutRole: 'admin' }, component: LayoutComponent, children: [
       { path: '', redirectTo: 'overview', pathMatch: 'full' },
       { path: 'overview', component: OverviewComponent },
       { path: 'mentors', component: AdminMentorsComponent },
@@ -68,7 +67,7 @@ export const routes: Routes = [
   },
 
   {
-    path: 'mentor', canActivate: [ authGuard ], data: { roles: [ 'mentor' ] }, component: MentorLayoutComponent, children: [
+    path: 'mentor', canActivate: [ authGuard ], data: { roles: [ 'mentor' ], layoutRole: 'mentor' }, component: LayoutComponent, children: [
       { path: '', redirectTo: 'overview', pathMatch: 'full' },
       { path: 'overview', component: MentorOverviewComponent },
       { path: 'profile', component: MentorProfileComponent },
