@@ -1,26 +1,87 @@
-﻿<div class="container shell-page">
-  <section class="card border-0 shadow-sm p-4 shell-card">
-    <div class="row align-items-center gy-4">
+<div class="container overview-page">
+  <section class="card border-0 shadow-sm p-4 overview-card">
+    <div class="row align-items-center gy-4 mb-4">
       <div class="col-12 col-lg-8">
-        <p class="text-uppercase text-muted small fw-semibold mb-2 shell-eyebrow">Admin Overview</p>
+        <p class="text-uppercase text-muted small fw-semibold mb-2 overview-eyebrow">Admin Overview</p>
         <h1 class="mb-3">Career Nava admin command center</h1>
         <p class="text-muted mb-0">
-          This area is the future workspace for managing platform content and operational activity across mentors, sessions, scholarships, and blogs.
+          Track high-level platform activity across mentors, sessions, scholarships, and blog resources.
+        </p>
+        <p *ngIf="user?.fullName" class="text-muted mb-0 mt-2">
+          Signed in as {{ user?.fullName }}.
         </p>
       </div>
       <div class="col-12 col-lg-4 text-center">
-        <img src="assets/images/illustrations/web-development-flatline-1.svg" alt="Admin dashboard illustration" class="w-100 max-w-3xl mx-auto object-fit-contain">
+        <img
+          src="assets/images/illustrations/web-development-flatline-1.svg"
+          alt="Admin dashboard illustration"
+          class="overview-illustration">
       </div>
     </div>
 
-    <div class="shell-empty-state p-4 mt-4">
-      <h2 class="h5 mb-3">Planned admin areas</h2>
-      <ul class="shell-list mb-0">
-        <li>Review and manage mentor profiles and platform status.</li>
-        <li>View sessions booked by mentees across the platform.</li>
-        <li>Manage scholarships shown to mentees.</li>
-        <li>Manage blog and resource content.</li>
-      </ul>
+    <div *ngIf="loading" class="overview-state p-4 text-center">
+      <div class="spinner-border text-primary" role="status" aria-label="Loading admin overview"></div>
+      <p class="text-muted mb-0 mt-3">Loading admin overview...</p>
     </div>
+
+    <div *ngIf="!loading && error" class="alert alert-danger" role="alert">
+      {{ error }}
+    </div>
+
+    <div *ngIf="!loading && !error && !overview" class="overview-state p-4">
+      <h2 class="h5 mb-2">Overview unavailable</h2>
+      <p class="text-muted mb-0">
+        Platform summary counts are not available right now.
+      </p>
+    </div>
+
+    <ng-container *ngIf="!loading && !error && overview">
+      <div class="row g-4">
+        <div *ngFor="let card of cards; trackBy: trackCard" class="col-12 col-md-6 col-xl-4">
+          <article class="overview-summary-card h-100">
+            <p class="overview-summary-title mb-2">{{ card.title }}</p>
+            <div class="overview-summary-value mb-2">{{ card.value }}</div>
+            <p class="text-muted mb-1">{{ card.primaryMeta }}</p>
+            <p *ngIf="card.secondaryMeta" class="text-muted mb-0">{{ card.secondaryMeta }}</p>
+            <a
+              *ngIf="card.route && card.actionLabel"
+              class="btn btn-sm btn-outline-primary mt-3"
+              [routerLink]="card.route">
+              {{ card.actionLabel }}
+            </a>
+          </article>
+        </div>
+      </div>
+
+      <section class="overview-state p-4 mt-4">
+        <h2 class="h5 mb-3">Admin areas</h2>
+        <div class="row g-3">
+          <div class="col-12 col-md-6 col-xl-3">
+            <a class="overview-link-card" routerLink="/admin/mentors">
+              <span class="fw-semibold d-block mb-1">Mentors</span>
+              <span class="text-muted small">Review mentor records and status.</span>
+            </a>
+          </div>
+          <div class="col-12 col-md-6 col-xl-3">
+            <a class="overview-link-card" routerLink="/admin/sessions">
+              <span class="fw-semibold d-block mb-1">Sessions</span>
+              <span class="text-muted small">View platform-wide session activity.</span>
+            </a>
+          </div>
+          <div class="col-12 col-md-6 col-xl-3">
+            <a class="overview-link-card" routerLink="/admin/scholarships">
+              <span class="fw-semibold d-block mb-1">Scholarships</span>
+              <span class="text-muted small">Review scholarship inventory.</span>
+            </a>
+          </div>
+          <div class="col-12 col-md-6 col-xl-3">
+            <a class="overview-link-card" routerLink="/admin/blogs">
+              <span class="fw-semibold d-block mb-1">Blogs / Resources</span>
+              <span class="text-muted small">Review blog and resource content.</span>
+            </a>
+          </div>
+        </div>
+      </section>
+    </ng-container>
   </section>
 </div>
