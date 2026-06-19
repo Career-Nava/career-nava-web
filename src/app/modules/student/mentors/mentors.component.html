@@ -1,101 +1,150 @@
-﻿<div class="container-fluid mentors-page">
-  <!-- Header -->
-  <div class="row align-items-center justify-content-lg-start page-header mb-4">
-    <div class="col-12">
-      <div class="header-content">
-        <h1 class="page-title">Explore Mentors & Book Session</h1>
-        <p class="page-subtitle">
-          Discover experienced professionals ready to guide you on your career journey.
-        </p>
+<div class="mnt-page container-fluid pb-5">
+  <section class="mb-4">
+    <div class="mnt-intro">
+      <span class="mnt-kicker">Career Guidance Network</span>
+      <h1 class="mnt-title">Find mentors for your next career move</h1>
+      <p class="mnt-copy text-muted mb-3">
+        Explore professionals who can help you plan, prepare, and grow with clearer guidance across roles, industries, and lived experience.
+      </p>
+      <p class="mnt-count mb-0">{{ totalMentors }} mentor{{ totalMentors === 1 ? '' : 's' }} available to explore.</p>
+    </div>
+  </section>
+
+  <section class="mnt-toolbar mb-4">
+    <div class="row g-3 align-items-center">
+      <div class="col-12">
+        <label class="mnt-search">
+          <fa-icon [icon]="faMagnifyingGlass" class="mnt-search-icon"></fa-icon>
+          <input
+            type="search"
+            class="form-control mnt-input"
+            placeholder="Search by name, title, company, or expertise"
+            [value]="searchQuery"
+            (input)="onSearch($any($event.target).value)"/>
+        </label>
       </div>
+    </div>
+
+    <div class="mnt-meta mt-3 pt-3 border-top">
+      <p class="mnt-copy text-muted mb-0">
+        Showing {{ visibleMentors.length }} mentor{{ visibleMentors.length === 1 ? '' : 's' }} from your current search.
+      </p>
+    </div>
+  </section>
+
+  <div class="row g-4" *ngIf="loading">
+    <div class="col-12 col-md-6 col-xl-4" *ngFor="let _ of skeletonCards">
+      <article class="mnt-card mnt-skel h-100">
+        <div class="mnt-media placeholder-wave">
+          <span class="placeholder w-100 h-100"></span>
+        </div>
+        <div class="mnt-body placeholder-wave">
+          <span class="placeholder col-4 mb-3"></span>
+          <span class="placeholder col-8 mb-2"></span>
+          <span class="placeholder col-10 mb-3"></span>
+          <div class="d-flex gap-2 mb-3">
+            <span class="placeholder col-3"></span>
+            <span class="placeholder col-3"></span>
+          </div>
+          <span class="placeholder col-12 mb-2"></span>
+          <span class="placeholder col-9"></span>
+        </div>
+        <div class="mnt-footer placeholder-wave">
+          <span class="placeholder w-100"></span>
+        </div>
+      </article>
     </div>
   </div>
 
-  <!-- Mentors Card -->
-  <div class="mentors-card">
-    <div class="card-header-section mb-4">
-      <h3 class="section-title">Mentors</h3>
-    </div>
+  <div *ngIf="!loading && error" class="mnt-empty text-center">
+    <img src="assets/icons/Problem.png" alt="Error" class="mnt-empty-img mb-3"/>
+    <h3 class="fw-bold mb-2">We couldn't load mentors right now.</h3>
+    <p class="mnt-copy text-muted mb-0">{{ error }}</p>
+  </div>
 
-    <div class="tab-content">
-      <div class="tab-pane active" id="all" role="tabpanel">
-        <div class="card-body px-0">
-          <!-- Loading state -->
-          <div *ngIf="loading" class="loading-state text-center py-5">
-            <card-skeleton [skeletonCount]="4"></card-skeleton>
+  <div *ngIf="!loading && !error && !visibleMentors.length" class="mnt-empty text-center">
+    <img src="assets/icons/Video-Call.png" alt="No mentors" class="mnt-empty-img mb-3"/>
+    <h3 class="fw-bold mb-2">
+      {{ isFiltered ? 'No mentors match this search.' : 'No mentors available right now.' }}
+    </h3>
+    <p class="mnt-copy text-muted mb-0">
+      {{ isFiltered
+      ? 'Try a broader search to discover more professionals who can support your next step.'
+      : 'We are curating more mentor profiles for you. Check back soon for fresh guidance options.' }}
+    </p>
+    <button *ngIf="isFiltered" type="button" class="btn btn-outline-secondary mt-3" (click)="resetSearch()">
+      Show all mentors
+    </button>
+  </div>
+
+  <div class="row g-4" *ngIf="!loading && !error && visibleMentors.length">
+    <div class="col-12 col-md-6 col-xl-4" *ngFor="let mentor of visibleMentors; trackBy: trackByMentor">
+      <article class="mnt-card h-100">
+        <div class="mnt-media">
+          <img
+            *ngIf="mentor.profilePicture; else mentorFallback"
+            [src]="mentor.profilePicture"
+            [alt]="mentor.fullName || 'Mentor profile'"
+            class="mnt-img"/>
+
+          <ng-template #mentorFallback>
+            <div class="mnt-fallback">
+              <span class="mnt-fallback-tag">Career Nava</span>
+              <strong>{{ mentor.positionTitle || 'Mentor Profile' }}</strong>
+            </div>
+          </ng-template>
+
+          <div class="mnt-chips">
+            <span class="mnt-chip" [class.mnt-chip--success]="mentor.calendlyConnected" [class.mnt-chip--muted]="!mentor.calendlyConnected">
+              {{ mentor.calendlyConnected ? 'Open for booking' : 'Profile available' }}
+            </span>
+            <span class="mnt-chip mnt-chip--soft" *ngIf="mentor.avgRating">
+              {{ mentor.avgRating | number:'1.0-1' }} rating
+            </span>
+          </div>
+        </div>
+
+        <div class="mnt-body">
+          <span class="mnt-role">{{ mentor.positionTitle || 'Mentor' }}</span>
+          <h3 class="mnt-card-title">{{ mentor.fullName }}</h3>
+          <p class="mnt-subtitle text-muted mb-0">
+            <span *ngIf="mentor.company; else noCompany">{{ mentor.company }}</span>
+            <ng-template #noCompany>Career guidance mentor</ng-template>
+          </p>
+
+          <div class="mnt-tags" *ngIf="getExpertiseTags(mentor).length">
+            <span class="mnt-tag" *ngFor="let tag of getExpertiseTags(mentor)">{{ tag }}</span>
           </div>
 
-          <!-- Error state -->
-          <div *ngIf="!loading && error" class="error-state text-center p-3">
-            <img src="assets/icons/Problem.png" alt="Error"/>
-            <p>{{ error }}</p>
-          </div>
+          <p class="mnt-desc" *ngIf="mentor.bio">{{ mentor.bio }}</p>
 
-          <!-- Empty state -->
-          <div *ngIf="!loading && !error && (mentors$ | async)?.length === 0"
-               class="empty-state text-center text-muted py-5">
-            <img src="assets/icons/Video-Call.png" alt="No mentors"/>
-            <p>No mentors available at the moment.</p>
-          </div>
+          <div class="mnt-meta">
+            <div class="mnt-meta-item">
+              <fa-icon [icon]="faUserGroup"></fa-icon>
+              <span>{{ mentor.totalSessions || 0 }} session{{ mentor.totalSessions === 1 ? '' : 's' }}</span>
+            </div>
 
-          <!-- Mentors grid -->
-          <div *ngIf="!loading && !error" class="row gy-4 mentor-grid">
-            <div
-              class="col-12 col-sm-6 col-md-4 col-lg-3"
-              *ngFor="let mentor of mentors$ | async">
+            <div class="mnt-meta-item">
+              <fa-icon [icon]="faStar"></fa-icon>
+              <span>
+                {{ mentor.totalReviews || 0 }} review{{ mentor.totalReviews === 1 ? '' : 's' }}
+              </span>
+            </div>
 
-              <a
-                [routerLink]="['/mentee/mentors/mentor-details', mentor.userId]"
-                class="mentor-card d-block text-decoration-none">
-
-                <div class="card h-100 border-0 mentor-card-inner">
-
-                  <!-- Image -->
-                  <div class="mentor-img-wrapper">
-                    <img
-                      [src]="mentor.profilePicture"
-                      [alt]="mentor.fullName"
-                      class="mentor-img"/>
-                  </div>
-
-                  <!-- Info -->
-                  <div class="card-body p-4">
-                    <h4 class="mentor-name">{{ mentor.fullName }}</h4>
-
-                    <p class="mentor-role text-muted">
-                      <fa-icon [icon]="faBriefcase" class="icon-accent"></fa-icon>
-                      {{ mentor.positionTitle }}
-                      <span *ngIf="mentor.company"> at {{ mentor.company }}</span>
-                    </p>
-
-                    <p class="mentor-sessions">
-                      <fa-icon [icon]="faComments" class="icon-accent"></fa-icon>
-                      {{ mentor.totalSessions }} Sessions ({{ mentor.totalReviews }} Reviews)
-                    </p>
-
-<!--                    <p class="mentor-rating mb-0">-->
-<!--                      <ng-container *ngFor="let _ of getStars(mentor.avgRating)">-->
-<!--                        <fa-icon [icon]="faStarFull" class="icon-rating"></fa-icon>-->
-<!--                      </ng-container>-->
-
-<!--                      <fa-icon-->
-<!--                        *ngIf="hasHalfStar(mentor.avgRating)"-->
-<!--                        [icon]="faStarHalf"-->
-<!--                        class="icon-rating"></fa-icon>-->
-
-<!--                      <span class="rating-text">{{ mentor.avgRating }} Stars</span>-->
-<!--                    </p>-->
-                  </div>
-
-                </div>
-              </a>
-
+            <div class="mnt-meta-item" *ngIf="mentor.company || mentor.positionTitle">
+              <fa-icon [icon]="faBriefcase"></fa-icon>
+              <span>{{ mentor.positionTitle || 'Mentor' }}</span>
             </div>
           </div>
-
         </div>
-      </div>
+
+        <div class="mnt-footer">
+          <a class="btn btn-secondary mnt-cta" [routerLink]="['/mentee/mentors/mentor-details', mentor.userId]">
+            <span>View mentor profile</span>
+            <fa-icon [icon]="faArrowRight"></fa-icon>
+          </a>
+        </div>
+      </article>
     </div>
   </div>
 </div>
-

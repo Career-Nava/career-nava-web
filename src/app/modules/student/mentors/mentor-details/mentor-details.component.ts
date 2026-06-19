@@ -1,12 +1,13 @@
-import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { filter, map, switchMap, take } from 'rxjs';
-import { AuthService } from "../../../../services/auth/auth.service";
+import { faArrowLeft, faArrowUpRightFromSquare, faBriefcase, faCalendarCheck, faComments, faGlobe, faStar } from '@fortawesome/free-solid-svg-icons';
+import { Subscription } from 'rxjs';
+import { AuthService } from '../../../../services/auth/auth.service';
 import { CalendlyService } from '../../../../services/calendly/calendly.service';
 import { Mentor } from '../../../../services/mentor/mentor.model';
 import { MentorService } from '../../../../services/mentor/mentor.service';
 import { ToastService } from '../../../../services/toast.service';
+import { SharedModule } from '../../../../shared/shared.module';
 
 declare global {
   interface Window {
@@ -17,11 +18,11 @@ declare global {
 @Component({
   selector: 'app-mentor-details',
   standalone: true,
-  imports: [ CommonModule ],
+  imports: [ SharedModule ],
   templateUrl: './mentor-details.component.html',
   styleUrls: [ './mentor-details.component.scss' ]
 })
-export class MentorDetailsComponent implements OnInit, AfterViewInit {
+export class MentorDetailsComponent implements OnInit, OnDestroy {
   @ViewChild('calendlyContainer', { static: false }) calendlyContainer!: ElementRef<HTMLDivElement>;
 
   mentor?: Mentor;
@@ -31,6 +32,15 @@ export class MentorDetailsComponent implements OnInit, AfterViewInit {
   isLoadingCalendly = false;
   showCalendlyModal = false;
   private calendlyScriptLoaded = false;
+  private subs = new Subscription();
+
+  protected readonly faArrowLeft = faArrowLeft;
+  protected readonly faArrowUpRightFromSquare = faArrowUpRightFromSquare;
+  protected readonly faBriefcase = faBriefcase;
+  protected readonly faComments = faComments;
+  protected readonly faStar = faStar;
+  protected readonly faCalendarCheck = faCalendarCheck;
+  protected readonly faGlobe = faGlobe;
 
   constructor(
     private mentorService: MentorService,
@@ -42,14 +52,27 @@ export class MentorDetailsComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
-    this.route.paramMap
-      .pipe(
-        map(params => Number(params.get('id'))),
-        filter(id => !isNaN(id) && id > 0),
-        switchMap(id => this.mentorService.getMentorById(id)),
-        take(1)
-      )
-      .subscribe({
+    this.subs.add(
+      this.route.paramMap.subscribe(params => {
+        const id = Number(params.get('id'));
+        if (id > 0) {
+          this.fetchMentor(id);
+          return;
+        }
+
+        this.mentor = undefined;
+        this.isLoading = false;
+        this.hasError = true;
+      })
+    );
+  }
+
+  private fetchMentor(id: number): void {
+    this.isLoading = true;
+    this.hasError = false;
+
+    this.subs.add(
+      this.mentorService.getMentorById(id).subscribe({
         next: mentor => {
           this.mentor = mentor;
           this.calendlyVerified = mentor?.calendlyConnected ?? false;
@@ -57,13 +80,33 @@ export class MentorDetailsComponent implements OnInit, AfterViewInit {
         },
         error: err => {
           console.error('Error loading mentor', err);
+          this.mentor = undefined;
           this.isLoading = false;
           this.hasError = true;
         }
-      });
+      })
+    );
   }
 
-  ngAfterViewInit(): void {
+  getExpertiseTags(limit = 4): string[] {
+    return (this.mentor?.expertise ?? [])
+      .map(item => item.expertiseName)
+      .filter((item): item is string => !!item)
+      .slice(0, limit);
+  }
+
+  getDisciplineTags(limit = 4): string[] {
+    return (this.mentor?.disciplines ?? [])
+      .map(item => item.disciplineName)
+      .filter((item): item is string => !!item)
+      .slice(0, limit);
+  }
+
+  getFluencyTags(limit = 4): string[] {
+    return (this.mentor?.fluency ?? [])
+      .map(item => item.fluencyName)
+      .filter((item): item is string => !!item)
+      .slice(0, limit);
   }
 
   private waitForCalendlyScript(): Promise<void> {
@@ -102,22 +145,17 @@ export class MentorDetailsComponent implements OnInit, AfterViewInit {
 
     this.showCalendlyModal = true;
     this.isLoadingCalendly = true;
-
-    document.body.style.overflow = 'hidden'; // prevent background scroll
+    document.body.style.overflow = 'hidden';
 
     this.waitForCalendlyScript().then(() => {
       this.calendlyService.getBookingLink(this.mentor!.userId!).subscribe({
         next: url => {
           if (!this.calendlyContainer) {
-            console.error('Calendly container not found');
             this.isLoadingCalendly = false;
             return;
           }
 
-          // Clear previous widget
           this.calendlyContainer.nativeElement.innerHTML = '';
-
-          // Initialize Calendly inline widget
           window.Calendly.initInlineWidget({
             url,
             parentElement: this.calendlyContainer.nativeElement,
@@ -126,7 +164,7 @@ export class MentorDetailsComponent implements OnInit, AfterViewInit {
               email: user.email,
             },
             readOnly: {
-              email: true // prevents the user from changing the email
+              email: true
             },
             utm: {}
           });
@@ -134,7 +172,7 @@ export class MentorDetailsComponent implements OnInit, AfterViewInit {
           this.isLoadingCalendly = false;
         },
         error: err => {
-          console.warn('Error fetching booking link: ', err.error.message);
+          console.warn('Error fetching booking link: ', err.error?.message ?? err);
           this.isLoadingCalendly = false;
           this.toastService.show('Unable to load scheduling link. Please try again later.', { classname: 'bg-soft-danger text-dark' });
           this.closeCalendlyModal();
@@ -145,10 +183,15 @@ export class MentorDetailsComponent implements OnInit, AfterViewInit {
 
   closeCalendlyModal(): void {
     this.showCalendlyModal = false;
-    document.body.style.overflow = ''; // restore scroll
+    document.body.style.overflow = '';
 
     if (this.calendlyContainer) {
       this.calendlyContainer.nativeElement.innerHTML = '';
     }
+  }
+
+  ngOnDestroy(): void {
+    this.closeCalendlyModal();
+    this.subs.unsubscribe();
   }
 }
