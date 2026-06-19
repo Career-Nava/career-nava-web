@@ -64,13 +64,13 @@
             <!-- Calendly Modal -->
             <div class="calendly-modal-backdrop" *ngIf="showCalendlyModal">
               <div class="calendly-modal">
-                <button class="calendly-close-btn" (click)="closeCalendlyModal()">×</button>
+                <button class="calendly-close-btn" (click)="closeCalendlyModal()">&times;</button>
 
                 <div #calendlyContainer class="calendly-widget-container"></div>
 
                 <div *ngIf="isLoadingCalendly" class="text-center my-3">
                   <div class="spinner-border text-primary" role="status"></div>
-                  <p class="mt-2 text-muted small">Preparing your scheduling experience…</p>
+                  <p class="mt-2 text-muted small">Preparing your scheduling experience...</p>
                 </div>
               </div>
             </div>
@@ -179,3 +179,4 @@
     </div>
   }
 </div>
+
