@@ -1,137 +1,222 @@
-<div class="container-fluid pb-5">
+<div class="sch-page container-fluid pb-5">
+  <section class="mb-4">
+    <div class="row g-4 align-items-stretch">
+      <div class="col-12 col-xl-7">
+        <div class="sch-intro h-100">
+          <span class="sch-kicker">Career Funding Guide</span>
+          <h1 class="sch-title">Scholarships curated for your next move</h1>
+          <p class="sch-copy text-muted mb-0">
+            Discover high-value opportunities, track what is still open, and keep your shortlist ready for the next application cycle.
+          </p>
+        </div>
+      </div>
 
-  <!-- Header -->
-  <header class="mb-4">
-    <h1 class="fw-bold">Explore Scholarships</h1>
-    <p class="text-muted col-lg-6 px-0">
-      Find funding opportunities and bookmark what matters to you.
-    </p>
-  </header>
+      <div class="col-12 col-xl-5">
+        <div class="row g-3">
+          <div class="col-6">
+            <div class="sch-stat">
+              <span class="sch-label">Available</span>
+              <strong class="sch-value">{{ totalScholarships }}</strong>
+            </div>
+          </div>
 
-  <!-- Tabs -->
-  <ul class="nav nav-tabs">
-    <li class="nav-item" *ngFor="let tab of tabs">
-      <button
-        class="nav-link"
-        [class.active]="selectedTab === tab.value"
-        (click)="setTab(tab.value)">
-        {{ tab.label }}
-      </button>
-    </li>
-  </ul>
+          <div class="col-6">
+            <div class="sch-stat">
+              <span class="sch-label">Saved</span>
+              <strong class="sch-value">{{ bookmarkedScholarships }}</strong>
+            </div>
+          </div>
 
-  <!-- Toolbar -->
-  <div class="d-flex justify-content-between align-items-center my-4 gap-3 flex-wrap">
-    <h4 class="mb-0 fw-semibold">
-      Scholarships ({{ visibleScholarships.length }})
-    </h4>
+          <div class="col-6">
+            <div class="sch-stat">
+              <span class="sch-label">Open now</span>
+              <strong class="sch-value">{{ activeScholarships }}</strong>
+            </div>
+          </div>
 
-    <input
-      type="search"
-      class="form-control w-50"
-      placeholder="Search scholarships..."
-      (input)="onSearch($any($event.target).value)"/>
+          <div class="col-6">
+            <div class="sch-stat">
+              <span class="sch-label">Closed</span>
+              <strong class="sch-value">{{ inactiveScholarships }}</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sch-toolbar mb-4">
+    <div class="row g-3 align-items-center">
+      <div class="col-12 col-lg-5">
+        <label class="sch-search">
+          <fa-icon [icon]="faMagnifyingGlass" class="sch-search-icon"></fa-icon>
+          <input
+            type="search"
+            class="form-control sch-input"
+            placeholder="Search by title, category, or summary"
+            [value]="searchQuery"
+            (input)="onSearch($any($event.target).value)"/>
+        </label>
+      </div>
+
+      <div class="col-12 col-lg-7">
+        <div class="sch-tabs" role="tablist" aria-label="Scholarship filters">
+          <button
+            *ngFor="let tab of tabs"
+            type="button"
+            class="sch-tab"
+            [class.is-active]="selectedTab === tab.value"
+            (click)="setTab(tab.value)">
+            {{ tab.label }}
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="sch-meta">
+      <h2 class="mb-0 fw-bold">
+        {{ visibleScholarships.length }} opportunity{{ visibleScholarships.length === 1 ? '' : 'ies' }}
+      </h2>
+
+      <p class="sch-copy text-muted mb-0">
+        Keep bookmarks close so you can compare funding, deadlines, and fit at a glance.
+      </p>
+    </div>
+  </section>
+
+  <div class="row g-4" *ngIf="isLoading">
+    <div class="col-12 col-md-6 col-xl-4" *ngFor="let _ of skeletonCards">
+      <article class="sch-card sch-skel h-100">
+        <div class="sch-media placeholder-wave">
+          <span class="placeholder w-100 h-100"></span>
+        </div>
+        <div class="sch-body placeholder-wave">
+          <span class="placeholder col-4 mb-3"></span>
+          <span class="placeholder col-8 mb-2"></span>
+          <span class="placeholder col-10 mb-2"></span>
+          <span class="placeholder col-7 mb-4"></span>
+          <div class="d-flex gap-2">
+            <span class="placeholder col-4"></span>
+            <span class="placeholder col-3"></span>
+          </div>
+        </div>
+        <div class="sch-footer placeholder-wave">
+          <span class="placeholder w-100"></span>
+        </div>
+      </article>
+    </div>
   </div>
 
-  <!-- Empty State -->
-  <div
-    *ngIf="!visibleScholarships.length"
-    class="text-center text-muted py-5">
-
+  <div *ngIf="!isLoading && !visibleScholarships.length" class="sch-empty">
     <img
       src="assets/icons/Video-Call.png"
       alt="No scholarships"
-      class="mb-3 empty-img"/>
+      class="sch-empty-img mb-3"/>
 
-    <p class="mb-0">
-      No scholarships match your criteria.
+    <h3 class="fw-bold mb-2">
+      {{ isFiltered ? 'No scholarships match this shortlist.' : 'No scholarships available right now.' }}
+    </h3>
+
+    <p class="sch-copy text-muted mb-0">
+      {{ isFiltered
+      ? 'Try a broader search or switch back to another filter to discover more opportunities.'
+      : 'We are curating new funding opportunities for you. Check back soon for the next intake.' }}
     </p>
+
+    <button
+      *ngIf="isFiltered"
+      type="button"
+      class="btn btn-outline-secondary mt-3"
+      (click)="resetFilters()">
+      Show all scholarships
+    </button>
   </div>
 
-  <!-- Grid -->
-  <div class="row g-4" *ngIf="visibleScholarships.length">
-    <div
-      class="col-12 col-md-6 col-lg-4"
-      *ngFor="let scholarship of visibleScholarships">
+  <div class="row g-4" *ngIf="!isLoading && visibleScholarships.length">
+    <div class="col-12 col-md-6 col-xl-4" *ngFor="let scholarship of visibleScholarships">
+      <article class="sch-card h-100">
+        <div class="sch-media">
+          <button
+            type="button"
+            class="book-btn"
+            [attr.aria-label]="scholarship.isBookmarked ? 'Remove bookmark' : 'Bookmark scholarship'"
+            (click)="toggleBookmark(scholarship)">
+            <fa-icon [icon]="scholarship.isBookmarked ? faBookmarkSolid : faBookmarkRegular"></fa-icon>
+          </button>
 
-      <article class="scholarship-card h-100 position-relative">
+          <img
+            *ngIf="scholarship.imageThumbnail; else fallback"
+            [src]="scholarship.imageThumbnail"
+            [alt]="scholarship.title"
+            class="sch-img"/>
 
-        <!-- Bookmark -->
-        <button
-          class="bookmark-btn"
-          (click)="toggleBookmark(scholarship)">
-          <fa-icon
-            [icon]="scholarship.isBookmarked ? faBookmarkSolid : faBookmarkRegular">
-          </fa-icon>
-        </button>
+          <ng-template #fallback>
+            <div class="sch-fallback">
+              <span class="sch-fallback-tag">Career Nava</span>
+              <strong>{{ scholarship.category || 'Scholarship Opportunity' }}</strong>
+            </div>
+          </ng-template>
 
-        <!-- Image -->
-        <img
-          *ngIf="scholarship.imageThumbnail"
-          [src]="scholarship.imageThumbnail"
-          [alt]="scholarship.title"
-          class="w-100 scholarship-img"/>
-
-        <!-- Content -->
-        <div class="p-3">
-          <h5 class="fw-semibold mb-1">
-            {{ scholarship.title }}
-          </h5>
-
-          <small class="text-muted">
-            {{ scholarship.category }}
-          </small>
-
-          <div class="d-flex justify-content-between align-items-center my-3 small">
-            <span class="text-muted">
-              <fa-icon [icon]="faClock" class="me-1"></fa-icon>
-              {{ scholarship.applicationDeadline | date:'mediumDate' }}
-            </span>
-
+          <div class="sch-chips">
+            <span class="sch-chip sch-chip--soft" *ngIf="scholarship.funding">{{ scholarship.funding }}</span>
             <span
-              class="badge-sm rounded-pill"
-              [class.bg-success-subtle]="scholarship.status === 'active'"
-              [class.text-success]="scholarship.status === 'active'"
-              [class.bg-danger]="scholarship.status === 'inactive'"
-              [class.text-white]="scholarship.status === 'inactive'">
+              *ngIf="scholarship.status"
+              class="sch-chip"
+              [class.sch-chip--success]="scholarship.status === 'active'"
+              [class.sch-chip--muted]="scholarship.status === 'inactive'">
               {{ scholarship.status | titlecase }}
             </span>
           </div>
+        </div>
 
-          <p class="text-muted small mb-3 description">
-            {{ scholarship.shortDescription }}
-          </p>
+        <div class="sch-body">
+          <div class="sch-topline">
+            <span class="sch-cat">{{ scholarship.category }}</span>
+            <span class="sch-role" *ngIf="scholarship.role">{{ scholarship.role }}</span>
+          </div>
 
-          <!-- Mentees -->
-          <div
-            class="d-flex align-items-center"
-            *ngIf="scholarship.menteesInterested?.length">
+          <h3 class="sch-card-title">{{ scholarship.title }}</h3>
+          <p class="sch-desc">{{ scholarship.shortDescription }}</p>
 
-            <ng-container
-              *ngFor="let m of scholarship.menteesInterested.slice(0,5)">
-              <img
-                [src]="m.profilePicture"
-                alt="Mentee"
-                class="mentee-avatar"/>
-            </ng-container>
+          <div class="sch-card-meta">
+            <div class="sch-meta-item" *ngIf="scholarship.applicationDeadline">
+              <fa-icon [icon]="faClock"></fa-icon>
+              <span>{{ scholarship.applicationDeadline | date:'mediumDate' }}</span>
+            </div>
 
-            <span
-              *ngIf="scholarship.menteesInterested.length > 5"
-              class="mentee-avatar extra">
-              +{{ scholarship.menteesInterested.length - 5 }}
-            </span>
+            <div class="sch-meta-item" *ngIf="scholarship.datePosted">
+              <fa-icon [icon]="faCalendar"></fa-icon>
+              <span>Posted {{ scholarship.datePosted | date:'mediumDate' }}</span>
+            </div>
+          </div>
+
+          <div class="sch-interest text-muted" *ngIf="scholarship.menteesInterested?.length">
+            <div class="sch-avatars">
+              <ng-container *ngFor="let mentee of scholarship.menteesInterested.slice(0, 4)">
+                <img
+                  [src]="mentee.profilePicture"
+                  [alt]="mentee.fullName || 'Mentee'"
+                  class="avatar"/>
+              </ng-container>
+
+              <span *ngIf="scholarship.menteesInterested.length > 4" class="avatar avatar--extra">
+                +{{ scholarship.menteesInterested.length - 4 }}
+              </span>
+            </div>
+
+            <p class="mb-0">
+              {{ scholarship.menteesInterested.length }}
+              mentee{{ scholarship.menteesInterested.length === 1 ? '' : 's' }} bookmarked this
+            </p>
           </div>
         </div>
 
-        <!-- Footer -->
-        <div class="p-3 pt-0">
-          <a
-            class="btn btn-secondary w-100"
-            [routerLink]="['/mentee/scholarships', scholarship.scholarshipId]">
-            View Scholarship
+        <div class="sch-footer">
+          <a class="btn btn-secondary sch-cta" [routerLink]="['/mentee/scholarships', scholarship.scholarshipId]">
+            <span>View scholarship</span>
+            <fa-icon [icon]="faArrowRight"></fa-icon>
           </a>
         </div>
-
       </article>
     </div>
   </div>

@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { faBookmark as faBookmarkRegular } from '@fortawesome/free-regular-svg-icons';
-import { faBookmark, faCalendar, faClock } from '@fortawesome/free-solid-svg-icons';
+import { faArrowRight, faBookmark, faCalendar, faClock, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import { Subscription } from 'rxjs';
 import { ScholarshipService } from '../../../services/scholarship/scholarship.service';
 import { ScholarshipDto } from '../../../services/scholarship/shcolarship.model';
@@ -18,8 +18,11 @@ type Tab = 'all' | 'bookmarked' | 'active' | 'inactive';
 })
 export class ScholarshipsComponent implements OnInit, OnDestroy {
   faCalendar = faCalendar;
+  faArrowRight = faArrowRight;
   faBookmarkSolid = faBookmark;
   faBookmarkRegular = faBookmarkRegular;
+  faMagnifyingGlass = faMagnifyingGlass;
+  faClock = faClock;
 
   tabs: { label: string; value: Tab }[] = [
     { label: 'All', value: 'all' },
@@ -29,7 +32,9 @@ export class ScholarshipsComponent implements OnInit, OnDestroy {
   ];
 
   selectedTab: Tab = 'all';
-  searchTerm = '';
+  searchQuery = '';
+  isLoading = true;
+  readonly skeletonCards = Array.from({ length: 6 });
 
   scholarships: ScholarshipDto[] = [];
   private subs = new Subscription();
@@ -51,12 +56,37 @@ export class ScholarshipsComponent implements OnInit, OnDestroy {
       .filter(s => this.matchesSearch(s));
   }
 
+  get totalScholarships(): number {
+    return this.scholarships.length;
+  }
+
+  get bookmarkedScholarships(): number {
+    return this.scholarships.filter(s => s.isBookmarked).length;
+  }
+
+  get activeScholarships(): number {
+    return this.scholarships.filter(s => s.status === 'active').length;
+  }
+
+  get inactiveScholarships(): number {
+    return this.scholarships.filter(s => s.status === 'inactive').length;
+  }
+
+  get isFiltered(): boolean {
+    return this.selectedTab !== 'all' || !!this.searchQuery.trim();
+  }
+
   setTab(tab: Tab): void {
     this.selectedTab = tab;
   }
 
   onSearch(value: string): void {
-    this.searchTerm = value.toLowerCase().trim();
+    this.searchQuery = value;
+  }
+
+  resetFilters(): void {
+    this.selectedTab = 'all';
+    this.searchQuery = '';
   }
 
   toggleBookmark(s: ScholarshipDto): void {
@@ -89,14 +119,21 @@ export class ScholarshipsComponent implements OnInit, OnDestroy {
   }
 
   private fetchScholarships(): void {
+    this.isLoading = true;
+
     this.subs.add(
       this.scholarshipService.getAllScholarships().subscribe({
-        next: data => (this.scholarships = data),
-        error: () =>
+        next: data => {
+          this.scholarships = data;
+          this.isLoading = false;
+        },
+        error: () => {
+          this.isLoading = false;
           this.toast.show('Failed to load scholarships', {
             classname: 'bg-danger text-light',
             delay: 4000
-          })
+          });
+        }
       })
     );
   }
@@ -115,18 +152,17 @@ export class ScholarshipsComponent implements OnInit, OnDestroy {
   }
 
   private matchesSearch(s: ScholarshipDto): boolean {
-    if (!this.searchTerm) return true;
+    const searchTerm = this.searchQuery.toLowerCase().trim();
+    if (!searchTerm) return true;
 
     return (
-      s.title.toLowerCase().includes(this.searchTerm) ||
-      s.category?.toLowerCase().includes(this.searchTerm) ||
-      s.shortDescription?.toLowerCase().includes(this.searchTerm)
+      s.title.toLowerCase().includes(searchTerm) ||
+      s.category?.toLowerCase().includes(searchTerm) ||
+      s.shortDescription?.toLowerCase().includes(searchTerm)
     );
   }
 
   ngOnDestroy(): void {
     this.subs.unsubscribe();
   }
-
-  protected readonly faClock = faClock;
 }
