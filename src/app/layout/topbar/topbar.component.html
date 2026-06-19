@@ -1,19 +1,19 @@
-﻿<header *ngIf="user$ | async as user" class="topbar bg-white shadow-sm">
-  <nav class="navbar navbar-expand-lg bg-body-tertiary">
+<header *ngIf="user$ | async as user" class="auth-topbar bg-white shadow-sm">
+  <nav class="navbar navbar-expand-lg">
     <div class="container-fluid justify-content-between justify-content-lg-end">
-
-      <a class="navbar-brand d-lg-none" routerLink="/home">
+      <a class="navbar-brand d-lg-none" [routerLink]="homeRoute">
         <img src="assets/images/logo/logo-variant.png" alt="Career Nava Logo" class="logo-sm" id="logoFull">
         <img src="assets/images/logo/favicon-black.png" alt="Career Nava Logo" class="logo-sm" id="logoFavicon">
       </a>
 
-      <div class="d-flex topbar-menus align-items-center gap-3 flex-wrap">
-
-        <div class="nav-item dropdown position-relative">
-          <a href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"
-             class="nav-link dropdown-toggle d-flex align-items-center gap-3 p-2 rounded hover-shadow">
-
-            <!-- Calendly Badge -->
+      <div class="d-flex auth-topbar__menus align-items-center gap-3 flex-wrap">
+        <div class="nav-item dropdown position-relative auth-topbar__account">
+          <button
+            type="button"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+            aria-label="Open user menu"
+            class="auth-topbar__user-trigger nav-link dropdown-toggle d-flex align-items-center gap-3 p-2 rounded">
             <div *ngIf="user.role === 'mentor'" class="check-badge"
                  [ngClass]="user.calendlyConnected ? 'text-success' : 'text-danger'">
               <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
@@ -28,65 +28,68 @@
               </svg>
             </div>
 
-            <!-- Avatar -->
             <div class="avatar-wrapper bg-gradient-purple text-white rounded-circle d-flex align-items-center justify-content-center">
               <img *ngIf="user.profilePicture" [src]="user.profilePicture" [alt]="user.fullName" class="avatar-img">
               <span *ngIf="!user.profilePicture"><b>{{ user.fullName.charAt(0) }}</b></span>
             </div>
 
-            <!-- User Info -->
             <div class="user-info">
               <h5 class="mb-0">{{ user.fullName }}</h5>
               <p class="mb-0 text-muted small">{{ user.email }}</p>
             </div>
-          </a>
+          </button>
 
-                   <!-- Dropdown Menu -->
-                   <ul class="dropdown-menu p-0 shadow-lg border-0 rounded">
+          <ul class="dropdown-menu dropdown-menu-end auth-user-menu p-0 border-0">
+            <li class="auth-user-menu__header" id="user-info-mobile">
+              <div>
+                <h5 class="mb-1">{{ user.fullName }}</h5>
+                <p class="mb-0">{{ user.email }}</p>
+              </div>
+            </li>
 
-                    <!-- User Info - ONLY SHOW ON MEDIA SCREEN 567PX AND BELOW -->
-                    <li class="dropdown-item p-3 bg-custom-light-50" id="user-info-mobile">
-                      <div>
-                        <h5 class="mb-0">{{ user.fullName }}</h5>
-                        <p class="mb-0 text-muted small">{{ user.email }}</p>
-                      </div>
-                    </li>
+            <li>
+              <button
+                type="button"
+                class="dropdown-item auth-user-menu__item"
+                [disabled]="!hasProfileRoute(user.role)"
+                [attr.aria-disabled]="!hasProfileRoute(user.role)"
+                [attr.title]="!hasProfileRoute(user.role) ? 'Profile management coming soon' : null"
+                (click)="openProfile(user.role)">
+                <fa-icon [icon]="faUser"></fa-icon>
+                <span>Profile</span>
+                <small *ngIf="!hasProfileRoute(user.role)" class="auth-user-menu__hint">Soon</small>
+              </button>
+            </li>
 
-                    <!-- Logout -->
-                      <a (click)="logout()" routerLinkActive="active" class="dropdown-item p-3 text-default-error">
-                        <li class=" nav-link w-100 fw-semibold">
-                          <fa-icon [icon]="faArrowRightFromBracket"></fa-icon>
-                        <span>Logout</span>
-                        </li>
-                      </a>
+            <li><hr class="dropdown-divider auth-user-menu__divider"></li>
 
-                    <!-- Calendly Status NOT USING THIS -->
-                     <!-- <li class="dropdown-item p-3 d-flex align-items-center gap-2">
-                       <span class="status-indicator" [ngClass]="user.calendlyConnected ? 'verified' : 'not-verified'"></span>
-                       <div>
-                         <p class="mb-1 fw-semibold">
-                           Calendly Status:
-                           <span [ngClass]="user.calendlyConnected ? 'text-success' : 'text-danger'">
-                                       {{ user.calendlyConnected ? 'Verified' : 'Not-Verified' }}
-                                     </span>
-                         </p>
-                       </div>
-                     </li> -->
+            <li>
+              <button
+                type="button"
+                (click)="logout()"
+                class="dropdown-item auth-user-menu__item auth-user-menu__item--danger">
+                <fa-icon [icon]="faArrowRightFromBracket"></fa-icon>
+                <span>Logout</span>
+              </button>
+            </li>
 
-                     <!-- Link Button (if not verified) -->
-                     <!-- <li *ngIf="!user.calendlyConnected && user.role === 'mentor'" class="dropdown-item p-3">
-                       <button class="btn btn-gradient-purple w-100 fw-semibold" (click)="connectCalendly(user.userId)">
-                         Link My Calendly
-                       </button>
-                     </li> -->
-
-                   </ul>
+            <!-- TODO: Calendly status in token-only restore flows is still limited by available auth payload data. -->
+            <!-- <li *ngIf="!user.calendlyConnected && user.role === 'mentor'" class="dropdown-item p-3">
+              <button class="btn btn-gradient-purple w-100 fw-semibold" (click)="connectCalendly(user.userId)">
+                Link My Calendly
+              </button>
+            </li> -->
+          </ul>
         </div>
 
-        <!-- Sidebar toggle for mobile -->
-        <button (click)="toggleSidebar()" class="btn btn-primary d-block d-lg-none">Menu</button>
+        <button
+          type="button"
+          (click)="toggleSidebar()"
+          class="auth-topbar__menu-toggle d-lg-none"
+          aria-label="Open sidebar">
+          <fa-icon [icon]="faBars" class="auth-topbar__menu-icon"></fa-icon>
+        </button>
       </div>
     </div>
   </nav>
 </header>
-
