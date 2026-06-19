@@ -1,18 +1,67 @@
-﻿<div class="container shell-page">
-  <section class="card border-0 shadow-sm p-4 shell-card">
-    <p class="text-uppercase text-muted small fw-semibold mb-2 shell-eyebrow">Admin</p>
-    <h1 class="mb-3">Mentors</h1>
-    <p class="text-muted mb-4">Review and manage mentor profiles, approval status, and platform visibility.</p>
+<div class="container mentor-page">
+  <section class="card border-0 shadow-sm p-4 mentor-card">
+    <p class="text-uppercase text-muted small fw-semibold mb-2 mentor-eyebrow">Admin</p>
+    <div class="d-flex flex-column flex-lg-row justify-content-between gap-3 mb-4">
+      <div>
+        <h1 class="mb-2">Mentors</h1>
+        <p class="text-muted mb-0">
+          View all mentor records available to administrators. This page is read-only for now.
+        </p>
+      </div>
+    </div>
 
-    <div class="shell-empty-state p-4">
-      <h2 class="h5 mb-2">Shell page</h2>
-      <p class="text-muted mb-4">No mentor management tools are wired in yet.</p>
-      <h3 class="h6 mb-3">Future scope</h3>
-      <ul class="shell-list mb-0">
-        <li>Review mentor applications and profile completeness.</li>
-        <li>Manage mentor visibility and active status.</li>
-        <li>Prepare mentor records for future profile moderation.</li>
-      </ul>
+    <div *ngIf="loading" class="mentor-state p-4 text-center">
+      <div class="spinner-border text-primary" role="status" aria-label="Loading mentors"></div>
+      <p class="text-muted mb-0 mt-3">Loading mentors...</p>
+    </div>
+
+    <div *ngIf="!loading && error" class="alert alert-danger" role="alert">
+      {{ error }}
+    </div>
+
+    <div *ngIf="!loading && !error && !mentors.length" class="mentor-state p-4">
+      <h2 class="h5 mb-2">No mentors found</h2>
+      <p class="text-muted mb-0">
+        Mentor records will appear here once the backend returns admin-visible mentor data.
+      </p>
+    </div>
+
+    <div *ngIf="!loading && !error && mentors.length" class="table-responsive mentor-table-wrap">
+      <table class="table align-middle mb-0 mentor-table">
+        <thead>
+          <tr>
+            <th scope="col">Mentor</th>
+            <th scope="col">Email</th>
+            <th scope="col">Title / Company</th>
+            <th scope="col">Status</th>
+            <th scope="col">Calendly</th>
+            <th scope="col">Sessions</th>
+            <th scope="col">Reviews</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let mentor of mentors; trackBy: trackMentor">
+            <td>
+              <div class="fw-semibold">{{ mentor.fullName || '-' }}</div>
+            </td>
+            <td>{{ mentor.email || '-' }}</td>
+            <td>{{ getTitleCompany(mentor) }}</td>
+            <td>
+              <span class="badge" [ngClass]="getStatusBadgeClass(mentor)">
+                {{ getStatusLabel(mentor) }}
+              </span>
+            </td>
+            <td>
+              <span class="badge" [ngClass]="getCalendlyBadgeClass(mentor)">
+                {{ getCalendlyLabel(mentor) }}
+              </span>
+            </td>
+            <td>{{ getSessionsSummary(mentor) }}</td>
+            <td>{{ getReviewsSummary(mentor) }}</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </section>
 </div>
+

@@ -5,7 +5,7 @@ import { ApiResponse } from "../api-response";
 import { ConfigurationService } from "../configuration.service";
 import { LocalStorageCache } from "../local-storage-cache";
 import { RestService } from "../rest.service";
-import { Mentor } from "./mentor.model";
+import { AdminMentor, Mentor } from "./mentor.model";
 
 @Injectable({ providedIn: 'root' })
 export class MentorService extends RestService {
@@ -47,6 +47,15 @@ export class MentorService extends RestService {
       );
   }
 
+  getAdminMentors(): Observable<AdminMentor[]> {
+    return this.http
+      .get<ApiResponse<Array<Partial<AdminMentor> & Partial<Mentor>>>>(`${ this.baseUrl }/GetAllMentorsForAdmin`)
+      .pipe(
+        map(res => (Array.isArray(res.data) ? res.data : []).map(dto => this.mapAdminMentor(dto))),
+        catchError(err => throwError(() => err))
+      );
+  }
+
   clearCache(): void {
     this.cache.clear();
   }
@@ -61,6 +70,27 @@ export class MentorService extends RestService {
       totalSessions: typeof dto.totalSessions === 'number' ? dto.totalSessions : 0,
       totalReviews: typeof dto.totalReviews === 'number' ? dto.totalReviews : 0,
       avgRating: typeof dto.avgRating === 'number' ? dto.avgRating : 0
+    };
+  }
+
+  private mapAdminMentor(dto: Partial<AdminMentor> & Partial<Mentor>): AdminMentor {
+    return {
+      mentorId: dto.mentorId,
+      userId: dto.userId,
+      fullName: dto.fullName,
+      email: dto.email,
+      isActive: dto.isActive,
+      calendlyConnected: dto.calendlyConnected,
+      profilePicture: dto.profilePicture,
+      company: dto.company,
+      title: dto.title ?? dto.positionTitle,
+      linkedIn: dto.linkedIn ?? dto.linkedInUrl,
+      bio: dto.bio,
+      rating: typeof dto.rating === 'number' ? dto.rating : typeof dto.avgRating === 'number' ? dto.avgRating : 0,
+      totalReviews: typeof dto.totalReviews === 'number' ? dto.totalReviews : 0,
+      totalSessions: typeof dto.totalSessions === 'number' ? dto.totalSessions : 0,
+      createdAt: dto.createdAt,
+      updatedAt: dto.updatedAt
     };
   }
 }

@@ -39,6 +39,25 @@ export interface Mentor {
   scholarshipsAttained?: []
 }
 
+export interface AdminMentor {
+  mentorId?: number;
+  userId?: number;
+  fullName?: string;
+  email?: string;
+  isActive?: boolean;
+  calendlyConnected?: boolean;
+  profilePicture?: string;
+  company?: string;
+  title?: string;
+  linkedIn?: string;
+  bio?: string;
+  rating?: number;
+  totalReviews?: number;
+  totalSessions?: number;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
 export interface MentorExperience {
   title?: string;
   companyImage?: string;
