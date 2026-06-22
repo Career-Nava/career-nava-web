@@ -1,67 +1,245 @@
-<div class="container mentor-page">
-  <section class="card border-0 shadow-sm p-4 mentor-card">
-    <p class="text-uppercase text-muted small fw-semibold mb-2 mentor-eyebrow">Admin</p>
-    <div class="d-flex flex-column flex-lg-row justify-content-between gap-3 mb-4">
+<div class="admin-page admin-list-page admin-mentors-page container-fluid pb-5">
+  <section class="admin-surface admin-hero admin-list-hero mb-4">
+    <div class="row g-4 admin-hero__row">
+      <div class="col-12 col-xl-8">
+        <div class="admin-hero__copy">
+          <span class="admin-kicker">Mentor management</span>
+          <h1 class="admin-title">Maintain mentor records and scheduling readiness</h1>
+          <p class="admin-copy mb-0">
+            Review mentor profiles, activation state, and Calendly connection health from one operational workspace.
+          </p>
+        </div>
+      </div>
+
+      <div class="col-12 col-xl-4">
+        <div class="admin-hero__panel">
+          <span class="admin-total">{{ totalMentors }} mentor{{ totalMentors === 1 ? '' : 's' }} in the admin view</span>
+          <span class="admin-subtotal">{{ activeMentors }} active</span>
+          <span class="admin-subtotal">{{ inactiveMentors }} inactive</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="admin-surface admin-toolbar admin-list-toolbar mb-4">
+    <div class="admin-toolbar__top">
       <div>
-        <h1 class="mb-2">Mentors</h1>
-        <p class="text-muted mb-0">
-          View all mentor records available to administrators. This page is read-only for now.
+        <span class="admin-section-label">Operational filters</span>
+        <h2 class="admin-panel__title">Find a mentor record quickly</h2>
+        <p class="admin-copy mb-0">
+          Narrow the list by profile details or activation state. This screen remains read-only for now.
+        </p>
+      </div>
+
+      <!-- TODO: Wire to admin CRUD flow when backend endpoints are available. -->
+      <div class="admin-toolbar__actions">
+        <button
+          type="button"
+          class="btn btn-outline-secondary admin-stub-btn admin-toolbar-btn"
+          title="Create flow coming soon"
+          aria-label="Create flow coming soon"
+          disabled>
+          <span class="admin-toolbar-btn__content">
+            <fa-icon [icon]="faPlus"></fa-icon>
+            <span>Add mentor</span>
+          </span>
+          <span class="admin-soon-pill">Soon</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="row g-3 mt-1 admin-toolbar__row">
+      <div class="col-12 col-lg-7">
+        <label class="admin-search-label">
+          <span class="admin-field-label">Search mentors</span>
+          <input
+            type="search"
+            class="form-control admin-search-input"
+            placeholder="Search by name, email, title, or company"
+            [value]="searchQuery"
+            (input)="onSearch($any($event.target).value)">
+        </label>
+      </div>
+
+      <div class="col-12 col-lg-3">
+        <label class="admin-select-label">
+          <span class="admin-field-label">Status</span>
+          <select class="form-select admin-select" [value]="statusFilter" (change)="onStatusChange($any($event.target).value)">
+            <option value="all">All statuses</option>
+            <option value="active">Active</option>
+            <option value="inactive">Inactive</option>
+            <option value="unknown">Unknown</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="col-12 col-lg-2">
+        <div class="admin-inline-meta h-100 align-items-lg-end">
+          <span>Showing <strong>{{ filteredCount }}</strong> of <strong>{{ totalMentors }}</strong></span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div *ngIf="loading" class="admin-state admin-list-state text-center mb-4">
+    <div class="spinner-border text-primary" role="status" aria-label="Loading mentors"></div>
+    <p class="admin-copy mb-0 mt-3">Loading mentors...</p>
+  </div>
+
+  <div *ngIf="!loading && error" class="alert alert-danger mb-4" role="alert">
+    {{ error }}
+  </div>
+
+  <div *ngIf="!loading && !error && !filteredMentors.length" class="admin-state admin-list-state mb-4">
+    <h2 class="admin-state__title">{{ getEmptyTitle() }}</h2>
+    <p class="admin-copy mb-0">
+      {{ getEmptyMessage() }}
+    </p>
+  </div>
+
+  <section *ngIf="!loading && !error && filteredMentors.length" class="admin-surface admin-panel admin-list-panel">
+    <div class="admin-panel__head">
+      <div>
+        <span class="admin-section-label">Mentor records</span>
+        <h2 class="admin-panel__title">Mentor inventory</h2>
+        <p class="admin-copy mb-0">
+          Review profile completeness, operating state, and scheduling readiness before deeper CRUD tooling is introduced.
         </p>
       </div>
     </div>
 
-    <div *ngIf="loading" class="mentor-state p-4 text-center">
-      <div class="spinner-border text-primary" role="status" aria-label="Loading mentors"></div>
-      <p class="text-muted mb-0 mt-3">Loading mentors...</p>
-    </div>
+    <div class="admin-panel__body">
+      <div class="d-none d-lg-block admin-table-wrap">
+        <table class="table align-middle admin-table">
+          <thead>
+            <tr>
+              <th scope="col">Mentor</th>
+              <th scope="col">Title / Company</th>
+              <th scope="col">Status</th>
+              <th scope="col">Calendly</th>
+              <th scope="col">Sessions</th>
+              <th scope="col">Reviews</th>
+              <th scope="col">Updated</th>
+              <th scope="col" class="admin-table__actions">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let mentor of filteredMentors; trackBy: trackMentor">
+              <td>
+                <div class="admin-table__title">{{ mentor.fullName || '-' }}</div>
+                <span class="admin-table__subcopy">{{ mentor.email || 'Email unavailable' }}</span>
+              </td>
+              <td>{{ getTitleCompany(mentor) }}</td>
+              <td>
+                <span class="admin-badge" [ngClass]="getStatusBadgeClass(mentor)">
+                  {{ getStatusLabel(mentor) }}
+                </span>
+              </td>
+              <td>
+                <span class="admin-badge" [ngClass]="getCalendlyBadgeClass(mentor)">
+                  {{ getCalendlyLabel(mentor) }}
+                </span>
+              </td>
+              <td>{{ getSessionsSummary(mentor) }}</td>
+              <td>{{ getReviewsSummary(mentor) }}</td>
+              <td>
+                <span *ngIf="getUpdatedTimestamp(mentor) as updated; else noMentorUpdate">
+                  {{ updated | date:'mediumDate' }}
+                </span>
+                <ng-template #noMentorUpdate>-</ng-template>
+              </td>
+              <td class="admin-table__actions">
+                <div class="admin-action-group">
+                  <button
+                    type="button"
+                    class="admin-icon-action"
+                    title="View mentor coming soon"
+                    aria-label="View mentor coming soon"
+                    disabled>
+                    <fa-icon [icon]="faEye"></fa-icon>
+                  </button>
+                  <button
+                    type="button"
+                    class="admin-icon-action"
+                    title="Edit mentor coming soon"
+                    aria-label="Edit mentor coming soon"
+                    disabled>
+                    <fa-icon [icon]="faPen"></fa-icon>
+                  </button>
+                  <button
+                    type="button"
+                    class="admin-icon-action admin-icon-action--danger"
+                    title="Delete mentor coming soon"
+                    aria-label="Delete mentor coming soon"
+                    disabled>
+                    <fa-icon [icon]="faTrash"></fa-icon>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
 
-    <div *ngIf="!loading && error" class="alert alert-danger" role="alert">
-      {{ error }}
-    </div>
+      <div class="admin-record-list d-lg-none">
+        <article *ngFor="let mentor of filteredMentors; trackBy: trackMentor" class="admin-record-card">
+          <div class="admin-record-card__head">
+            <div>
+              <h3 class="admin-record-card__title">{{ mentor.fullName || '-' }}</h3>
+              <p class="admin-copy mb-0">{{ mentor.email || 'Email unavailable' }}</p>
+            </div>
+            <span class="admin-badge" [ngClass]="getStatusBadgeClass(mentor)">
+              {{ getStatusLabel(mentor) }}
+            </span>
+          </div>
 
-    <div *ngIf="!loading && !error && !mentors.length" class="mentor-state p-4">
-      <h2 class="h5 mb-2">No mentors found</h2>
-      <p class="text-muted mb-0">
-        Mentor records will appear here once the backend returns admin-visible mentor data.
-      </p>
-    </div>
+          <div class="admin-detail-list">
+            <div class="admin-detail-list__item">
+              <span class="admin-detail-list__label">Title / Company</span>
+              <span class="admin-detail-list__value">{{ getTitleCompany(mentor) }}</span>
+            </div>
+            <div class="admin-detail-list__item">
+              <span class="admin-detail-list__label">Calendly</span>
+              <span class="admin-detail-list__value">{{ getCalendlyLabel(mentor) }}</span>
+            </div>
+            <div class="admin-detail-list__item">
+              <span class="admin-detail-list__label">Sessions</span>
+              <span class="admin-detail-list__value">{{ getSessionsSummary(mentor) }}</span>
+            </div>
+            <div class="admin-detail-list__item">
+              <span class="admin-detail-list__label">Reviews</span>
+              <span class="admin-detail-list__value">{{ getReviewsSummary(mentor) }}</span>
+            </div>
+          </div>
 
-    <div *ngIf="!loading && !error && mentors.length" class="table-responsive mentor-table-wrap">
-      <table class="table align-middle mb-0 mentor-table">
-        <thead>
-          <tr>
-            <th scope="col">Mentor</th>
-            <th scope="col">Email</th>
-            <th scope="col">Title / Company</th>
-            <th scope="col">Status</th>
-            <th scope="col">Calendly</th>
-            <th scope="col">Sessions</th>
-            <th scope="col">Reviews</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let mentor of mentors; trackBy: trackMentor">
-            <td>
-              <div class="fw-semibold">{{ mentor.fullName || '-' }}</div>
-            </td>
-            <td>{{ mentor.email || '-' }}</td>
-            <td>{{ getTitleCompany(mentor) }}</td>
-            <td>
-              <span class="badge" [ngClass]="getStatusBadgeClass(mentor)">
-                {{ getStatusLabel(mentor) }}
-              </span>
-            </td>
-            <td>
-              <span class="badge" [ngClass]="getCalendlyBadgeClass(mentor)">
-                {{ getCalendlyLabel(mentor) }}
-              </span>
-            </td>
-            <td>{{ getSessionsSummary(mentor) }}</td>
-            <td>{{ getReviewsSummary(mentor) }}</td>
-          </tr>
-        </tbody>
-      </table>
+          <div class="admin-action-group">
+            <button
+              type="button"
+              class="admin-icon-action"
+              title="View mentor coming soon"
+              aria-label="View mentor coming soon"
+              disabled>
+              <fa-icon [icon]="faEye"></fa-icon>
+            </button>
+            <button
+              type="button"
+              class="admin-icon-action"
+              title="Edit mentor coming soon"
+              aria-label="Edit mentor coming soon"
+              disabled>
+              <fa-icon [icon]="faPen"></fa-icon>
+            </button>
+            <button
+              type="button"
+              class="admin-icon-action admin-icon-action--danger"
+              title="Delete mentor coming soon"
+              aria-label="Delete mentor coming soon"
+              disabled>
+              <fa-icon [icon]="faTrash"></fa-icon>
+            </button>
+          </div>
+        </article>
+      </div>
     </div>
   </section>
 </div>
-

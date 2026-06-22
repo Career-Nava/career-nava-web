@@ -1,72 +1,262 @@
-<div class="container session-page">
-  <section class="card border-0 shadow-sm p-4 session-card">
-    <p class="text-uppercase text-muted small fw-semibold mb-2 session-eyebrow">Admin</p>
-    <div class="d-flex flex-column flex-lg-row justify-content-between gap-3 mb-4">
+<div class="admin-page admin-list-page admin-sessions-page container-fluid pb-5">
+  <section class="admin-surface admin-hero admin-list-hero mb-4">
+    <div class="row g-4 admin-hero__row">
+      <div class="col-12 col-xl-8">
+        <div class="admin-hero__copy">
+          <span class="admin-kicker">Session operations</span>
+          <h1 class="admin-title">Track platform mentorship sessions</h1>
+          <p class="admin-copy mb-0">
+            Monitor bookings across the platform, review meeting readiness, and keep a structured view of session activity without changing mentee or mentor flows.
+          </p>
+        </div>
+      </div>
+
+      <div class="col-12 col-xl-4">
+        <div class="admin-hero__panel">
+          <span class="admin-total">{{ totalSessions }} platform session{{ totalSessions === 1 ? '' : 's' }}</span>
+          <span class="admin-subtotal">{{ todayCount }} today</span>
+          <span class="admin-subtotal">{{ upcomingCount }} upcoming</span>
+          <span class="admin-subtotal">{{ pendingCount }} pending</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="admin-surface admin-toolbar admin-list-toolbar mb-4">
+    <div class="admin-toolbar__top">
       <div>
-        <h1 class="mb-2">Sessions</h1>
-        <p class="text-muted mb-0">
-          View sessions booked by mentees across Career Nava. This page is read-only for now.
+        <span class="admin-section-label">Operational filters</span>
+        <h2 class="admin-panel__title">Find a session record quickly</h2>
+        <p class="admin-copy mb-0">
+          Search across mentor, mentee, and session details or narrow the list to a specific timing window.
+        </p>
+      </div>
+
+      <!-- TODO: Wire to admin CRUD flow when backend endpoints are available. -->
+      <div class="admin-toolbar__actions">
+        <button
+          type="button"
+          class="btn btn-outline-secondary admin-stub-btn admin-toolbar-btn"
+          title="Session review tools coming soon"
+          aria-label="Session review tools coming soon"
+          disabled>
+          <span class="admin-toolbar-btn__content">
+            <fa-icon [icon]="faEye"></fa-icon>
+            <span>Review sessions</span>
+          </span>
+          <span class="admin-soon-pill">Soon</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="row g-3 mt-1 admin-toolbar__row">
+      <div class="col-12 col-lg-7">
+        <label class="admin-search-label">
+          <span class="admin-field-label">Search sessions</span>
+          <input
+            type="search"
+            class="form-control admin-search-input"
+            placeholder="Search by mentor, mentee, title, or status"
+            [value]="searchQuery"
+            (input)="onSearch($any($event.target).value)">
+        </label>
+      </div>
+
+      <div class="col-12 col-lg-3">
+        <label class="admin-select-label">
+          <span class="admin-field-label">Session window</span>
+          <select class="form-select admin-select" [value]="viewFilter" (change)="onViewChange($any($event.target).value)">
+            <option value="all">All sessions</option>
+            <option value="today">Today</option>
+            <option value="upcoming">Upcoming</option>
+            <option value="completed">Completed</option>
+            <option value="pending">Pending</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="col-12 col-lg-2">
+        <div class="admin-inline-meta h-100 align-items-lg-end">
+          <span>Showing <strong>{{ filteredCount }}</strong> of <strong>{{ totalSessions }}</strong></span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div *ngIf="loading" class="admin-state admin-list-state text-center mb-4">
+    <div class="spinner-border text-primary" role="status" aria-label="Loading platform sessions"></div>
+    <p class="admin-copy mb-0 mt-3">Loading sessions...</p>
+  </div>
+
+  <div *ngIf="!loading && error" class="alert alert-danger mb-4" role="alert">
+    {{ error }}
+  </div>
+
+  <div *ngIf="!loading && !error && !filteredSessions.length" class="admin-state admin-list-state mb-4">
+    <h2 class="admin-state__title">{{ getEmptyTitle() }}</h2>
+    <p class="admin-copy mb-0">
+      {{ getEmptyMessage() }}
+    </p>
+  </div>
+
+  <section *ngIf="!loading && !error && filteredSessions.length" class="admin-surface admin-panel admin-list-panel">
+    <div class="admin-panel__head">
+      <div>
+        <span class="admin-section-label">Session records</span>
+        <h2 class="admin-panel__title">Platform session inventory</h2>
+        <p class="admin-copy mb-0">
+          Review who is meeting whom, when each session is scheduled, and whether a meeting link is ready.
         </p>
       </div>
     </div>
 
-    <div *ngIf="loading" class="session-state p-4 text-center">
-      <div class="spinner-border text-primary" role="status" aria-label="Loading platform sessions"></div>
-      <p class="text-muted mb-0 mt-3">Loading sessions...</p>
-    </div>
+    <div class="admin-panel__body">
+      <div class="d-none d-lg-block admin-table-wrap">
+        <table class="table align-middle admin-table">
+          <thead>
+            <tr>
+              <th scope="col">Session</th>
+              <th scope="col">Mentee</th>
+              <th scope="col">Mentor</th>
+              <th scope="col">Date and time</th>
+              <th scope="col">Duration</th>
+              <th scope="col">Status</th>
+              <th scope="col" class="admin-table__actions">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let session of filteredSessions; trackBy: trackSession">
+              <td>
+                <div class="admin-table__title">{{ session.title || 'Career session' }}</div>
+                <span class="admin-table__subcopy">{{ session.category || 'coaching' }}</span>
+              </td>
+              <td>
+                <div class="admin-table__title">{{ session.menteeName || 'Mentee' }}</div>
+                <span class="admin-table__subcopy">{{ session.menteeEmail || 'Email unavailable' }}</span>
+              </td>
+              <td>
+                <div class="admin-table__title">{{ session.mentorName || 'Mentor' }}</div>
+                <span class="admin-table__subcopy">{{ session.mentorEmail || 'Email unavailable' }}</span>
+              </td>
+              <td>{{ session.calendlyStartAt ? (session.calendlyStartAt | date:'medium') : 'To be scheduled' }}</td>
+              <td>{{ formatDuration(session.durationMinutes) }}</td>
+              <td>
+                <span class="admin-badge text-capitalize" [ngClass]="getStatusBadgeClass(session)">
+                  {{ session.status || 'unknown' }}
+                </span>
+              </td>
+              <td class="admin-table__actions">
+                <div class="admin-action-group">
+                  <a
+                    *ngIf="session.meetingLink; else unavailableMeetingAction"
+                    class="admin-icon-action"
+                    [href]="session.meetingLink"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    title="Open meeting"
+                    aria-label="Open meeting">
+                    <fa-icon [icon]="faArrowUpRightFromSquare"></fa-icon>
+                  </a>
+                  <ng-template #unavailableMeetingAction>
+                    <button
+                      type="button"
+                      class="admin-icon-action"
+                      title="Meeting unavailable"
+                      aria-label="Meeting unavailable"
+                      disabled>
+                      <fa-icon [icon]="faArrowUpRightFromSquare"></fa-icon>
+                    </button>
+                  </ng-template>
+                  <button
+                    type="button"
+                    class="admin-icon-action"
+                    title="Review session coming soon"
+                    aria-label="Review session coming soon"
+                    disabled>
+                    <fa-icon [icon]="faEye"></fa-icon>
+                  </button>
+                  <button
+                    type="button"
+                    class="admin-icon-action"
+                    title="Reschedule session coming soon"
+                    aria-label="Reschedule session coming soon"
+                    disabled>
+                    <fa-icon [icon]="faPen"></fa-icon>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
 
-    <div *ngIf="!loading && error" class="alert alert-danger" role="alert">
-      {{ error }}
-    </div>
+      <div class="admin-record-list d-lg-none">
+        <article *ngFor="let session of filteredSessions; trackBy: trackSession" class="admin-record-card">
+          <div class="admin-record-card__head">
+            <div>
+              <h3 class="admin-record-card__title">{{ session.title || 'Career session' }}</h3>
+              <p class="admin-copy mb-0">{{ session.calendlyStartAt ? (session.calendlyStartAt | date:'medium') : 'To be scheduled' }}</p>
+            </div>
+            <span class="admin-badge text-capitalize" [ngClass]="getStatusBadgeClass(session)">
+              {{ session.status || 'unknown' }}
+            </span>
+          </div>
 
-    <div *ngIf="!loading && !error && !sessions.length" class="session-state p-4">
-      <h2 class="h5 mb-2">No sessions found</h2>
-      <p class="text-muted mb-0">
-        Platform sessions will appear here after mentees book time with mentors.
-      </p>
-    </div>
+          <div class="admin-detail-list">
+            <div class="admin-detail-list__item">
+              <span class="admin-detail-list__label">Mentee</span>
+              <span class="admin-detail-list__value">{{ session.menteeName || 'Mentee' }}</span>
+            </div>
+            <div class="admin-detail-list__item">
+              <span class="admin-detail-list__label">Mentor</span>
+              <span class="admin-detail-list__value">{{ session.mentorName || 'Mentor' }}</span>
+            </div>
+            <div class="admin-detail-list__item">
+              <span class="admin-detail-list__label">Duration</span>
+              <span class="admin-detail-list__value">{{ formatDuration(session.durationMinutes) }}</span>
+            </div>
+          </div>
 
-    <div *ngIf="!loading && !error && sessions.length" class="table-responsive session-table-wrap">
-      <table class="table align-middle mb-0 session-table">
-        <thead>
-          <tr>
-            <th scope="col">Mentee</th>
-            <th scope="col">Mentor</th>
-            <th scope="col">Date and time</th>
-            <th scope="col">Duration</th>
-            <th scope="col">Status</th>
-            <th scope="col">Meeting</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let session of sessions; trackBy: trackSession">
-            <td>
-              <div class="fw-semibold">{{ session.menteeName || 'Mentee' }}</div>
-              <div class="text-muted small">{{ session.menteeEmail || 'Email unavailable' }}</div>
-            </td>
-            <td>
-              <div class="fw-semibold">{{ session.mentorName || 'Mentor' }}</div>
-              <div class="text-muted small">{{ session.mentorEmail || 'Email unavailable' }}</div>
-            </td>
-            <td>
-              {{ session.calendlyStartAt ? (session.calendlyStartAt | date:'medium') : 'To be scheduled' }}
-            </td>
-            <td>{{ formatDuration(session.durationMinutes) }}</td>
-            <td><span class="badge text-bg-light text-capitalize">{{ session.status || 'unknown' }}</span></td>
-            <td>
-              <a
-                *ngIf="session.meetingLink"
-                class="btn btn-sm btn-outline-primary"
-                [href]="session.meetingLink"
-                target="_blank"
-                rel="noopener noreferrer">
-                Open
-              </a>
-              <span *ngIf="!session.meetingLink" class="text-muted small">Unavailable</span>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+          <div class="admin-action-group">
+            <a
+              *ngIf="session.meetingLink; else mobileUnavailableMeetingAction"
+              class="admin-icon-action"
+              [href]="session.meetingLink"
+              target="_blank"
+              rel="noopener noreferrer"
+              title="Open meeting"
+              aria-label="Open meeting">
+              <fa-icon [icon]="faArrowUpRightFromSquare"></fa-icon>
+            </a>
+            <ng-template #mobileUnavailableMeetingAction>
+              <button
+                type="button"
+                class="admin-icon-action"
+                title="Meeting unavailable"
+                aria-label="Meeting unavailable"
+                disabled>
+                <fa-icon [icon]="faArrowUpRightFromSquare"></fa-icon>
+              </button>
+            </ng-template>
+            <button
+              type="button"
+              class="admin-icon-action"
+              title="Review session coming soon"
+              aria-label="Review session coming soon"
+              disabled>
+              <fa-icon [icon]="faEye"></fa-icon>
+            </button>
+            <button
+              type="button"
+              class="admin-icon-action"
+              title="Reschedule session coming soon"
+              aria-label="Reschedule session coming soon"
+              disabled>
+              <fa-icon [icon]="faPen"></fa-icon>
+            </button>
+          </div>
+        </article>
+      </div>
     </div>
   </section>
 </div>

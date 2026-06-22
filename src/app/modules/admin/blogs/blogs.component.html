@@ -1,68 +1,257 @@
-<div class="container blog-page">
-  <section class="card border-0 shadow-sm p-4 blog-card">
-    <p class="text-uppercase text-muted small fw-semibold mb-2 blog-eyebrow">Admin</p>
-    <div class="d-flex flex-column flex-lg-row justify-content-between gap-3 mb-4">
+<div class="admin-page admin-list-page admin-blogs-page container-fluid pb-5">
+  <section class="admin-surface admin-hero admin-list-hero mb-4">
+    <div class="row g-4 admin-hero__row">
+      <div class="col-12 col-xl-8">
+        <div class="admin-hero__copy">
+          <span class="admin-kicker">Blogs & resources</span>
+          <h1 class="admin-title">Maintain the platform content library</h1>
+          <p class="admin-copy mb-0">
+            Review guidance articles and resource records with a cleaner management-oriented interface that stays ready for future content workflows.
+          </p>
+        </div>
+      </div>
+
+      <div class="col-12 col-xl-4">
+        <div class="admin-hero__panel">
+          <span class="admin-total">{{ totalBlogs }} content record{{ totalBlogs === 1 ? '' : 's' }}</span>
+          <span class="admin-subtotal">{{ publishedBlogs }} published</span>
+          <span class="admin-subtotal">{{ draftBlogs }} draft or archived</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="admin-surface admin-toolbar admin-list-toolbar mb-4">
+    <div class="admin-toolbar__top">
       <div>
-        <h1 class="mb-2">Blogs</h1>
-        <p class="text-muted mb-0">
-          View all blog and resource records available to administrators. This page is read-only for now.
+        <span class="admin-section-label">Operational filters</span>
+        <h2 class="admin-panel__title">Search and filter content records</h2>
+        <p class="admin-copy mb-0">
+          Narrow the content library by title, slug, category, or publication state while content editing stays disabled.
+        </p>
+      </div>
+
+      <!-- TODO: Wire to admin CRUD flow when backend endpoints are available. -->
+      <div class="admin-toolbar__actions">
+        <button
+          type="button"
+          class="btn btn-outline-secondary admin-stub-btn admin-toolbar-btn"
+          title="Create flow coming soon"
+          aria-label="Create flow coming soon"
+          disabled>
+          <span class="admin-toolbar-btn__content">
+            <fa-icon [icon]="faPlus"></fa-icon>
+            <span>Create resource</span>
+          </span>
+          <span class="admin-soon-pill">Soon</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="row g-3 mt-1 admin-toolbar__row">
+      <div class="col-12 col-lg-7">
+        <label class="admin-search-label">
+          <span class="admin-field-label">Search content</span>
+          <input
+            type="search"
+            class="form-control admin-search-input"
+            placeholder="Search by title, slug, author, or category"
+            [value]="searchQuery"
+            (input)="onSearch($any($event.target).value)">
+        </label>
+      </div>
+
+      <div class="col-12 col-lg-3">
+        <label class="admin-select-label">
+          <span class="admin-field-label">Status</span>
+          <select class="form-select admin-select" [value]="statusFilter" (change)="onStatusChange($any($event.target).value)">
+            <option value="all">All statuses</option>
+            <option value="published">Published</option>
+            <option value="draft">Draft / archived</option>
+            <option value="unknown">Unknown</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="col-12 col-lg-2">
+        <div class="admin-inline-meta h-100 align-items-lg-end">
+          <span>Showing <strong>{{ filteredCount }}</strong> of <strong>{{ totalBlogs }}</strong></span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div *ngIf="loading" class="admin-state admin-list-state text-center mb-4">
+    <div class="spinner-border text-primary" role="status" aria-label="Loading blogs"></div>
+    <p class="admin-copy mb-0 mt-3">Loading blogs...</p>
+  </div>
+
+  <div *ngIf="!loading && error" class="alert alert-danger mb-4" role="alert">
+    {{ error }}
+  </div>
+
+  <div *ngIf="!loading && !error && !filteredBlogs.length" class="admin-state admin-list-state mb-4">
+    <h2 class="admin-state__title">{{ getEmptyTitle() }}</h2>
+    <p class="admin-copy mb-0">
+      {{ getEmptyMessage() }}
+    </p>
+  </div>
+
+  <section *ngIf="!loading && !error && filteredBlogs.length" class="admin-surface admin-panel admin-list-panel">
+    <div class="admin-panel__head">
+      <div>
+        <span class="admin-section-label">Content records</span>
+        <h2 class="admin-panel__title">Blog and resource inventory</h2>
+        <p class="admin-copy mb-0">
+          Review content metadata, publication state, and preview readiness before full authoring tools are connected.
         </p>
       </div>
     </div>
 
-    <div *ngIf="loading" class="blog-state p-4 text-center">
-      <div class="spinner-border text-primary" role="status" aria-label="Loading blogs"></div>
-      <p class="text-muted mb-0 mt-3">Loading blogs...</p>
-    </div>
+    <div class="admin-panel__body">
+      <div class="d-none d-lg-block admin-table-wrap">
+        <table class="table align-middle admin-table">
+          <thead>
+            <tr>
+              <th scope="col">Blog / Resource</th>
+              <th scope="col">Category</th>
+              <th scope="col">Author</th>
+              <th scope="col">Reading time</th>
+              <th scope="col">Created</th>
+              <th scope="col">Content blocks</th>
+              <th scope="col">Status</th>
+              <th scope="col" class="admin-table__actions">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let blog of filteredBlogs; trackBy: trackBlog">
+              <td>
+                <div class="admin-table__title">{{ blog.title || '-' }}</div>
+                <span *ngIf="blog.slug" class="admin-table__subcopy">{{ blog.slug }}</span>
+              </td>
+              <td>{{ blog.category || '-' }}</td>
+              <td>{{ blog.authorName || '-' }}</td>
+              <td>{{ blog.readingTime || '-' }}</td>
+              <td>
+                <span *ngIf="blog.createdDate; else noCreatedDate">
+                  {{ blog.createdDate | date:'mediumDate' }}
+                </span>
+                <ng-template #noCreatedDate>-</ng-template>
+              </td>
+              <td>{{ getContentBlockCount(blog) }}</td>
+              <td>
+                <span class="admin-badge text-capitalize" [ngClass]="getStatusBadgeClass(blog)">
+                  {{ getStatusLabel(blog) }}
+                </span>
+              </td>
+              <td class="admin-table__actions">
+                <div class="admin-action-group">
+                  <a
+                    *ngIf="blog.slug; else unavailablePreviewAction"
+                    class="admin-icon-action"
+                    [routerLink]="['/blog', blog.slug]"
+                    title="Preview resource"
+                    aria-label="Preview resource">
+                    <fa-icon [icon]="faEye"></fa-icon>
+                  </a>
+                  <ng-template #unavailablePreviewAction>
+                    <button
+                      type="button"
+                      class="admin-icon-action"
+                      title="Preview unavailable"
+                      aria-label="Preview unavailable"
+                      disabled>
+                      <fa-icon [icon]="faEye"></fa-icon>
+                    </button>
+                  </ng-template>
+                  <button
+                    type="button"
+                    class="admin-icon-action"
+                    title="Edit resource coming soon"
+                    aria-label="Edit resource coming soon"
+                    disabled>
+                    <fa-icon [icon]="faPen"></fa-icon>
+                  </button>
+                  <button
+                    type="button"
+                    class="admin-icon-action admin-icon-action--danger"
+                    title="Delete resource coming soon"
+                    aria-label="Delete resource coming soon"
+                    disabled>
+                    <fa-icon [icon]="faTrash"></fa-icon>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
 
-    <div *ngIf="!loading && error" class="alert alert-danger" role="alert">
-      {{ error }}
-    </div>
+      <div class="admin-record-list d-lg-none">
+        <article *ngFor="let blog of filteredBlogs; trackBy: trackBlog" class="admin-record-card">
+          <div class="admin-record-card__head">
+            <div>
+              <h3 class="admin-record-card__title">{{ blog.title || '-' }}</h3>
+              <p class="admin-copy mb-0">{{ blog.category || 'Category unavailable' }}</p>
+            </div>
+            <span class="admin-badge text-capitalize" [ngClass]="getStatusBadgeClass(blog)">
+              {{ getStatusLabel(blog) }}
+            </span>
+          </div>
 
-    <div *ngIf="!loading && !error && !blogs.length" class="blog-state p-4">
-      <h2 class="h5 mb-2">No blogs found</h2>
-      <p class="text-muted mb-0">
-        Blog and resource records will appear here once the backend returns admin-visible content data.
-      </p>
-    </div>
+          <div class="admin-detail-list">
+            <div class="admin-detail-list__item">
+              <span class="admin-detail-list__label">Author</span>
+              <span class="admin-detail-list__value">{{ blog.authorName || '-' }}</span>
+            </div>
+            <div class="admin-detail-list__item">
+              <span class="admin-detail-list__label">Reading time</span>
+              <span class="admin-detail-list__value">{{ blog.readingTime || '-' }}</span>
+            </div>
+            <div class="admin-detail-list__item">
+              <span class="admin-detail-list__label">Content blocks</span>
+              <span class="admin-detail-list__value">{{ getContentBlockCount(blog) }}</span>
+            </div>
+          </div>
 
-    <div *ngIf="!loading && !error && blogs.length" class="table-responsive blog-table-wrap">
-      <table class="table align-middle mb-0 blog-table">
-        <thead>
-          <tr>
-            <th scope="col">Blog / Resource</th>
-            <th scope="col">Category</th>
-            <th scope="col">Author</th>
-            <th scope="col">Reading Time</th>
-            <th scope="col">Created</th>
-            <th scope="col">Content Blocks</th>
-            <th scope="col">Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let blog of blogs; trackBy: trackBlog">
-            <td>
-              <div class="fw-semibold">{{ blog.title || '-' }}</div>
-              <div *ngIf="blog.slug" class="text-muted small">{{ blog.slug }}</div>
-            </td>
-            <td>{{ blog.category || '-' }}</td>
-            <td>{{ blog.authorName || '-' }}</td>
-            <td>{{ blog.readingTime || '-' }}</td>
-            <td>
-              <span *ngIf="blog.createdDate; else noCreatedDate">
-                {{ blog.createdDate | date:'mediumDate' }}
-              </span>
-              <ng-template #noCreatedDate>-</ng-template>
-            </td>
-            <td>{{ getContentBlockCount(blog) }}</td>
-            <td>
-              <span class="badge text-capitalize" [ngClass]="getStatusBadgeClass(blog)">
-                {{ getStatusLabel(blog) }}
-              </span>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+          <div class="admin-action-group">
+            <a
+              *ngIf="blog.slug; else mobileUnavailablePreviewAction"
+              class="admin-icon-action"
+              [routerLink]="['/blog', blog.slug]"
+              title="Preview resource"
+              aria-label="Preview resource">
+              <fa-icon [icon]="faEye"></fa-icon>
+            </a>
+            <ng-template #mobileUnavailablePreviewAction>
+              <button
+                type="button"
+                class="admin-icon-action"
+                title="Preview unavailable"
+                aria-label="Preview unavailable"
+                disabled>
+                <fa-icon [icon]="faEye"></fa-icon>
+              </button>
+            </ng-template>
+            <button
+              type="button"
+              class="admin-icon-action"
+              title="Edit resource coming soon"
+              aria-label="Edit resource coming soon"
+              disabled>
+              <fa-icon [icon]="faPen"></fa-icon>
+            </button>
+            <button
+              type="button"
+              class="admin-icon-action admin-icon-action--danger"
+              title="Delete resource coming soon"
+              aria-label="Delete resource coming soon"
+              disabled>
+              <fa-icon [icon]="faTrash"></fa-icon>
+            </button>
+          </div>
+        </article>
+      </div>
     </div>
   </section>
 </div>

@@ -2,40 +2,102 @@
   display: block;
 }
 
-.blog-page {
-  padding: 1.5rem 0 3rem;
+.admin-list-page {
+  color: #1f2937;
 }
 
-.blog-card {
-  border-radius: 1rem;
+.admin-list-hero,
+.admin-list-toolbar,
+.admin-list-state,
+.admin-list-page .admin-record-card {
+  padding: 1.25rem;
 }
 
-.blog-eyebrow {
-  letter-spacing: 0.08em;
+.admin-list-hero .admin-hero__row {
+  align-items: end;
 }
 
-.blog-state {
-  background: rgba(250, 251, 255, 0.9);
-  border: 1px dashed rgba(71, 90, 112, 0.25);
-  border-radius: 0.875rem;
+.admin-list-hero .admin-hero__copy {
+  max-width: 42rem;
 }
 
-.blog-table-wrap {
-  border: 1px solid rgba(71, 90, 112, 0.12);
-  border-radius: 0.875rem;
+.admin-list-hero .admin-hero__panel {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  align-content: flex-start;
+  gap: 0.65rem;
+  max-width: 24rem;
 }
 
-.blog-table th {
-  color: #475a70;
-  font-size: 0.8125rem;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  white-space: nowrap;
+.admin-list-toolbar .admin-toolbar__top,
+.admin-list-panel .admin-panel__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
 }
 
-.blog-table td,
-.blog-table th {
-  padding: 1rem;
-  vertical-align: middle;
+.admin-list-toolbar .admin-toolbar__top {
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(226, 232, 240, 0.85);
+}
+
+.admin-list-panel .admin-panel__head {
+  padding: 1.25rem 1.25rem 1rem;
+  border-bottom: 1px solid rgba(226, 232, 240, 0.85);
+}
+
+.admin-list-toolbar .admin-toolbar__actions {
+  align-items: flex-start;
+}
+
+.admin-list-toolbar .admin-toolbar__row {
+  align-items: end;
+  row-gap: 0.9rem;
+  margin-top: 1rem !important;
+}
+
+.admin-list-panel .admin-panel__body {
+  padding: 1.1rem 1.25rem 1.25rem;
+}
+
+.admin-list-page .admin-record-list {
+  gap: 0.9rem;
+}
+
+.admin-list-page .admin-record-card {
+  gap: 1rem;
+}
+
+@media (max-width: 575.98px) {
+  .admin-list-hero,
+  .admin-list-toolbar,
+  .admin-list-state,
+  .admin-list-page .admin-record-card {
+    padding: 1rem;
+  }
+
+  .admin-list-panel .admin-panel__head {
+    padding: 1rem 1rem 0.9rem;
+  }
+
+  .admin-list-panel .admin-panel__body {
+    padding: 1rem;
+  }
+
+  .admin-list-toolbar .admin-toolbar__actions {
+    width: 100%;
+  }
+
+  .admin-list-toolbar .admin-toolbar__actions .admin-stub-btn,
+  .admin-list-toolbar .admin-toolbar__actions .admin-link-btn {
+    width: 100%;
+  }
+
+  .admin-list-hero .admin-total {
+    width: 100%;
+    justify-content: center;
+  }
 }
