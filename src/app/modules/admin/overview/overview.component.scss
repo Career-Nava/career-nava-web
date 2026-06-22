@@ -2,77 +2,118 @@
   display: block;
 }
 
-.overview-page {
-  padding: 1.5rem 0 3rem;
+.admin-overview-page {
+  color: #1f2937;
 }
 
-.overview-card {
-  border-radius: 1rem;
-}
-
-.overview-eyebrow {
-  letter-spacing: 0.08em;
-}
-
-.overview-illustration {
-  max-width: 18rem;
-  width: 100%;
-  height: auto;
-}
-
-.overview-state {
-  background: rgba(250, 251, 255, 0.9);
-  border: 1px dashed rgba(71, 90, 112, 0.25);
-  border-radius: 0.875rem;
-}
-
-.overview-summary-card {
-  background: #fff;
-  border: 1px solid rgba(71, 90, 112, 0.12);
-  border-radius: 0.875rem;
+.admin-overview-hero,
+.admin-overview-toolbar,
+.admin-overview-state,
+.admin-overview-summary-card,
+.admin-overview-page .admin-link-card {
   padding: 1.25rem;
 }
 
-.overview-summary-title {
-  color: #475a70;
-  font-size: 0.875rem;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
+.admin-overview-hero .admin-hero__row {
+  align-items: center;
 }
 
-.overview-summary-value {
-  color: #0f172a;
-  font-size: 2rem;
-  font-weight: 700;
-  line-height: 1;
+.admin-overview-hero .admin-hero__copy {
+  max-width: 42rem;
 }
 
-.overview-link-card {
-  display: block;
-  height: 100%;
-  background: #fff;
-  border: 1px solid rgba(71, 90, 112, 0.12);
-  border-radius: 0.75rem;
-  padding: 1rem;
-  color: inherit;
-  text-decoration: none;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+.admin-overview-hero .admin-hero__panel {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  align-content: flex-start;
+  gap: 0.65rem;
+  max-width: 20rem;
 }
 
-.overview-link-card:hover,
-.overview-link-card:focus {
-  border-color: rgba(13, 110, 253, 0.35);
-  box-shadow: 0 0.5rem 1rem rgba(15, 23, 42, 0.08);
-  transform: translateY(-1px);
+.admin-overview-hero .admin-hero__art {
+  width: min(15rem, 100%);
+  margin-top: 0.15rem;
+}
+
+.admin-overview-summary-card {
+  gap: 0.55rem;
+}
+
+.admin-overview-toolbar .admin-toolbar__top,
+.admin-overview-panel .admin-panel__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.admin-overview-toolbar .admin-toolbar__top {
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(226, 232, 240, 0.85);
+}
+
+.admin-overview-panel .admin-panel__head {
+  padding: 1.25rem 1.25rem 1rem;
+  border-bottom: 1px solid rgba(226, 232, 240, 0.85);
+}
+
+.admin-overview-actions {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.admin-overview-actions .admin-toolbar-btn {
+  width: 100%;
+  align-items: flex-start;
+  justify-content: space-between;
+  text-align: left;
+}
+
+.admin-overview-actions .admin-toolbar-btn__content {
+  align-items: flex-start;
+}
+
+.admin-overview-panel .admin-panel__body {
+  padding: 1.1rem 1.25rem 1.25rem;
+}
+
+.admin-overview-page .admin-link-card {
+  gap: 0.55rem;
 }
 
 @media (max-width: 575.98px) {
-  .overview-card {
-    padding: 1.25rem !important;
+  .admin-overview-hero,
+  .admin-overview-toolbar,
+  .admin-overview-state,
+  .admin-overview-summary-card,
+  .admin-overview-page .admin-link-card {
+    padding: 1rem;
   }
 
-  .overview-summary-value {
-    font-size: 1.75rem;
+  .admin-overview-panel .admin-panel__head {
+    padding: 1rem 1rem 0.9rem;
+  }
+
+  .admin-overview-panel .admin-panel__body {
+    padding: 1rem;
+  }
+
+  .admin-overview-metrics,
+  .admin-overview-links {
+    --bs-gutter-x: 1rem;
+    --bs-gutter-y: 1rem;
+  }
+
+  .admin-overview-hero .admin-total {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .admin-overview-actions {
+    grid-template-columns: 1fr;
   }
 }

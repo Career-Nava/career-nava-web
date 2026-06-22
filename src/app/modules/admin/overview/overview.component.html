@@ -1,87 +1,116 @@
-<div class="container overview-page">
-  <section class="card border-0 shadow-sm p-4 overview-card">
-    <div class="row align-items-center gy-4 mb-4">
-      <div class="col-12 col-lg-8">
-        <p class="text-uppercase text-muted small fw-semibold mb-2 overview-eyebrow">Admin Overview</p>
-        <h1 class="mb-3">Career Nava admin command center</h1>
-        <p class="text-muted mb-0">
-          Track high-level platform activity across mentors, sessions, scholarships, and blog resources.
-        </p>
-        <p *ngIf="user?.fullName" class="text-muted mb-0 mt-2">
-          Signed in as {{ user?.fullName }}.
-        </p>
-      </div>
-      <div class="col-12 col-lg-4 text-center">
-        <img
-          src="assets/images/illustrations/web-development-flatline-1.svg"
-          alt="Admin dashboard illustration"
-          class="overview-illustration">
-      </div>
-    </div>
-
-    <div *ngIf="loading" class="overview-state p-4 text-center">
-      <div class="spinner-border text-primary" role="status" aria-label="Loading admin overview"></div>
-      <p class="text-muted mb-0 mt-3">Loading admin overview...</p>
-    </div>
-
-    <div *ngIf="!loading && error" class="alert alert-danger" role="alert">
-      {{ error }}
-    </div>
-
-    <div *ngIf="!loading && !error && !overview" class="overview-state p-4">
-      <h2 class="h5 mb-2">Overview unavailable</h2>
-      <p class="text-muted mb-0">
-        Platform summary counts are not available right now.
-      </p>
-    </div>
-
-    <ng-container *ngIf="!loading && !error && overview">
-      <div class="row g-4">
-        <div *ngFor="let card of cards; trackBy: trackCard" class="col-12 col-md-6 col-xl-4">
-          <article class="overview-summary-card h-100">
-            <p class="overview-summary-title mb-2">{{ card.title }}</p>
-            <div class="overview-summary-value mb-2">{{ card.value }}</div>
-            <p class="text-muted mb-1">{{ card.primaryMeta }}</p>
-            <p *ngIf="card.secondaryMeta" class="text-muted mb-0">{{ card.secondaryMeta }}</p>
-            <a
-              *ngIf="card.route && card.actionLabel"
-              class="btn btn-sm btn-outline-primary mt-3"
-              [routerLink]="card.route">
-              {{ card.actionLabel }}
-            </a>
-          </article>
+<div class="admin-page admin-overview-page container-fluid pb-5">
+  <section class="admin-surface admin-hero admin-overview-hero mb-4">
+    <div class="row g-4 admin-hero__row">
+      <div class="col-12 col-xl-8">
+        <div class="admin-hero__copy">
+          <span class="admin-kicker">Admin overview</span>
+          <h1 class="admin-title">Career Nava platform operations</h1>
+          <p class="admin-copy mb-0">
+            Monitor high-level platform activity across mentors, sessions, scholarships, and content while keeping the admin workspace ready for future maintenance workflows.
+          </p>
+          <p *ngIf="user?.fullName" class="admin-copy mt-3 mb-0">
+            Signed in as <strong>{{ user?.fullName }}</strong>.
+          </p>
         </div>
       </div>
 
-      <section class="overview-state p-4 mt-4">
-        <h2 class="h5 mb-3">Admin areas</h2>
-        <div class="row g-3">
-          <div class="col-12 col-md-6 col-xl-3">
-            <a class="overview-link-card" routerLink="/admin/mentors">
-              <span class="fw-semibold d-block mb-1">Mentors</span>
-              <span class="text-muted small">Review mentor records and status.</span>
-            </a>
-          </div>
-          <div class="col-12 col-md-6 col-xl-3">
-            <a class="overview-link-card" routerLink="/admin/sessions">
-              <span class="fw-semibold d-block mb-1">Sessions</span>
-              <span class="text-muted small">View platform-wide session activity.</span>
-            </a>
-          </div>
-          <div class="col-12 col-md-6 col-xl-3">
-            <a class="overview-link-card" routerLink="/admin/scholarships">
-              <span class="fw-semibold d-block mb-1">Scholarships</span>
-              <span class="text-muted small">Review scholarship inventory.</span>
-            </a>
-          </div>
-          <div class="col-12 col-md-6 col-xl-3">
-            <a class="overview-link-card" routerLink="/admin/blogs">
-              <span class="fw-semibold d-block mb-1">Blogs / Resources</span>
-              <span class="text-muted small">Review blog and resource content.</span>
-            </a>
-          </div>
+      <div class="col-12 col-xl-4">
+        <div class="admin-hero__panel">
+          <span class="admin-total">{{ overviewSummary }}</span>
+          <span class="admin-subtotal">Read-only operations console</span>
+          <img
+            src="assets/images/illustrations/web-development-flatline-1.svg"
+            alt="Admin dashboard illustration"
+            class="admin-hero__art">
         </div>
-      </section>
-    </ng-container>
+      </div>
+    </div>
   </section>
+
+  <div *ngIf="loading" class="admin-state admin-overview-state text-center mb-4">
+    <div class="spinner-border text-primary" role="status" aria-label="Loading admin overview"></div>
+    <p class="admin-copy mb-0 mt-3">Loading admin overview...</p>
+  </div>
+
+  <div *ngIf="!loading && error" class="alert alert-danger mb-4" role="alert">
+    {{ error }}
+  </div>
+
+  <div *ngIf="!loading && !error && !overview" class="admin-state admin-overview-state mb-4">
+    <h2 class="admin-state__title">Overview unavailable</h2>
+    <p class="admin-copy mb-0">
+      Platform summary counts are not available right now.
+    </p>
+  </div>
+
+  <ng-container *ngIf="!loading && !error && overview">
+    <div class="row g-4 admin-overview-metrics mb-4">
+      <div *ngFor="let card of cards; trackBy: trackCard" class="col-12 col-md-6 col-xl-4">
+        <article class="admin-summary-card admin-overview-summary-card h-100">
+          <span class="admin-summary-card__title">{{ card.title }}</span>
+          <div class="admin-summary-card__value">{{ card.value }}</div>
+          <p class="admin-summary-card__meta">{{ card.primaryMeta }}</p>
+          <p *ngIf="card.secondaryMeta" class="admin-summary-card__meta mb-0">{{ card.secondaryMeta }}</p>
+          <a
+            *ngIf="card.route && card.actionLabel"
+            class="btn btn-outline-secondary admin-link-btn mt-2"
+            [routerLink]="card.route">
+            {{ card.actionLabel }}
+          </a>
+        </article>
+      </div>
+    </div>
+
+    <section class="admin-surface admin-toolbar admin-overview-toolbar mb-4">
+      <div class="admin-toolbar__top">
+        <div>
+          <span class="admin-section-label">Platform maintenance</span>
+          <h2 class="admin-panel__title">Quick actions</h2>
+          <p class="admin-copy mb-0">
+            Future admin CRUD tools will appear here once dedicated management endpoints are available.
+          </p>
+        </div>
+      </div>
+
+      <!-- TODO: Wire to admin CRUD flow when backend endpoints are available. -->
+      <div class="admin-toolbar__actions admin-overview-actions">
+        <button
+          *ngFor="let action of quickActions; trackBy: trackAction"
+          type="button"
+          class="btn btn-outline-secondary admin-stub-btn admin-toolbar-btn"
+          [attr.title]="action.hint"
+          [attr.aria-label]="action.hint"
+          disabled>
+          <span class="admin-toolbar-btn__content">
+            <fa-icon [icon]="action.icon"></fa-icon>
+            <span>{{ action.label }}</span>
+          </span>
+          <span class="admin-soon-pill">{{ action.note }}</span>
+        </button>
+      </div>
+    </section>
+
+    <section class="admin-surface admin-panel admin-overview-panel">
+      <div class="admin-panel__head">
+        <div>
+          <span class="admin-section-label">Admin areas</span>
+          <h2 class="admin-panel__title">Operational workspaces</h2>
+          <p class="admin-copy mb-0">
+            Jump into the core platform management views without leaving the shared admin shell.
+          </p>
+        </div>
+      </div>
+
+      <div class="admin-panel__body">
+        <div class="row g-4 admin-overview-links">
+          <div *ngFor="let area of areaLinks; trackBy: trackArea" class="col-12 col-md-6">
+            <a class="admin-link-card" [routerLink]="area.route">
+              <strong>{{ area.title }}</strong>
+              <span class="admin-copy">{{ area.description }}</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </ng-container>
 </div>

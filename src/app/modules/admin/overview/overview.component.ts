@@ -1,10 +1,12 @@
 import { NgForOf, NgIf } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
+import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
+import { faCalendarCheck, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { AdminOverview } from '../../../services/admin/admin.model';
+import { AdminService } from '../../../services/admin/admin.service';
 import { AuthService } from '../../../services/auth/auth.service';
 import { UserModel } from '../../../services/user/user.model';
 import { SharedModule } from '../../../shared/shared.module';
-import { AdminOverview } from '../../../services/admin/admin.model';
-import { AdminService } from '../../../services/admin/admin.service';
 
 interface OverviewCard {
   title: string;
@@ -13,6 +15,19 @@ interface OverviewCard {
   secondaryMeta?: string;
   route?: string;
   actionLabel?: string;
+}
+
+interface AdminAreaLink {
+  title: string;
+  description: string;
+  route: string;
+}
+
+interface AdminStubAction {
+  label: string;
+  note: string;
+  hint: string;
+  icon: IconDefinition;
 }
 
 @Component({
@@ -27,6 +42,36 @@ export class OverviewComponent implements OnInit {
   overview: AdminOverview | null = null;
   loading = true;
   error: string | null = null;
+
+  readonly areaLinks: AdminAreaLink[] = [
+    {
+      title: 'Mentor management',
+      description: 'Review mentor readiness, activation state, and scheduling setup.',
+      route: '/admin/mentors'
+    },
+    {
+      title: 'Session operations',
+      description: 'Track platform sessions booked between mentees and mentors.',
+      route: '/admin/sessions'
+    },
+    {
+      title: 'Scholarship management',
+      description: 'Maintain opportunity inventory and review scholarship visibility.',
+      route: '/admin/scholarships'
+    },
+    {
+      title: 'Blogs & resources',
+      description: 'Monitor published guidance content and internal content readiness.',
+      route: '/admin/blogs'
+    }
+  ];
+
+  readonly quickActions: AdminStubAction[] = [
+    { label: 'Add mentor', note: 'Soon', hint: 'Create flow coming soon', icon: faPlus },
+    { label: 'Add scholarship', note: 'Soon', hint: 'Create flow coming soon', icon: faPlus },
+    { label: 'Create resource', note: 'Soon', hint: 'Create flow coming soon', icon: faPlus },
+    { label: 'Review sessions', note: 'Soon', hint: 'Session review tools coming soon', icon: faCalendarCheck }
+  ];
 
   constructor(
     private authService: AuthService,
@@ -64,7 +109,7 @@ export class OverviewComponent implements OnInit {
         primaryMeta: `${ this.getCount(overview.activeMentors) } active`,
         secondaryMeta: `${ this.getCount(overview.inactiveMentors) } inactive`,
         route: '/admin/mentors',
-        actionLabel: 'Open mentors'
+        actionLabel: 'Manage mentors'
       },
       {
         title: 'Sessions',
@@ -72,33 +117,53 @@ export class OverviewComponent implements OnInit {
         primaryMeta: `${ this.getCount(overview.upcomingSessions) } upcoming`,
         secondaryMeta: `${ this.getCount(overview.completedSessions) } completed / ${ this.getCount(overview.pendingSessions) } pending`,
         route: '/admin/sessions',
-        actionLabel: 'Open sessions'
+        actionLabel: 'Review sessions'
       },
       {
         title: 'Scholarships',
         value: this.getCount(overview.totalScholarships),
-        primaryMeta: 'Read-only admin list',
+        primaryMeta: 'Operational inventory',
+        secondaryMeta: 'Read-only administration today',
         route: '/admin/scholarships',
-        actionLabel: 'Open scholarships'
+        actionLabel: 'Manage scholarships'
       },
       {
-        title: 'Blogs / Resources',
+        title: 'Blogs & resources',
         value: this.getCount(overview.totalBlogs),
-        primaryMeta: 'Read-only admin list',
+        primaryMeta: 'Content inventory',
+        secondaryMeta: 'Read-only administration today',
         route: '/admin/blogs',
-        actionLabel: 'Open blogs'
+        actionLabel: 'Manage resources'
       },
       {
         title: 'Mentees',
         value: this.getCount(overview.totalMentees),
         primaryMeta: `${ this.getCount(overview.totalUsers) } total users`,
-        secondaryMeta: 'No mentee management page yet'
+        secondaryMeta: 'Dedicated mentee management is not wired yet'
       }
     ];
   }
 
+  get overviewSummary(): string {
+    const overview = this.overview;
+
+    if (!overview) {
+      return 'Platform activity snapshot';
+    }
+
+    return `${ this.getCount(overview.totalUsers) } total users across the platform`;
+  }
+
   trackCard(_: number, card: OverviewCard): string {
     return card.title;
+  }
+
+  trackArea(_: number, area: AdminAreaLink): string {
+    return area.route;
+  }
+
+  trackAction(_: number, action: AdminStubAction): string {
+    return action.label;
   }
 
   private getCount(value: number | undefined): number {
