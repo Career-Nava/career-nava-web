@@ -52,17 +52,6 @@ export class SessionGroupPanelComponent implements OnChanges {
     return this.groups.find(group => group.key === this.activeGroupKey) ?? this.groups[0];
   }
 
-  get activeGroupSummary(): string {
-    const group = this.activeGroup;
-
-    if (!group) {
-      return '';
-    }
-
-    const count = group.sessions.length;
-    return `${ count } session${ count === 1 ? '' : 's' } in ${ group.label.toLowerCase() }.`;
-  }
-
   setActiveGroup(group: SessionGroup): void {
     this.activeGroupKey = group.key;
   }

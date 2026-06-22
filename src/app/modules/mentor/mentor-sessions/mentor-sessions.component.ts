@@ -38,9 +38,9 @@ export class MentorSessionsComponent implements OnInit {
     return [
       {
         key: 'active',
-        label: 'Active',
+        label: 'Today',
         sessions: this.filterSessions(this.sessions, 'active'),
-        emptyTitle: 'Nothing scheduled for today',
+        emptyTitle: 'No sessions today',
         emptyMessage: 'You have no sessions scheduled for today.'
       },
       {
@@ -52,10 +52,10 @@ export class MentorSessionsComponent implements OnInit {
       },
       {
         key: 'past',
-        label: 'Past',
+        label: 'Completed',
         sessions: this.filterSessions(this.sessions, 'past'),
         emptyTitle: 'No completed sessions yet',
-        emptyMessage: 'You have no completed or past sessions yet.'
+        emptyMessage: 'You have no completed sessions yet.'
       }
     ];
   }

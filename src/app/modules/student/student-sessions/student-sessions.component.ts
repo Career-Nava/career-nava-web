@@ -64,9 +64,9 @@ export class StudentSessionsComponent implements OnInit, OnDestroy {
     return [
       {
         key: 'active',
-        label: 'Active',
+        label: 'Today',
         sessions: this.filterSessions(this.sessions, 'active'),
-        emptyTitle: 'Nothing scheduled for today',
+        emptyTitle: 'No sessions today',
         emptyMessage: 'You have no sessions scheduled for today.'
       },
       {
@@ -78,10 +78,10 @@ export class StudentSessionsComponent implements OnInit, OnDestroy {
       },
       {
         key: 'past',
-        label: 'Past',
+        label: 'Completed',
         sessions: this.filterSessions(this.sessions, 'past'),
         emptyTitle: 'No completed sessions yet',
-        emptyMessage: 'You have no past sessions.'
+        emptyMessage: 'You have no completed sessions yet.'
       }
     ];
   }

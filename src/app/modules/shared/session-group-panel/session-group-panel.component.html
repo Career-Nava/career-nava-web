@@ -14,8 +14,8 @@
   </section>
 
   <section class="session-toolbar mb-4">
-    <div class="row g-3 align-items-center">
-      <div class="col-12 col-xl-8">
+    <div class="row g-3">
+      <div class="col-12">
         <div class="session-tabs" role="tablist" aria-label="Session groups">
           <button
             *ngFor="let group of groups; trackBy: trackGroup"
@@ -29,15 +29,6 @@
           </button>
         </div>
       </div>
-
-      <div class="col-12 col-xl-4">
-        <div class="session-toolbar__meta">
-          <p class="session-copy text-muted mb-0" *ngIf="!errorMessage">
-            {{ loading ? 'Loading sessions...' : activeGroupSummary }}
-          </p>
-          <p class="session-copy text-danger mb-0" *ngIf="errorMessage">{{ errorMessage }}</p>
-        </div>
-      </div>
     </div>
   </section>
 
@@ -48,10 +39,6 @@
         <h2 class="session-panel-title">{{ panelTitle }}</h2>
         <p class="session-copy text-muted mb-0">{{ panelDescription }}</p>
       </div>
-
-      <span class="session-panel-badge" *ngIf="!loading && !errorMessage && activeGroup">
-        {{ activeGroup.sessions.length }} {{ activeGroup.label.toLowerCase() }}
-      </span>
     </div>
 
     <div class="session-panel-card__body">

@@ -95,8 +95,7 @@
   box-shadow: 0 10px 24px rgba(119, 12, 226, 0.18);
 }
 
-.session-tab__count,
-.session-panel-badge {
+.session-tab__count {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -115,17 +114,10 @@
   color: #fff;
 }
 
-.session-toolbar__meta {
-  display: flex;
-  align-items: center;
-  min-height: 100%;
-}
-
 .session-panel-card__head {
   display: flex;
   flex-wrap: wrap;
   align-items: flex-start;
-  justify-content: space-between;
   gap: 1rem;
   border-bottom: 1px solid rgba(226, 232, 240, 0.85);
 }
@@ -134,12 +126,6 @@
   margin: 0 0 0.6rem;
   font-size: 1.35rem;
   font-weight: 700;
-}
-
-.session-panel-badge {
-  background: rgba(119, 12, 226, 0.08);
-  color: #5b21b6;
-  text-transform: capitalize;
 }
 
 .session-alert {
@@ -184,8 +170,7 @@
     justify-content: space-between;
   }
 
-  .session-total,
-  .session-panel-badge {
+  .session-total {
     width: 100%;
     justify-content: center;
   }
