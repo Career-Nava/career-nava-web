@@ -1,5 +1,5 @@
 import { NgForOf, NgIf } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { Session } from '../../../services/session/session.model';
 import { CardSkeletonComponent } from '../../../shared/components/card-skeleton/card-skeleton.component';
 import { SessionCardComponent, SessionCardContext } from '../session-card/session-card.component';
@@ -21,9 +21,11 @@ export interface SessionGroup {
   templateUrl: './session-group-panel.component.html',
   styleUrl: './session-group-panel.component.scss'
 })
-export class SessionGroupPanelComponent {
+export class SessionGroupPanelComponent implements OnChanges {
+  @Input() pageEyebrow = 'Session planning';
   @Input() pageTitle = 'My Sessions';
   @Input() pageDescription = '';
+  @Input() heroSummary = '';
   @Input() panelTitle = 'My Sessions';
   @Input() panelDescription = '';
   @Input() context: SessionCardContext = 'mentee';
@@ -40,12 +42,33 @@ export class SessionGroupPanelComponent {
 
   activeGroupKey: SessionGroupKey = 'active';
 
+  ngOnChanges(_: SimpleChanges): void {
+    if (!this.groups.some(group => group.key === this.activeGroupKey) && this.groups.length) {
+      this.activeGroupKey = this.groups[0].key;
+    }
+  }
+
   get activeGroup(): SessionGroup | undefined {
     return this.groups.find(group => group.key === this.activeGroupKey) ?? this.groups[0];
   }
 
+  get activeGroupSummary(): string {
+    const group = this.activeGroup;
+
+    if (!group) {
+      return '';
+    }
+
+    const count = group.sessions.length;
+    return `${ count } session${ count === 1 ? '' : 's' } in ${ group.label.toLowerCase() }.`;
+  }
+
   setActiveGroup(group: SessionGroup): void {
     this.activeGroupKey = group.key;
+  }
+
+  getEmptyTitle(group: SessionGroup): string {
+    return group.emptyTitle ?? `No ${ group.label.toLowerCase() } sessions yet`;
   }
 
   trackGroup(_: number, group: SessionGroup): SessionGroupKey {

@@ -1,48 +1,51 @@
-<div class="card session-card h-100">
-  <div class="session-ribbon" [ngClass]="statusClass">
-    {{ statusLabel }}
-  </div>
-
-  <div class="card-header d-block overflow-hidden p-0">
+<article class="session-card h-100">
+  <div class="session-media">
     <img
       [src]="session.thumbnailUrl || 'assets/images/sessions/empty.png'"
       [alt]="session.title || 'Career Nava session'"
-      class="w-100 object-fit-cover session-image">
+      class="session-image">
+
+    <div class="session-chips">
+      <span class="session-chip session-chip--soft">{{ sessionCategoryLabel }}</span>
+      <span class="session-chip" [ngClass]="statusClass">{{ statusLabel }}</span>
+    </div>
   </div>
 
-  <div class="card-body">
-    <div class="position-relative z-2">
-      <h4 class="card-title">{{ session.title || 'Career Coaching' }}</h4>
+  <div class="session-body">
+    <span class="session-participant-label">{{ participantLabel }}</span>
+    <h3 class="session-title">{{ session.title || 'Career Coaching' }}</h3>
 
-      <div class="d-flex flex-column mt-4 session-meta">
-        <p>
-          {{ participantLabel }}:
-          <span class="fw-semibold">{{ participantName }}</span>
-        </p>
-        <p *ngIf="participantEmail" class="text-muted small">
-          {{ participantEmail }}
-        </p>
-        <p>
-          <fa-icon [icon]="faCalendar" class="text-brand-green-500"></fa-icon>
-          {{ session.calendlyStartAt ? (session.calendlyStartAt | date:'mediumDate') + ', ' + (session.calendlyStartAt | date:'shortTime') : 'TBD' }}
-        </p>
-        <p>
-          <fa-icon [icon]="faClock" class="text-brand-green-500"></fa-icon>
-          {{ formatDuration(session.durationMinutes) }}
-        </p>
+    <div class="session-participant">
+      <strong>{{ participantName }}</strong>
+      <span *ngIf="participantEmail">{{ participantEmail }}</span>
+    </div>
+
+    <div class="session-meta">
+      <div class="session-meta-item">
+        <fa-icon [icon]="faCalendar"></fa-icon>
+        <span>{{ session.calendlyStartAt ? (session.calendlyStartAt | date:'mediumDate') + ', ' + (session.calendlyStartAt | date:'shortTime') : 'TBD' }}</span>
+      </div>
+
+      <div class="session-meta-item">
+        <fa-icon [icon]="faClock"></fa-icon>
+        <span>{{ formatDuration(session.durationMinutes) }}</span>
+      </div>
+
+      <div class="session-meta-item" *ngIf="session.meetingLink">
+        <span>Meeting link ready</span>
       </div>
     </div>
 
-    <p>{{ session.description || fallbackDescription }}</p>
+    <p class="session-description">{{ session.description || fallbackDescription }}</p>
   </div>
 
-  <div class="card-footer bg-transparent border-0" *ngIf="showAction">
+  <div class="session-footer" *ngIf="showAction">
     <button
       type="button"
-      class="btn w-100 btn-primary"
+      class="btn btn-secondary session-cta"
       [disabled]="actionDisabled"
       (click)="handleAction()">
       {{ actionLabel }}
     </button>
   </div>
-</div>
+</article>

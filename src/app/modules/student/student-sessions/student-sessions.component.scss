@@ -16,7 +16,7 @@
   max-width: 900px;
   height: 90vh;
   background: #fff;
-  border-radius: 0.75rem;
+  border-radius: 1rem;
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -26,14 +26,23 @@
 
 .payment-close-btn {
   position: absolute;
-  top: 0.5rem;
-  right: 0.5rem;
+  top: 0.7rem;
+  right: 0.7rem;
+  width: 2.5rem;
+  height: 2.5rem;
   font-size: 1.8rem;
   border: none;
-  background: transparent;
+  border-radius: 999px;
+  background: rgba(243, 244, 246, 0.95);
   cursor: pointer;
   z-index: 10;
   color: #333;
+}
+
+.payment-close-btn:hover,
+.payment-close-btn:focus-visible {
+  background: rgba(229, 231, 235, 0.98);
+  outline: none;
 }
 
 .payment-iframe-container {
@@ -60,17 +69,39 @@
   padding: 1rem;
 }
 
+.join-modal {
+  border: 1px solid rgba(119, 12, 226, 0.08);
+  border-radius: 1.25rem;
+  overflow: hidden;
+  box-shadow: 0 20px 40px rgba(15, 23, 42, 0.14);
+}
+
+.join-modal__header,
+.join-modal__body,
+.join-modal__footer {
+  background: linear-gradient(180deg, #fff, #faf7ff);
+}
+
+.join-modal__header {
+  border-bottom: 1px solid rgba(226, 232, 240, 0.85);
+}
+
+.join-modal__footer {
+  gap: 0.75rem;
+  border-top: 1px solid rgba(226, 232, 240, 0.85);
+}
+
 @media (max-width: 575.98px) {
   .payment-modal {
     width: calc(100% - 1rem);
     height: 85vh;
   }
 
-  .modal-footer {
+  .join-modal__footer {
     flex-direction: column;
   }
 
-  .modal-footer .btn {
+  .join-modal__footer .btn {
     width: 100%;
   }
 }

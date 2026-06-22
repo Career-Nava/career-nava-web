@@ -40,21 +40,35 @@ export class MentorSessionsComponent implements OnInit {
         key: 'active',
         label: 'Active',
         sessions: this.filterSessions(this.sessions, 'active'),
+        emptyTitle: 'Nothing scheduled for today',
         emptyMessage: 'You have no sessions scheduled for today.'
       },
       {
         key: 'upcoming',
         label: 'Upcoming',
         sessions: this.filterSessions(this.sessions, 'upcoming'),
+        emptyTitle: 'No upcoming bookings yet',
         emptyMessage: 'You have no upcoming booked sessions.'
       },
       {
         key: 'past',
         label: 'Past',
         sessions: this.filterSessions(this.sessions, 'past'),
+        emptyTitle: 'No completed sessions yet',
         emptyMessage: 'You have no completed or past sessions yet.'
       }
     ];
+  }
+
+  get heroSummary(): string {
+    const upcomingCount = this.filterSessions(this.sessions, 'upcoming').length;
+
+    if (upcomingCount > 0) {
+      return `${ upcomingCount } upcoming booking${ upcomingCount === 1 ? '' : 's' }`;
+    }
+
+    const totalCount = this.sessions.length;
+    return `${ totalCount } total session${ totalCount === 1 ? '' : 's' }`;
   }
 
   getSessionActionLabel = (session: Session): string => session.meetingLink ? 'Open meeting' : 'No meeting link yet';

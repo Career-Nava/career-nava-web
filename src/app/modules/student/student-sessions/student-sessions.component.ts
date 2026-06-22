@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from "@angular/platform-browser";
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
@@ -14,7 +14,7 @@ import { SharedModule } from "../../../shared/shared.module";
   templateUrl: './student-sessions.component.html',
   styleUrls: [ './student-sessions.component.scss' ]
 })
-export class StudentSessionsComponent implements OnInit {
+export class StudentSessionsComponent implements OnInit, OnDestroy {
 
   faWarning = faExclamationTriangle;
 
@@ -56,27 +56,45 @@ export class StudentSessionsComponent implements OnInit {
     });
   }
 
+  ngOnDestroy(): void {
+    document.body.style.overflow = '';
+  }
+
   get sessionGroups(): SessionGroup[] {
     return [
       {
         key: 'active',
         label: 'Active',
         sessions: this.filterSessions(this.sessions, 'active'),
+        emptyTitle: 'Nothing scheduled for today',
         emptyMessage: 'You have no sessions scheduled for today.'
       },
       {
         key: 'upcoming',
         label: 'Upcoming',
         sessions: this.filterSessions(this.sessions, 'upcoming'),
+        emptyTitle: 'No upcoming sessions yet',
         emptyMessage: 'You have no upcoming sessions.'
       },
       {
         key: 'past',
         label: 'Past',
         sessions: this.filterSessions(this.sessions, 'past'),
+        emptyTitle: 'No completed sessions yet',
         emptyMessage: 'You have no past sessions.'
       }
     ];
+  }
+
+  get heroSummary(): string {
+    const upcomingCount = this.filterSessions(this.sessions, 'upcoming').length;
+
+    if (upcomingCount > 0) {
+      return `${ upcomingCount } upcoming session${ upcomingCount === 1 ? '' : 's' }`;
+    }
+
+    const totalCount = this.sessions.length;
+    return `${ totalCount } total session${ totalCount === 1 ? '' : 's' }`;
   }
 
   isSessionActionDisabled = (session: Session): boolean => this.isPastSession(session);

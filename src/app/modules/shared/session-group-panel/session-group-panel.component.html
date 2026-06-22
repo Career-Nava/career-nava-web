@@ -1,69 +1,96 @@
-<div class="container session-panel-page">
-  <div class="col-12 col-lg-6">
-    <div class="mb-4">
-      <h1>{{ pageTitle }}</h1>
-      <p *ngIf="!errorMessage">{{ pageDescription }}</p>
-      <p *ngIf="errorMessage" class="text-danger">{{ errorMessage }}</p>
+<div class="session-panel-page container-fluid pb-5">
+  <section class="mb-4">
+    <div class="session-intro">
+      <div class="session-intro__copy">
+        <span class="session-kicker">{{ pageEyebrow }}</span>
+        <h1 class="session-title">{{ pageTitle }}</h1>
+        <p class="session-copy text-muted mb-0">{{ pageDescription }}</p>
+      </div>
+
+      <p *ngIf="heroSummary" class="session-total mb-0">
+        {{ heroSummary }}
+      </p>
     </div>
-  </div>
+  </section>
 
-  <ul class="nav nav-tabs sessions-tabs flex-nowrap overflow-auto">
-    <li class="nav-item" *ngFor="let group of groups; trackBy: trackGroup">
-      <a
-        class="nav-link"
-        [class.active]="activeGroup?.key === group.key"
-        (click)="setActiveGroup(group); $event.preventDefault()">
-        {{ group.label }}
-      </a>
-    </li>
-  </ul>
-
-  <div class="tab-content">
-    <div class="tab-pane active">
-      <div class="card border-0 session-panel-card">
-        <div class="card-header">
-          <h3 class="card-title">{{ panelTitle }}</h3>
-          <p>{{ panelDescription }}</p>
+  <section class="session-toolbar mb-4">
+    <div class="row g-3 align-items-center">
+      <div class="col-12 col-xl-8">
+        <div class="session-tabs" role="tablist" aria-label="Session groups">
+          <button
+            *ngFor="let group of groups; trackBy: trackGroup"
+            type="button"
+            class="session-tab"
+            [class.is-active]="activeGroup?.key === group.key"
+            [attr.aria-pressed]="activeGroup?.key === group.key"
+            (click)="setActiveGroup(group)">
+            <span>{{ group.label }}</span>
+            <span class="session-tab__count">{{ group.sessions.length }}</span>
+          </button>
         </div>
+      </div>
 
-        <div class="card-body">
-          <ng-container *ngIf="loading; else sessionsLoaded">
-            <card-skeleton [skeletonCount]="skeletonCount"></card-skeleton>
-          </ng-container>
-
-          <ng-template #sessionsLoaded>
-            <div *ngIf="errorMessage" class="alert alert-danger" role="alert">
-              {{ errorMessage }}
-            </div>
-
-            <ng-container *ngIf="!errorMessage && activeGroup as group">
-              <div *ngIf="group.sessions.length; else emptyState" class="row g-4">
-                <div *ngFor="let session of group.sessions; trackBy: trackSession" class="col-12 col-md-6 col-xl-4">
-                  <app-session-card
-                    [session]="session"
-                    [context]="context"
-                    [actionLabel]="actionLabel(session)"
-                    [actionDisabled]="actionDisabled(session)"
-                    (action)="sessionAction.emit($event)">
-                  </app-session-card>
-                </div>
-              </div>
-
-              <ng-template #emptyState>
-                <div class="text-center text-muted p-3 session-empty-state">
-                  <img
-                    [src]="emptyImageSrc"
-                    [alt]="emptyImageAlt"
-                    class="mb-3 empty-img"/>
-
-                  <h2 class="h5 mb-2" *ngIf="group.emptyTitle">{{ group.emptyTitle }}</h2>
-                  <p class="mb-0">{{ group.emptyMessage }}</p>
-                </div>
-              </ng-template>
-            </ng-container>
-          </ng-template>
+      <div class="col-12 col-xl-4">
+        <div class="session-toolbar__meta">
+          <p class="session-copy text-muted mb-0" *ngIf="!errorMessage">
+            {{ loading ? 'Loading sessions...' : activeGroupSummary }}
+          </p>
+          <p class="session-copy text-danger mb-0" *ngIf="errorMessage">{{ errorMessage }}</p>
         </div>
       </div>
     </div>
-  </div>
+  </section>
+
+  <section class="session-panel-card">
+    <div class="session-panel-card__head">
+      <div>
+        <span class="session-section-label">Session overview</span>
+        <h2 class="session-panel-title">{{ panelTitle }}</h2>
+        <p class="session-copy text-muted mb-0">{{ panelDescription }}</p>
+      </div>
+
+      <span class="session-panel-badge" *ngIf="!loading && !errorMessage && activeGroup">
+        {{ activeGroup.sessions.length }} {{ activeGroup.label.toLowerCase() }}
+      </span>
+    </div>
+
+    <div class="session-panel-card__body">
+      <ng-container *ngIf="loading; else sessionsLoaded">
+        <card-skeleton [skeletonCount]="skeletonCount"></card-skeleton>
+      </ng-container>
+
+      <ng-template #sessionsLoaded>
+        <div *ngIf="errorMessage" class="session-alert" role="alert">
+          <strong>Unable to load sessions.</strong>
+          <span>{{ errorMessage }}</span>
+        </div>
+
+        <ng-container *ngIf="!errorMessage && activeGroup as group">
+          <div *ngIf="group.sessions.length; else emptyState" class="row g-4">
+            <div *ngFor="let session of group.sessions; trackBy: trackSession" class="col-12 col-md-6 col-xl-4">
+              <app-session-card
+                [session]="session"
+                [context]="context"
+                [actionLabel]="actionLabel(session)"
+                [actionDisabled]="actionDisabled(session)"
+                (action)="sessionAction.emit($event)">
+              </app-session-card>
+            </div>
+          </div>
+
+          <ng-template #emptyState>
+            <div class="session-empty-state text-center">
+              <img
+                [src]="emptyImageSrc"
+                [alt]="emptyImageAlt"
+                class="empty-img mb-3"/>
+
+              <h2 class="session-empty-state__title">{{ getEmptyTitle(group) }}</h2>
+              <p class="session-copy text-muted mb-0">{{ group.emptyMessage }}</p>
+            </div>
+          </ng-template>
+        </ng-container>
+      </ng-template>
+    </div>
+  </section>
 </div>

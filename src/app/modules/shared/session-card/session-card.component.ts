@@ -55,7 +55,33 @@ export class SessionCardComponent {
   }
 
   get statusClass(): string {
-    return this.session.status === 'pending' ? 'ribbon--pending' : 'ribbon--approved';
+    const status = (this.session.status || '').toLowerCase();
+
+    if (status === 'pending') {
+      return 'session-chip--pending';
+    }
+
+    if (status === 'cancelled' || status === 'canceled') {
+      return 'session-chip--danger';
+    }
+
+    if (status === 'past' || status === 'completed') {
+      return 'session-chip--muted';
+    }
+
+    if (status === 'approved' || status === 'confirmed' || status === 'paid' || status === 'active') {
+      return 'session-chip--success';
+    }
+
+    return 'session-chip--default';
+  }
+
+  get sessionCategoryLabel(): string {
+    if (this.session.category) {
+      return this.session.category;
+    }
+
+    return this.context === 'mentor' ? 'mentorship booking' : 'guidance session';
   }
 
   formatDuration(minutes: number): string {

@@ -1,8 +1,10 @@
-﻿<app-session-group-panel
-  pageTitle="My Sessions"
-  pageDescription="Sessions booked with you will appear here. This view uses your signed-in mentor account and does not require a mentor ID in the URL."
-  panelTitle="My Sessions"
-  panelDescription="Overview of sessions booked with you by mentees."
+<app-session-group-panel
+  pageEyebrow="Mentor schedule"
+  pageTitle="Your mentorship schedule"
+  pageDescription="Manage upcoming conversations with mentees and keep track of completed mentorship sessions."
+  [heroSummary]="heroSummary"
+  panelTitle="Booked sessions"
+  panelDescription="Review what is happening today, what is coming up next, and which conversations have already been completed."
   context="mentor"
   [groups]="sessionGroups"
   [loading]="loading"

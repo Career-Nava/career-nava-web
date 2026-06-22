@@ -1,8 +1,10 @@
-﻿<app-session-group-panel
-  pageTitle="My Sessions"
-  pageDescription="All your career coaching sessions booked are listed below."
-  panelTitle="My Sessions"
-  panelDescription="Overview of your booked career coaching sessions."
+<app-session-group-panel
+  pageEyebrow="Session planning"
+  pageTitle="Your career guidance sessions"
+  pageDescription="Track upcoming mentorship conversations, payment-ready bookings, and completed guidance sessions in one place."
+  [heroSummary]="heroSummary"
+  panelTitle="Session timeline"
+  panelDescription="Use each group to review what is happening today, what is booked next, and what you have already completed."
   context="mentee"
   [groups]="sessionGroups"
   [loading]="loading"
@@ -12,10 +14,9 @@
   (sessionAction)="handleSessionClick($event)">
 </app-session-group-panel>
 
-<!-- Payment Modal -->
 <div class="payment-modal-backdrop" *ngIf="showPaymentModal">
-  <div class="payment-modal">
-    <button class="payment-close-btn" (click)="closePaymentModal()">&times;</button>
+  <div class="payment-modal" role="dialog" aria-modal="true" aria-label="Session payment">
+    <button type="button" class="payment-close-btn" aria-label="Close payment dialog" (click)="closePaymentModal()">&times;</button>
 
     <div *ngIf="isLoadingPayment" class="payment-loading">
       <div class="spinner-border text-primary" role="status"></div>
@@ -30,18 +31,15 @@
         sandbox="allow-forms allow-scripts allow-same-origin allow-popups allow-modals">
       </iframe>
     </div>
-
   </div>
 </div>
 
-<!-- Join Confirmation Modal -->
 <div class="modal-backdrop fade show" *ngIf="showJoinConfirmModal"></div>
 
-<div class="modal fade show d-block" tabindex="-1" *ngIf="showJoinConfirmModal">
+<div class="modal fade show d-block" tabindex="-1" *ngIf="showJoinConfirmModal" role="dialog" aria-modal="true" aria-label="Join session confirmation">
   <div class="modal-dialog modal-dialog-centered modal-lg">
-    <div class="modal-content">
-
-      <div class="modal-header">
+    <div class="modal-content join-modal">
+      <div class="modal-header join-modal__header">
         <h5 class="modal-title d-flex gap-2">
           <fa-icon [icon]="faWarning" class="text-warning"></fa-icon>
           Payment Required
@@ -49,7 +47,7 @@
         <button type="button" class="btn-close" (click)="closeJoinConfirmModal()"></button>
       </div>
 
-      <div class="modal-body px-4">
+      <div class="modal-body px-4 join-modal__body">
         <p class="fw-semibold mb-2">
           This session has not been paid for yet.
         </p>
@@ -58,16 +56,15 @@
         </p>
       </div>
 
-      <div class="modal-footer justify-content-between px-4">
-        <button class="btn btn-primary flex-fill" (click)="payBeforeJoining()">
+      <div class="modal-footer justify-content-between px-4 join-modal__footer">
+        <button class="btn btn-secondary flex-fill" (click)="payBeforeJoining()">
           Pay & Join
         </button>
 
-        <button class="btn btn-outline-secondary flex-fill me-2" (click)="joinWithoutPayment()">
+        <button class="btn btn-outline-secondary flex-fill" (click)="joinWithoutPayment()">
           Join Session
         </button>
       </div>
-
     </div>
   </div>
 </div>

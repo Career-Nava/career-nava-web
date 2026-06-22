@@ -1,40 +1,192 @@
 .session-panel-page {
-  overflow-x: hidden;
+  color: #1f2937;
 }
 
-.sessions-tabs {
-  -webkit-overflow-scrolling: touch;
-  gap: 0.25rem;
-  scrollbar-width: thin;
-}
-
-.sessions-tabs .nav-link {
-  white-space: nowrap;
-}
-
+.session-intro,
+.session-toolbar,
 .session-panel-card {
-  min-width: 0;
+  border: 1px solid rgba(119, 12, 226, 0.08);
+  border-radius: 1.25rem;
+  background: linear-gradient(180deg, #fff, #faf7ff);
+  box-shadow: 0 14px 30px rgba(15, 23, 42, 0.05);
+}
+
+.session-intro,
+.session-toolbar,
+.session-panel-card__head,
+.session-panel-card__body,
+.session-empty-state {
+  padding: 1.25rem;
+}
+
+.session-intro {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.session-intro__copy {
+  max-width: 48rem;
+}
+
+.session-kicker,
+.session-section-label {
+  display: inline-flex;
+  margin-bottom: 0.85rem;
+  padding: 0.35rem 0.7rem;
+  border-radius: 999px;
+  background: rgba(119, 12, 226, 0.08);
+  color: #6d28d9;
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.session-title {
+  margin: 0 0 0.75rem;
+  font-size: clamp(1.9rem, 2vw + 1rem, 2.6rem);
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.session-copy {
+  line-height: 1.65;
+}
+
+.session-total {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.5rem;
+  padding: 0.55rem 0.9rem;
+  border-radius: 999px;
+  background: rgba(119, 12, 226, 0.08);
+  color: #5b21b6;
+  font-size: 0.92rem;
+  font-weight: 600;
+}
+
+.session-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+}
+
+.session-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  min-height: 2.6rem;
+  padding: 0.55rem 0.85rem;
+  border: 1px solid rgba(209, 213, 219, 0.85);
+  border-radius: 999px;
+  background: #fff;
+  color: #4b5563;
+  font-size: 0.92rem;
+  font-weight: 600;
+}
+
+.session-tab.is-active {
+  border-color: transparent;
+  background: linear-gradient(135deg, #770ce2, #5b21b6);
+  color: #fff;
+  box-shadow: 0 10px 24px rgba(119, 12, 226, 0.18);
+}
+
+.session-tab__count,
+.session-panel-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.8rem;
+  min-height: 1.8rem;
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+  background: rgba(243, 244, 246, 0.95);
+  color: #4b5563;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.session-tab.is-active .session-tab__count {
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+}
+
+.session-toolbar__meta {
+  display: flex;
+  align-items: center;
+  min-height: 100%;
+}
+
+.session-panel-card__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  border-bottom: 1px solid rgba(226, 232, 240, 0.85);
+}
+
+.session-panel-title {
+  margin: 0 0 0.6rem;
+  font-size: 1.35rem;
+  font-weight: 700;
+}
+
+.session-panel-badge {
+  background: rgba(119, 12, 226, 0.08);
+  color: #5b21b6;
+  text-transform: capitalize;
+}
+
+.session-alert {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 1rem 1.1rem;
+  border: 1px solid rgba(248, 113, 113, 0.22);
+  border-radius: 1rem;
+  background: rgba(254, 242, 242, 0.92);
+  color: #991b1b;
 }
 
 .empty-img {
-  max-width: min(300px, 80vw);
-  width: 100%;
-  opacity: 0.9;
+  width: min(14rem, 80vw);
 }
 
 .session-empty-state {
   min-height: 220px;
+  border: 1px dashed rgba(119, 12, 226, 0.16);
+  border-radius: 1rem;
+  background: rgba(255, 255, 255, 0.72);
+}
+
+.session-empty-state__title {
+  margin-bottom: 0.65rem;
+  font-size: 1.2rem;
+  font-weight: 700;
 }
 
 @media (max-width: 575.98px) {
-  .session-panel-page {
-    padding-left: 0.75rem;
-    padding-right: 0.75rem;
+  .session-intro,
+  .session-toolbar,
+  .session-panel-card__head,
+  .session-panel-card__body,
+  .session-empty-state {
+    padding: 1rem;
   }
 
-  .session-panel-card .card-header,
-  .session-panel-card .card-body {
-    padding-left: 1rem;
-    padding-right: 1rem;
+  .session-tab {
+    flex: 1 1 calc(50% - 0.65rem);
+    justify-content: space-between;
+  }
+
+  .session-total,
+  .session-panel-badge {
+    width: 100%;
+    justify-content: center;
   }
 }
