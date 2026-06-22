@@ -60,21 +60,6 @@
               </p>
               <p class="mnd-copy text-muted mb-4" *ngIf="mentor.bio">{{ mentor.bio }}</p>
 
-              <div class="mnd-facts mb-4">
-                <div class="mnd-fact">
-                  <span class="mnd-fact__label">Sessions</span>
-                  <strong>{{ mentor.totalSessions || 0 }}</strong>
-                </div>
-                <div class="mnd-fact">
-                  <span class="mnd-fact__label">Reviews</span>
-                  <strong>{{ mentor.totalReviews || 0 }}</strong>
-                </div>
-                <div class="mnd-fact" *ngIf="mentor.avgRating">
-                  <span class="mnd-fact__label">Rating</span>
-                  <strong>{{ mentor.avgRating | number:'1.0-1' }}</strong>
-                </div>
-              </div>
-
               <div class="mnd-actions">
                 <button type="button" class="btn btn-secondary mnd-cta" (click)="openCalendlyModal()">
                   <span>Book session</span>
@@ -217,7 +202,7 @@
       </div>
 
       <div class="calendly-modal-backdrop" *ngIf="showCalendlyModal">
-        <div class="calendly-modal">
+        <div class="calendly-modal" role="dialog" aria-modal="true" aria-label="Schedule mentor session">
           <button type="button" class="calendly-close-btn" aria-label="Close scheduling dialog" (click)="closeCalendlyModal()">&times;</button>
           <div #calendlyContainer class="calendly-widget-container"></div>
 

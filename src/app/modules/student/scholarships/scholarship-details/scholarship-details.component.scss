@@ -80,26 +80,20 @@
   padding: 0.4rem 0;
 }
 
-.schd-pill-row,
 .schd-facts,
 .schd-actions,
-.schd-quick-list,
 .schd-interest,
-.schd-benefits,
 .schd-avatars {
   display: flex;
 }
 
-.schd-pill-row,
 .schd-facts,
 .schd-avatars {
   flex-wrap: wrap;
 }
 
-.schd-pill-row,
 .schd-facts,
 .schd-actions,
-.schd-benefits,
 .schd-interest {
   gap: 0.9rem;
 }
@@ -110,11 +104,6 @@
   border-radius: 999px;
   background: rgba(15, 23, 42, 0.72);
   color: #fff;
-}
-
-.schd-pill--soft {
-  background: rgba(119, 12, 226, 0.08);
-  color: #5b21b6;
 }
 
 .schd-pill--success {
@@ -209,17 +198,19 @@
 
 .schd-benefits,
 .schd-quick-list {
-  flex-direction: column;
-}
-
-.schd-benefits,
-.schd-quick-list {
   padding: 0;
   margin: 0;
   list-style: none;
 }
 
-.schd-benefits li,
+.schd-benefits li {
+  display: flex;
+  gap: 0.75rem;
+  padding: 1rem 0;
+  border-top: 1px solid rgba(226, 232, 240, 0.85);
+  line-height: 1.6;
+}
+
 .schd-quick-item {
   display: flex;
   justify-content: space-between;
@@ -235,13 +226,16 @@
 }
 
 .schd-benefits__dot {
-  width: 0.75rem;
-  height: 0.75rem;
-  flex: 0 0 0.75rem;
-  margin-top: 0.35rem;
+  width: 0.55rem;
+  height: 0.55rem;
+  flex: 0 0 0.55rem;
+  margin-top: 0.5rem;
   border-radius: 999px;
   background: linear-gradient(135deg, #770ce2, #5b21b6);
-  box-shadow: 0 0 0 6px rgba(119, 12, 226, 0.08);
+}
+
+.schd-benefits__text {
+  flex: 1 1 auto;
 }
 
 .schd-quick-item strong {
@@ -322,4 +316,3 @@
     height: 2.4rem;
   }
 }
-

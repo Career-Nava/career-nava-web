@@ -147,36 +147,40 @@ export class MentorDetailsComponent implements OnInit, OnDestroy {
     this.isLoadingCalendly = true;
     document.body.style.overflow = 'hidden';
 
-    this.waitForCalendlyScript().then(() => {
-      this.calendlyService.getBookingLink(this.mentor!.userId!).subscribe({
-        next: url => {
-          if (!this.calendlyContainer) {
-            this.isLoadingCalendly = false;
-            return;
-          }
-
-          this.calendlyContainer.nativeElement.innerHTML = '';
-          window.Calendly.initInlineWidget({
-            url,
-            parentElement: this.calendlyContainer.nativeElement,
-            prefill: {
-              name: `${ user.fullName }`,
-              email: user.email,
-            },
-            readOnly: {
-              email: true
-            },
-            utm: {}
-          });
-
+    window.setTimeout(() => {
+      this.waitForCalendlyScript().then(() => {
+        if (!window.Calendly?.initInlineWidget || !this.calendlyContainer) {
           this.isLoadingCalendly = false;
-        },
-        error: err => {
-          console.warn('Error fetching booking link: ', err.error?.message ?? err);
-          this.isLoadingCalendly = false;
-          this.toastService.show('Unable to load scheduling link. Please try again later.', { classname: 'bg-soft-danger text-dark' });
+          this.toastService.show('Unable to load scheduling right now. Please try again later.', { classname: 'bg-soft-danger text-dark' });
           this.closeCalendlyModal();
+          return;
         }
+
+        this.calendlyService.getBookingLink(this.mentor!.userId!).subscribe({
+          next: url => {
+            this.calendlyContainer.nativeElement.innerHTML = '';
+            window.Calendly.initInlineWidget({
+              url,
+              parentElement: this.calendlyContainer.nativeElement,
+              prefill: {
+                name: `${ user.fullName }`,
+                email: user.email,
+              },
+              readOnly: {
+                email: true
+              },
+              utm: {}
+            });
+
+            this.isLoadingCalendly = false;
+          },
+          error: err => {
+            console.warn('Error fetching booking link: ', err.error?.message ?? err);
+            this.isLoadingCalendly = false;
+            this.toastService.show('Unable to load scheduling link. Please try again later.', { classname: 'bg-soft-danger text-dark' });
+            this.closeCalendlyModal();
+          }
+        });
       });
     });
   }

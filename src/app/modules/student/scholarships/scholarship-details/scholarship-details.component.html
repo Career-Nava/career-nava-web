@@ -54,7 +54,7 @@
 
     <section *ngIf="!isLoading && (loadFailed || !scholarship)" class="schd-empty schd-card text-center">
       <span class="schd-kicker">Scholarship unavailable</span>
-      <h1 class="schd-empty__title">We couldn’t load this scholarship right now.</h1>
+      <h1 class="schd-empty__title">We couldn't load this scholarship right now.</h1>
       <p class="text-muted mb-4">
         It may have been removed, expired, or there was a temporary loading issue. Return to your scholarships list to keep exploring other opportunities.
       </p>
@@ -66,13 +66,10 @@
         <div class="row g-4 align-items-stretch">
           <div class="col-12 col-xl-7">
             <div class="schd-hero__body">
-              <span class="schd-kicker">Scholarship spotlight</span>
-
-              <div class="schd-pill-row mb-3">
-                <span class="schd-pill schd-pill--soft">{{ s.category || 'Scholarship Opportunity' }}</span>
-                <span class="schd-pill schd-pill--soft" *ngIf="s.role">{{ s.role }}</span>
+              <div class="d-flex flex-wrap align-items-start justify-content-between gap-3 mb-3">
+                <span class="schd-kicker mb-0">Scholarship spotlight</span>
                 <span
-                  class="schd-pill"
+                  class="schd-pill ms-sm-auto"
                   *ngIf="s.status"
                   [class.schd-pill--success]="s.status === 'active'"
                   [class.schd-pill--muted]="s.status === 'inactive'">
@@ -159,7 +156,7 @@
             <ul class="schd-benefits mb-0">
               <li *ngFor="let benefit of s.benefits">
                 <span class="schd-benefits__dot"></span>
-                <span>{{ benefit.benefitText }}</span>
+                <span class="schd-benefits__text text-body-secondary">{{ benefit.benefitText }}</span>
               </li>
             </ul>
           </section>
@@ -261,4 +258,3 @@
     </ng-container>
   </div>
 </div>
-

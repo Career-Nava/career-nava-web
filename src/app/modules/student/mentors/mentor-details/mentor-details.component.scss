@@ -72,7 +72,6 @@
 .mnd-hero__body,
 .mnd-hero__media,
 .mnd-hero__fallback,
-.mnd-fact,
 .mnd-actions {
   height: 100%;
 }
@@ -87,18 +86,15 @@
   padding: 0.4rem 0;
 }
 
-.mnd-facts,
 .mnd-actions,
 .mnd-badges {
   display: flex;
 }
 
-.mnd-facts,
 .mnd-badges {
   flex-wrap: wrap;
 }
 
-.mnd-facts,
 .mnd-actions {
   gap: 0.9rem;
 }
@@ -115,25 +111,12 @@
   background: rgba(22, 163, 74, 0.92);
 }
 
-.mnd-pill--muted {
-  background: rgba(107, 114, 128, 0.9);
-}
-
 .mnd-copy,
 .mnd-body-copy {
   color: #6b7280;
   line-height: 1.7;
 }
 
-.mnd-fact {
-  min-width: 10rem;
-  padding: 0.9rem 1rem;
-  border-radius: 1rem;
-  background: rgba(255, 255, 255, 0.82);
-  border: 1px solid rgba(119, 12, 226, 0.08);
-}
-
-.mnd-fact__label,
 .mnd-quick-item span,
 .mnd-info-label {
   display: block;
@@ -153,10 +136,6 @@
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-}
-
-.mnd-note {
-  max-width: 28rem;
 }
 
 .mnd-hero__media,
@@ -255,10 +234,6 @@
   gap: 1rem;
 }
 
-.mnd-exp__media {
-  flex: 0 0 5rem;
-}
-
 .mnd-exp__img {
   width: 100%;
   height: 4rem;
@@ -268,12 +243,7 @@
   border: 1px solid rgba(226, 232, 240, 0.85);
 }
 
-.mnd-exp__body {
-  flex: 1 1 auto;
-}
-
 .mnd-exp__title {
-  font-size: 1rem;
   font-weight: 700;
 }
 
@@ -294,7 +264,7 @@
   max-width: 900px;
   height: 90vh;
   background: #fff;
-  border-radius: 0.75rem;
+  border-radius: 1rem;
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -303,14 +273,21 @@
 
 .calendly-close-btn {
   position: absolute;
-  top: 0.5rem;
-  right: 0.5rem;
+  top: 0.7rem;
+  right: 0.7rem;
+  width: 2.5rem;
+  height: 2.5rem;
   font-size: 1.8rem;
   border: none;
-  background: transparent;
-  color: #333;
+  border-radius: 999px;
+  background: rgba(243, 244, 246, 0.95);
   cursor: pointer;
   z-index: 10;
+}
+
+.calendly-close-btn:hover,
+.calendly-close-btn:focus-visible {
+  background: rgba(229, 231, 235, 0.98);
 }
 
 .calendly-widget-container {
@@ -337,7 +314,6 @@
     padding: 1rem;
   }
 
-  .mnd-fact,
   .mnd-cta {
     width: 100%;
   }
@@ -346,5 +322,10 @@
   .mnd-hero__img,
   .mnd-media-skel {
     min-height: 14rem;
+  }
+
+  .calendly-modal {
+    width: calc(100% - 1rem);
+    height: calc(100vh - 1rem);
   }
 }
