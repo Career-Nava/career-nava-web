@@ -53,6 +53,11 @@ The branch currently includes:
 - backend-backed read-only admin scholarships page
 - backend-backed read-only admin blogs/resources page
 - backend-backed admin overview dashboard
+- Phase 1 auth/session stabilization:
+  - OAuth token restore now refreshes the current user through `GET /api/User/me`
+  - `UserService` uses the backend `ApiResponse<T>` wrapper
+  - `UserService.getUserById(...)` uses `/api/User/GetUserById/{id}`
+  - mentor booking links are available to authenticated mentees through the API contract
 
 ## Route Summary
 
@@ -113,6 +118,8 @@ Route stabilization notes:
 - `AuthInterceptor` attaches `Authorization: Bearer <token>` when a token exists
 - `401` responses trigger logout through the existing auth service
 - page components typically still surface a local `401` message for clarity after interceptor behavior
+- persisted local sessions are refreshed from `/api/User/me` when the auth service initializes
+- OAuth callback tokens are accepted only after the frontend can refresh the real current user from the backend
 
 ### API conventions
 
@@ -387,6 +394,7 @@ Guidance:
 - `MentorService.getAllMentors()` -> public mentor list
 - `MentorService.getMentorById(id)` -> public mentor detail
 - `MentorService.getAdminMentors()` -> `GET /api/Mentor/GetAllMentorsForAdmin`
+- `CalendlyService.getBookingLink(mentorId)` -> `GET /api/calendly/booking-link?mentorId={id}` for authenticated booking access
 
 ### Scholarships
 
