@@ -48,12 +48,17 @@ export class SignInComponent implements OnInit, AfterViewInit {
     const token = params.get('token');
 
     if (token) {
-      const user = this.authService.restoreSessionFromToken(token);
-      if (user) {
-        this.authService.navigateByRole(user.role);
-      } else {
-        this.errorMessage = 'Login failed';
-      }
+      this.loading = true;
+      this.authService.restoreSessionFromToken(token).subscribe({
+        next: user => {
+          this.authService.navigateByRole(user.role);
+          this.loading = false;
+        },
+        error: () => {
+          this.errorMessage = 'Login failed';
+          this.loading = false;
+        }
+      });
     }
   }
 

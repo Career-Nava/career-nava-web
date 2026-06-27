@@ -1,6 +1,7 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from '@angular/core';
 import { catchError, map, Observable, of, throwError } from "rxjs";
+import { ApiResponse } from "../api-response";
 import { ConfigurationService } from "../configuration.service";
 import { LocalStorageCache } from "../local-storage-cache";
 import { RestService } from "../rest.service";
@@ -22,9 +23,10 @@ export class UserService extends RestService {
     if (cached) return of(cached);
 
     return this.http
-      .get<UserModel[]>(`${this.baseUrl}/GetAllUsers`)
+      .get<ApiResponse<UserModel[]>>(`${ this.baseUrl }/GetAllUsers`)
       .pipe(
-        map(users => {
+        map(res => {
+          const users = res.data ?? [];
           this.cache.set(users);
           return users;
         }),
@@ -37,10 +39,19 @@ export class UserService extends RestService {
     const found = cached?.find(u => u.userId === userId);
     if (found) return of(found);
 
-    const params = this.buildParams({ userId });
     return this.http
-      .get<UserModel>(`${this.baseUrl}/GetUserById`, { params })
+      .get<ApiResponse<UserModel>>(`${ this.baseUrl }/GetUserById/${ userId }`)
       .pipe(
+        map(res => res.data),
+        catchError(err => throwError(() => err))
+      );
+  }
+
+  getCurrentUser(): Observable<UserModel> {
+    return this.http
+      .get<ApiResponse<UserModel>>(`${ this.baseUrl }/me`)
+      .pipe(
+        map(res => res.data),
         catchError(err => throwError(() => err))
       );
   }

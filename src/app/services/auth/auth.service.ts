@@ -13,12 +13,19 @@ import { AuthPayload, JwtClaims, LoginRequest, RegisterRequest } from "./auth.mo
 export class AuthService extends RestService {
   private readonly TOKEN_KEY = 'auth_token';
   private readonly USER_KEY = 'user';
+  private readonly apiBaseUrl: string;
 
   private readonly userSubject = new BehaviorSubject<UserModel | null>(this.loadUserFromStorage());
   readonly user$ = this.userSubject.asObservable();
 
   constructor(http: HttpClient, config: ConfigurationService, private router: Router) {
-    super(http, 'auth', config.get<any>('api').baseUrl);
+    const apiBaseUrl = config.get<any>('api').baseUrl;
+    super(http, 'auth', apiBaseUrl);
+    this.apiBaseUrl = apiBaseUrl;
+
+    if (this.userSubject.value && this.getToken()) {
+      this.refreshCurrentUser().subscribe({ error: () => this.clearSession() });
+    }
   }
 
   register(payload: RegisterRequest): Observable<void> {
@@ -88,11 +95,33 @@ export class AuthService extends RestService {
     this.userSubject.next(updated);
   }
 
-  restoreSessionFromToken(token: string): UserModel | null {
+  refreshCurrentUser(): Observable<UserModel> {
+    return this.http.get<ApiResponse<UserModel>>(`${ this.apiBaseUrl }/User/me`).pipe(
+      map(res => {
+        if (!res?.data?.userId || !res.data.email || !res.data.role) {
+          throw new Error('Invalid current user response');
+        }
+
+        const token = this.getToken();
+        if (!token) {
+          throw new Error('Missing authentication token');
+        }
+
+        this.saveSession({ token, user: res.data });
+        return res.data;
+      }),
+      catchError(err => {
+        this.clearSession();
+        return throwError(() => err);
+      })
+    );
+  }
+
+  restoreSessionFromToken(token: string): Observable<UserModel> {
     try {
       if (!this.isTokenValid(token)) {
         this.clearSession();
-        return null;
+        return throwError(() => new Error('Invalid authentication token'));
       }
 
       const jwtClaims = jwtDecode<JwtClaims>(token);
@@ -100,23 +129,14 @@ export class AuthService extends RestService {
 
       if (!userId || !jwtClaims.email || !jwtClaims.role) {
         this.clearSession();
-        return null;
+        return throwError(() => new Error('Invalid authentication token'));
       }
 
-      const user: UserModel = {
-        userId,
-        fullName: jwtClaims.unique_name,
-        email: jwtClaims.email,
-        role: jwtClaims.role,
-        isActive: true,
-        calendlyConnected: false // TODO: fix hardcoded data
-      };
-
-      this.saveSession({ token, user });
-      return user;
+      localStorage.setItem(this.TOKEN_KEY, token);
+      return this.refreshCurrentUser();
     } catch {
       this.clearSession();
-      return null;
+      return throwError(() => new Error('Invalid authentication token'));
     }
   }
 
