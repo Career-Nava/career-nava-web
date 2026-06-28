@@ -1,7 +1,7 @@
 import { DatePipe, NgClass, NgForOf, NgIf } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { faArrowUpRightFromSquare, faFilter, faPen, faRotateRight } from '@fortawesome/free-solid-svg-icons';
+import { faArrowUpRightFromSquare, faFilter, faPen, faRotateRight, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { debounceTime, finalize, Subscription } from 'rxjs';
 import { AdminSession, AdminSessionDetail, AdminSessionFilters } from '../../../services/session/session.model';
 import { SessionService } from '../../../services/session/session.service';
@@ -22,6 +22,7 @@ export class AdminSessionsComponent implements OnInit, OnDestroy {
   protected readonly faFilter = faFilter;
   protected readonly faPen = faPen;
   protected readonly faRotateRight = faRotateRight;
+  protected readonly faXmark = faXmark;
 
   sessions: AdminSession[] = [];
   selectedSession: AdminSessionDetail | null = null;

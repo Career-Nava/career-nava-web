@@ -150,10 +150,10 @@ Completed admin pages use page-level state handling:
 - Operational filters are collapsed by default; search is the primary visible control.
 - Raw technical ID filters should not be exposed to admin users unless there is a clear operational need.
 - Admin preview/open actions must render the real user-facing detail experience, not fake admin detail stubs.
-- Admin mentor preview can render draft, inactive, and suspended mentor profiles for admin review with admin-only data. Public/mentee mentor detail remains active-account plus active-profile only.
+- Admin mentor preview is a visible table action for every listed mentor row and can render draft, inactive, and suspended mentor profiles for admin review with admin-only data. Public/mentee mentor detail remains active-account plus active-profile only.
 - Preview actions are visual review; edit/manage actions contain operational forms and status controls.
 - Admin table filters auto-apply on change; filter panels should not include Apply buttons.
-- Clear filters belongs in the toolbar beside Filter and Refresh, and resets search plus active operational filters.
+- Clear filters belongs in the toolbar beside Filter and Refresh as a compact icon action, and resets search plus active operational filters.
 - Blog/resource author selection uses a user dropdown instead of raw internal ids. Anonymous author maps to a nullable author user id, and mentees are excluded from author choices.
 - Frontend route guards remain UX routing only; backend authorization protects sensitive admin endpoints.
 
@@ -529,9 +529,9 @@ Phase 3F polish validation:
 
 Phase 3F follow-up notes:
 
-- Admin mentor preview no longer blocks draft, inactive, or suspended mentor profiles in the admin console; the reused detail view fetches admin-safe mentor data for `/admin/mentors/preview/:id` and shows a non-public status notice.
+- Admin mentor preview no longer blocks draft, inactive, or suspended mentor profiles in the admin console; every listed mentor row shows the preview icon, and the reused detail view fetches admin-safe mentor data for `/admin/mentors/preview/:id` with a non-public status notice.
 - Admin blog/resource create and edit forms use an author dropdown from the admin user list. `Anonymous author` saves `authorId = null`; users with the `mentee` role are excluded from author choices.
-- Admin filters now auto-apply on change. Clear filters sits in the toolbar beside Filter and Refresh for mentors, scholarships, blogs/resources, and sessions; session filter panels no longer contain Apply/Clear action rows.
+- Admin filters now auto-apply on change. Clear filters is a compact icon action in the toolbar beside Filter and Refresh for mentors, scholarships, blogs/resources, and sessions; session filter panels no longer contain Apply/Clear action rows.
 
 ## Known Caveats
 

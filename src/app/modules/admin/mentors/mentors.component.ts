@@ -1,7 +1,7 @@
 import { DatePipe, NgClass, NgForOf, NgIf } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { faEye, faFilter, faPen, faPlus, faRotateRight } from '@fortawesome/free-solid-svg-icons';
+import { faEye, faFilter, faPen, faPlus, faRotateRight, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { finalize, of, switchMap } from 'rxjs';
 import { AdminMentor, EligibleMentorUser } from '../../../services/mentor/mentor.model';
 import { MentorService } from '../../../services/mentor/mentor.service';
@@ -24,6 +24,7 @@ export class AdminMentorsComponent implements OnInit {
   protected readonly faFilter = faFilter;
   protected readonly faPen = faPen;
   protected readonly faRotateRight = faRotateRight;
+  protected readonly faXmark = faXmark;
 
   readonly mentorStatuses = [ 'draft', 'active', 'inactive', 'suspended' ];
 
@@ -280,7 +281,7 @@ export class AdminMentorsComponent implements OnInit {
   }
 
   canPreviewMentor(mentor: AdminMentor): boolean {
-    return !!mentor.userId;
+    return !!this.getMentorPreviewId(mentor);
   }
 
   getEmptyTitle(): string {
@@ -314,6 +315,10 @@ export class AdminMentorsComponent implements OnInit {
 
   getMentorRouteId(mentor: AdminMentor): number | null {
     return mentor.mentorProfileId ?? mentor.mentorId ?? mentor.userId ?? null;
+  }
+
+  getMentorPreviewId(mentor: AdminMentor): number | null {
+    return mentor.userId ?? mentor.mentorId ?? null;
   }
 
   private getNormalizedStatus(mentor: AdminMentor): MentorStatusFilter {
