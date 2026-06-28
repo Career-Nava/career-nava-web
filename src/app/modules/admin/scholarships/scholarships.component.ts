@@ -101,6 +101,7 @@ export class AdminScholarshipsComponent implements OnInit {
   get totalScholarships(): number { return this.scholarships.length; }
   get publishedScholarships(): number { return this.scholarships.filter(s => this.normalizeStatus(s.status) === 'published').length; }
   get filteredCount(): number { return this.filteredScholarships.length; }
+  get showClearFilters(): boolean { return this.filtersExpanded || !!this.searchQuery.trim() || this.statusFilter !== 'all'; }
 
   trackScholarship(index: number, scholarship: AdminScholarship): number | string {
     return scholarship.scholarshipId ?? scholarship.title ?? index;

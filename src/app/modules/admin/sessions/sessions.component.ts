@@ -75,6 +75,16 @@ export class AdminSessionsComponent implements OnInit, OnDestroy {
   get completedCount(): number { return this.sessions.filter(session => this.getTimingBucket(session) === 'completed').length; }
   get pendingCount(): number { return this.sessions.filter(session => (session.status || '').toLowerCase() === 'pending').length; }
   get filteredCount(): number { return this.filteredSessions.length; }
+  get showClearFilters(): boolean {
+    const filters = this.filterForm.value;
+    return this.filtersExpanded
+      || !!this.searchQuery.trim()
+      || this.viewFilter !== 'all'
+      || !!filters.status
+      || !!filters.paymentStatus
+      || !!filters.dateFrom
+      || !!filters.dateTo;
+  }
 
   formatDuration(minutes: number): string {
     if (!minutes) return 'N/A';

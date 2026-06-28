@@ -63,8 +63,9 @@ Keep the standalone component structure. Do not add NgModules or a new state-man
 - Admin mentor preview must remain available as a visible table action for every listed mentor row. It may render draft, inactive, or suspended profiles for admin review by using admin-only data; public/mentee mentor routes must remain active-account plus active-profile only.
 - Keep preview actions separate from edit/manage actions. Preview is visual review; edit/manage contains operational forms and status controls.
 - Keep operational filters collapsed by default and avoid exposing raw technical IDs to admin users unless the workflow truly requires it.
-- Admin table filters auto-apply on change. Do not put Apply buttons in filter panels; place Clear filters beside Filter and Refresh as a compact icon toolbar action.
+- Admin table filters auto-apply on change. Do not put Apply buttons in filter panels; button order is primary action, Filter, Clear filters, Refresh. Render Clear filters only when the filter panel is open or filters/search are active. Refresh reloads the current filtered view and must not clear filters.
 - Blog/resource author fields should use user-friendly author selectors. Anonymous author maps to a nullable author user id, and mentees should not appear as author choices.
+- Phase 3G should align mentor preview contracts: public mentor detail returns richer display fields than admin mentor detail, so admin preview may miss mentee-facing detail until backend/frontend response shapes are reconciled.
 
 ## Styling And Design
 

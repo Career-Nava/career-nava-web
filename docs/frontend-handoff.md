@@ -153,7 +153,7 @@ Completed admin pages use page-level state handling:
 - Admin mentor preview is a visible table action for every listed mentor row and can render draft, inactive, and suspended mentor profiles for admin review with admin-only data. Public/mentee mentor detail remains active-account plus active-profile only.
 - Preview actions are visual review; edit/manage actions contain operational forms and status controls.
 - Admin table filters auto-apply on change; filter panels should not include Apply buttons.
-- Clear filters belongs in the toolbar beside Filter and Refresh as a compact icon action, and resets search plus active operational filters.
+- Toolbar order is primary action, Filter, Clear filters, Refresh. Clear filters is a compact icon action that renders only when the filter panel is open or filters/search are active, and it resets search plus active operational filters. Refresh reloads the current filtered view and must not clear filters.
 - Blog/resource author selection uses a user dropdown instead of raw internal ids. Anonymous author maps to a nullable author user id, and mentees are excluded from author choices.
 - Frontend route guards remain UX routing only; backend authorization protects sensitive admin endpoints.
 
@@ -532,6 +532,7 @@ Phase 3F follow-up notes:
 - Admin mentor preview no longer blocks draft, inactive, or suspended mentor profiles in the admin console; every listed mentor row shows the preview icon, and the reused detail view fetches admin-safe mentor data for `/admin/mentors/preview/:id` with a non-public status notice.
 - Admin blog/resource create and edit forms use an author dropdown from the admin user list. `Anonymous author` saves `authorId = null`; users with the `mentee` role are excluded from author choices.
 - Admin filters now auto-apply on change. Clear filters is a compact icon action in the toolbar beside Filter and Refresh for mentors, scholarships, blogs/resources, and sessions; session filter panels no longer contain Apply/Clear action rows.
+- Phase 3G should address mentor preview contract alignment. Public mentor detail returns richer display fields such as expertise, disciplines, fluency, experiences, `positionTitle`, `linkedInUrl`, `avgRating`, and session/review totals, while admin mentor responses are flatter inventory records with fields such as `mentorId`, `mentorProfileId`, `title`, `linkedIn`, `rating`, and timestamps. Because admin preview reuses the mentee-style detail component, Phase 3G should decide whether admin mentor detail returns the rich display model plus admin operational fields, align backend DTOs/mappers and frontend mapping if needed, preserve active-only public visibility, and run backend/frontend validation after wiring.
 
 ## Known Caveats
 

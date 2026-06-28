@@ -29,8 +29,8 @@
         <button type="button" class="btn btn-primary admin-toolbar-btn" (click)="openOnboarding()">
           <span class="admin-toolbar-btn__content"><fa-icon [icon]="faPlus"></fa-icon><span>Onboard mentor</span></span>
         </button>
-        <button type="button" class="admin-icon-action" title="Clear filters" aria-label="Clear filters" (click)="clearFilters()"><fa-icon [icon]="faXmark"></fa-icon></button>
         <button type="button" class="admin-icon-action" title="Toggle filters" aria-label="Toggle filters" (click)="toggleFilters()"><fa-icon [icon]="faFilter"></fa-icon></button>
+        <button *ngIf="showClearFilters" type="button" class="admin-icon-action" title="Clear filters" aria-label="Clear filters" (click)="clearFilters()"><fa-icon [icon]="faXmark"></fa-icon></button>
         <button type="button" class="admin-icon-action" title="Refresh mentors" aria-label="Refresh mentors" (click)="loadMentors()"><fa-icon [icon]="faRotateRight"></fa-icon></button>
       </div>
     </div>

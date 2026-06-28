@@ -126,6 +126,10 @@ export class AdminMentorsComponent implements OnInit {
     return this.filteredMentors.length;
   }
 
+  get showClearFilters(): boolean {
+    return this.filtersExpanded || !!this.searchQuery.trim() || this.statusFilter !== 'all';
+  }
+
   trackMentor(index: number, mentor: AdminMentor): number | string {
     return mentor.mentorId ?? mentor.mentorProfileId ?? mentor.userId ?? mentor.email ?? index;
   }

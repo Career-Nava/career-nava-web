@@ -71,6 +71,7 @@ export class AdminBlogsComponent implements OnInit {
   get publishedBlogs(): number { return this.blogs.filter(b => this.normalizeStatus(b.status) === 'published').length; }
   get draftBlogs(): number { return this.blogs.filter(b => [ 'draft', 'archived' ].includes(this.normalizeStatus(b.status))).length; }
   get filteredCount(): number { return this.filteredBlogs.length; }
+  get showClearFilters(): boolean { return this.filtersExpanded || !!this.searchQuery.trim() || this.statusFilter !== 'all'; }
 
   loadBlogs(): void {
     this.loading = true;

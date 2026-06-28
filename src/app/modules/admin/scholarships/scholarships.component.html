@@ -24,8 +24,8 @@
       </div>
       <div class="admin-toolbar__actions">
         <button type="button" class="btn btn-primary admin-toolbar-btn" (click)="openCreate()"><fa-icon [icon]="faPlus"></fa-icon><span>Add scholarship</span></button>
-        <button type="button" class="admin-icon-action" title="Clear filters" aria-label="Clear filters" (click)="clearFilters()"><fa-icon [icon]="faXmark"></fa-icon></button>
         <button type="button" class="admin-icon-action" title="Toggle filters" aria-label="Toggle filters" (click)="toggleFilters()"><fa-icon [icon]="faFilter"></fa-icon></button>
+        <button *ngIf="showClearFilters" type="button" class="admin-icon-action" title="Clear filters" aria-label="Clear filters" (click)="clearFilters()"><fa-icon [icon]="faXmark"></fa-icon></button>
         <button type="button" class="admin-icon-action" title="Refresh scholarships" aria-label="Refresh scholarships" (click)="loadScholarships()"><fa-icon [icon]="faRotateRight"></fa-icon></button>
       </div>
     </div>
