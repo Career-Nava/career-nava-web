@@ -274,6 +274,17 @@ export class AdminMentorsComponent implements OnInit {
     return typeof mentor.rating === 'number' ? `${ mentor.rating.toFixed(1) } (${ mentor.totalReviews ?? 0 })` : '-';
   }
 
+  canPreviewMentor(mentor: AdminMentor): boolean {
+    return !!mentor.userId && mentor.isActive === true && this.getNormalizedStatus(mentor) === 'active';
+  }
+
+  showPreviewUnavailable(): void {
+    this.toast.show('Only active mentor profiles with active accounts can be previewed in the mentee-style view.', {
+      classname: 'bg-warning text-dark',
+      delay: 4000
+    });
+  }
+
   getEmptyTitle(): string {
     return this.searchQuery || this.statusFilter !== 'all' ? 'No mentors match the current filters' : 'No mentors found';
   }

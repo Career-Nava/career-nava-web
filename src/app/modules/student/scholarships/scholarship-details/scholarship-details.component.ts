@@ -75,4 +75,10 @@ export class ScholarshipDetailsComponent implements OnInit, OnDestroy {
   protected readonly faCalendar = faCalendar;
   protected readonly faArrowLeft = faArrowLeft;
   protected readonly faArrowUpRightFromSquare = faArrowUpRightFromSquare;
+
+  get backLink(): string {
+    return this.route.snapshot.pathFromRoot.some(route => route.routeConfig?.path === 'admin')
+      ? '/admin/scholarships'
+      : '/mentee/scholarships';
+  }
 }

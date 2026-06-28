@@ -14,7 +14,7 @@
         <div class="col-6 col-lg-2"><label class="admin-select-label"><span class="admin-field-label">Payment</span><select class="form-select admin-select" formControlName="paymentStatus"><option value="">Any</option><option value="pending">Pending</option><option value="processing">Processing</option><option value="paid">Paid</option><option value="failed">Failed</option><option value="cancelled">Cancelled</option><option value="refunded">Refunded</option></select></label></div>
         <div class="col-6 col-lg-2"><label class="admin-search-label"><span class="admin-field-label">From</span><input type="date" class="form-control admin-search-input" formControlName="dateFrom"></label></div>
         <div class="col-6 col-lg-2"><label class="admin-search-label"><span class="admin-field-label">To</span><input type="date" class="form-control admin-search-input" formControlName="dateTo"></label></div>
-        <div class="col-12 col-lg-2"><div class="admin-toolbar__actions h-100 align-items-end"><button type="submit" class="btn btn-primary admin-toolbar-btn">Apply</button><button type="button" class="btn btn-outline-secondary admin-toolbar-btn" (click)="clearBackendFilters()">Clear</button></div></div>
+        <div class="col-12 col-lg-2"><div class="admin-filter-actions h-100"><button type="submit" class="btn btn-primary admin-toolbar-btn">Apply</button><button type="button" class="btn btn-outline-secondary admin-toolbar-btn" (click)="clearBackendFilters()">Clear</button></div></div>
       </ng-container>
     </form>
   </section>

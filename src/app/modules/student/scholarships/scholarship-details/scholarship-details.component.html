@@ -1,6 +1,6 @@
 <div class="schd-page container-fluid pb-5">
   <div class="schd-shell d-flex flex-column gap-4">
-    <a routerLink="/mentee/scholarships" class="schd-back">
+    <a [routerLink]="backLink" class="schd-back">
       <fa-icon [icon]="faArrowLeft"></fa-icon>
       <span>Back to scholarships</span>
     </a>
@@ -58,7 +58,7 @@
       <p class="text-muted mb-4">
         It may have been removed, expired, or there was a temporary loading issue. Return to your scholarships list to keep exploring other opportunities.
       </p>
-      <a routerLink="/mentee/scholarships" class="btn btn-secondary">Back to scholarships</a>
+      <a [routerLink]="backLink" class="btn btn-secondary">Back to scholarships</a>
     </section>
 
     <ng-container *ngIf="!isLoading && scholarship as s">

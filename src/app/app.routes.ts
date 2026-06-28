@@ -32,8 +32,7 @@ export const routes: Routes = [
       { path: 'home', component: HomeComponent },
       { path: 'about', component: AboutComponent },
       { path: 'blog', component: BlogComponent },
-      { path: 'blog/:slug', component: BlogDetailsComponent },
-      { path: 'scholarships/:id', component: ScholarshipDetailsComponent }
+      { path: 'blog/:slug', component: BlogDetailsComponent }
     ]
   },
 
@@ -63,7 +62,9 @@ export const routes: Routes = [
       { path: 'mentors', component: AdminMentorsComponent },
       { path: 'sessions', component: AdminSessionsComponent },
       { path: 'scholarships', component: AdminScholarshipsComponent },
+      { path: 'scholarships/preview/:id', component: ScholarshipDetailsComponent },
       { path: 'blogs', component: AdminBlogsComponent },
+      { path: 'mentors/preview/:id', component: MentorDetailsComponent },
     ]
   },
 

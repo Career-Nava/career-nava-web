@@ -80,8 +80,10 @@ The branch currently includes:
 - `/admin` -> `/admin/overview`
 - `/admin/overview`
 - `/admin/mentors`
+- `/admin/mentors/preview/:id`
 - `/admin/sessions`
 - `/admin/scholarships`
+- `/admin/scholarships/preview/:id`
 - `/admin/blogs`
 
 ### Mentor
@@ -147,7 +149,9 @@ Completed admin pages use page-level state handling:
 - Lifecycle/status changes live in detail, edit, or manage panels where practical, not as large row text buttons.
 - Operational filters are collapsed by default; search is the primary visible control.
 - Raw technical ID filters should not be exposed to admin users unless there is a clear operational need.
-- Public preview/open actions must route to real public views, not fake admin detail stubs.
+- Admin preview/open actions must render the real user-facing detail experience, not fake admin detail stubs.
+- Preview actions are visual review; edit/manage actions contain operational forms and status controls.
+- Expanded filter actions such as Apply and Clear should sit side by side with aligned sizing.
 - Frontend route guards remain UX routing only; backend authorization protects sensitive admin endpoints.
 
 ## Implemented Features
@@ -260,6 +264,7 @@ Backend-wired admin mentor management is implemented.
 - operational/profile field editing
 - mentor profile status changes for `draft`, `active`, `inactive`, and `suspended` from the edit/manage form
 - mentor table rows show profile status as a badge and use compact icon actions
+- mentor preview opens the mentee-style mentor detail experience under `/admin/mentors/preview/:id` for active public-visible mentors
 - status UI makes profile visibility separate from account access
 - loading state with spinner
 - error state with explicit messages
@@ -300,7 +305,7 @@ Backend-wired admin scholarship management is implemented.
 - admin list, detail, create, and edit panels
 - benefit editing through simple replacement payloads
 - publish, move-to-draft, close, and archive status actions from the edit/manage form
-- table preview opens the published-only public scholarship detail route at `/scholarships/:id`
+- table preview opens the mentee-style scholarship detail experience under `/admin/scholarships/preview/:id`
 - draft, closed, and archived records do not expose public preview
 - confirmation prompts for operational status changes
 - loading state with spinner

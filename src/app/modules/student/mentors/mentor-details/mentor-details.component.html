@@ -1,6 +1,6 @@
 <div class="mnd-page container-fluid pb-5">
   <div class="mnd-shell d-flex flex-column gap-4">
-    <a routerLink="/mentee/mentors" class="mnd-back">
+    <a [routerLink]="backLink" class="mnd-back">
       <fa-icon [icon]="faArrowLeft"></fa-icon>
       <span>Back to mentors</span>
     </a>
@@ -38,7 +38,7 @@
       <p class="text-muted mb-4">
         The profile may be unavailable at the moment. Return to the mentors list to keep exploring guidance options.
       </p>
-      <a routerLink="/mentee/mentors" class="btn btn-secondary">Back to mentors</a>
+      <a [routerLink]="backLink" class="btn btn-secondary">Back to mentors</a>
     </section>
 
     <ng-container *ngIf="!isLoading && !hasError && mentor as mentor">

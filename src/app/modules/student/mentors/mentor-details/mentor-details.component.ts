@@ -109,6 +109,12 @@ export class MentorDetailsComponent implements OnInit, OnDestroy {
       .slice(0, limit);
   }
 
+  get backLink(): string {
+    return this.route.snapshot.pathFromRoot.some(route => route.routeConfig?.path === 'admin')
+      ? '/admin/mentors'
+      : '/mentee/mentors';
+  }
+
   private waitForCalendlyScript(): Promise<void> {
     if (this.calendlyScriptLoaded) return Promise.resolve();
 
