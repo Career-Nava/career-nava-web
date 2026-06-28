@@ -46,6 +46,19 @@ export class BlogService extends RestService {
       );
   }
 
+  getBlogBySlug(slug: string): Observable<Blog> {
+    const cached = this.cache.get();
+    const found = cached?.find(b => b.slug === slug);
+    if (found) return of(found);
+
+    return this.http
+      .get<ApiResponse<Blog>>(`${ this.baseUrl }/GetBlogBySlug/${ encodeURIComponent(slug) }`)
+      .pipe(
+        map(res => this.mapBlog(res.data)),
+        catchError(err => throwError(() => err))
+      );
+  }
+
   getAdminBlogs(): Observable<AdminBlog[]> {
     return this.http.get<ApiResponse<Array<Partial<AdminBlog> & Partial<Blog>>>>(`${ this.baseUrl }/GetAllBlogsForAdmin`).pipe(
       map(res => (res.data ?? []).map(dto => this.mapAdminBlog(dto))),

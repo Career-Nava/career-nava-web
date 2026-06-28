@@ -1,8 +1,8 @@
 import { DatePipe, NgClass, NgForOf, NgIf } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { faArrowUpRightFromSquare, faEye, faPen, faPlus, faRotateRight } from '@fortawesome/free-solid-svg-icons';
-import { finalize } from 'rxjs';
+import { faArrowUpRightFromSquare, faEye, faFilter, faPen, faPlus, faRotateRight } from '@fortawesome/free-solid-svg-icons';
+import { finalize, of, switchMap } from 'rxjs';
 import { AdminScholarship, AdminScholarshipUpsert } from '../../../services/scholarship/shcolarship.model';
 import { ScholarshipService } from '../../../services/scholarship/scholarship.service';
 import { ToastService } from '../../../services/toast.service';
@@ -22,6 +22,7 @@ export class AdminScholarshipsComponent implements OnInit {
   protected readonly faPlus = faPlus;
   protected readonly faPen = faPen;
   protected readonly faEye = faEye;
+  protected readonly faFilter = faFilter;
   protected readonly faRotateRight = faRotateRight;
   protected readonly faArrowUpRightFromSquare = faArrowUpRightFromSquare;
 
@@ -36,6 +37,7 @@ export class AdminScholarshipsComponent implements OnInit {
 
   searchQuery = '';
   statusFilter: ScholarshipStatusFilter = 'all';
+  filtersExpanded = false;
 
   scholarshipForm: FormGroup = this.fb.group({
     mentorProfileId: [ null ],
@@ -104,6 +106,7 @@ export class AdminScholarshipsComponent implements OnInit {
   }
 
   onSearch(value: string): void { this.searchQuery = value; }
+  toggleFilters(): void { this.filtersExpanded = !this.filtersExpanded; }
   onStatusChange(value: string): void { this.statusFilter = value as ScholarshipStatusFilter; }
 
   openCreate(): void {
@@ -157,29 +160,14 @@ export class AdminScholarshipsComponent implements OnInit {
       : this.scholarshipService.createAdminScholarship(payload);
 
     this.saving = true;
-    request.pipe(finalize(() => this.saving = false)).subscribe({
+    request
+      .pipe(
+        switchMap(scholarship => this.applyScholarshipStatus(scholarship, payload.status || 'draft')),
+        finalize(() => this.saving = false)
+      )
+      .subscribe({
       next: scholarship => this.afterMutation(this.mode === 'edit' ? 'Scholarship updated.' : 'Scholarship created.', scholarship),
       error: err => this.actionError = this.getActionError(err, 'Unable to save scholarship.')
-    });
-  }
-
-  changeStatus(scholarship: AdminScholarship, action: 'publish' | 'draft' | 'close' | 'archive'): void {
-    if (!scholarship.scholarshipId) return;
-    const label = action === 'draft' ? 'move this scholarship to draft' : `${ action } this scholarship`;
-    if (!confirm(`Are you sure you want to ${ label }?`)) return;
-
-    const request = action === 'publish'
-      ? this.scholarshipService.publishAdminScholarship(scholarship.scholarshipId)
-      : action === 'draft'
-        ? this.scholarshipService.moveAdminScholarshipToDraft(scholarship.scholarshipId)
-        : action === 'close'
-          ? this.scholarshipService.closeAdminScholarship(scholarship.scholarshipId)
-          : this.scholarshipService.archiveAdminScholarship(scholarship.scholarshipId);
-
-    this.saving = true;
-    request.pipe(finalize(() => this.saving = false)).subscribe({
-      next: updated => this.afterMutation('Scholarship status updated.', updated),
-      error: err => this.actionError = this.getActionError(err, 'Unable to update scholarship status.')
     });
   }
 
@@ -212,6 +200,17 @@ export class AdminScholarshipsComponent implements OnInit {
 
   getBenefitsCount(scholarship: AdminScholarship): string {
     return `${ scholarship.benefitsCount ?? scholarship.benefits?.length ?? 0 }`;
+  }
+
+  canPreviewScholarship(scholarship: AdminScholarship): boolean {
+    return !!scholarship.scholarshipId && this.normalizeStatus(scholarship.status) === 'published';
+  }
+
+  showPreviewUnavailable(): void {
+    this.toast.show('Publish this scholarship before public preview.', {
+      classname: 'bg-warning text-dark',
+      delay: 3500
+    });
   }
 
   getEmptyTitle(): string {
@@ -258,9 +257,20 @@ export class AdminScholarshipsComponent implements OnInit {
     this.actionError = null;
     this.actionMessage = message;
     this.selectedScholarship = scholarship;
-    this.mode = 'detail';
+    this.mode = 'none';
     this.toast.show(message, { classname: 'bg-success text-light', delay: 3500 });
     this.loadScholarships();
+  }
+
+  private applyScholarshipStatus(scholarship: AdminScholarship, desiredStatus: string) {
+    if (!scholarship.scholarshipId) return of(scholarship);
+    const currentStatus = this.normalizeStatus(scholarship.status);
+    const normalizedDesired = this.normalizeStatus(desiredStatus);
+    if (normalizedDesired === 'unknown' || normalizedDesired === currentStatus) return of(scholarship);
+    if (normalizedDesired === 'published') return this.scholarshipService.publishAdminScholarship(scholarship.scholarshipId);
+    if (normalizedDesired === 'draft') return this.scholarshipService.moveAdminScholarshipToDraft(scholarship.scholarshipId);
+    if (normalizedDesired === 'closed') return this.scholarshipService.closeAdminScholarship(scholarship.scholarshipId);
+    return this.scholarshipService.archiveAdminScholarship(scholarship.scholarshipId);
   }
 
   private normalizeStatus(status?: string): ScholarshipStatusFilter {

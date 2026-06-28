@@ -1,7 +1,7 @@
 import { DatePipe, NgClass, NgForOf, NgIf } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { faArrowUpRightFromSquare, faEye, faRotateRight } from '@fortawesome/free-solid-svg-icons';
+import { faArrowUpRightFromSquare, faFilter, faPen, faRotateRight } from '@fortawesome/free-solid-svg-icons';
 import { finalize } from 'rxjs';
 import { AdminSession, AdminSessionDetail, AdminSessionFilters } from '../../../services/session/session.model';
 import { SessionService } from '../../../services/session/session.service';
@@ -19,7 +19,8 @@ type SessionViewFilter = 'all' | 'today' | 'upcoming' | 'completed' | 'pending';
 })
 export class AdminSessionsComponent implements OnInit {
   protected readonly faArrowUpRightFromSquare = faArrowUpRightFromSquare;
-  protected readonly faEye = faEye;
+  protected readonly faFilter = faFilter;
+  protected readonly faPen = faPen;
   protected readonly faRotateRight = faRotateRight;
 
   sessions: AdminSession[] = [];
@@ -32,11 +33,11 @@ export class AdminSessionsComponent implements OnInit {
 
   searchQuery = '';
   viewFilter: SessionViewFilter = 'all';
+  filtersExpanded = false;
+  selectedStatus = 'pending';
 
   filterForm: FormGroup = this.fb.group({
     status: [ '' ],
-    mentorProfileId: [ '' ],
-    menteeId: [ '' ],
     dateFrom: [ '' ],
     dateTo: [ '' ],
     paymentStatus: [ '' ]
@@ -80,20 +81,33 @@ export class AdminSessionsComponent implements OnInit {
 
   onSearch(value: string): void { this.searchQuery = value; }
   onViewChange(value: string): void { this.viewFilter = value as SessionViewFilter; }
+  toggleFilters(): void { this.filtersExpanded = !this.filtersExpanded; }
   trackSession(_: number, session: AdminSession): number { return session.sessionId; }
 
   applyBackendFilters(): void { this.loadSessions(); }
-  clearBackendFilters(): void { this.filterForm.reset({ status: '', mentorProfileId: '', menteeId: '', dateFrom: '', dateTo: '', paymentStatus: '' }); this.loadSessions(); }
+  clearBackendFilters(): void { this.filterForm.reset({ status: '', dateFrom: '', dateTo: '', paymentStatus: '' }); this.viewFilter = 'all'; this.loadSessions(); }
 
   viewSession(session: AdminSession): void {
     this.actionError = null;
     this.sessionService.getAdminSessionById(session.sessionId).subscribe({
-      next: detail => this.selectedSession = detail,
+      next: detail => {
+        this.selectedSession = detail;
+        this.selectedStatus = this.toAllowedDetailStatus(detail.status);
+      },
       error: err => this.actionError = this.getActionError(err, 'Unable to load session detail.')
     });
   }
 
-  updateStatus(session: AdminSession, action: 'complete' | 'cancel' | 'pending'): void {
+  updateSelectedStatus(status: string): void {
+    if (!this.selectedSession) return;
+    const normalized = this.toAllowedDetailStatus(status);
+    const current = this.toAllowedDetailStatus(this.selectedSession.status);
+    if (normalized === current) return;
+    const action = normalized === 'completed' ? 'complete' : normalized === 'cancelled' ? 'cancel' : 'pending';
+    this.updateStatus(this.selectedSession, action);
+  }
+
+  private updateStatus(session: AdminSession, action: 'complete' | 'cancel' | 'pending'): void {
     const text = action === 'pending' ? 'move this session back to pending' : `mark this session ${ action === 'complete' ? 'completed' : 'cancelled' }`;
     if (!confirm(`Are you sure you want to ${ text }? This does not mutate Calendly or payment state.`)) return;
     const request = action === 'complete'
@@ -154,8 +168,6 @@ export class AdminSessionsComponent implements OnInit {
     const value = this.filterForm.value;
     return {
       status: value.status || undefined,
-      mentorProfileId: value.mentorProfileId ? Number(value.mentorProfileId) : null,
-      menteeId: value.menteeId ? Number(value.menteeId) : null,
       dateFrom: value.dateFrom || null,
       dateTo: value.dateTo || null,
       paymentStatus: value.paymentStatus || undefined
@@ -169,4 +181,11 @@ export class AdminSessionsComponent implements OnInit {
   }
 
   private getActionError(err: any, fallback: string): string { return err?.error?.message || err?.message || fallback; }
+
+  private toAllowedDetailStatus(status?: string | null): 'pending' | 'completed' | 'cancelled' {
+    const normalized = (status || '').toLowerCase();
+    if (normalized === 'completed') return 'completed';
+    if (normalized === 'cancelled') return 'cancelled';
+    return 'pending';
+  }
 }

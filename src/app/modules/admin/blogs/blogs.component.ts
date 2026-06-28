@@ -1,8 +1,8 @@
 import { DatePipe, NgClass, NgForOf, NgIf } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { faEye, faPen, faPlus, faRotateRight } from '@fortawesome/free-solid-svg-icons';
-import { finalize } from 'rxjs';
+import { faEye, faFilter, faPen, faPlus, faRotateRight } from '@fortawesome/free-solid-svg-icons';
+import { finalize, of, switchMap } from 'rxjs';
 import { AdminBlog, AdminBlogUpsert } from '../../../services/blog/blog.model';
 import { BlogService } from '../../../services/blog/blog.service';
 import { ToastService } from '../../../services/toast.service';
@@ -21,6 +21,7 @@ type BlogMode = 'none' | 'detail' | 'edit' | 'create';
 export class AdminBlogsComponent implements OnInit {
   protected readonly faPlus = faPlus;
   protected readonly faEye = faEye;
+  protected readonly faFilter = faFilter;
   protected readonly faPen = faPen;
   protected readonly faRotateRight = faRotateRight;
 
@@ -35,6 +36,7 @@ export class AdminBlogsComponent implements OnInit {
 
   searchQuery = '';
   statusFilter: BlogStatusFilter = 'all';
+  filtersExpanded = false;
 
   blogForm: FormGroup = this.fb.group({
     authorId: [ null ],
@@ -78,6 +80,7 @@ export class AdminBlogsComponent implements OnInit {
 
   trackBlog(index: number, blog: AdminBlog): number | string { return blog.blogId ?? blog.slug ?? blog.title ?? index; }
   onSearch(value: string): void { this.searchQuery = value; }
+  toggleFilters(): void { this.filtersExpanded = !this.filtersExpanded; }
   onStatusChange(value: string): void { this.statusFilter = value as BlogStatusFilter; }
 
   openCreate(): void {
@@ -116,20 +119,14 @@ export class AdminBlogsComponent implements OnInit {
       ? this.blogService.updateAdminBlog(this.selectedBlog.blogId, payload)
       : this.blogService.createAdminBlog(payload);
     this.saving = true;
-    request.pipe(finalize(() => this.saving = false)).subscribe({
+    request
+      .pipe(
+        switchMap(blog => this.applyBlogStatus(blog, payload.status || 'draft')),
+        finalize(() => this.saving = false)
+      )
+      .subscribe({
       next: blog => this.afterMutation(this.mode === 'edit' ? 'Resource updated.' : 'Resource created.', blog),
       error: err => this.actionError = this.getActionError(err, 'Unable to save resource.')
-    });
-  }
-
-  changeStatus(blog: AdminBlog, action: 'publish' | 'draft' | 'archive'): void {
-    if (!blog.blogId) return;
-    if (!confirm(`Are you sure you want to ${ action === 'draft' ? 'move this resource to draft' : action + ' this resource' }?`)) return;
-    const request = action === 'publish' ? this.blogService.publishAdminBlog(blog.blogId) : action === 'draft' ? this.blogService.moveAdminBlogToDraft(blog.blogId) : this.blogService.archiveAdminBlog(blog.blogId);
-    this.saving = true;
-    request.pipe(finalize(() => this.saving = false)).subscribe({
-      next: updated => this.afterMutation('Resource status updated.', updated),
-      error: err => this.actionError = this.getActionError(err, 'Unable to update resource status.')
     });
   }
 
@@ -139,6 +136,13 @@ export class AdminBlogsComponent implements OnInit {
 
   getStatusLabel(blog: AdminBlog): string { return blog.status || 'Unknown'; }
   getContentBlockCount(blog: AdminBlog): string { return `${ blog.contentBlockCount ?? blog.contents?.length ?? 0 }`; }
+  canPreviewBlog(blog: AdminBlog): boolean { return !!blog.slug && this.normalizeStatus(blog.status) === 'published'; }
+  showPreviewUnavailable(): void {
+    this.toast.show('Publish this resource before public preview.', {
+      classname: 'bg-warning text-dark',
+      delay: 3500
+    });
+  }
   getStatusBadgeClass(blog: AdminBlog): string {
     const status = this.normalizeStatus(blog.status);
     if (status === 'published') return 'admin-badge--success';
@@ -170,9 +174,18 @@ export class AdminBlogsComponent implements OnInit {
   }
 
   private afterMutation(message: string, blog: AdminBlog): void {
-    this.actionError = null; this.actionMessage = message; this.selectedBlog = blog; this.mode = 'detail';
+    this.actionError = null; this.actionMessage = message; this.selectedBlog = blog; this.mode = 'none';
     this.toast.show(message, { classname: 'bg-success text-light', delay: 3500 });
     this.loadBlogs();
+  }
+  private applyBlogStatus(blog: AdminBlog, desiredStatus: string) {
+    if (!blog.blogId) return of(blog);
+    const currentStatus = this.normalizeStatus(blog.status);
+    const normalizedDesired = this.normalizeStatus(desiredStatus);
+    if (normalizedDesired === 'unknown' || normalizedDesired === currentStatus) return of(blog);
+    if (normalizedDesired === 'published') return this.blogService.publishAdminBlog(blog.blogId);
+    if (normalizedDesired === 'draft') return this.blogService.moveAdminBlogToDraft(blog.blogId);
+    return this.blogService.archiveAdminBlog(blog.blogId);
   }
   private normalizeStatus(status?: string): BlogStatusFilter { const s = status?.toLowerCase(); return s === 'published' || s === 'draft' || s === 'archived' ? s : 'unknown'; }
   private getLoadError(err: any): string { if (err?.status === 401) return 'Please sign in again to view blogs.'; if (err?.status === 403) return 'You do not have access to view blogs.'; return 'Unable to load blogs right now. Please try again later.'; }

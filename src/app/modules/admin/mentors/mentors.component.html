@@ -29,20 +29,24 @@
         <button type="button" class="btn btn-primary admin-toolbar-btn" (click)="openOnboarding()">
           <span class="admin-toolbar-btn__content"><fa-icon [icon]="faPlus"></fa-icon><span>Onboard mentor</span></span>
         </button>
-        <button type="button" class="btn btn-outline-secondary admin-toolbar-btn" (click)="loadMentors()">
-          <span class="admin-toolbar-btn__content"><fa-icon [icon]="faRotateRight"></fa-icon><span>Refresh</span></span>
-        </button>
+        <button type="button" class="admin-icon-action" title="Toggle filters" aria-label="Toggle filters" (click)="toggleFilters()"><fa-icon [icon]="faFilter"></fa-icon></button>
+        <button type="button" class="admin-icon-action" title="Refresh mentors" aria-label="Refresh mentors" (click)="loadMentors()"><fa-icon [icon]="faRotateRight"></fa-icon></button>
       </div>
     </div>
 
     <div class="row g-3 mt-1 admin-toolbar__row">
-      <div class="col-12 col-lg-7">
+      <div class="col-12 col-lg-8">
         <label class="admin-search-label">
           <span class="admin-field-label">Search mentors</span>
           <input type="search" class="form-control admin-search-input" placeholder="Search by name, email, title, company, or status" [value]="searchQuery" (input)="onSearch($any($event.target).value)">
         </label>
       </div>
-      <div class="col-12 col-lg-3">
+      <div class="col-12 col-lg-4">
+        <div class="admin-inline-meta h-100 align-items-lg-end">
+          <span>Showing <strong>{{ filteredCount }}</strong> of <strong>{{ totalMentors }}</strong></span>
+        </div>
+      </div>
+      <div *ngIf="filtersExpanded" class="col-12 col-lg-3">
         <label class="admin-select-label">
           <span class="admin-field-label">Profile status</span>
           <select class="form-select admin-select" [value]="statusFilter" (change)="onStatusChange($any($event.target).value)">
@@ -54,11 +58,6 @@
             <option value="unknown">Unknown</option>
           </select>
         </label>
-      </div>
-      <div class="col-12 col-lg-2">
-        <div class="admin-inline-meta h-100 align-items-lg-end">
-          <span>Showing <strong>{{ filteredCount }}</strong> of <strong>{{ totalMentors }}</strong></span>
-        </div>
       </div>
     </div>
   </section>
@@ -111,6 +110,7 @@
         <label class="admin-search-label"><span class="admin-field-label">Title</span><input class="form-control admin-search-input" formControlName="positionTitle"></label>
         <label class="admin-search-label"><span class="admin-field-label">Location</span><input class="form-control admin-search-input" formControlName="location"></label>
         <label class="admin-search-label"><span class="admin-field-label">Years experience</span><input type="number" min="0" class="form-control admin-search-input" formControlName="yearsExperience"></label>
+        <label class="admin-select-label"><span class="admin-field-label">Profile status</span><select class="form-select admin-select" formControlName="status"><option *ngFor="let status of mentorStatuses" [value]="status">{{ status }}</option></select></label>
         <label class="admin-search-label admin-form-span-2"><span class="admin-field-label">LinkedIn URL</span><input class="form-control admin-search-input" formControlName="linkedInUrl"></label>
         <label class="admin-search-label admin-form-span-2"><span class="admin-field-label">Profile picture URL</span><input class="form-control admin-search-input" formControlName="profilePicture"></label>
         <label class="admin-search-label admin-form-span-2"><span class="admin-field-label">Bio</span><textarea class="form-control admin-search-input admin-textarea" formControlName="bio"></textarea></label>
@@ -164,9 +164,6 @@
                 <div class="admin-action-group">
                   <button type="button" class="admin-icon-action" title="View mentor" (click)="viewMentor(mentor)"><fa-icon [icon]="faEye"></fa-icon></button>
                   <button type="button" class="admin-icon-action" title="Edit mentor" (click)="editMentor(mentor)"><fa-icon [icon]="faPen"></fa-icon></button>
-                  <select class="form-select admin-mini-select" [value]="getStatusLabel(mentor)" (change)="updateMentorStatus(mentor, $any($event.target).value)">
-                    <option *ngFor="let status of mentorStatuses" [value]="status">{{ status }}</option>
-                  </select>
                 </div>
               </td>
             </tr>
@@ -188,9 +185,6 @@
           <div class="admin-action-group">
             <button type="button" class="admin-icon-action" title="View mentor" (click)="viewMentor(mentor)"><fa-icon [icon]="faEye"></fa-icon></button>
             <button type="button" class="admin-icon-action" title="Edit mentor" (click)="editMentor(mentor)"><fa-icon [icon]="faPen"></fa-icon></button>
-            <select class="form-select admin-mini-select" [value]="getStatusLabel(mentor)" (change)="updateMentorStatus(mentor, $any($event.target).value)">
-              <option *ngFor="let status of mentorStatuses" [value]="status">{{ status }}</option>
-            </select>
           </div>
         </article>
       </div>

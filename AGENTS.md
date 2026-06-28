@@ -57,6 +57,10 @@ Keep the standalone component structure. Do not add NgModules or a new state-man
 - Keep payment-specific behavior out of shared session components.
 - Mentor session UI must remain payment-agnostic.
 - Admin CRUD controls should stay disabled until backend endpoints and product rules exist.
+- Admin table action columns should use compact icon buttons with accessible titles/labels.
+- Keep lifecycle/status changes in detail, edit, or manage panels where practical instead of large row buttons.
+- Public preview/open actions must route to real public views; do not add fake admin detail stubs for content preview.
+- Keep operational filters collapsed by default and avoid exposing raw technical IDs to admin users unless the workflow truly requires it.
 
 ## Styling And Design
 

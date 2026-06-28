@@ -1,8 +1,8 @@
 import { DatePipe, NgClass, NgForOf, NgIf } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { faEye, faPen, faPlus, faRotateRight } from '@fortawesome/free-solid-svg-icons';
-import { finalize } from 'rxjs';
+import { faEye, faFilter, faPen, faPlus, faRotateRight } from '@fortawesome/free-solid-svg-icons';
+import { finalize, of, switchMap } from 'rxjs';
 import { AdminMentor, EligibleMentorUser } from '../../../services/mentor/mentor.model';
 import { MentorService } from '../../../services/mentor/mentor.service';
 import { ToastService } from '../../../services/toast.service';
@@ -21,6 +21,7 @@ type MentorMode = 'none' | 'detail' | 'edit' | 'onboard';
 export class AdminMentorsComponent implements OnInit {
   protected readonly faPlus = faPlus;
   protected readonly faEye = faEye;
+  protected readonly faFilter = faFilter;
   protected readonly faPen = faPen;
   protected readonly faRotateRight = faRotateRight;
 
@@ -39,6 +40,7 @@ export class AdminMentorsComponent implements OnInit {
 
   searchQuery = '';
   statusFilter: MentorStatusFilter = 'all';
+  filtersExpanded = false;
 
   mentorForm: FormGroup = this.fb.group({
     fullName: [ '', Validators.required ],
@@ -50,7 +52,8 @@ export class AdminMentorsComponent implements OnInit {
     positionTitle: [ '' ],
     linkedInUrl: [ '' ],
     yearsExperience: [ null ],
-    verified: [ false ]
+    verified: [ false ],
+    status: [ 'draft', Validators.required ]
   });
 
   onboardingForm: FormGroup = this.fb.group({
@@ -134,6 +137,10 @@ export class AdminMentorsComponent implements OnInit {
     this.searchQuery = value;
   }
 
+  toggleFilters(): void {
+    this.filtersExpanded = !this.filtersExpanded;
+  }
+
   onStatusChange(value: string): void {
     this.statusFilter = value as MentorStatusFilter;
   }
@@ -171,7 +178,8 @@ export class AdminMentorsComponent implements OnInit {
       positionTitle: mentor.positionTitle ?? mentor.title ?? '',
       linkedInUrl: mentor.linkedInUrl ?? mentor.linkedIn ?? '',
       yearsExperience: mentor.yearsExperience ?? null,
-      verified: mentor.verified === true
+      verified: mentor.verified === true,
+      status: this.getNormalizedStatus(mentor) === 'unknown' ? 'draft' : this.getNormalizedStatus(mentor)
     });
   }
 
@@ -184,8 +192,18 @@ export class AdminMentorsComponent implements OnInit {
     const id = this.getMentorRouteId(this.selectedMentor);
     if (!id) return;
     this.saving = true;
-    this.mentorService.updateAdminMentor(id, this.mentorForm.value)
-      .pipe(finalize(() => this.saving = false))
+    const { status, ...profilePayload } = this.mentorForm.value;
+
+    this.mentorService.updateAdminMentor(id, profilePayload)
+      .pipe(
+        switchMap(mentor => {
+          const currentStatus = this.getNormalizedStatus(this.selectedMentor!);
+          return status && status !== currentStatus
+            ? this.mentorService.updateAdminMentorStatus(id, status)
+            : of(mentor);
+        }),
+        finalize(() => this.saving = false)
+      )
       .subscribe({
         next: mentor => this.afterMutation('Mentor updated.', mentor),
         error: err => this.actionError = this.getActionError(err, 'Unable to update mentor.')

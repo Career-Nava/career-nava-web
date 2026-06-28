@@ -141,6 +141,15 @@ Completed admin pages use page-level state handling:
 - explicit `403` messages
 - no silent conversion of `401`/`403` to empty results
 
+### Admin UI conventions
+
+- Table action columns use compact icon buttons with accessible titles or labels.
+- Lifecycle/status changes live in detail, edit, or manage panels where practical, not as large row text buttons.
+- Operational filters are collapsed by default; search is the primary visible control.
+- Raw technical ID filters should not be exposed to admin users unless there is a clear operational need.
+- Public preview/open actions must route to real public views, not fake admin detail stubs.
+- Frontend route guards remain UX routing only; backend authorization protects sensitive admin endpoints.
+
 ## Implemented Features
 
 ### Role Routing and Shells
@@ -186,7 +195,9 @@ Backend-backed sessions pages are implemented for all three role contexts.
 - mentor page uses current-user endpoint
 - admin sessions remain table-based with backend filter controls
 - admin session detail is wired to the safe backend detail endpoint
-- admin status actions are limited to complete, cancel, and move to pending
+- admin status actions are limited to complete, cancel, and move to pending from the detail/manage panel
+- admin session table rows use compact icon actions only
+- advanced session filters are collapsed by default and do not expose raw mentor profile or mentee user IDs
 - admin session UI does not grant paid access and does not mutate Calendly state
 - mentor does not see payment prompts
 - payment behavior remains mentee-only
@@ -247,7 +258,8 @@ Backend-wired admin mentor management is implemented.
 - eligible-user lookup for mentor onboarding
 - existing-user promotion/onboarding into mentor profile
 - operational/profile field editing
-- mentor profile status changes for `draft`, `active`, `inactive`, and `suspended`
+- mentor profile status changes for `draft`, `active`, `inactive`, and `suspended` from the edit/manage form
+- mentor table rows show profile status as a badge and use compact icon actions
 - status UI makes profile visibility separate from account access
 - loading state with spinner
 - error state with explicit messages
@@ -287,7 +299,9 @@ Backend-wired admin scholarship management is implemented.
 
 - admin list, detail, create, and edit panels
 - benefit editing through simple replacement payloads
-- publish, move-to-draft, close, and archive status actions
+- publish, move-to-draft, close, and archive status actions from the edit/manage form
+- table preview opens the published-only public scholarship detail route at `/scholarships/:id`
+- draft, closed, and archived records do not expose public preview
 - confirmation prompts for operational status changes
 - loading state with spinner
 - error state with explicit messages
@@ -336,7 +350,9 @@ Backend-wired admin blogs/resources management is implemented.
 
 - admin list, detail, create, and edit panels
 - MVP-simple content block editing
-- publish, move-to-draft, and archive status actions
+- publish, move-to-draft, and archive status actions from the edit/manage form
+- published resources open through the real public slug route at `/blog/:slug`
+- draft and archived resources do not expose public preview
 - confirmation prompts for operational status changes
 - loading state with spinner
 - error state with explicit messages
@@ -459,6 +475,7 @@ Guidance:
 
 - `BlogService.getAllBlogs()` -> public blog list
 - `BlogService.getBlogById(blogId)` -> direct blog retrieval by ID
+- `BlogService.getBlogBySlug(slug)` -> published-only public slug detail
 - `BlogService.getAdminBlogs()` -> `GET /api/Blog/GetAllBlogsForAdmin`
 - `BlogService.getAdminBlogById(id)` -> `GET /api/Blog/Admin/GetBlogById/{id}`
 - `BlogService.createAdminBlog(...)` -> `POST /api/Blog/Admin/CreateBlog`
@@ -469,7 +486,7 @@ Guidance:
 
 Note:
 
-- public blog detail currently resolves by slug from `getAllBlogs()` rather than a dedicated slug endpoint
+- public blog detail resolves through `GET /api/Blog/GetBlogBySlug/{slug}`
 
 ### Admin Overview
 
@@ -497,6 +514,11 @@ Phase 3F validation:
 - `npm run build` passed after wiring admin mentor, scholarship, blog/resource, and session UI to backend contracts.
 - Existing SCSS budget warnings remain in layout/student styles; no new warning points at the Phase 3F admin files.
 
+Phase 3F polish validation:
+
+- `npm run build` passed after refining admin table actions, collapsed filters, and public preview route behavior.
+- Existing SCSS budget warnings remain in layout/student styles; no new warning points at the admin polish files.
+
 ## Known Caveats
 
 - No lint script exists.
@@ -506,7 +528,7 @@ Phase 3F validation:
 - Some admin pages may need pagination/search/filtering later.
 - Payment/join behavior exists only for mentee sessions and should not be moved into shared session components.
 - Admin overview currently uses aggregate counts only; charts/recent activity/trends are deferred.
-- Public blog detail currently resolves from the full public blog list by slug, not a dedicated backend slug endpoint.
+- Public blog detail now resolves through the dedicated published-only slug endpoint.
 
 ## Pending Work
 

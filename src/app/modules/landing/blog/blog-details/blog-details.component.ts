@@ -27,11 +27,7 @@ export class BlogDetailsComponent implements OnInit {
       .pipe(
         map(params => params.get('slug') || ''),
         filter(slug => slug.length > 0),
-        switchMap(slug =>
-          this.blogService.getAllBlogs().pipe(
-            map(blogs => blogs.find(b => b.slug === slug)) // find blog by slug
-          )
-        ),
+        switchMap(slug => this.blogService.getBlogBySlug(slug)),
         take(1)
       )
       .subscribe({
