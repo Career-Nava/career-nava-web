@@ -4,8 +4,8 @@
   </section>
 
   <section class="admin-surface admin-toolbar admin-list-toolbar mb-4">
-    <div class="admin-toolbar__top"><div><span class="admin-section-label">Session search</span><h2 class="admin-panel__title">Find a session record quickly</h2><p class="admin-copy mb-0">Status actions do not mutate Calendly or payment records.</p></div><div class="admin-toolbar__actions"><button type="button" class="admin-icon-action" title="Toggle filters" aria-label="Toggle filters" (click)="toggleFilters()"><fa-icon [icon]="faFilter"></fa-icon></button><button type="button" class="admin-icon-action" title="Refresh sessions" aria-label="Refresh sessions" (click)="loadSessions()"><fa-icon [icon]="faRotateRight"></fa-icon></button></div></div>
-    <form [formGroup]="filterForm" class="row g-3 mt-1 admin-toolbar__row" (ngSubmit)="applyBackendFilters()">
+    <div class="admin-toolbar__top"><div><span class="admin-section-label">Session search</span><h2 class="admin-panel__title">Find a session record quickly</h2><p class="admin-copy mb-0">Status actions do not mutate Calendly or payment records.</p></div><div class="admin-toolbar__actions"><button type="button" class="btn btn-outline-secondary admin-toolbar-btn" (click)="clearFilters()">Clear filters</button><button type="button" class="admin-icon-action" title="Toggle filters" aria-label="Toggle filters" (click)="toggleFilters()"><fa-icon [icon]="faFilter"></fa-icon></button><button type="button" class="admin-icon-action" title="Refresh sessions" aria-label="Refresh sessions" (click)="loadSessions()"><fa-icon [icon]="faRotateRight"></fa-icon></button></div></div>
+    <form [formGroup]="filterForm" class="row g-3 mt-1 admin-toolbar__row">
       <div class="col-12 col-lg-8"><label class="admin-search-label"><span class="admin-field-label">Search loaded sessions</span><input type="search" class="form-control admin-search-input" placeholder="Mentor, mentee, title, status, or payment state" [value]="searchQuery" (input)="onSearch($any($event.target).value)"></label></div>
       <div class="col-12 col-lg-4"><div class="admin-inline-meta h-100 align-items-lg-end"><span>Showing <strong>{{ filteredCount }}</strong> of <strong>{{ totalSessions }}</strong></span></div></div>
       <ng-container *ngIf="filtersExpanded">
@@ -14,7 +14,6 @@
         <div class="col-6 col-lg-2"><label class="admin-select-label"><span class="admin-field-label">Payment</span><select class="form-select admin-select" formControlName="paymentStatus"><option value="">Any</option><option value="pending">Pending</option><option value="processing">Processing</option><option value="paid">Paid</option><option value="failed">Failed</option><option value="cancelled">Cancelled</option><option value="refunded">Refunded</option></select></label></div>
         <div class="col-6 col-lg-2"><label class="admin-search-label"><span class="admin-field-label">From</span><input type="date" class="form-control admin-search-input" formControlName="dateFrom"></label></div>
         <div class="col-6 col-lg-2"><label class="admin-search-label"><span class="admin-field-label">To</span><input type="date" class="form-control admin-search-input" formControlName="dateTo"></label></div>
-        <div class="col-12 col-lg-2"><div class="admin-filter-actions h-100"><button type="submit" class="btn btn-primary admin-toolbar-btn">Apply</button><button type="button" class="btn btn-outline-secondary admin-toolbar-btn" (click)="clearBackendFilters()">Clear</button></div></div>
       </ng-container>
     </form>
   </section>

@@ -108,6 +108,7 @@ export class AdminScholarshipsComponent implements OnInit {
   onSearch(value: string): void { this.searchQuery = value; }
   toggleFilters(): void { this.filtersExpanded = !this.filtersExpanded; }
   onStatusChange(value: string): void { this.statusFilter = value as ScholarshipStatusFilter; }
+  clearFilters(): void { this.searchQuery = ''; this.statusFilter = 'all'; }
 
   openCreate(): void {
     this.mode = 'create';

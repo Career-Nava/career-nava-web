@@ -6,6 +6,8 @@ import { finalize, of, switchMap } from 'rxjs';
 import { AdminBlog, AdminBlogUpsert } from '../../../services/blog/blog.model';
 import { BlogService } from '../../../services/blog/blog.service';
 import { ToastService } from '../../../services/toast.service';
+import { UserModel } from '../../../services/user/user.model';
+import { UserService } from '../../../services/user/user.service';
 import { SharedModule } from '../../../shared/shared.module';
 
 type BlogStatusFilter = 'all' | 'published' | 'draft' | 'archived' | 'unknown';
@@ -33,6 +35,7 @@ export class AdminBlogsComponent implements OnInit {
   actionError: string | null = null;
   actionMessage: string | null = null;
   mode: BlogMode = 'none';
+  authorOptions: UserModel[] = [];
 
   searchQuery = '';
   statusFilter: BlogStatusFilter = 'all';
@@ -50,9 +53,17 @@ export class AdminBlogsComponent implements OnInit {
     contents: this.fb.array([])
   });
 
-  constructor(private blogService: BlogService, private fb: FormBuilder, private toast: ToastService) {}
+  constructor(
+    private blogService: BlogService,
+    private userService: UserService,
+    private fb: FormBuilder,
+    private toast: ToastService
+  ) {}
 
-  ngOnInit(): void { this.loadBlogs(); }
+  ngOnInit(): void {
+    this.loadBlogs();
+    this.loadAuthorOptions();
+  }
 
   get contents(): FormArray { return this.blogForm.get('contents') as FormArray; }
   get totalBlogs(): number { return this.blogs.length; }
@@ -79,9 +90,11 @@ export class AdminBlogsComponent implements OnInit {
   }
 
   trackBlog(index: number, blog: AdminBlog): number | string { return blog.blogId ?? blog.slug ?? blog.title ?? index; }
+  trackAuthor(_: number, author: UserModel): number { return author.userId; }
   onSearch(value: string): void { this.searchQuery = value; }
   toggleFilters(): void { this.filtersExpanded = !this.filtersExpanded; }
   onStatusChange(value: string): void { this.statusFilter = value as BlogStatusFilter; }
+  clearFilters(): void { this.searchQuery = ''; this.statusFilter = 'all'; }
 
   openCreate(): void {
     this.mode = 'create';
@@ -137,6 +150,10 @@ export class AdminBlogsComponent implements OnInit {
   getStatusLabel(blog: AdminBlog): string { return blog.status || 'Unknown'; }
   getContentBlockCount(blog: AdminBlog): string { return `${ blog.contentBlockCount ?? blog.contents?.length ?? 0 }`; }
   canPreviewBlog(blog: AdminBlog): boolean { return !!blog.slug && this.normalizeStatus(blog.status) === 'published'; }
+  getAuthorOptionLabel(author: UserModel): string {
+    const role = author.role ? `${ author.role.charAt(0).toUpperCase() + author.role.slice(1).toLowerCase() }` : 'User';
+    return `${ author.fullName || author.email } - ${ role }${ author.email ? ` (${ author.email })` : '' }`;
+  }
   showPreviewUnavailable(): void {
     this.toast.show('Publish this resource before public preview.', {
       classname: 'bg-warning text-dark',
@@ -170,7 +187,11 @@ export class AdminBlogsComponent implements OnInit {
 
   private buildPayload(): AdminBlogUpsert {
     const value = this.blogForm.value;
-    return { ...value, contents: (value.contents ?? []).map((c: any, i: number) => ({ contentOrder: i + 1, contentText: c.contentText })).filter((c: any) => !!c.contentText?.trim()) };
+    return {
+      ...value,
+      authorId: value.authorId ?? null,
+      contents: (value.contents ?? []).map((c: any, i: number) => ({ contentOrder: i + 1, contentText: c.contentText })).filter((c: any) => !!c.contentText?.trim())
+    };
   }
 
   private afterMutation(message: string, blog: AdminBlog): void {
@@ -186,6 +207,19 @@ export class AdminBlogsComponent implements OnInit {
     if (normalizedDesired === 'published') return this.blogService.publishAdminBlog(blog.blogId);
     if (normalizedDesired === 'draft') return this.blogService.moveAdminBlogToDraft(blog.blogId);
     return this.blogService.archiveAdminBlog(blog.blogId);
+  }
+  private loadAuthorOptions(): void {
+    this.userService.getAllUsers().subscribe({
+      next: users => {
+        this.authorOptions = (users ?? [])
+          .filter(user => (user.role || '').toLowerCase() !== 'mentee')
+          .sort((a, b) => (a.fullName || a.email || '').localeCompare(b.fullName || b.email || ''));
+      },
+      error: err => {
+        this.authorOptions = [];
+        this.actionError = this.getActionError(err, 'Unable to load author options.');
+      }
+    });
   }
   private normalizeStatus(status?: string): BlogStatusFilter { const s = status?.toLowerCase(); return s === 'published' || s === 'draft' || s === 'archived' ? s : 'unknown'; }
   private getLoadError(err: any): string { if (err?.status === 401) return 'Please sign in again to view blogs.'; if (err?.status === 403) return 'You do not have access to view blogs.'; return 'Unable to load blogs right now. Please try again later.'; }

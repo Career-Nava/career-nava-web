@@ -1,10 +1,10 @@
 import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { faArrowLeft, faArrowUpRightFromSquare, faBriefcase, faCalendarCheck, faComments, faGlobe, faStar } from '@fortawesome/free-solid-svg-icons';
-import { Subscription } from 'rxjs';
+import { map, Subscription } from 'rxjs';
 import { AuthService } from '../../../../services/auth/auth.service';
 import { CalendlyService } from '../../../../services/calendly/calendly.service';
-import { Mentor } from '../../../../services/mentor/mentor.model';
+import { AdminMentor, Mentor } from '../../../../services/mentor/mentor.model';
 import { MentorService } from '../../../../services/mentor/mentor.service';
 import { ToastService } from '../../../../services/toast.service';
 import { SharedModule } from '../../../../shared/shared.module';
@@ -31,6 +31,9 @@ export class MentorDetailsComponent implements OnInit, OnDestroy {
   hasError = false;
   isLoadingCalendly = false;
   showCalendlyModal = false;
+  isAdminPreview = false;
+  adminPreviewStatus = '';
+  adminPreviewAccountActive = true;
   private calendlyScriptLoaded = false;
   private subs = new Subscription();
 
@@ -52,6 +55,7 @@ export class MentorDetailsComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.isAdminPreview = this.isAdminRoute();
     this.subs.add(
       this.route.paramMap.subscribe(params => {
         const id = Number(params.get('id'));
@@ -72,7 +76,7 @@ export class MentorDetailsComponent implements OnInit, OnDestroy {
     this.hasError = false;
 
     this.subs.add(
-      this.mentorService.getMentorById(id).subscribe({
+      this.getMentorForRoute(id).subscribe({
         next: mentor => {
           this.mentor = mentor;
           this.calendlyVerified = mentor?.calendlyConnected ?? false;
@@ -110,9 +114,17 @@ export class MentorDetailsComponent implements OnInit, OnDestroy {
   }
 
   get backLink(): string {
-    return this.route.snapshot.pathFromRoot.some(route => route.routeConfig?.path === 'admin')
+    return this.isAdminPreview
       ? '/admin/mentors'
       : '/mentee/mentors';
+  }
+
+  get adminPreviewVisibilityMessage(): string | null {
+    if (!this.isAdminPreview) return null;
+    const status = (this.adminPreviewStatus || 'draft').toLowerCase();
+    if (this.adminPreviewAccountActive && status === 'active') return null;
+    if (!this.adminPreviewAccountActive) return 'Account inactive - this mentor is not visible to mentees.';
+    return `${ status.charAt(0).toUpperCase() + status.slice(1) } profile - not visible to mentees.`;
   }
 
   private waitForCalendlyScript(): Promise<void> {
@@ -142,6 +154,10 @@ export class MentorDetailsComponent implements OnInit, OnDestroy {
 
   openCalendlyModal(): void {
     if (!this.mentor) return;
+    if (this.isAdminPreview) {
+      this.toastService.show('Booking is disabled in admin preview.', { classname: 'bg-soft-warning text-dark' });
+      return;
+    }
 
     const user = this.authService.getUser();
     if (!user) {
@@ -203,5 +219,36 @@ export class MentorDetailsComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.closeCalendlyModal();
     this.subs.unsubscribe();
+  }
+
+  private getMentorForRoute(id: number) {
+    if (!this.isAdminPreview) return this.mentorService.getMentorById(id);
+    return this.mentorService.getAdminMentorById(id).pipe(map(mentor => this.mapAdminMentorToPreview(mentor)));
+  }
+
+  private mapAdminMentorToPreview(mentor: AdminMentor): Mentor {
+    this.adminPreviewStatus = mentor.mentorProfileStatus || (mentor.isActive ? 'active' : 'inactive');
+    this.adminPreviewAccountActive = mentor.isActive === true;
+
+    return {
+      userId: mentor.userId,
+      fullName: mentor.fullName,
+      email: mentor.email,
+      role: mentor.role,
+      isActive: mentor.isActive,
+      calendlyConnected: mentor.calendlyConnected === true,
+      company: mentor.company,
+      positionTitle: mentor.positionTitle ?? mentor.title,
+      linkedInUrl: mentor.linkedInUrl ?? mentor.linkedIn,
+      avgRating: mentor.rating ?? 0,
+      totalReviews: mentor.totalReviews ?? 0,
+      totalSessions: mentor.totalSessions ?? 0,
+      bio: mentor.bio,
+      profilePicture: mentor.profilePicture
+    };
+  }
+
+  private isAdminRoute(): boolean {
+    return this.route.snapshot.pathFromRoot.some(route => route.routeConfig?.path === 'admin');
   }
 }

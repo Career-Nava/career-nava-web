@@ -1,8 +1,8 @@
 import { DatePipe, NgClass, NgForOf, NgIf } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { faArrowUpRightFromSquare, faFilter, faPen, faRotateRight } from '@fortawesome/free-solid-svg-icons';
-import { finalize } from 'rxjs';
+import { debounceTime, finalize, Subscription } from 'rxjs';
 import { AdminSession, AdminSessionDetail, AdminSessionFilters } from '../../../services/session/session.model';
 import { SessionService } from '../../../services/session/session.service';
 import { ToastService } from '../../../services/toast.service';
@@ -17,7 +17,7 @@ type SessionViewFilter = 'all' | 'today' | 'upcoming' | 'completed' | 'pending';
   templateUrl: './sessions.component.html',
   styleUrl: './sessions.component.scss'
 })
-export class AdminSessionsComponent implements OnInit {
+export class AdminSessionsComponent implements OnInit, OnDestroy {
   protected readonly faArrowUpRightFromSquare = faArrowUpRightFromSquare;
   protected readonly faFilter = faFilter;
   protected readonly faPen = faPen;
@@ -42,10 +42,14 @@ export class AdminSessionsComponent implements OnInit {
     dateTo: [ '' ],
     paymentStatus: [ '' ]
   });
+  private readonly subs = new Subscription();
 
   constructor(private sessionService: SessionService, private fb: FormBuilder, private toast: ToastService) {}
 
-  ngOnInit(): void { this.loadSessions(); }
+  ngOnInit(): void {
+    this.loadSessions();
+    this.subs.add(this.filterForm.valueChanges.pipe(debounceTime(150)).subscribe(() => this.loadSessions()));
+  }
 
   loadSessions(): void {
     this.loading = true;
@@ -84,8 +88,11 @@ export class AdminSessionsComponent implements OnInit {
   toggleFilters(): void { this.filtersExpanded = !this.filtersExpanded; }
   trackSession(_: number, session: AdminSession): number { return session.sessionId; }
 
-  applyBackendFilters(): void { this.loadSessions(); }
-  clearBackendFilters(): void { this.filterForm.reset({ status: '', dateFrom: '', dateTo: '', paymentStatus: '' }); this.viewFilter = 'all'; this.loadSessions(); }
+  clearFilters(): void {
+    this.searchQuery = '';
+    this.viewFilter = 'all';
+    this.filterForm.reset({ status: '', dateFrom: '', dateTo: '', paymentStatus: '' });
+  }
 
   viewSession(session: AdminSession): void {
     this.actionError = null;
@@ -123,6 +130,10 @@ export class AdminSessionsComponent implements OnInit {
   }
 
   closeDetail(): void { this.selectedSession = null; this.actionError = null; this.actionMessage = null; }
+
+  ngOnDestroy(): void {
+    this.subs.unsubscribe();
+  }
 
   getStatusBadgeClass(session: AdminSession): string {
     const status = (session.status || '').toLowerCase();

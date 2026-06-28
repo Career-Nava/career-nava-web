@@ -60,9 +60,11 @@ Keep the standalone component structure. Do not add NgModules or a new state-man
 - Admin table action columns should use compact icon buttons with accessible titles/labels.
 - Keep lifecycle/status changes in detail, edit, or manage panels where practical instead of large row buttons.
 - Public/admin preview actions must render the real user-facing detail experience, preferably under the correct dashboard shell; do not add fake admin detail stubs for content preview.
+- Admin mentor preview may render draft, inactive, or suspended profiles for admin review by using admin-only data; public/mentee mentor routes must remain active-account plus active-profile only.
 - Keep preview actions separate from edit/manage actions. Preview is visual review; edit/manage contains operational forms and status controls.
 - Keep operational filters collapsed by default and avoid exposing raw technical IDs to admin users unless the workflow truly requires it.
-- Expanded filter action buttons such as Apply and Clear should sit side by side with aligned sizing.
+- Admin table filters auto-apply on change. Do not put Apply buttons in filter panels; place Clear filters beside Filter and Refresh in the toolbar.
+- Blog/resource author fields should use user-friendly author selectors. Anonymous author maps to a nullable author user id, and mentees should not appear as author choices.
 
 ## Styling And Design
 

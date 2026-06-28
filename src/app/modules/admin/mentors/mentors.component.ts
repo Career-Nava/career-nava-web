@@ -145,6 +145,11 @@ export class AdminMentorsComponent implements OnInit {
     this.statusFilter = value as MentorStatusFilter;
   }
 
+  clearFilters(): void {
+    this.searchQuery = '';
+    this.statusFilter = 'all';
+  }
+
   openOnboarding(): void {
     this.mode = 'onboard';
     this.selectedMentor = null;
@@ -275,14 +280,7 @@ export class AdminMentorsComponent implements OnInit {
   }
 
   canPreviewMentor(mentor: AdminMentor): boolean {
-    return !!mentor.userId && mentor.isActive === true && this.getNormalizedStatus(mentor) === 'active';
-  }
-
-  showPreviewUnavailable(): void {
-    this.toast.show('Only active mentor profiles with active accounts can be previewed in the mentee-style view.', {
-      classname: 'bg-warning text-dark',
-      delay: 4000
-    });
+    return !!mentor.userId;
   }
 
   getEmptyTitle(): string {
@@ -314,7 +312,7 @@ export class AdminMentorsComponent implements OnInit {
     this.loadMentors();
   }
 
-  private getMentorRouteId(mentor: AdminMentor): number | null {
+  getMentorRouteId(mentor: AdminMentor): number | null {
     return mentor.mentorProfileId ?? mentor.mentorId ?? mentor.userId ?? null;
   }
 

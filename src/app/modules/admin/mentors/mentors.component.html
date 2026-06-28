@@ -29,6 +29,7 @@
         <button type="button" class="btn btn-primary admin-toolbar-btn" (click)="openOnboarding()">
           <span class="admin-toolbar-btn__content"><fa-icon [icon]="faPlus"></fa-icon><span>Onboard mentor</span></span>
         </button>
+        <button type="button" class="btn btn-outline-secondary admin-toolbar-btn" (click)="clearFilters()">Clear filters</button>
         <button type="button" class="admin-icon-action" title="Toggle filters" aria-label="Toggle filters" (click)="toggleFilters()"><fa-icon [icon]="faFilter"></fa-icon></button>
         <button type="button" class="admin-icon-action" title="Refresh mentors" aria-label="Refresh mentors" (click)="loadMentors()"><fa-icon [icon]="faRotateRight"></fa-icon></button>
       </div>
@@ -162,8 +163,7 @@
               <td>{{ getReviewsSummary(mentor) }}</td>
               <td class="admin-table__actions">
                 <div class="admin-action-group">
-                  <a *ngIf="canPreviewMentor(mentor); else unavailableMentorPreview" class="admin-icon-action" [routerLink]="['/admin/mentors/preview', mentor.userId]" title="Preview mentee view" aria-label="Preview mentee view"><fa-icon [icon]="faEye"></fa-icon></a>
-                  <ng-template #unavailableMentorPreview><button type="button" class="admin-icon-action" title="Activate profile before preview" aria-label="Activate profile before preview" (click)="showPreviewUnavailable()"><fa-icon [icon]="faEye"></fa-icon></button></ng-template>
+                  <a *ngIf="canPreviewMentor(mentor)" class="admin-icon-action" [routerLink]="['/admin/mentors/preview', mentor.userId]" title="Preview mentee view" aria-label="Preview mentee view"><fa-icon [icon]="faEye"></fa-icon></a>
                   <button type="button" class="admin-icon-action" title="Manage mentor" aria-label="Manage mentor" (click)="editMentor(mentor)"><fa-icon [icon]="faPen"></fa-icon></button>
                 </div>
               </td>
@@ -184,8 +184,7 @@
             <div class="admin-detail-list__item"><span class="admin-detail-list__label">Calendly</span><span class="admin-detail-list__value">{{ getCalendlyLabel(mentor) }}</span></div>
           </div>
           <div class="admin-action-group">
-            <a *ngIf="canPreviewMentor(mentor); else unavailableMentorCardPreview" class="admin-icon-action" [routerLink]="['/admin/mentors/preview', mentor.userId]" title="Preview mentee view" aria-label="Preview mentee view"><fa-icon [icon]="faEye"></fa-icon></a>
-            <ng-template #unavailableMentorCardPreview><button type="button" class="admin-icon-action" title="Activate profile before preview" aria-label="Activate profile before preview" (click)="showPreviewUnavailable()"><fa-icon [icon]="faEye"></fa-icon></button></ng-template>
+            <a *ngIf="canPreviewMentor(mentor)" class="admin-icon-action" [routerLink]="['/admin/mentors/preview', mentor.userId]" title="Preview mentee view" aria-label="Preview mentee view"><fa-icon [icon]="faEye"></fa-icon></a>
             <button type="button" class="admin-icon-action" title="Manage mentor" aria-label="Manage mentor" (click)="editMentor(mentor)"><fa-icon [icon]="faPen"></fa-icon></button>
           </div>
         </article>
