@@ -2,20 +2,17 @@
   <section class="admin-surface admin-hero admin-list-hero mb-4">
     <div class="row g-4 admin-hero__row">
       <div class="col-12 col-xl-8">
-        <div class="admin-hero__copy">
-          <span class="admin-kicker">Mentor management</span>
-          <h1 class="admin-title">Maintain mentor records and scheduling readiness</h1>
-          <p class="admin-copy mb-0">
-            Review mentor profiles, activation state, and Calendly connection health from one operational workspace.
-          </p>
-        </div>
+        <span class="admin-kicker">Mentor management</span>
+        <h1 class="admin-title">Maintain mentor records and visibility state</h1>
+        <p class="admin-copy mb-0">
+          Onboard existing users into mentor profiles, edit operational profile fields, and control mentor profile visibility without changing account activation.
+        </p>
       </div>
-
       <div class="col-12 col-xl-4">
         <div class="admin-hero__panel">
-          <span class="admin-total">{{ totalMentors }} mentor{{ totalMentors === 1 ? '' : 's' }} in the admin view</span>
-          <span class="admin-subtotal">{{ activeMentors }} active</span>
-          <span class="admin-subtotal">{{ inactiveMentors }} inactive</span>
+          <span class="admin-total">{{ totalMentors }} mentor{{ totalMentors === 1 ? '' : 's' }}</span>
+          <span class="admin-subtotal">{{ activeMentors }} active profiles</span>
+          <span class="admin-subtotal">{{ inactiveMentors }} non-active profiles</span>
         </div>
       </div>
     </div>
@@ -26,24 +23,14 @@
       <div>
         <span class="admin-section-label">Operational filters</span>
         <h2 class="admin-panel__title">Find a mentor record quickly</h2>
-        <p class="admin-copy mb-0">
-          Narrow the list by profile details or activation state. This screen remains read-only for now.
-        </p>
+        <p class="admin-copy mb-0">Profile status controls discovery visibility. Account access remains separate.</p>
       </div>
-
-      <!-- TODO: Wire to admin CRUD flow when backend endpoints are available. -->
       <div class="admin-toolbar__actions">
-        <button
-          type="button"
-          class="btn btn-outline-secondary admin-stub-btn admin-toolbar-btn"
-          title="Create flow coming soon"
-          aria-label="Create flow coming soon"
-          disabled>
-          <span class="admin-toolbar-btn__content">
-            <fa-icon [icon]="faPlus"></fa-icon>
-            <span>Add mentor</span>
-          </span>
-          <span class="admin-soon-pill">Soon</span>
+        <button type="button" class="btn btn-primary admin-toolbar-btn" (click)="openOnboarding()">
+          <span class="admin-toolbar-btn__content"><fa-icon [icon]="faPlus"></fa-icon><span>Onboard mentor</span></span>
+        </button>
+        <button type="button" class="btn btn-outline-secondary admin-toolbar-btn" (click)="loadMentors()">
+          <span class="admin-toolbar-btn__content"><fa-icon [icon]="faRotateRight"></fa-icon><span>Refresh</span></span>
         </button>
       </div>
     </div>
@@ -52,27 +39,22 @@
       <div class="col-12 col-lg-7">
         <label class="admin-search-label">
           <span class="admin-field-label">Search mentors</span>
-          <input
-            type="search"
-            class="form-control admin-search-input"
-            placeholder="Search by name, email, title, or company"
-            [value]="searchQuery"
-            (input)="onSearch($any($event.target).value)">
+          <input type="search" class="form-control admin-search-input" placeholder="Search by name, email, title, company, or status" [value]="searchQuery" (input)="onSearch($any($event.target).value)">
         </label>
       </div>
-
       <div class="col-12 col-lg-3">
         <label class="admin-select-label">
-          <span class="admin-field-label">Status</span>
+          <span class="admin-field-label">Profile status</span>
           <select class="form-select admin-select" [value]="statusFilter" (change)="onStatusChange($any($event.target).value)">
             <option value="all">All statuses</option>
+            <option value="draft">Draft</option>
             <option value="active">Active</option>
             <option value="inactive">Inactive</option>
+            <option value="suspended">Suspended</option>
             <option value="unknown">Unknown</option>
           </select>
         </label>
       </div>
-
       <div class="col-12 col-lg-2">
         <div class="admin-inline-meta h-100 align-items-lg-end">
           <span>Showing <strong>{{ filteredCount }}</strong> of <strong>{{ totalMentors }}</strong></span>
@@ -81,20 +63,81 @@
     </div>
   </section>
 
+  <section *ngIf="mode !== 'none'" class="admin-surface admin-panel admin-editor-panel mb-4">
+    <div class="admin-panel__head">
+      <div>
+        <span class="admin-section-label">{{ mode === 'onboard' ? 'Onboarding' : mode === 'edit' ? 'Edit mentor' : 'Mentor detail' }}</span>
+        <h2 class="admin-panel__title">{{ mode === 'onboard' ? 'Promote an eligible user' : selectedMentor?.fullName || 'Mentor record' }}</h2>
+        <p class="admin-copy mb-0">Mentor profile status controls public mentor discovery. User account activation is not changed here.</p>
+      </div>
+      <button type="button" class="btn btn-outline-secondary admin-toolbar-btn" (click)="closePanel()">Close</button>
+    </div>
+
+    <div class="admin-panel__body">
+      <div *ngIf="actionError" class="alert alert-danger" role="alert">{{ actionError }}</div>
+      <div *ngIf="actionMessage" class="alert alert-success" role="status">{{ actionMessage }}</div>
+
+      <form *ngIf="mode === 'onboard'" [formGroup]="onboardingForm" (ngSubmit)="onboardUser()" class="admin-form-grid">
+        <label class="admin-select-label admin-form-span-2">
+          <span class="admin-field-label">Eligible user</span>
+          <select class="form-select admin-select" formControlName="userId">
+            <option [ngValue]="null">{{ loadingEligible ? 'Loading users...' : 'Select a user' }}</option>
+            <option *ngFor="let user of eligibleUsers; trackBy: trackEligible" [ngValue]="user.userId">{{ user.fullName }} - {{ user.email }}</option>
+          </select>
+        </label>
+        <label class="admin-select-label">
+          <span class="admin-field-label">Initial status</span>
+          <select class="form-select admin-select" formControlName="status">
+            <option *ngFor="let status of mentorStatuses" [value]="status">{{ status }}</option>
+          </select>
+        </label>
+        <label class="admin-check-row">
+          <input type="checkbox" class="form-check-input" formControlName="verified">
+          <span>Verified mentor profile</span>
+        </label>
+        <label class="admin-search-label"><span class="admin-field-label">Company</span><input class="form-control admin-search-input" formControlName="company"></label>
+        <label class="admin-search-label"><span class="admin-field-label">Title</span><input class="form-control admin-search-input" formControlName="positionTitle"></label>
+        <label class="admin-search-label admin-form-span-2"><span class="admin-field-label">LinkedIn URL</span><input class="form-control admin-search-input" formControlName="linkedInUrl"></label>
+        <label class="admin-search-label admin-form-span-2"><span class="admin-field-label">Bio</span><textarea class="form-control admin-search-input admin-textarea" formControlName="bio"></textarea></label>
+        <div class="admin-form-actions admin-form-span-2">
+          <button type="submit" class="btn btn-primary admin-toolbar-btn" [disabled]="saving || onboardingForm.invalid">Onboard user</button>
+        </div>
+      </form>
+
+      <form *ngIf="mode === 'edit'" [formGroup]="mentorForm" (ngSubmit)="saveMentor()" class="admin-form-grid">
+        <label class="admin-search-label"><span class="admin-field-label">Full name</span><input class="form-control admin-search-input" formControlName="fullName"></label>
+        <label class="admin-search-label"><span class="admin-field-label">Email</span><input class="form-control admin-search-input" formControlName="email"></label>
+        <label class="admin-search-label"><span class="admin-field-label">Company</span><input class="form-control admin-search-input" formControlName="company"></label>
+        <label class="admin-search-label"><span class="admin-field-label">Title</span><input class="form-control admin-search-input" formControlName="positionTitle"></label>
+        <label class="admin-search-label"><span class="admin-field-label">Location</span><input class="form-control admin-search-input" formControlName="location"></label>
+        <label class="admin-search-label"><span class="admin-field-label">Years experience</span><input type="number" min="0" class="form-control admin-search-input" formControlName="yearsExperience"></label>
+        <label class="admin-search-label admin-form-span-2"><span class="admin-field-label">LinkedIn URL</span><input class="form-control admin-search-input" formControlName="linkedInUrl"></label>
+        <label class="admin-search-label admin-form-span-2"><span class="admin-field-label">Profile picture URL</span><input class="form-control admin-search-input" formControlName="profilePicture"></label>
+        <label class="admin-search-label admin-form-span-2"><span class="admin-field-label">Bio</span><textarea class="form-control admin-search-input admin-textarea" formControlName="bio"></textarea></label>
+        <label class="admin-check-row admin-form-span-2"><input type="checkbox" class="form-check-input" formControlName="verified"><span>Verified mentor profile</span></label>
+        <div class="admin-form-actions admin-form-span-2">
+          <button type="submit" class="btn btn-primary admin-toolbar-btn" [disabled]="saving || mentorForm.invalid">Save mentor</button>
+        </div>
+      </form>
+
+      <div *ngIf="mode === 'detail' && selectedMentor" class="admin-detail-list">
+        <div class="admin-detail-list__item"><span class="admin-detail-list__label">Email</span><span class="admin-detail-list__value">{{ selectedMentor.email }}</span></div>
+        <div class="admin-detail-list__item"><span class="admin-detail-list__label">Profile status</span><span class="admin-detail-list__value text-capitalize">{{ selectedMentor.mentorProfileStatus }}</span></div>
+        <div class="admin-detail-list__item"><span class="admin-detail-list__label">Account access</span><span class="admin-detail-list__value">{{ selectedMentor.isActive ? 'Active' : 'Inactive' }}</span></div>
+        <div class="admin-detail-list__item"><span class="admin-detail-list__label">Title / Company</span><span class="admin-detail-list__value">{{ getTitleCompany(selectedMentor) }}</span></div>
+        <div class="admin-detail-list__item"><span class="admin-detail-list__label">Bio</span><span class="admin-detail-list__value">{{ selectedMentor.bio || '-' }}</span></div>
+      </div>
+    </div>
+  </section>
+
   <div *ngIf="loading" class="admin-state admin-list-state text-center mb-4">
     <div class="spinner-border text-primary" role="status" aria-label="Loading mentors"></div>
     <p class="admin-copy mb-0 mt-3">Loading mentors...</p>
   </div>
-
-  <div *ngIf="!loading && error" class="alert alert-danger mb-4" role="alert">
-    {{ error }}
-  </div>
-
+  <div *ngIf="!loading && error" class="alert alert-danger mb-4" role="alert">{{ error }}</div>
   <div *ngIf="!loading && !error && !filteredMentors.length" class="admin-state admin-list-state mb-4">
     <h2 class="admin-state__title">{{ getEmptyTitle() }}</h2>
-    <p class="admin-copy mb-0">
-      {{ getEmptyMessage() }}
-    </p>
+    <p class="admin-copy mb-0">{{ getEmptyMessage() }}</p>
   </div>
 
   <section *ngIf="!loading && !error && filteredMentors.length" class="admin-surface admin-panel admin-list-panel">
@@ -102,78 +145,28 @@
       <div>
         <span class="admin-section-label">Mentor records</span>
         <h2 class="admin-panel__title">Mentor inventory</h2>
-        <p class="admin-copy mb-0">
-          Review profile completeness, operating state, and scheduling readiness before deeper CRUD tooling is introduced.
-        </p>
       </div>
     </div>
-
     <div class="admin-panel__body">
       <div class="d-none d-lg-block admin-table-wrap">
         <table class="table align-middle admin-table">
-          <thead>
-            <tr>
-              <th scope="col">Mentor</th>
-              <th scope="col">Title / Company</th>
-              <th scope="col">Status</th>
-              <th scope="col">Calendly</th>
-              <th scope="col">Sessions</th>
-              <th scope="col">Reviews</th>
-              <th scope="col">Updated</th>
-              <th scope="col" class="admin-table__actions">Actions</th>
-            </tr>
-          </thead>
+          <thead><tr><th>Mentor</th><th>Title / Company</th><th>Profile status</th><th>Account</th><th>Calendly</th><th>Sessions</th><th>Reviews</th><th class="admin-table__actions">Actions</th></tr></thead>
           <tbody>
             <tr *ngFor="let mentor of filteredMentors; trackBy: trackMentor">
-              <td>
-                <div class="admin-table__title">{{ mentor.fullName || '-' }}</div>
-                <span class="admin-table__subcopy">{{ mentor.email || 'Email unavailable' }}</span>
-              </td>
+              <td><div class="admin-table__title">{{ mentor.fullName || '-' }}</div><span class="admin-table__subcopy">{{ mentor.email || 'Email unavailable' }}</span></td>
               <td>{{ getTitleCompany(mentor) }}</td>
-              <td>
-                <span class="admin-badge" [ngClass]="getStatusBadgeClass(mentor)">
-                  {{ getStatusLabel(mentor) }}
-                </span>
-              </td>
-              <td>
-                <span class="admin-badge" [ngClass]="getCalendlyBadgeClass(mentor)">
-                  {{ getCalendlyLabel(mentor) }}
-                </span>
-              </td>
-              <td>{{ getSessionsSummary(mentor) }}</td>
+              <td><span class="admin-badge text-capitalize" [ngClass]="getStatusBadgeClass(mentor)">{{ getStatusLabel(mentor) }}</span></td>
+              <td>{{ mentor.isActive ? 'Active' : 'Inactive' }}</td>
+              <td>{{ getCalendlyLabel(mentor) }}</td>
+              <td>{{ mentor.totalSessions ?? 0 }}</td>
               <td>{{ getReviewsSummary(mentor) }}</td>
-              <td>
-                <span *ngIf="getUpdatedTimestamp(mentor) as updated; else noMentorUpdate">
-                  {{ updated | date:'mediumDate' }}
-                </span>
-                <ng-template #noMentorUpdate>-</ng-template>
-              </td>
               <td class="admin-table__actions">
                 <div class="admin-action-group">
-                  <button
-                    type="button"
-                    class="admin-icon-action"
-                    title="View mentor coming soon"
-                    aria-label="View mentor coming soon"
-                    disabled>
-                    <fa-icon [icon]="faEye"></fa-icon>
-                  </button>
-                  <button
-                    type="button"
-                    class="admin-icon-action"
-                    title="Edit mentor coming soon"
-                    aria-label="Edit mentor coming soon"
-                    disabled>
-                    <fa-icon [icon]="faPen"></fa-icon>
-                  </button>
-                  <button
-                    type="button"
-                    class="admin-icon-action admin-icon-action--danger"
-                    title="Delete mentor coming soon"
-                    aria-label="Delete mentor coming soon"
-                    disabled>
-                    <fa-icon [icon]="faTrash"></fa-icon>
-                  </button>
+                  <button type="button" class="admin-icon-action" title="View mentor" (click)="viewMentor(mentor)"><fa-icon [icon]="faEye"></fa-icon></button>
+                  <button type="button" class="admin-icon-action" title="Edit mentor" (click)="editMentor(mentor)"><fa-icon [icon]="faPen"></fa-icon></button>
+                  <select class="form-select admin-mini-select" [value]="getStatusLabel(mentor)" (change)="updateMentorStatus(mentor, $any($event.target).value)">
+                    <option *ngFor="let status of mentorStatuses" [value]="status">{{ status }}</option>
+                  </select>
                 </div>
               </td>
             </tr>
@@ -184,59 +177,20 @@
       <div class="admin-record-list d-lg-none">
         <article *ngFor="let mentor of filteredMentors; trackBy: trackMentor" class="admin-record-card">
           <div class="admin-record-card__head">
-            <div>
-              <h3 class="admin-record-card__title">{{ mentor.fullName || '-' }}</h3>
-              <p class="admin-copy mb-0">{{ mentor.email || 'Email unavailable' }}</p>
-            </div>
-            <span class="admin-badge" [ngClass]="getStatusBadgeClass(mentor)">
-              {{ getStatusLabel(mentor) }}
-            </span>
+            <div><h3 class="admin-record-card__title">{{ mentor.fullName || '-' }}</h3><p class="admin-copy mb-0">{{ mentor.email || 'Email unavailable' }}</p></div>
+            <span class="admin-badge text-capitalize" [ngClass]="getStatusBadgeClass(mentor)">{{ getStatusLabel(mentor) }}</span>
           </div>
-
           <div class="admin-detail-list">
-            <div class="admin-detail-list__item">
-              <span class="admin-detail-list__label">Title / Company</span>
-              <span class="admin-detail-list__value">{{ getTitleCompany(mentor) }}</span>
-            </div>
-            <div class="admin-detail-list__item">
-              <span class="admin-detail-list__label">Calendly</span>
-              <span class="admin-detail-list__value">{{ getCalendlyLabel(mentor) }}</span>
-            </div>
-            <div class="admin-detail-list__item">
-              <span class="admin-detail-list__label">Sessions</span>
-              <span class="admin-detail-list__value">{{ getSessionsSummary(mentor) }}</span>
-            </div>
-            <div class="admin-detail-list__item">
-              <span class="admin-detail-list__label">Reviews</span>
-              <span class="admin-detail-list__value">{{ getReviewsSummary(mentor) }}</span>
-            </div>
+            <div class="admin-detail-list__item"><span class="admin-detail-list__label">Title / Company</span><span class="admin-detail-list__value">{{ getTitleCompany(mentor) }}</span></div>
+            <div class="admin-detail-list__item"><span class="admin-detail-list__label">Account</span><span class="admin-detail-list__value">{{ mentor.isActive ? 'Active' : 'Inactive' }}</span></div>
+            <div class="admin-detail-list__item"><span class="admin-detail-list__label">Calendly</span><span class="admin-detail-list__value">{{ getCalendlyLabel(mentor) }}</span></div>
           </div>
-
           <div class="admin-action-group">
-            <button
-              type="button"
-              class="admin-icon-action"
-              title="View mentor coming soon"
-              aria-label="View mentor coming soon"
-              disabled>
-              <fa-icon [icon]="faEye"></fa-icon>
-            </button>
-            <button
-              type="button"
-              class="admin-icon-action"
-              title="Edit mentor coming soon"
-              aria-label="Edit mentor coming soon"
-              disabled>
-              <fa-icon [icon]="faPen"></fa-icon>
-            </button>
-            <button
-              type="button"
-              class="admin-icon-action admin-icon-action--danger"
-              title="Delete mentor coming soon"
-              aria-label="Delete mentor coming soon"
-              disabled>
-              <fa-icon [icon]="faTrash"></fa-icon>
-            </button>
+            <button type="button" class="admin-icon-action" title="View mentor" (click)="viewMentor(mentor)"><fa-icon [icon]="faEye"></fa-icon></button>
+            <button type="button" class="admin-icon-action" title="Edit mentor" (click)="editMentor(mentor)"><fa-icon [icon]="faPen"></fa-icon></button>
+            <select class="form-select admin-mini-select" [value]="getStatusLabel(mentor)" (change)="updateMentorStatus(mentor, $any($event.target).value)">
+              <option *ngFor="let status of mentorStatuses" [value]="status">{{ status }}</option>
+            </select>
           </div>
         </article>
       </div>

@@ -1,11 +1,15 @@
 import { DatePipe, NgClass, NgForOf, NgIf } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { faEye, faPen, faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
-import { AdminMentor } from '../../../services/mentor/mentor.model';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { faEye, faPen, faPlus, faRotateRight } from '@fortawesome/free-solid-svg-icons';
+import { finalize } from 'rxjs';
+import { AdminMentor, EligibleMentorUser } from '../../../services/mentor/mentor.model';
 import { MentorService } from '../../../services/mentor/mentor.service';
+import { ToastService } from '../../../services/toast.service';
 import { SharedModule } from '../../../shared/shared.module';
 
-type MentorStatusFilter = 'all' | 'active' | 'inactive' | 'unknown';
+type MentorStatusFilter = 'all' | 'draft' | 'active' | 'inactive' | 'suspended' | 'unknown';
+type MentorMode = 'none' | 'detail' | 'edit' | 'onboard';
 
 @Component({
   selector: 'app-admin-mentors',
@@ -18,19 +22,60 @@ export class AdminMentorsComponent implements OnInit {
   protected readonly faPlus = faPlus;
   protected readonly faEye = faEye;
   protected readonly faPen = faPen;
-  protected readonly faTrash = faTrash;
+  protected readonly faRotateRight = faRotateRight;
+
+  readonly mentorStatuses = [ 'draft', 'active', 'inactive', 'suspended' ];
 
   mentors: AdminMentor[] = [];
+  eligibleUsers: EligibleMentorUser[] = [];
+  selectedMentor: AdminMentor | null = null;
   loading = true;
+  loadingEligible = false;
+  saving = false;
   error: string | null = null;
+  actionError: string | null = null;
+  actionMessage: string | null = null;
+  mode: MentorMode = 'none';
 
   searchQuery = '';
   statusFilter: MentorStatusFilter = 'all';
 
-  constructor(private mentorService: MentorService) {
+  mentorForm: FormGroup = this.fb.group({
+    fullName: [ '', Validators.required ],
+    email: [ '', [ Validators.required, Validators.email ] ],
+    profilePicture: [ '' ],
+    bio: [ '' ],
+    location: [ '' ],
+    company: [ '' ],
+    positionTitle: [ '' ],
+    linkedInUrl: [ '' ],
+    yearsExperience: [ null ],
+    verified: [ false ]
+  });
+
+  onboardingForm: FormGroup = this.fb.group({
+    userId: [ null, Validators.required ],
+    status: [ 'draft', Validators.required ],
+    verified: [ false ],
+    company: [ '' ],
+    positionTitle: [ '' ],
+    linkedInUrl: [ '' ],
+    bio: [ '' ]
+  });
+
+  constructor(
+    private mentorService: MentorService,
+    private fb: FormBuilder,
+    private toast: ToastService
+  ) {
   }
 
   ngOnInit(): void {
+    this.loadMentors();
+  }
+
+  loadMentors(): void {
+    this.loading = true;
     this.mentorService.getAdminMentors().subscribe({
       next: mentors => {
         this.mentors = mentors;
@@ -50,27 +95,14 @@ export class AdminMentorsComponent implements OnInit {
 
     return this.mentors.filter(mentor => {
       const status = this.getNormalizedStatus(mentor);
-      const matchesStatus = this.statusFilter === 'all' || status === this.statusFilter;
+      if (this.statusFilter !== 'all' && status !== this.statusFilter) return false;
+      if (!query) return true;
 
-      if (!matchesStatus) {
-        return false;
-      }
-
-      if (!query) {
-        return true;
-      }
-
-      const haystack = [
-        mentor.fullName,
-        mentor.email,
-        mentor.company,
-        mentor.title
-      ]
+      return [ mentor.fullName, mentor.email, mentor.company, mentor.title, mentor.mentorProfileStatus ]
         .filter(Boolean)
         .join(' ')
-        .toLowerCase();
-
-      return haystack.includes(query);
+        .toLowerCase()
+        .includes(query);
     });
   }
 
@@ -79,11 +111,11 @@ export class AdminMentorsComponent implements OnInit {
   }
 
   get activeMentors(): number {
-    return this.mentors.filter(mentor => mentor.isActive === true).length;
+    return this.mentors.filter(mentor => this.getNormalizedStatus(mentor) === 'active').length;
   }
 
   get inactiveMentors(): number {
-    return this.mentors.filter(mentor => mentor.isActive === false).length;
+    return this.mentors.filter(mentor => [ 'inactive', 'suspended', 'draft' ].includes(this.getNormalizedStatus(mentor))).length;
   }
 
   get filteredCount(): number {
@@ -91,7 +123,11 @@ export class AdminMentorsComponent implements OnInit {
   }
 
   trackMentor(index: number, mentor: AdminMentor): number | string {
-    return mentor.mentorId ?? mentor.userId ?? mentor.email ?? index;
+    return mentor.mentorId ?? mentor.mentorProfileId ?? mentor.userId ?? mentor.email ?? index;
+  }
+
+  trackEligible(_: number, user: EligibleMentorUser): number {
+    return user.userId;
   }
 
   onSearch(value: string): void {
@@ -102,84 +138,122 @@ export class AdminMentorsComponent implements OnInit {
     this.statusFilter = value as MentorStatusFilter;
   }
 
+  openOnboarding(): void {
+    this.mode = 'onboard';
+    this.selectedMentor = null;
+    this.actionError = null;
+    this.actionMessage = null;
+    this.onboardingForm.reset({ status: 'draft', verified: false });
+    this.loadEligibleUsers();
+  }
+
+  viewMentor(mentor: AdminMentor): void {
+    const id = this.getMentorRouteId(mentor);
+    if (!id) return;
+    this.mode = 'detail';
+    this.actionError = null;
+    this.mentorService.getAdminMentorById(id).subscribe({
+      next: detail => this.selectedMentor = detail,
+      error: err => this.actionError = this.getActionError(err, 'Unable to load mentor detail.')
+    });
+  }
+
+  editMentor(mentor: AdminMentor): void {
+    this.viewMentor(mentor);
+    this.mode = 'edit';
+    this.mentorForm.patchValue({
+      fullName: mentor.fullName ?? '',
+      email: mentor.email ?? '',
+      profilePicture: mentor.profilePicture ?? '',
+      bio: mentor.bio ?? '',
+      location: mentor.location ?? '',
+      company: mentor.company ?? '',
+      positionTitle: mentor.positionTitle ?? mentor.title ?? '',
+      linkedInUrl: mentor.linkedInUrl ?? mentor.linkedIn ?? '',
+      yearsExperience: mentor.yearsExperience ?? null,
+      verified: mentor.verified === true
+    });
+  }
+
+  saveMentor(): void {
+    if (!this.selectedMentor || this.mentorForm.invalid) {
+      this.mentorForm.markAllAsTouched();
+      return;
+    }
+
+    const id = this.getMentorRouteId(this.selectedMentor);
+    if (!id) return;
+    this.saving = true;
+    this.mentorService.updateAdminMentor(id, this.mentorForm.value)
+      .pipe(finalize(() => this.saving = false))
+      .subscribe({
+        next: mentor => this.afterMutation('Mentor updated.', mentor),
+        error: err => this.actionError = this.getActionError(err, 'Unable to update mentor.')
+      });
+  }
+
+  onboardUser(): void {
+    if (this.onboardingForm.invalid) {
+      this.onboardingForm.markAllAsTouched();
+      return;
+    }
+
+    this.saving = true;
+    this.mentorService.onboardExistingUser(this.onboardingForm.value)
+      .pipe(finalize(() => this.saving = false))
+      .subscribe({
+        next: mentor => {
+          this.afterMutation('User promoted to mentor.', mentor);
+          this.loadEligibleUsers();
+        },
+        error: err => this.actionError = this.getActionError(err, 'Unable to onboard mentor.')
+      });
+  }
+
+  updateMentorStatus(mentor: AdminMentor, status: string): void {
+    const id = this.getMentorRouteId(mentor);
+    if (!id || !confirm(`Move this mentor profile to ${ status }? Account access is unchanged.`)) return;
+
+    this.saving = true;
+    this.mentorService.updateAdminMentorStatus(id, status)
+      .pipe(finalize(() => this.saving = false))
+      .subscribe({
+        next: updated => this.afterMutation(`Mentor status changed to ${ status }.`, updated),
+        error: err => this.actionError = this.getActionError(err, 'Unable to change mentor status.')
+      });
+  }
+
+  closePanel(): void {
+    this.mode = 'none';
+    this.selectedMentor = null;
+    this.actionError = null;
+    this.actionMessage = null;
+  }
+
   getStatusLabel(mentor: AdminMentor): string {
-    if (mentor.isActive === true) {
-      return 'Active';
-    }
-
-    if (mentor.isActive === false) {
-      return 'Inactive';
-    }
-
-    return 'Unknown';
+    return mentor.mentorProfileStatus || (mentor.isActive ? 'active' : 'inactive');
   }
 
   getStatusBadgeClass(mentor: AdminMentor): string {
-    if (mentor.isActive === true) {
-      return 'admin-badge--success';
-    }
-
-    if (mentor.isActive === false) {
-      return 'admin-badge--muted';
-    }
-
+    const status = this.getNormalizedStatus(mentor);
+    if (status === 'active') return 'admin-badge--success';
+    if (status === 'suspended') return 'admin-badge--danger';
+    if (status === 'draft') return 'admin-badge--warning';
+    if (status === 'inactive') return 'admin-badge--muted';
     return 'admin-badge--warning';
   }
 
   getCalendlyLabel(mentor: AdminMentor): string {
-    if (mentor.calendlyConnected === true) {
-      return 'Connected';
-    }
-
-    if (mentor.calendlyConnected === false) {
-      return 'Not connected';
-    }
-
-    return 'Unknown';
-  }
-
-  getCalendlyBadgeClass(mentor: AdminMentor): string {
-    if (mentor.calendlyConnected === true) {
-      return 'admin-badge--info';
-    }
-
-    if (mentor.calendlyConnected === false) {
-      return 'admin-badge--warning';
-    }
-
-    return 'admin-badge--muted';
+    return mentor.calendlyConnected ? 'Connected' : 'Not connected';
   }
 
   getTitleCompany(mentor: AdminMentor): string {
-    const parts = [ mentor.title, mentor.company ].filter(Boolean);
+    const parts = [ mentor.positionTitle ?? mentor.title, mentor.company ].filter(Boolean);
     return parts.length ? parts.join(' / ') : '-';
   }
 
   getReviewsSummary(mentor: AdminMentor): string {
-    const hasRating = typeof mentor.rating === 'number';
-    const hasTotalReviews = typeof mentor.totalReviews === 'number';
-
-    if (hasRating && hasTotalReviews) {
-      return `${ mentor.rating!.toFixed(1) } (${ mentor.totalReviews })`;
-    }
-
-    if (hasRating) {
-      return mentor.rating!.toFixed(1);
-    }
-
-    if (hasTotalReviews) {
-      return `${ mentor.totalReviews }`;
-    }
-
-    return '-';
-  }
-
-  getSessionsSummary(mentor: AdminMentor): string {
-    return typeof mentor.totalSessions === 'number' ? `${ mentor.totalSessions }` : '-';
-  }
-
-  getUpdatedTimestamp(mentor: AdminMentor): string | null {
-    return mentor.updatedAt ?? mentor.createdAt ?? null;
+    return typeof mentor.rating === 'number' ? `${ mentor.rating.toFixed(1) } (${ mentor.totalReviews ?? 0 })` : '-';
   }
 
   getEmptyTitle(): string {
@@ -187,34 +261,49 @@ export class AdminMentorsComponent implements OnInit {
   }
 
   getEmptyMessage(): string {
-    if (this.searchQuery || this.statusFilter !== 'all') {
-      return 'Try a broader search or switch back to all statuses to review more mentor records.';
-    }
+    return this.searchQuery || this.statusFilter !== 'all'
+      ? 'Try a broader search or switch back to all statuses.'
+      : 'Mentor records will appear here once users are onboarded as mentors.';
+  }
 
-    return 'Mentor records will appear here once the backend returns admin-visible mentor data.';
+  private loadEligibleUsers(): void {
+    this.loadingEligible = true;
+    this.mentorService.getEligibleMentorUsers()
+      .pipe(finalize(() => this.loadingEligible = false))
+      .subscribe({
+        next: users => this.eligibleUsers = users,
+        error: err => this.actionError = this.getActionError(err, 'Unable to load eligible users.')
+      });
+  }
+
+  private afterMutation(message: string, mentor: AdminMentor): void {
+    this.actionError = null;
+    this.actionMessage = message;
+    this.toast.show(message, { classname: 'bg-success text-light', delay: 3500 });
+    this.selectedMentor = mentor;
+    this.mode = 'detail';
+    this.loadMentors();
+  }
+
+  private getMentorRouteId(mentor: AdminMentor): number | null {
+    return mentor.mentorProfileId ?? mentor.mentorId ?? mentor.userId ?? null;
   }
 
   private getNormalizedStatus(mentor: AdminMentor): MentorStatusFilter {
-    if (mentor.isActive === true) {
-      return 'active';
-    }
-
-    if (mentor.isActive === false) {
-      return 'inactive';
-    }
-
+    const status = mentor.mentorProfileStatus?.toLowerCase();
+    if (status === 'draft' || status === 'active' || status === 'inactive' || status === 'suspended') return status;
+    if (mentor.isActive === true) return 'active';
+    if (mentor.isActive === false) return 'inactive';
     return 'unknown';
   }
 
   private getMentorLoadError(err: any): string {
-    if (err?.status === 401) {
-      return 'Please sign in again to view mentors.';
-    }
-
-    if (err?.status === 403) {
-      return 'You do not have access to view mentors.';
-    }
-
+    if (err?.status === 401) return 'Please sign in again to view mentors.';
+    if (err?.status === 403) return 'You do not have access to view mentors.';
     return 'Unable to load mentors right now. Please try again later.';
+  }
+
+  private getActionError(err: any, fallback: string): string {
+    return err?.error?.message || err?.message || fallback;
   }
 }

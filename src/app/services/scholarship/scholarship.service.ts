@@ -5,7 +5,16 @@ import { ApiResponse } from "../api-response";
 import { ConfigurationService } from "../configuration.service";
 import { LocalStorageCache } from "../local-storage-cache";
 import { RestService } from "../rest.service";
-import { AdminScholarship, ScholarshipDto } from "./shcolarship.model";
+import { AdminScholarship, AdminScholarshipUpsert, ScholarshipDto } from "./shcolarship.model";
+
+type AdminScholarshipResponse = Partial<AdminScholarship> & {
+  image?: string;
+  openingDate?: string;
+  closingDate?: string;
+  deadline?: string;
+  description?: string;
+  menteesInterested?: unknown[];
+};
 
 @Injectable({ providedIn: 'root' })
 export class ScholarshipService extends RestService {
@@ -51,11 +60,54 @@ export class ScholarshipService extends RestService {
 
   getAdminScholarships(): Observable<AdminScholarship[]> {
     return this.http
-      .get<ApiResponse<Array<Partial<AdminScholarship> & Partial<ScholarshipDto>>>>(`${ this.baseUrl }/GetAllScholarshipsForAdmin`)
+      .get<ApiResponse<AdminScholarshipResponse[]>>(`${ this.baseUrl }/GetAllScholarshipsForAdmin`)
       .pipe(
         map(res => (res.data ?? []).map(dto => this.mapAdminScholarship(dto))),
         catchError(err => throwError(() => err))
       );
+  }
+
+  getAdminScholarshipById(id: number): Observable<AdminScholarship> {
+    return this.http
+      .get<ApiResponse<AdminScholarship>>(`${ this.baseUrl }/Admin/GetScholarshipById/${ id }`)
+      .pipe(
+        map(res => this.mapAdminScholarship(res.data)),
+        catchError(err => throwError(() => err))
+      );
+  }
+
+  createAdminScholarship(payload: AdminScholarshipUpsert): Observable<AdminScholarship> {
+    return this.http
+      .post<ApiResponse<AdminScholarship>>(`${ this.baseUrl }/Admin/CreateScholarship`, payload)
+      .pipe(
+        map(res => this.mapAdminScholarship(res.data)),
+        catchError(err => throwError(() => err))
+      );
+  }
+
+  updateAdminScholarship(id: number, payload: AdminScholarshipUpsert): Observable<AdminScholarship> {
+    return this.http
+      .put<ApiResponse<AdminScholarship>>(`${ this.baseUrl }/Admin/UpdateScholarship/${ id }`, payload)
+      .pipe(
+        map(res => this.mapAdminScholarship(res.data)),
+        catchError(err => throwError(() => err))
+      );
+  }
+
+  publishAdminScholarship(id: number): Observable<AdminScholarship> {
+    return this.patchAdminScholarshipStatus(id, 'Publish');
+  }
+
+  moveAdminScholarshipToDraft(id: number): Observable<AdminScholarship> {
+    return this.patchAdminScholarshipStatus(id, 'MoveToDraft');
+  }
+
+  closeAdminScholarship(id: number): Observable<AdminScholarship> {
+    return this.patchAdminScholarshipStatus(id, 'Close');
+  }
+
+  archiveAdminScholarship(id: number): Observable<AdminScholarship> {
+    return this.patchAdminScholarshipStatus(id, 'Archive');
   }
 
   updateBookmark(id: number, isBookmarked: boolean): Observable<ScholarshipDto | undefined> {
@@ -79,25 +131,44 @@ export class ScholarshipService extends RestService {
     };
   }
 
-  private mapAdminScholarship(dto: Partial<AdminScholarship> & Partial<ScholarshipDto>): AdminScholarship {
+  private mapAdminScholarship(dto: AdminScholarshipResponse): AdminScholarship {
     return {
       scholarshipId: dto.scholarshipId,
+      mentorProfileId: dto.mentorProfileId,
       title: dto.title,
       link: dto.link,
       role: dto.role,
       image: dto.image ?? dto.imageThumbnail,
+      imageThumbnail: dto.imageThumbnail ?? dto.image,
       category: dto.category,
       funding: dto.funding,
       status: dto.status,
       openingDate: dto.openingDate ?? dto.datePosted,
+      datePosted: dto.datePosted ?? dto.openingDate,
       closingDate: dto.closingDate ?? dto.applicationDeadline,
+      applicationDeadline: dto.applicationDeadline ?? dto.closingDate,
       deadline: dto.deadline ?? dto.closingDate ?? dto.applicationDeadline,
       description: dto.description ?? dto.contentDescription,
+      contentDescription: dto.contentDescription ?? dto.description,
       shortDescription: dto.shortDescription,
+      eligibilityCriteria: dto.eligibilityCriteria,
+      publishedAt: dto.publishedAt,
+      closedAt: dto.closedAt,
+      archivedAt: dto.archivedAt,
+      benefits: dto.benefits,
       benefitsCount: typeof dto.benefitsCount === 'number' ? dto.benefitsCount : dto.benefits?.length ?? 0,
       interestedCount: typeof dto.interestedCount === 'number' ? dto.interestedCount : dto.menteesInterested?.length ?? 0,
       createdAt: dto.createdAt,
       updatedAt: dto.updatedAt
     };
+  }
+
+  private patchAdminScholarshipStatus(id: number, action: 'Publish' | 'MoveToDraft' | 'Close' | 'Archive'): Observable<AdminScholarship> {
+    return this.http
+      .patch<ApiResponse<AdminScholarship>>(`${ this.baseUrl }/Admin/${ action }/${ id }`, {})
+      .pipe(
+        map(res => this.mapAdminScholarship(res.data)),
+        catchError(err => throwError(() => err))
+      );
   }
 }

@@ -1,8 +1,11 @@
 import { DatePipe, NgClass, NgForOf, NgIf } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { faArrowUpRightFromSquare, faEye, faPen } from '@fortawesome/free-solid-svg-icons';
-import { Session } from '../../../services/session/session.model';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { faArrowUpRightFromSquare, faEye, faRotateRight } from '@fortawesome/free-solid-svg-icons';
+import { finalize } from 'rxjs';
+import { AdminSession, AdminSessionDetail, AdminSessionFilters } from '../../../services/session/session.model';
 import { SessionService } from '../../../services/session/session.service';
+import { ToastService } from '../../../services/toast.service';
 import { SharedModule } from '../../../shared/shared.module';
 
 type SessionViewFilter = 'all' | 'today' | 'upcoming' | 'completed' | 'pending';
@@ -17,85 +20,55 @@ type SessionViewFilter = 'all' | 'today' | 'upcoming' | 'completed' | 'pending';
 export class AdminSessionsComponent implements OnInit {
   protected readonly faArrowUpRightFromSquare = faArrowUpRightFromSquare;
   protected readonly faEye = faEye;
-  protected readonly faPen = faPen;
+  protected readonly faRotateRight = faRotateRight;
 
-  sessions: Session[] = [];
+  sessions: AdminSession[] = [];
+  selectedSession: AdminSessionDetail | null = null;
   loading = true;
+  saving = false;
   error: string | null = null;
+  actionError: string | null = null;
+  actionMessage: string | null = null;
 
   searchQuery = '';
   viewFilter: SessionViewFilter = 'all';
 
-  constructor(private sessionService: SessionService) {
-  }
+  filterForm: FormGroup = this.fb.group({
+    status: [ '' ],
+    mentorProfileId: [ '' ],
+    menteeId: [ '' ],
+    dateFrom: [ '' ],
+    dateTo: [ '' ],
+    paymentStatus: [ '' ]
+  });
 
-  ngOnInit(): void {
-    this.sessionService.getAdminSessions().subscribe({
-      next: sessions => {
-        this.sessions = sessions;
-        this.error = null;
-        this.loading = false;
-      },
-      error: err => {
-        this.sessions = [];
-        this.error = this.getSessionLoadError(err);
-        this.loading = false;
-      }
+  constructor(private sessionService: SessionService, private fb: FormBuilder, private toast: ToastService) {}
+
+  ngOnInit(): void { this.loadSessions(); }
+
+  loadSessions(): void {
+    this.loading = true;
+    this.sessionService.getAdminSessions(this.buildFilters()).subscribe({
+      next: sessions => { this.sessions = sessions; this.error = null; this.loading = false; },
+      error: err => { this.sessions = []; this.error = this.getSessionLoadError(err); this.loading = false; }
     });
   }
 
-  get filteredSessions(): Session[] {
+  get filteredSessions(): AdminSession[] {
     const query = this.searchQuery.trim().toLowerCase();
-
     return this.sessions.filter(session => {
-      const matchesView = this.matchesView(session);
-      if (!matchesView) {
-        return false;
-      }
-
-      if (!query) {
-        return true;
-      }
-
-      const haystack = [
-        session.title,
-        session.mentorName,
-        session.mentorEmail,
-        session.menteeName,
-        session.menteeEmail,
-        session.status
-      ]
-        .filter(Boolean)
-        .join(' ')
-        .toLowerCase();
-
-      return haystack.includes(query);
+      if (!this.matchesView(session)) return false;
+      if (!query) return true;
+      return [ session.title, session.mentorName, session.mentorEmail, session.menteeName, session.menteeEmail, session.status, session.paymentStatus ].filter(Boolean).join(' ').toLowerCase().includes(query);
     });
   }
 
-  get totalSessions(): number {
-    return this.sessions.length;
-  }
-
-  get todayCount(): number {
-    return this.sessions.filter(session => this.getTimingBucket(session) === 'today').length;
-  }
-
-  get upcomingCount(): number {
-    return this.sessions.filter(session => this.getTimingBucket(session) === 'upcoming').length;
-  }
-
-  get completedCount(): number {
-    return this.sessions.filter(session => this.getTimingBucket(session) === 'completed').length;
-  }
-
-  get pendingCount(): number {
-    return this.sessions.filter(session => (session.status || '').toLowerCase() === 'pending').length;
-  }
-
-  get filteredCount(): number {
-    return this.filteredSessions.length;
-  }
+  get totalSessions(): number { return this.sessions.length; }
+  get todayCount(): number { return this.sessions.filter(session => this.getTimingBucket(session) === 'today').length; }
+  get upcomingCount(): number { return this.sessions.filter(session => this.getTimingBucket(session) === 'upcoming').length; }
+  get completedCount(): number { return this.sessions.filter(session => this.getTimingBucket(session) === 'completed').length; }
+  get pendingCount(): number { return this.sessions.filter(session => (session.status || '').toLowerCase() === 'pending').length; }
+  get filteredCount(): number { return this.filteredSessions.length; }
 
   formatDuration(minutes: number): string {
     if (!minutes) return 'N/A';
@@ -105,100 +78,95 @@ export class AdminSessionsComponent implements OnInit {
     return mins === 0 ? `${ hrs }h` : `${ hrs }h ${ mins }m`;
   }
 
-  onSearch(value: string): void {
-    this.searchQuery = value;
+  onSearch(value: string): void { this.searchQuery = value; }
+  onViewChange(value: string): void { this.viewFilter = value as SessionViewFilter; }
+  trackSession(_: number, session: AdminSession): number { return session.sessionId; }
+
+  applyBackendFilters(): void { this.loadSessions(); }
+  clearBackendFilters(): void { this.filterForm.reset({ status: '', mentorProfileId: '', menteeId: '', dateFrom: '', dateTo: '', paymentStatus: '' }); this.loadSessions(); }
+
+  viewSession(session: AdminSession): void {
+    this.actionError = null;
+    this.sessionService.getAdminSessionById(session.sessionId).subscribe({
+      next: detail => this.selectedSession = detail,
+      error: err => this.actionError = this.getActionError(err, 'Unable to load session detail.')
+    });
   }
 
-  onViewChange(value: string): void {
-    this.viewFilter = value as SessionViewFilter;
+  updateStatus(session: AdminSession, action: 'complete' | 'cancel' | 'pending'): void {
+    const text = action === 'pending' ? 'move this session back to pending' : `mark this session ${ action === 'complete' ? 'completed' : 'cancelled' }`;
+    if (!confirm(`Are you sure you want to ${ text }? This does not mutate Calendly or payment state.`)) return;
+    const request = action === 'complete'
+      ? this.sessionService.completeAdminSession(session.sessionId)
+      : action === 'cancel'
+        ? this.sessionService.cancelAdminSession(session.sessionId)
+        : this.sessionService.moveAdminSessionToPending(session.sessionId);
+    this.saving = true;
+    request.pipe(finalize(() => this.saving = false)).subscribe({
+      next: updated => { this.selectedSession = updated; this.actionMessage = 'Session status updated.'; this.toast.show('Session status updated.', { classname: 'bg-success text-light', delay: 3500 }); this.loadSessions(); },
+      error: err => this.actionError = this.getActionError(err, 'Unable to update session status.')
+    });
   }
 
-  trackSession(_: number, session: Session): number {
-    return session.sessionId;
-  }
+  closeDetail(): void { this.selectedSession = null; this.actionError = null; this.actionMessage = null; }
 
-  getStatusBadgeClass(session: Session): string {
+  getStatusBadgeClass(session: AdminSession): string {
     const status = (session.status || '').toLowerCase();
-
-    if (status === 'pending') {
-      return 'admin-badge--warning';
-    }
-
-    if (status === 'approved' || status === 'confirmed' || status === 'paid' || status === 'active') {
-      return 'admin-badge--success';
-    }
-
-    if (status === 'cancelled' || status === 'canceled') {
-      return 'admin-badge--danger';
-    }
-
-    if (this.getTimingBucket(session) === 'completed') {
-      return 'admin-badge--muted';
-    }
-
+    if (status === 'pending') return 'admin-badge--warning';
+    if (status === 'booked') return 'admin-badge--success';
+    if (status === 'cancelled' || status === 'declined') return 'admin-badge--danger';
+    if (status === 'completed') return 'admin-badge--muted';
     return 'admin-badge--info';
   }
 
-  getEmptyTitle(): string {
-    return this.searchQuery || this.viewFilter !== 'all' ? 'No sessions match the current filters' : 'No sessions found';
+  getPaymentLabel(session: AdminSession): string {
+    if (session.isFreeSession === true) return 'Free';
+    return session.paymentStatus || 'Payment pending';
   }
 
-  getEmptyMessage(): string {
-    if (this.searchQuery || this.viewFilter !== 'all') {
-      return 'Try a broader search or switch back to all session windows to review more platform activity.';
-    }
+  getEmptyTitle(): string { return this.searchQuery || this.viewFilter !== 'all' ? 'No sessions match the current filters' : 'No sessions found'; }
+  getEmptyMessage(): string { return this.searchQuery || this.viewFilter !== 'all' ? 'Try broader filters or search terms.' : 'Platform sessions will appear here after Calendly bookings create them.'; }
 
-    return 'Platform sessions will appear here after mentees book time with mentors.';
-  }
-
-  private matchesView(session: Session): boolean {
+  private matchesView(session: AdminSession): boolean {
     switch (this.viewFilter) {
-      case 'today':
-        return this.getTimingBucket(session) === 'today';
-      case 'upcoming':
-        return this.getTimingBucket(session) === 'upcoming';
-      case 'completed':
-        return this.getTimingBucket(session) === 'completed';
-      case 'pending':
-        return (session.status || '').toLowerCase() === 'pending';
-      default:
-        return true;
+      case 'today': return this.getTimingBucket(session) === 'today';
+      case 'upcoming': return this.getTimingBucket(session) === 'upcoming';
+      case 'completed': return (session.status || '').toLowerCase() === 'completed' || this.getTimingBucket(session) === 'completed';
+      case 'pending': return (session.status || '').toLowerCase() === 'pending';
+      default: return true;
     }
   }
 
-  private getTimingBucket(session: Session): 'today' | 'upcoming' | 'completed' | 'unscheduled' {
+  private getTimingBucket(session: AdminSession): 'today' | 'upcoming' | 'completed' | 'unscheduled' {
     const now = new Date();
     const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     const endOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59, 999);
-
     if (session.calendlyStartAt) {
       const startAt = new Date(session.calendlyStartAt);
-
-      if (startAt >= startOfToday && startAt <= endOfToday) {
-        return 'today';
-      }
-
-      if (startAt > endOfToday) {
-        return 'upcoming';
-      }
+      if (startAt >= startOfToday && startAt <= endOfToday) return 'today';
+      if (startAt > endOfToday) return 'upcoming';
     }
-
-    if (session.calendlyEndAt && new Date(session.calendlyEndAt) < startOfToday) {
-      return 'completed';
-    }
-
+    if (session.calendlyEndAt && new Date(session.calendlyEndAt) < startOfToday) return 'completed';
     return 'unscheduled';
   }
 
+  private buildFilters(): AdminSessionFilters {
+    const value = this.filterForm.value;
+    return {
+      status: value.status || undefined,
+      mentorProfileId: value.mentorProfileId ? Number(value.mentorProfileId) : null,
+      menteeId: value.menteeId ? Number(value.menteeId) : null,
+      dateFrom: value.dateFrom || null,
+      dateTo: value.dateTo || null,
+      paymentStatus: value.paymentStatus || undefined
+    };
+  }
+
   private getSessionLoadError(err: any): string {
-    if (err?.status === 401) {
-      return 'Please sign in again to view admin sessions.';
-    }
-
-    if (err?.status === 403) {
-      return 'Only admins can view all platform sessions.';
-    }
-
+    if (err?.status === 401) return 'Please sign in again to view admin sessions.';
+    if (err?.status === 403) return 'Only admins can view all platform sessions.';
     return 'Unable to load platform sessions right now. Please try again later.';
   }
+
+  private getActionError(err: any, fallback: string): string { return err?.error?.message || err?.message || fallback; }
 }

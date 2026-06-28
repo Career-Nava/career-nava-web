@@ -34,10 +34,27 @@ export interface AdminBlog {
   category?: string;
   coverImage?: string;
   quote?: string;
+  blockQuote?: string;
   readingTime?: string;
   createdDate?: string;
+  createdAt?: string;
   updatedAt?: string;
+  publishedAt?: string | null;
+  archivedAt?: string | null;
+  contents?: BlogContent[];
   contentBlockCount?: number;
   status?: string;
   isPublished?: boolean;
+}
+
+export interface AdminBlogUpsert {
+  authorId?: number | null;
+  title?: string | null;
+  slug?: string | null;
+  coverImage?: string | null;
+  blockQuote?: string | null;
+  category?: string | null;
+  readingTime?: string | null;
+  status?: string | null;
+  contents?: BlogContent[] | null;
 }

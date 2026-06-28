@@ -6,7 +6,7 @@ import { ConfigurationService } from '../configuration.service';
 import { LocalStorageCache } from '../local-storage-cache';
 import { RestService } from '../rest.service';
 import { UserService } from "../user/user.service";
-import { AdminBlog, Blog } from './blog.model';
+import { AdminBlog, AdminBlogUpsert, Blog } from './blog.model';
 
 @Injectable({ providedIn: 'root' })
 export class BlogService extends RestService {
@@ -53,6 +53,39 @@ export class BlogService extends RestService {
     );
   }
 
+  getAdminBlogById(id: number): Observable<AdminBlog> {
+    return this.http.get<ApiResponse<AdminBlog>>(`${ this.baseUrl }/Admin/GetBlogById/${ id }`).pipe(
+      map(res => this.mapAdminBlog(res.data)),
+      catchError(err => throwError(() => err))
+    );
+  }
+
+  createAdminBlog(payload: AdminBlogUpsert): Observable<AdminBlog> {
+    return this.http.post<ApiResponse<AdminBlog>>(`${ this.baseUrl }/Admin/CreateBlog`, payload).pipe(
+      map(res => this.mapAdminBlog(res.data)),
+      catchError(err => throwError(() => err))
+    );
+  }
+
+  updateAdminBlog(id: number, payload: AdminBlogUpsert): Observable<AdminBlog> {
+    return this.http.put<ApiResponse<AdminBlog>>(`${ this.baseUrl }/Admin/UpdateBlog/${ id }`, payload).pipe(
+      map(res => this.mapAdminBlog(res.data)),
+      catchError(err => throwError(() => err))
+    );
+  }
+
+  publishAdminBlog(id: number): Observable<AdminBlog> {
+    return this.patchAdminBlogStatus(id, 'Publish');
+  }
+
+  moveAdminBlogToDraft(id: number): Observable<AdminBlog> {
+    return this.patchAdminBlogStatus(id, 'MoveToDraft');
+  }
+
+  archiveAdminBlog(id: number): Observable<AdminBlog> {
+    return this.patchAdminBlogStatus(id, 'Archive');
+  }
+
   clearCache(): void {
     this.cache.clear();
   }
@@ -75,12 +108,24 @@ export class BlogService extends RestService {
       category: dto.category,
       coverImage: dto.coverImage || 'assets/images/sessions/empty.png',
       quote: dto.quote ?? dto.blockQuote,
+      blockQuote: dto.blockQuote ?? dto.quote,
       readingTime: dto.readingTime,
       createdDate: dto.createdDate ?? dto.createdAt,
+      createdAt: dto.createdAt ?? dto.createdDate,
       updatedAt: dto.updatedAt,
+      publishedAt: dto.publishedAt,
+      archivedAt: dto.archivedAt,
+      contents: dto.contents?.sort((a, b) => a.contentOrder - b.contentOrder),
       contentBlockCount: typeof dto.contentBlockCount === 'number' ? dto.contentBlockCount : dto.contents?.length ?? 0,
       status: dto.status,
       isPublished: dto.isPublished
     };
+  }
+
+  private patchAdminBlogStatus(id: number, action: 'Publish' | 'MoveToDraft' | 'Archive'): Observable<AdminBlog> {
+    return this.http.patch<ApiResponse<AdminBlog>>(`${ this.baseUrl }/Admin/${ action }/${ id }`, {}).pipe(
+      map(res => this.mapAdminBlog(res.data)),
+      catchError(err => throwError(() => err))
+    );
   }
 }

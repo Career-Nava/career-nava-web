@@ -1,11 +1,15 @@
 import { DatePipe, NgClass, NgForOf, NgIf } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { faArrowUpRightFromSquare, faPen, faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
-import { AdminScholarship } from '../../../services/scholarship/shcolarship.model';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { faArrowUpRightFromSquare, faEye, faPen, faPlus, faRotateRight } from '@fortawesome/free-solid-svg-icons';
+import { finalize } from 'rxjs';
+import { AdminScholarship, AdminScholarshipUpsert } from '../../../services/scholarship/shcolarship.model';
 import { ScholarshipService } from '../../../services/scholarship/scholarship.service';
+import { ToastService } from '../../../services/toast.service';
 import { SharedModule } from '../../../shared/shared.module';
 
-type ScholarshipStatusFilter = 'all' | 'active' | 'inactive' | 'unknown';
+type ScholarshipStatusFilter = 'all' | 'draft' | 'published' | 'closed' | 'archived' | 'unknown';
+type ScholarshipMode = 'none' | 'detail' | 'edit' | 'create';
 
 @Component({
   selector: 'app-admin-scholarships',
@@ -17,20 +21,56 @@ type ScholarshipStatusFilter = 'all' | 'active' | 'inactive' | 'unknown';
 export class AdminScholarshipsComponent implements OnInit {
   protected readonly faPlus = faPlus;
   protected readonly faPen = faPen;
-  protected readonly faTrash = faTrash;
+  protected readonly faEye = faEye;
+  protected readonly faRotateRight = faRotateRight;
   protected readonly faArrowUpRightFromSquare = faArrowUpRightFromSquare;
 
   scholarships: AdminScholarship[] = [];
+  selectedScholarship: AdminScholarship | null = null;
   loading = true;
+  saving = false;
   error: string | null = null;
+  actionError: string | null = null;
+  actionMessage: string | null = null;
+  mode: ScholarshipMode = 'none';
 
   searchQuery = '';
   statusFilter: ScholarshipStatusFilter = 'all';
 
-  constructor(private scholarshipService: ScholarshipService) {
+  scholarshipForm: FormGroup = this.fb.group({
+    mentorProfileId: [ null ],
+    title: [ '', Validators.required ],
+    link: [ '', Validators.required ],
+    role: [ '', Validators.required ],
+    imageThumbnail: [ '' ],
+    datePosted: [ this.today(), Validators.required ],
+    applicationDeadline: [ this.today(), Validators.required ],
+    category: [ '', Validators.required ],
+    shortDescription: [ '', Validators.required ],
+    funding: [ 'fully_funded', Validators.required ],
+    contentDescription: [ '', Validators.required ],
+    eligibilityCriteria: [ '', Validators.required ],
+    status: [ 'draft', Validators.required ],
+    benefits: this.fb.array([])
+  });
+
+  constructor(
+    private scholarshipService: ScholarshipService,
+    private fb: FormBuilder,
+    private toast: ToastService
+  ) {
   }
 
   ngOnInit(): void {
+    this.loadScholarships();
+  }
+
+  get benefits(): FormArray {
+    return this.scholarshipForm.get('benefits') as FormArray;
+  }
+
+  loadScholarships(): void {
+    this.loading = true;
     this.scholarshipService.getAdminScholarships().subscribe({
       next: scholarships => {
         this.scholarships = scholarships;
@@ -39,7 +79,7 @@ export class AdminScholarshipsComponent implements OnInit {
       },
       error: err => {
         this.scholarships = [];
-        this.error = this.getScholarshipLoadError(err);
+        this.error = this.getLoadError(err);
         this.loading = false;
       }
     });
@@ -47,90 +87,131 @@ export class AdminScholarshipsComponent implements OnInit {
 
   get filteredScholarships(): AdminScholarship[] {
     const query = this.searchQuery.trim().toLowerCase();
-
-    return this.scholarships.filter(scholarship => {
-      const normalizedStatus = this.getNormalizedStatus(scholarship);
-      const matchesStatus = this.statusFilter === 'all' || normalizedStatus === this.statusFilter;
-
-      if (!matchesStatus) {
-        return false;
-      }
-
-      if (!query) {
-        return true;
-      }
-
-      const haystack = [
-        scholarship.title,
-        scholarship.category,
-        scholarship.funding,
-        scholarship.shortDescription,
-        scholarship.role
-      ]
-        .filter(Boolean)
-        .join(' ')
-        .toLowerCase();
-
-      return haystack.includes(query);
+    return this.scholarships.filter(s => {
+      const status = this.normalizeStatus(s.status);
+      if (this.statusFilter !== 'all' && status !== this.statusFilter) return false;
+      if (!query) return true;
+      return [ s.title, s.category, s.funding, s.shortDescription, s.role, s.status ].filter(Boolean).join(' ').toLowerCase().includes(query);
     });
   }
 
-  get totalScholarships(): number {
-    return this.scholarships.length;
-  }
-
-  get activeScholarships(): number {
-    return this.scholarships.filter(scholarship => this.getNormalizedStatus(scholarship) === 'active').length;
-  }
-
-  get filteredCount(): number {
-    return this.filteredScholarships.length;
-  }
+  get totalScholarships(): number { return this.scholarships.length; }
+  get publishedScholarships(): number { return this.scholarships.filter(s => this.normalizeStatus(s.status) === 'published').length; }
+  get filteredCount(): number { return this.filteredScholarships.length; }
 
   trackScholarship(index: number, scholarship: AdminScholarship): number | string {
     return scholarship.scholarshipId ?? scholarship.title ?? index;
   }
 
-  onSearch(value: string): void {
-    this.searchQuery = value;
+  onSearch(value: string): void { this.searchQuery = value; }
+  onStatusChange(value: string): void { this.statusFilter = value as ScholarshipStatusFilter; }
+
+  openCreate(): void {
+    this.mode = 'create';
+    this.selectedScholarship = null;
+    this.actionError = null;
+    this.actionMessage = null;
+    this.scholarshipForm.reset({
+      mentorProfileId: null,
+      datePosted: this.today(),
+      applicationDeadline: this.today(),
+      funding: 'fully_funded',
+      status: 'draft'
+    });
+    this.benefits.clear();
+    this.addBenefit();
   }
 
-  onStatusChange(value: string): void {
-    this.statusFilter = value as ScholarshipStatusFilter;
+  viewScholarship(scholarship: AdminScholarship): void {
+    if (!scholarship.scholarshipId) return;
+    this.mode = 'detail';
+    this.actionError = null;
+    this.scholarshipService.getAdminScholarshipById(scholarship.scholarshipId).subscribe({
+      next: detail => this.selectedScholarship = detail,
+      error: err => this.actionError = this.getActionError(err, 'Unable to load scholarship detail.')
+    });
   }
 
-  getStatusLabel(scholarship: AdminScholarship): string {
-    return scholarship.status || 'Unknown';
+  editScholarship(scholarship: AdminScholarship): void {
+    if (!scholarship.scholarshipId) return;
+    this.mode = 'edit';
+    this.actionError = null;
+    this.scholarshipService.getAdminScholarshipById(scholarship.scholarshipId).subscribe({
+      next: detail => {
+        this.selectedScholarship = detail;
+        this.patchForm(detail);
+      },
+      error: err => this.actionError = this.getActionError(err, 'Unable to load scholarship detail.')
+    });
+  }
+
+  saveScholarship(): void {
+    if (this.scholarshipForm.invalid) {
+      this.scholarshipForm.markAllAsTouched();
+      return;
+    }
+
+    const payload = this.buildPayload();
+    const request = this.mode === 'edit' && this.selectedScholarship?.scholarshipId
+      ? this.scholarshipService.updateAdminScholarship(this.selectedScholarship.scholarshipId, payload)
+      : this.scholarshipService.createAdminScholarship(payload);
+
+    this.saving = true;
+    request.pipe(finalize(() => this.saving = false)).subscribe({
+      next: scholarship => this.afterMutation(this.mode === 'edit' ? 'Scholarship updated.' : 'Scholarship created.', scholarship),
+      error: err => this.actionError = this.getActionError(err, 'Unable to save scholarship.')
+    });
+  }
+
+  changeStatus(scholarship: AdminScholarship, action: 'publish' | 'draft' | 'close' | 'archive'): void {
+    if (!scholarship.scholarshipId) return;
+    const label = action === 'draft' ? 'move this scholarship to draft' : `${ action } this scholarship`;
+    if (!confirm(`Are you sure you want to ${ label }?`)) return;
+
+    const request = action === 'publish'
+      ? this.scholarshipService.publishAdminScholarship(scholarship.scholarshipId)
+      : action === 'draft'
+        ? this.scholarshipService.moveAdminScholarshipToDraft(scholarship.scholarshipId)
+        : action === 'close'
+          ? this.scholarshipService.closeAdminScholarship(scholarship.scholarshipId)
+          : this.scholarshipService.archiveAdminScholarship(scholarship.scholarshipId);
+
+    this.saving = true;
+    request.pipe(finalize(() => this.saving = false)).subscribe({
+      next: updated => this.afterMutation('Scholarship status updated.', updated),
+      error: err => this.actionError = this.getActionError(err, 'Unable to update scholarship status.')
+    });
+  }
+
+  addBenefit(value = ''): void {
+    this.benefits.push(this.fb.control(value));
+  }
+
+  removeBenefit(index: number): void {
+    this.benefits.removeAt(index);
+  }
+
+  closePanel(): void {
+    this.mode = 'none';
+    this.selectedScholarship = null;
+    this.actionError = null;
+    this.actionMessage = null;
   }
 
   getStatusBadgeClass(scholarship: AdminScholarship): string {
-    const status = scholarship.status?.toLowerCase();
-
-    if (status === 'active' || status === 'open' || status === 'published') {
-      return 'admin-badge--success';
-    }
-
-    if (status === 'inactive' || status === 'closed' || status === 'draft') {
-      return 'admin-badge--muted';
-    }
-
-    return 'admin-badge--warning';
+    const status = this.normalizeStatus(scholarship.status);
+    if (status === 'published') return 'admin-badge--success';
+    if (status === 'closed' || status === 'archived') return 'admin-badge--danger';
+    if (status === 'draft') return 'admin-badge--warning';
+    return 'admin-badge--muted';
   }
 
   getDeadline(scholarship: AdminScholarship): string | null {
-    return scholarship.deadline ?? scholarship.closingDate ?? null;
+    return scholarship.deadline ?? scholarship.closingDate ?? scholarship.applicationDeadline ?? null;
   }
 
   getBenefitsCount(scholarship: AdminScholarship): string {
-    return typeof scholarship.benefitsCount === 'number' ? `${ scholarship.benefitsCount }` : '-';
-  }
-
-  getInterestedCount(scholarship: AdminScholarship): string {
-    return typeof scholarship.interestedCount === 'number' ? `${ scholarship.interestedCount }` : '-';
-  }
-
-  getUpdatedTimestamp(scholarship: AdminScholarship): string | null {
-    return scholarship.updatedAt ?? scholarship.createdAt ?? null;
+    return `${ scholarship.benefitsCount ?? scholarship.benefits?.length ?? 0 }`;
   }
 
   getEmptyTitle(): string {
@@ -138,36 +219,66 @@ export class AdminScholarshipsComponent implements OnInit {
   }
 
   getEmptyMessage(): string {
-    if (this.searchQuery || this.statusFilter !== 'all') {
-      return 'Try a broader search or switch back to all statuses to review more scholarship records.';
-    }
-
-    return 'Scholarship records will appear here once the backend returns admin-visible scholarship data.';
+    return this.searchQuery || this.statusFilter !== 'all'
+      ? 'Try a broader search or switch back to all statuses.'
+      : 'Scholarship records will appear here after they are created.';
   }
 
-  private getNormalizedStatus(scholarship: AdminScholarship): ScholarshipStatusFilter {
-    const status = scholarship.status?.toLowerCase();
+  private patchForm(s: AdminScholarship): void {
+    this.scholarshipForm.patchValue({
+      mentorProfileId: s.mentorProfileId ?? null,
+      title: s.title ?? '',
+      link: s.link ?? '',
+      role: s.role ?? '',
+      imageThumbnail: s.imageThumbnail ?? s.image ?? '',
+      datePosted: this.toDateInput(s.datePosted ?? s.openingDate),
+      applicationDeadline: this.toDateInput(s.applicationDeadline ?? s.closingDate),
+      category: s.category ?? '',
+      shortDescription: s.shortDescription ?? '',
+      funding: s.funding ?? 'fully_funded',
+      contentDescription: s.contentDescription ?? s.description ?? '',
+      eligibilityCriteria: s.eligibilityCriteria ?? '',
+      status: s.status ?? 'draft'
+    });
+    this.benefits.clear();
+    (s.benefits?.length ? s.benefits : [ { benefitText: '' } ]).forEach(b => this.addBenefit(b.benefitText ?? ''));
+  }
 
-    if (status === 'active' || status === 'open' || status === 'published') {
-      return 'active';
-    }
+  private buildPayload(): AdminScholarshipUpsert {
+    const value = this.scholarshipForm.value;
+    return {
+      ...value,
+      datePosted: value.datePosted ? new Date(value.datePosted).toISOString() : null,
+      applicationDeadline: value.applicationDeadline ? new Date(value.applicationDeadline).toISOString() : null,
+      benefits: (value.benefits ?? []).filter((benefit: string) => !!benefit?.trim())
+    };
+  }
 
-    if (status === 'inactive' || status === 'closed' || status === 'draft') {
-      return 'inactive';
-    }
+  private afterMutation(message: string, scholarship: AdminScholarship): void {
+    this.actionError = null;
+    this.actionMessage = message;
+    this.selectedScholarship = scholarship;
+    this.mode = 'detail';
+    this.toast.show(message, { classname: 'bg-success text-light', delay: 3500 });
+    this.loadScholarships();
+  }
 
+  private normalizeStatus(status?: string): ScholarshipStatusFilter {
+    const normalized = status?.toLowerCase();
+    if (normalized === 'draft' || normalized === 'published' || normalized === 'closed' || normalized === 'archived') return normalized;
     return 'unknown';
   }
 
-  private getScholarshipLoadError(err: any): string {
-    if (err?.status === 401) {
-      return 'Please sign in again to view scholarships.';
-    }
+  private today(): string { return new Date().toISOString().slice(0, 10); }
+  private toDateInput(value?: string | null): string { return value ? new Date(value).toISOString().slice(0, 10) : this.today(); }
 
-    if (err?.status === 403) {
-      return 'You do not have access to view scholarships.';
-    }
-
+  private getLoadError(err: any): string {
+    if (err?.status === 401) return 'Please sign in again to view scholarships.';
+    if (err?.status === 403) return 'You do not have access to view scholarships.';
     return 'Unable to load scholarships right now. Please try again later.';
+  }
+
+  private getActionError(err: any, fallback: string): string {
+    return err?.error?.message || err?.message || fallback;
   }
 }

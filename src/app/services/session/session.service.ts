@@ -5,7 +5,7 @@ import { ApiResponse } from "../api-response";
 import { ConfigurationService } from "../configuration.service";
 import { LocalStorageCache } from "../local-storage-cache";
 import { RestService } from "../rest.service";
-import { Session } from "./session.model";
+import { AdminSession, AdminSessionDetail, AdminSessionFilters, Session } from "./session.model";
 
 @Injectable({ providedIn: 'root' })
 export class SessionService extends RestService {
@@ -32,11 +32,32 @@ export class SessionService extends RestService {
     );
   }
 
-  getAdminSessions(): Observable<Session[]> {
-    return this.http.get<ApiResponse<Session[]>>(this.baseUrl).pipe(
+  getAdminSessions(filters?: AdminSessionFilters): Observable<AdminSession[]> {
+    return this.http.get<ApiResponse<AdminSession[]>>(this.baseUrl, { params: this.toAdminSessionParams(filters) }).pipe(
       map(res => res.data.map(this.mapSession)),
       catchError(err => throwError(() => err))
     );
+  }
+
+  getAdminSessionById(sessionId: number): Observable<AdminSessionDetail> {
+    return this.http
+      .get<ApiResponse<AdminSessionDetail>>(`${ this.baseUrl }/Admin/GetSessionById/${ sessionId }`)
+      .pipe(
+        map(res => this.mapSession(res.data) as AdminSessionDetail),
+        catchError(err => throwError(() => err))
+      );
+  }
+
+  completeAdminSession(sessionId: number): Observable<AdminSessionDetail> {
+    return this.patchAdminSessionStatus(sessionId, 'Complete');
+  }
+
+  cancelAdminSession(sessionId: number): Observable<AdminSessionDetail> {
+    return this.patchAdminSessionStatus(sessionId, 'Cancel');
+  }
+
+  moveAdminSessionToPending(sessionId: number): Observable<AdminSessionDetail> {
+    return this.patchAdminSessionStatus(sessionId, 'MoveToPending');
   }
 
   getMyMenteeSessions(): Observable<Session[]> {
@@ -107,5 +128,28 @@ export class SessionService extends RestService {
       category: dto.category || 'coaching',
       title: dto.title || 'Untitled Session'
     };
+  }
+
+  private patchAdminSessionStatus(sessionId: number, action: 'Complete' | 'Cancel' | 'MoveToPending'): Observable<AdminSessionDetail> {
+    return this.http
+      .patch<ApiResponse<AdminSessionDetail>>(`${ this.baseUrl }/Admin/${ action }/${ sessionId }`, {})
+      .pipe(
+        map(res => this.mapSession(res.data) as AdminSessionDetail),
+        catchError(err => throwError(() => err))
+      );
+  }
+
+  private toAdminSessionParams(filters?: AdminSessionFilters): Record<string, string> {
+    const params: Record<string, string> = {};
+
+    if (!filters) return params;
+    if (filters.status) params['status'] = filters.status;
+    if (filters.mentorProfileId) params['mentorProfileId'] = String(filters.mentorProfileId);
+    if (filters.menteeId) params['menteeId'] = String(filters.menteeId);
+    if (filters.dateFrom) params['dateFrom'] = filters.dateFrom;
+    if (filters.dateTo) params['dateTo'] = filters.dateTo;
+    if (filters.paymentStatus) params['paymentStatus'] = filters.paymentStatus;
+
+    return params;
   }
 }

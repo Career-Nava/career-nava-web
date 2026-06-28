@@ -4,6 +4,8 @@ export interface Session {
   menteeName?: string | null;
   menteeEmail?: string | null;
   mentorId: number;
+  mentorProfileId?: number;
+  mentorEventTypeId?: number | null;
   mentorName?: string | null;
   mentorEmail?: string | null;
   durationMinutes: number;
@@ -19,6 +21,41 @@ export interface Session {
   title: string;
   description?: string | null;
   color?: string | null;
+  isFreeSession?: boolean | null;
+  priceAmount?: number | null;
+  priceCurrency?: string | null;
+  isPaymentRequired?: boolean | null;
+  hasPaidPayment?: boolean | null;
+  paymentStatus?: string | null;
   category?: string | null;
   thumbnailUrl?: string | null;
+}
+
+export interface AdminSession extends Session {
+  paymentId?: number | null;
+  paymentInternalReference?: string | null;
+  paymentProviderReference?: string | null;
+  paymentAmount?: number | null;
+  paymentCurrency?: string | null;
+}
+
+export interface AdminSessionDetail extends AdminSession {
+  cancelledAt?: string | null;
+  completedAt?: string | null;
+  paymentProvider?: string | null;
+  paymentPaidAt?: string | null;
+  paymentFailedAt?: string | null;
+  paymentCancelledAt?: string | null;
+  paymentFailureReason?: string | null;
+  paymentCreatedAt?: string | null;
+  paymentUpdatedAt?: string | null;
+}
+
+export interface AdminSessionFilters {
+  status?: string;
+  mentorProfileId?: number | null;
+  menteeId?: number | null;
+  dateFrom?: string | null;
+  dateTo?: string | null;
+  paymentStatus?: string;
 }

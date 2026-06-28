@@ -5,7 +5,7 @@ import { ApiResponse } from "../api-response";
 import { ConfigurationService } from "../configuration.service";
 import { LocalStorageCache } from "../local-storage-cache";
 import { RestService } from "../rest.service";
-import { AdminMentor, Mentor } from "./mentor.model";
+import { AdminMentor, AdminMentorUpdate, EligibleMentorUser, Mentor, MentorOnboardingRequest } from "./mentor.model";
 
 @Injectable({ providedIn: 'root' })
 export class MentorService extends RestService {
@@ -56,6 +56,51 @@ export class MentorService extends RestService {
       );
   }
 
+  getEligibleMentorUsers(): Observable<EligibleMentorUser[]> {
+    return this.http
+      .get<ApiResponse<EligibleMentorUser[]>>(`${ this.baseUrl }/Admin/EligibleUsers`)
+      .pipe(
+        map(res => res.data ?? []),
+        catchError(err => throwError(() => err))
+      );
+  }
+
+  onboardExistingUser(payload: MentorOnboardingRequest): Observable<AdminMentor> {
+    return this.http
+      .post<ApiResponse<AdminMentor>>(`${ this.baseUrl }/Admin/OnboardExistingUser`, payload)
+      .pipe(
+        map(res => this.mapAdminMentor(res.data)),
+        catchError(err => throwError(() => err))
+      );
+  }
+
+  getAdminMentorById(id: number): Observable<AdminMentor> {
+    return this.http
+      .get<ApiResponse<AdminMentor>>(`${ this.baseUrl }/Admin/GetMentorById/${ id }`)
+      .pipe(
+        map(res => this.mapAdminMentor(res.data)),
+        catchError(err => throwError(() => err))
+      );
+  }
+
+  updateAdminMentor(id: number, payload: AdminMentorUpdate): Observable<AdminMentor> {
+    return this.http
+      .put<ApiResponse<AdminMentor>>(`${ this.baseUrl }/Admin/UpdateMentor/${ id }`, payload)
+      .pipe(
+        map(res => this.mapAdminMentor(res.data)),
+        catchError(err => throwError(() => err))
+      );
+  }
+
+  updateAdminMentorStatus(id: number, status: string): Observable<AdminMentor> {
+    return this.http
+      .patch<ApiResponse<AdminMentor>>(`${ this.baseUrl }/Admin/UpdateStatus/${ id }`, { status })
+      .pipe(
+        map(res => this.mapAdminMentor(res.data)),
+        catchError(err => throwError(() => err))
+      );
+  }
+
   clearCache(): void {
     this.cache.clear();
   }
@@ -76,17 +121,26 @@ export class MentorService extends RestService {
   private mapAdminMentor(dto: Partial<AdminMentor> & Partial<Mentor>): AdminMentor {
     return {
       mentorId: dto.mentorId,
+      mentorProfileId: dto.mentorProfileId ?? dto.mentorId,
       userId: dto.userId,
       fullName: dto.fullName,
       email: dto.email,
+      role: dto.role,
       isActive: dto.isActive,
       calendlyConnected: dto.calendlyConnected,
+      mentorProfileStatus: dto.mentorProfileStatus,
+      verified: dto.verified,
       profilePicture: dto.profilePicture,
+      location: dto.location,
       company: dto.company,
       title: dto.title ?? dto.positionTitle,
+      positionTitle: dto.positionTitle ?? dto.title,
       linkedIn: dto.linkedIn ?? dto.linkedInUrl,
+      linkedInUrl: dto.linkedInUrl ?? dto.linkedIn,
       bio: dto.bio,
+      yearsExperience: dto.yearsExperience,
       rating: typeof dto.rating === 'number' ? dto.rating : typeof dto.avgRating === 'number' ? dto.avgRating : 0,
+      avgAttendance: dto.avgAttendance,
       totalReviews: typeof dto.totalReviews === 'number' ? dto.totalReviews : 0,
       totalSessions: typeof dto.totalSessions === 'number' ? dto.totalSessions : 0,
       createdAt: dto.createdAt,

@@ -49,9 +49,10 @@ The branch currently includes:
 
 - role routing and shell stabilization
 - backend-backed sessions pages
-- backend-backed read-only admin mentors page
-- backend-backed read-only admin scholarships page
-- backend-backed read-only admin blogs/resources page
+- backend-backed admin mentor management UI
+- backend-backed admin scholarship management UI
+- backend-backed admin blog/resource management UI
+- backend-backed safe admin session operations UI
 - backend-backed admin overview dashboard
 - Phase 1 auth/session stabilization:
   - OAuth token restore now refreshes the current user through `GET /api/User/me`
@@ -166,7 +167,11 @@ Backend-backed sessions pages are implemented for all three role contexts.
 
 - `getMyMenteeSessions()`
 - `getMyMentorSessions()`
-- `getAdminSessions()`
+- `getAdminSessions(filters?)`
+- `getAdminSessionById(sessionId)`
+- `completeAdminSession(sessionId)`
+- `cancelAdminSession(sessionId)`
+- `moveAdminSessionToPending(sessionId)`
 
 #### Endpoint contracts
 
@@ -179,7 +184,10 @@ Backend-backed sessions pages are implemented for all three role contexts.
 - mentee and mentor pages no longer pass IDs from local storage
 - mentee page uses current-user endpoint
 - mentor page uses current-user endpoint
-- admin sessions remain table-based
+- admin sessions remain table-based with backend filter controls
+- admin session detail is wired to the safe backend detail endpoint
+- admin status actions are limited to complete, cancel, and move to pending
+- admin session UI does not grant paid access and does not mutate Calendly state
 - mentor does not see payment prompts
 - payment behavior remains mentee-only
 
@@ -212,11 +220,16 @@ Important boundary:
 
 ### Admin Mentors
 
-Read-only admin mentors page is implemented.
+Backend-wired admin mentor management is implemented.
 
 #### Route and service contract
 
 - `/admin/mentors` -> `getAdminMentors()` -> `GET /api/Mentor/GetAllMentorsForAdmin`
+- `getEligibleMentorUsers()` -> `GET /api/Mentor/Admin/EligibleUsers`
+- `onboardExistingUser(...)` -> `POST /api/Mentor/Admin/OnboardExistingUser`
+- `getAdminMentorById(id)` -> `GET /api/Mentor/Admin/GetMentorById/{id}`
+- `updateAdminMentor(id, ...)` -> `PUT /api/Mentor/Admin/UpdateMentor/{id}`
+- `updateAdminMentorStatus(id, status)` -> `PATCH /api/Mentor/Admin/UpdateStatus/{id}`
 
 #### Fields shown
 
@@ -230,7 +243,12 @@ Read-only admin mentors page is implemented.
 
 #### Behavior
 
-- read-only table
+- admin list, detail, edit, and onboarding panels
+- eligible-user lookup for mentor onboarding
+- existing-user promotion/onboarding into mentor profile
+- operational/profile field editing
+- mentor profile status changes for `draft`, `active`, `inactive`, and `suspended`
+- status UI makes profile visibility separate from account access
 - loading state with spinner
 - error state with explicit messages
 - empty state if no mentors are returned
@@ -241,11 +259,18 @@ Public mentee mentor browsing and mentor details were preserved.
 
 ### Admin Scholarships
 
-Read-only admin scholarships page is implemented.
+Backend-wired admin scholarship management is implemented.
 
 #### Route and service contract
 
 - `/admin/scholarships` -> `getAdminScholarships()` -> `GET /api/Scholarship/GetAllScholarshipsForAdmin`
+- `getAdminScholarshipById(id)` -> `GET /api/Scholarship/Admin/GetScholarshipById/{id}`
+- `createAdminScholarship(...)` -> `POST /api/Scholarship/Admin/CreateScholarship`
+- `updateAdminScholarship(id, ...)` -> `PUT /api/Scholarship/Admin/UpdateScholarship/{id}`
+- `publishAdminScholarship(id)` -> `PATCH /api/Scholarship/Admin/Publish/{id}`
+- `moveAdminScholarshipToDraft(id)` -> `PATCH /api/Scholarship/Admin/MoveToDraft/{id}`
+- `closeAdminScholarship(id)` -> `PATCH /api/Scholarship/Admin/Close/{id}`
+- `archiveAdminScholarship(id)` -> `PATCH /api/Scholarship/Admin/Archive/{id}`
 
 #### Fields shown
 
@@ -260,7 +285,10 @@ Read-only admin scholarships page is implemented.
 
 #### Behavior
 
-- read-only table
+- admin list, detail, create, and edit panels
+- benefit editing through simple replacement payloads
+- publish, move-to-draft, close, and archive status actions
+- confirmation prompts for operational status changes
 - loading state with spinner
 - error state with explicit messages
 - empty state if no scholarships are returned
@@ -282,11 +310,17 @@ This typo is real and should be cleaned up later, but it was intentionally not r
 
 ### Admin Blogs / Resources
 
-Read-only admin blogs/resources page is implemented.
+Backend-wired admin blogs/resources management is implemented.
 
 #### Route and service contract
 
 - `/admin/blogs` -> `getAdminBlogs()` -> `GET /api/Blog/GetAllBlogsForAdmin`
+- `getAdminBlogById(id)` -> `GET /api/Blog/Admin/GetBlogById/{id}`
+- `createAdminBlog(...)` -> `POST /api/Blog/Admin/CreateBlog`
+- `updateAdminBlog(id, ...)` -> `PUT /api/Blog/Admin/UpdateBlog/{id}`
+- `publishAdminBlog(id)` -> `PATCH /api/Blog/Admin/Publish/{id}`
+- `moveAdminBlogToDraft(id)` -> `PATCH /api/Blog/Admin/MoveToDraft/{id}`
+- `archiveAdminBlog(id)` -> `PATCH /api/Blog/Admin/Archive/{id}`
 
 #### Fields shown
 
@@ -300,7 +334,10 @@ Read-only admin blogs/resources page is implemented.
 
 #### Behavior
 
-- read-only table
+- admin list, detail, create, and edit panels
+- MVP-simple content block editing
+- publish, move-to-draft, and archive status actions
+- confirmation prompts for operational status changes
 - loading state with spinner
 - error state with explicit messages
 - empty state if no blog/resource records are returned
@@ -387,13 +424,22 @@ Guidance:
 
 - `SessionService.getMyMenteeSessions()` -> `GET /api/Session/me/mentee`
 - `SessionService.getMyMentorSessions()` -> `GET /api/Session/me/mentor`
-- `SessionService.getAdminSessions()` -> `GET /api/Session`
+- `SessionService.getAdminSessions(filters?)` -> `GET /api/Session`
+- `SessionService.getAdminSessionById(sessionId)` -> `GET /api/Session/Admin/GetSessionById/{sessionId}`
+- `SessionService.completeAdminSession(sessionId)` -> `PATCH /api/Session/Admin/Complete/{sessionId}`
+- `SessionService.cancelAdminSession(sessionId)` -> `PATCH /api/Session/Admin/Cancel/{sessionId}`
+- `SessionService.moveAdminSessionToPending(sessionId)` -> `PATCH /api/Session/Admin/MoveToPending/{sessionId}`
 
 ### Mentors
 
 - `MentorService.getAllMentors()` -> public mentor list
 - `MentorService.getMentorById(id)` -> public mentor detail
 - `MentorService.getAdminMentors()` -> `GET /api/Mentor/GetAllMentorsForAdmin`
+- `MentorService.getEligibleMentorUsers()` -> `GET /api/Mentor/Admin/EligibleUsers`
+- `MentorService.onboardExistingUser(...)` -> `POST /api/Mentor/Admin/OnboardExistingUser`
+- `MentorService.getAdminMentorById(id)` -> `GET /api/Mentor/Admin/GetMentorById/{id}`
+- `MentorService.updateAdminMentor(id, ...)` -> `PUT /api/Mentor/Admin/UpdateMentor/{id}`
+- `MentorService.updateAdminMentorStatus(id, status)` -> `PATCH /api/Mentor/Admin/UpdateStatus/{id}`
 - `CalendlyService.getBookingLink(mentorId)` -> `GET /api/calendly/booking-link?mentorId={id}` for authenticated booking access
 
 ### Scholarships
@@ -401,12 +447,25 @@ Guidance:
 - `ScholarshipService.getAllScholarships()` -> public scholarship list
 - `ScholarshipService.getScholarshipById(id)` -> public scholarship detail
 - `ScholarshipService.getAdminScholarships()` -> `GET /api/Scholarship/GetAllScholarshipsForAdmin`
+- `ScholarshipService.getAdminScholarshipById(id)` -> `GET /api/Scholarship/Admin/GetScholarshipById/{id}`
+- `ScholarshipService.createAdminScholarship(...)` -> `POST /api/Scholarship/Admin/CreateScholarship`
+- `ScholarshipService.updateAdminScholarship(id, ...)` -> `PUT /api/Scholarship/Admin/UpdateScholarship/{id}`
+- `ScholarshipService.publishAdminScholarship(id)` -> `PATCH /api/Scholarship/Admin/Publish/{id}`
+- `ScholarshipService.moveAdminScholarshipToDraft(id)` -> `PATCH /api/Scholarship/Admin/MoveToDraft/{id}`
+- `ScholarshipService.closeAdminScholarship(id)` -> `PATCH /api/Scholarship/Admin/Close/{id}`
+- `ScholarshipService.archiveAdminScholarship(id)` -> `PATCH /api/Scholarship/Admin/Archive/{id}`
 
 ### Blogs
 
 - `BlogService.getAllBlogs()` -> public blog list
 - `BlogService.getBlogById(blogId)` -> direct blog retrieval by ID
 - `BlogService.getAdminBlogs()` -> `GET /api/Blog/GetAllBlogsForAdmin`
+- `BlogService.getAdminBlogById(id)` -> `GET /api/Blog/Admin/GetBlogById/{id}`
+- `BlogService.createAdminBlog(...)` -> `POST /api/Blog/Admin/CreateBlog`
+- `BlogService.updateAdminBlog(id, ...)` -> `PUT /api/Blog/Admin/UpdateBlog/{id}`
+- `BlogService.publishAdminBlog(id)` -> `PATCH /api/Blog/Admin/Publish/{id}`
+- `BlogService.moveAdminBlogToDraft(id)` -> `PATCH /api/Blog/Admin/MoveToDraft/{id}`
+- `BlogService.archiveAdminBlog(id)` -> `PATCH /api/Blog/Admin/Archive/{id}`
 
 Note:
 
@@ -433,13 +492,16 @@ Current validation/tooling status:
 
 This means the frontend currently has limited automated regression protection beyond build success and targeted inspection.
 
+Phase 3F validation:
+
+- `npm run build` passed after wiring admin mentor, scholarship, blog/resource, and session UI to backend contracts.
+- Existing SCSS budget warnings remain in layout/student styles; no new warning points at the Phase 3F admin files.
+
 ## Known Caveats
 
 - No lint script exists.
 - No test script exists.
-- Admin tables are read-only; mutations are deferred.
-- Public visibility/published filtering is not fully designed yet.
-- Session lifecycle actions are deferred.
+- Admin management UI is wired, but automated frontend coverage is still missing.
 - `shcolarship.model.ts` typo still exists.
 - Some admin pages may need pagination/search/filtering later.
 - Payment/join behavior exists only for mentee sessions and should not be moved into shared session components.
@@ -450,13 +512,8 @@ This means the frontend currently has limited automated regression protection be
 
 Major pending areas after the current MVP foundation:
 
-- admin mentor mutation flows
-- admin scholarship mutation flows
-- admin blog mutation flows
 - mentor self-profile editing
-- session lifecycle actions
-- pagination/search/filtering across admin lists
-- richer public visibility and publish-state rules
+- richer pagination/search/filtering across admin lists
 - better automated frontend validation and tests
 - richer dashboard analytics
 - application tracker work
@@ -464,19 +521,16 @@ Major pending areas after the current MVP foundation:
 ## Recommended Next Frontend Iterations
 
 1. Add lint/test scripts or at least basic test tooling.
-2. Add admin mentor activate/deactivate UI.
-3. Add admin scholarship create/edit UI.
-4. Add admin blog create/edit UI.
-5. Add public visibility/published UI once backend rules exist.
-6. Add session lifecycle actions.
-7. Add mentor self-profile editing.
-8. Add pagination/search/filtering to admin lists.
-9. Fix `shcolarship.model.ts` typo safely.
-10. Add richer admin overview charts/recent activity.
+2. Add mentor self-profile editing.
+3. Add payments and Paystack verification UI once backend payment contracts are implemented.
+4. Add persisted scholarship bookmark UI once backend bookmark mutation endpoints exist.
+5. Add pagination/search/filtering refinements to admin lists.
+6. Fix `shcolarship.model.ts` typo safely.
+7. Add richer admin overview charts/recent activity.
 
 ## Notes for Future Codex Sessions
 
-- Treat the current backend-backed admin pages as stable read-only slices unless the new task explicitly expands scope.
+- Treat the current backend-backed admin pages as stable MVP management slices unless the new task explicitly expands scope.
 - Preserve the role-safe session endpoints:
   - mentee -> `/api/Session/me/mentee`
   - mentor -> `/api/Session/me/mentor`
