@@ -268,6 +268,7 @@ Backend-wired admin mentor management is implemented.
 - mentor profile status changes for `draft`, `active`, `inactive`, and `suspended` from the edit/manage form
 - mentor table rows show profile status as a badge and use compact icon actions
 - mentor preview opens the mentee-style mentor detail experience under `/admin/mentors/preview/:id` for active and non-public admin-review profiles
+- `/admin/mentors/preview/:id` uses the mentor `userId` route param, matching the public mentor detail route shape used by the reused mentee-facing detail component
 - status UI makes profile visibility separate from account access
 - loading state with spinner
 - error state with explicit messages
@@ -532,7 +533,7 @@ Phase 3F follow-up notes:
 - Admin mentor preview no longer blocks draft, inactive, or suspended mentor profiles in the admin console; every listed mentor row shows the preview icon, and the reused detail view fetches admin-safe mentor data for `/admin/mentors/preview/:id` with a non-public status notice.
 - Admin blog/resource create and edit forms use an author dropdown from the admin user list. `Anonymous author` saves `authorId = null`; users with the `mentee` role are excluded from author choices.
 - Admin filters now auto-apply on change. Clear filters is a compact icon action in the toolbar beside Filter and Refresh for mentors, scholarships, blogs/resources, and sessions; session filter panels no longer contain Apply/Clear action rows.
-- Phase 3G should address mentor preview contract alignment. Public mentor detail returns richer display fields such as expertise, disciplines, fluency, experiences, `positionTitle`, `linkedInUrl`, `avgRating`, and session/review totals, while admin mentor responses are flatter inventory records with fields such as `mentorId`, `mentorProfileId`, `title`, `linkedIn`, `rating`, and timestamps. Because admin preview reuses the mentee-style detail component, Phase 3G should decide whether admin mentor detail returns the rich display model plus admin operational fields, align backend DTOs/mappers and frontend mapping if needed, preserve active-only public visibility, and run backend/frontend validation after wiring.
+- Phase 3G aligned mentor preview contracts. `GET /api/Mentor/Admin/GetMentorById/{id}` now returns the rich mentee-facing display fields used by public mentor detail, including `expertise`, `disciplines`, `fluency`, `experiences`, `positionTitle`, `linkedInUrl`, `avgRating`, `totalReviews`, `totalSessions`, `bio`, `profilePicture`, and `company`, while preserving admin-only operational fields such as `mentorProfileStatus`, `isActive`, `calendlyConnected`, `verified`, `createdAt`, and `updatedAt`. Public mentor list/detail remains restricted to active accounts with active mentor profiles only.
 
 ## Known Caveats
 

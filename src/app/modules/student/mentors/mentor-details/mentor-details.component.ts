@@ -232,6 +232,7 @@ export class MentorDetailsComponent implements OnInit, OnDestroy {
 
     return {
       userId: mentor.userId,
+      mentorProfileId: mentor.mentorProfileId,
       fullName: mentor.fullName,
       email: mentor.email,
       role: mentor.role,
@@ -240,11 +241,15 @@ export class MentorDetailsComponent implements OnInit, OnDestroy {
       company: mentor.company,
       positionTitle: mentor.positionTitle ?? mentor.title,
       linkedInUrl: mentor.linkedInUrl ?? mentor.linkedIn,
-      avgRating: mentor.rating ?? 0,
+      avgRating: mentor.avgRating ?? mentor.rating ?? 0,
       totalReviews: mentor.totalReviews ?? 0,
       totalSessions: mentor.totalSessions ?? 0,
       bio: mentor.bio,
-      profilePicture: mentor.profilePicture
+      profilePicture: mentor.profilePicture,
+      expertise: mentor.expertise ?? [],
+      disciplines: mentor.disciplines ?? [],
+      fluency: mentor.fluency ?? [],
+      experiences: mentor.experiences ?? []
     };
   }
 

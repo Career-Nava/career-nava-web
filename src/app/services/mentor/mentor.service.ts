@@ -139,12 +139,20 @@ export class MentorService extends RestService {
       linkedInUrl: dto.linkedInUrl ?? dto.linkedIn,
       bio: dto.bio,
       yearsExperience: dto.yearsExperience,
+      avgRating: typeof dto.avgRating === 'number' ? dto.avgRating : typeof dto.rating === 'number' ? dto.rating : 0,
       rating: typeof dto.rating === 'number' ? dto.rating : typeof dto.avgRating === 'number' ? dto.avgRating : 0,
       avgAttendance: dto.avgAttendance,
       totalReviews: typeof dto.totalReviews === 'number' ? dto.totalReviews : 0,
       totalSessions: typeof dto.totalSessions === 'number' ? dto.totalSessions : 0,
       createdAt: dto.createdAt,
-      updatedAt: dto.updatedAt
+      updatedAt: dto.updatedAt,
+      expertise: dto.expertise ?? [],
+      disciplines: dto.disciplines ?? [],
+      fluency: dto.fluency ?? [],
+      experiences: (dto.experiences ?? []).map(e => ({
+        ...e,
+        year: e.year || (e.startDate ? `${ new Date(e.startDate).getFullYear() } - ${ e.endDate ? new Date(e.endDate).getFullYear() : 'Present' }` : 'N/A')
+      }))
     };
   }
 }

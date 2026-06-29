@@ -15,6 +15,7 @@ export interface MentorFluency {
 
 export interface Mentor {
   userId?: number;
+  mentorProfileId?: number;
   authUid?: string;
   fullName?: string;
   email?: string;
@@ -60,11 +61,16 @@ export interface AdminMentor {
   bio?: string;
   yearsExperience?: number | null;
   rating?: number;
+  avgRating?: number;
   avgAttendance?: number;
   totalReviews?: number;
   totalSessions?: number;
   createdAt?: string;
   updatedAt?: string;
+  expertise?: MentorExpertise[];
+  disciplines?: MentorDiscipline[];
+  fluency?: MentorFluency[];
+  experiences?: MentorExperience[];
 }
 
 export interface EligibleMentorUser {
