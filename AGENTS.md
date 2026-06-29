@@ -85,6 +85,7 @@ Keep the standalone component structure. Do not add NgModules or a new state-man
 - For dashboard/detail pages, mirror existing mentee/admin card and grid patterns before inventing new page-specific structures.
 - For dashboard management/profile UIs, prefer compact icon-only action controls when the action is obvious, matching the admin table row action pattern; always include `title` and `aria-label`.
 - Dashboard action rule: prefer compact icon-only action controls for obvious secondary actions, matching the admin table row action pattern. However, persistence actions inside edit states, especially Save and Cancel, should use icon + visible text labels for clarity. Primary CTAs such as Preview public profile should also keep icon + visible text and must preserve strong contrast/readability across default, hover, focus, and active states.
+- For dashboard edit states, Save and Cancel should use compact, equal-sized pill buttons with icon + text. They should differ only by variant color/icon, not by size. Taxonomy/chip selectors should use standardized pill sizing, spacing, and wrapping so expertise, disciplines, and fluency controls feel consistent across profile screens.
 - Avoid excessive font-weight; use bold text deliberately for page titles, section headings, and key emphasis only.
 
 ## Responsive UX
