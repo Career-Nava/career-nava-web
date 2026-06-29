@@ -1,13 +1,20 @@
 .mentor-profile-page {
+  --mentor-profile-shell-gap: 1.5rem;
+  --mentor-profile-card-padding: 1.5rem;
+  --mentor-profile-nested-card-padding: 1.15rem 1.2rem;
+  --mentor-profile-section-gap: 1.15rem;
+  --mentor-profile-header-gap: 1.35rem;
+  --mentor-profile-content-gap: 1rem;
+  --mentor-profile-row-gap: 0.95rem;
   color: #1f2937;
-  padding: 0 0 3rem;
+  padding: 0 0 3.25rem;
 }
 
 .mentor-profile-shell {
   width: min(100%, 1440px);
   margin: 0 auto;
   display: grid;
-  gap: 1.5rem;
+  gap: var(--mentor-profile-shell-gap);
 }
 
 .mentor-profile-page .mnd-card,
@@ -92,28 +99,36 @@
 .mentor-profile-hero,
 .mentor-profile-overview,
 .mentor-profile-section {
-  padding: 1.5rem;
+  padding: var(--mentor-profile-card-padding);
 }
 
 .mentor-profile-hero__grid,
 .mentor-profile-overview__grid,
 .mentor-profile-dashboard-grid {
   display: grid;
-  gap: 1.5rem;
+  gap: var(--mentor-profile-shell-gap);
 }
 
+.mentor-profile-hero__copy,
 .mentor-profile-hero__body,
 .mentor-profile-hero__status,
 .mentor-profile-overview__identity,
 .mentor-profile-editor-card,
 .mentor-profile-experience-card__body {
   display: grid;
-  gap: 1rem;
+  gap: var(--mentor-profile-content-gap);
 }
 
 .mentor-profile-hero__status,
 .mentor-profile-editor-card {
   height: 100%;
+}
+
+.mentor-profile-main-column,
+.mentor-profile-side-column {
+  display: grid;
+  align-content: start;
+  gap: var(--mentor-profile-shell-gap);
 }
 
 .mentor-profile-card__header,
@@ -136,15 +151,27 @@
 }
 
 .mentor-profile-card__header {
-  margin-bottom: 1.25rem;
+  margin-bottom: var(--mentor-profile-header-gap);
 }
 
 .mentor-profile-card__header--editor {
-  padding-bottom: 1rem;
+  margin-bottom: 0;
+  padding-bottom: 1.1rem;
   border-bottom: 1px solid rgba(226, 232, 240, 0.85);
 }
 
 .mentor-profile-card__top .mnd-section-label {
+  margin-bottom: 0;
+}
+
+.mentor-profile-card__header > div,
+.mentor-profile-overview__copy,
+.mentor-profile-experience-card__copy {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.mentor-profile-card__header .mnd-section-label {
   margin-bottom: 0;
 }
 
@@ -153,9 +180,14 @@
   flex-wrap: wrap;
 }
 
+.mentor-profile-card__header .mentor-profile-actions {
+  align-self: flex-start;
+}
+
 .mentor-profile-actions--footer {
+  margin-top: 0.25rem;
   justify-content: flex-end;
-  padding-top: 1rem;
+  padding-top: 1.1rem;
   border-top: 1px solid rgba(226, 232, 240, 0.85);
 }
 
@@ -222,7 +254,7 @@
 .mentor-profile-empty-card,
 .mentor-profile-inline-state,
 .mentor-profile-editor-card {
-  padding: 1rem 1.05rem;
+  padding: var(--mentor-profile-nested-card-padding);
 }
 
 .mentor-profile-note__label,
@@ -235,8 +267,18 @@
   font-size: 0.8rem;
 }
 
+.mentor-profile-note,
+.mentor-profile-pill-card,
+.mentor-profile-data-card,
+.mentor-profile-status-tile,
+.mentor-profile-stat-card,
+.mentor-profile-empty-card {
+  display: grid;
+  gap: 0.5rem;
+}
+
 .mentor-profile-note__label {
-  margin-bottom: 0.45rem;
+  margin-bottom: 0;
   font-weight: 700;
   letter-spacing: 0.04em;
   text-transform: uppercase;
@@ -245,6 +287,7 @@
 .mentor-profile-overview__identity {
   grid-template-columns: auto minmax(0, 1fr);
   align-items: center;
+  gap: 1.15rem;
 }
 
 .mentor-profile-avatar {
@@ -287,7 +330,7 @@
 .mentor-profile-data-grid,
 .mentor-profile-pill-grid {
   display: grid;
-  gap: 0.95rem;
+  gap: var(--mentor-profile-row-gap);
 }
 
 .mentor-profile-stat-grid {
@@ -321,6 +364,23 @@
   word-break: break-word;
 }
 
+.mentor-profile-data-card strong,
+.mentor-profile-status-tile strong,
+.mentor-profile-stat-card strong,
+.mentor-profile-quick-item strong {
+  color: #111827;
+  line-height: 1.45;
+  text-align: right;
+  overflow-wrap: anywhere;
+}
+
+.mentor-profile-data-card p,
+.mentor-profile-experience-card__description,
+.mentor-profile-note p,
+.mentor-profile-empty-card p {
+  margin: 0;
+}
+
 .mentor-profile-pill-card--edit {
   height: 100%;
 }
@@ -345,11 +405,12 @@
 .mentor-profile-experience-stack,
 .mentor-profile-quick-list {
   display: grid;
-  gap: 1rem;
+  gap: var(--mentor-profile-content-gap);
 }
 
 .mentor-profile-experience-card__aside {
   align-items: center;
+  justify-content: flex-end;
 }
 
 .mentor-profile-experience-card__logo {
@@ -368,7 +429,7 @@
   display: flex;
   justify-content: space-between;
   gap: 1rem;
-  padding: 0.95rem 0;
+  padding: 1rem 0;
   border-top: 1px solid rgba(226, 232, 240, 0.85);
 }
 
@@ -379,10 +440,68 @@
 
 .mentor-profile-quick-item--stacked {
   display: grid;
+  gap: 0.4rem;
 }
 
 .mentor-profile-inline-state {
   color: #1f2937;
+  margin-bottom: 1rem;
+}
+
+.mentor-profile-hero__status {
+  padding: 1.3rem 1.35rem;
+  align-content: start;
+}
+
+.mentor-profile-hero__actions {
+  padding-top: 0.2rem;
+}
+
+.mentor-profile-editor-card {
+  gap: var(--mentor-profile-section-gap);
+}
+
+.mentor-profile-editor-card .admin-form-grid {
+  gap: 1rem;
+}
+
+.mentor-profile-pill-card {
+  align-content: start;
+}
+
+.mentor-profile-pill-actions {
+  row-gap: 0.7rem;
+}
+
+.mentor-profile-status-grid {
+  align-items: start;
+}
+
+.mentor-profile-experience-card {
+  overflow: hidden;
+}
+
+.mentor-profile-experience-card__body {
+  padding: 1.25rem 1.35rem;
+  gap: var(--mentor-profile-section-gap);
+}
+
+.mentor-profile-experience-card__topline {
+  align-items: center;
+  flex-wrap: wrap;
+  row-gap: 0.55rem;
+}
+
+.mentor-profile-experience-card__meta {
+  line-height: 1.5;
+}
+
+.mentor-profile-experience-card__description {
+  line-height: 1.65;
+}
+
+.mentor-profile-status-tile--wide {
+  min-height: 100%;
 }
 
 .mentor-profile-inline-state--success {
@@ -427,6 +546,14 @@
     flex-direction: column;
   }
 
+  .mentor-profile-experience-card__aside {
+    justify-content: flex-start;
+  }
+
+  .mentor-profile-quick-item strong {
+    text-align: left;
+  }
+
   .mentor-profile-actions,
   .mentor-profile-actions--footer {
     width: 100%;
@@ -452,6 +579,19 @@
   .mentor-profile-overview__identity,
   .mentor-profile-quick-item {
     grid-template-columns: 1fr;
+  }
+
+  .mentor-profile-hero__status,
+  .mentor-profile-note,
+  .mentor-profile-pill-card,
+  .mentor-profile-data-card,
+  .mentor-profile-status-tile,
+  .mentor-profile-stat-card,
+  .mentor-profile-empty-card,
+  .mentor-profile-inline-state,
+  .mentor-profile-editor-card,
+  .mentor-profile-experience-card__body {
+    padding: 1rem;
   }
 
   .mentor-profile-stat-grid,
