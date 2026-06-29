@@ -225,11 +225,11 @@
                 </form>
 
                 <div class="d-flex flex-wrap gap-2 justify-content-end pt-3 mt-3 border-top">
-                  <button type="button" class="btn admin-toolbar-btn mentor-profile-btn mentor-profile-btn--ghost" title="Cancel public profile content edit" aria-label="Cancel public profile content edit" (click)="cancelContentEdit()">
+                  <button type="button" class="btn admin-toolbar-btn mentor-profile-btn mentor-profile-btn--ghost mentor-profile-edit-btn" title="Cancel public profile content edit" aria-label="Cancel public profile content edit" (click)="cancelContentEdit()">
                     <fa-icon [icon]="faXmark"></fa-icon>
                     <span>Cancel</span>
                   </button>
-                  <button type="button" class="btn admin-toolbar-btn mentor-profile-btn mentor-profile-btn--primary mentor-profile-btn--save" title="Save public profile content" aria-label="Save public profile content" [disabled]="sectionSaving.content" (click)="saveContent()">
+                  <button type="button" class="btn admin-toolbar-btn mentor-profile-btn mentor-profile-btn--primary mentor-profile-btn--save mentor-profile-edit-btn" title="Save public profile content" aria-label="Save public profile content" [disabled]="sectionSaving.content" (click)="saveContent()">
                     <span *ngIf="sectionSaving.content" class="spinner-border spinner-border-sm" aria-hidden="true"></span>
                     <fa-icon *ngIf="!sectionSaving.content" [icon]="faFloppyDisk"></fa-icon>
                     <span>Save</span>
@@ -261,7 +261,7 @@
                 <div class="col-12 col-lg-4">
                   <article class="mentor-profile-surface p-3 p-lg-4 h-100 d-flex flex-column gap-3">
                     <span class="mentor-profile-meta-label">Expertise</span>
-                    <div class="d-flex flex-wrap gap-2" *ngIf="getSelectedPills('expertise').length; else noExpertise">
+                    <div class="d-flex flex-wrap gap-2 mentor-profile-taxonomy-pills" *ngIf="getSelectedPills('expertise').length; else noExpertise">
                       <span class="mnd-badge mnd-badge--accent" *ngFor="let tag of getSelectedPills('expertise')">{{ tag }}</span>
                     </div>
                     <ng-template #noExpertise><p class="mnd-copy mb-0">No expertise added yet.</p></ng-template>
@@ -271,7 +271,7 @@
                 <div class="col-12 col-lg-4">
                   <article class="mentor-profile-surface p-3 p-lg-4 h-100 d-flex flex-column gap-3">
                     <span class="mentor-profile-meta-label">Disciplines</span>
-                    <div class="d-flex flex-wrap gap-2" *ngIf="getSelectedPills('disciplines').length; else noDisciplines">
+                    <div class="d-flex flex-wrap gap-2 mentor-profile-taxonomy-pills" *ngIf="getSelectedPills('disciplines').length; else noDisciplines">
                       <span class="mnd-badge" *ngFor="let tag of getSelectedPills('disciplines')">{{ tag }}</span>
                     </div>
                     <ng-template #noDisciplines><p class="mnd-copy mb-0">No disciplines added yet.</p></ng-template>
@@ -281,7 +281,7 @@
                 <div class="col-12 col-lg-4">
                   <article class="mentor-profile-surface p-3 p-lg-4 h-100 d-flex flex-column gap-3">
                     <span class="mentor-profile-meta-label">Fluency</span>
-                    <div class="d-flex flex-wrap gap-2" *ngIf="getSelectedPills('fluency').length; else noFluency">
+                    <div class="d-flex flex-wrap gap-2 mentor-profile-taxonomy-pills" *ngIf="getSelectedPills('fluency').length; else noFluency">
                       <span class="mnd-badge" *ngFor="let tag of getSelectedPills('fluency')">{{ tag }}</span>
                     </div>
                     <ng-template #noFluency><p class="mnd-copy mb-0">No languages or fluency tags added yet.</p></ng-template>
@@ -296,7 +296,7 @@
                   <div class="col-12 col-lg-4">
                     <article class="mentor-profile-surface p-3 p-lg-4 h-100 d-flex flex-column gap-3">
                       <span class="mentor-profile-meta-label">Expertise</span>
-                      <div class="d-flex flex-wrap gap-2">
+                      <div class="d-flex flex-wrap gap-2 mentor-profile-taxonomy-pills">
                         <button
                           type="button"
                           class="mentor-profile-choice-pill"
@@ -313,7 +313,7 @@
                   <div class="col-12 col-lg-4">
                     <article class="mentor-profile-surface p-3 p-lg-4 h-100 d-flex flex-column gap-3">
                       <span class="mentor-profile-meta-label">Disciplines</span>
-                      <div class="d-flex flex-wrap gap-2">
+                      <div class="d-flex flex-wrap gap-2 mentor-profile-taxonomy-pills">
                         <button
                           type="button"
                           class="mentor-profile-choice-pill"
@@ -330,7 +330,7 @@
                   <div class="col-12 col-lg-4">
                     <article class="mentor-profile-surface p-3 p-lg-4 h-100 d-flex flex-column gap-3">
                       <span class="mentor-profile-meta-label">Fluency</span>
-                      <div class="d-flex flex-wrap gap-2">
+                      <div class="d-flex flex-wrap gap-2 mentor-profile-taxonomy-pills">
                         <button
                           type="button"
                           class="mentor-profile-choice-pill"
@@ -346,11 +346,11 @@
                 </div>
 
                 <div class="d-flex flex-wrap gap-2 justify-content-end pt-3 border-top">
-                  <button type="button" class="btn admin-toolbar-btn mentor-profile-btn mentor-profile-btn--ghost" title="Cancel expertise and mentoring fit edit" aria-label="Cancel expertise and mentoring fit edit" (click)="cancelTaxonomyEdit()">
+                  <button type="button" class="btn admin-toolbar-btn mentor-profile-btn mentor-profile-btn--ghost mentor-profile-edit-btn" title="Cancel expertise and mentoring fit edit" aria-label="Cancel expertise and mentoring fit edit" (click)="cancelTaxonomyEdit()">
                     <fa-icon [icon]="faXmark"></fa-icon>
                     <span>Cancel</span>
                   </button>
-                  <button type="button" class="btn admin-toolbar-btn mentor-profile-btn mentor-profile-btn--primary mentor-profile-btn--save" title="Save expertise and mentoring fit" aria-label="Save expertise and mentoring fit" [disabled]="sectionSaving.taxonomy" (click)="saveTaxonomy()">
+                  <button type="button" class="btn admin-toolbar-btn mentor-profile-btn mentor-profile-btn--primary mentor-profile-btn--save mentor-profile-edit-btn" title="Save expertise and mentoring fit" aria-label="Save expertise and mentoring fit" [disabled]="sectionSaving.taxonomy" (click)="saveTaxonomy()">
                     <span *ngIf="sectionSaving.taxonomy" class="spinner-border spinner-border-sm" aria-hidden="true"></span>
                     <fa-icon *ngIf="!sectionSaving.taxonomy" [icon]="faFloppyDisk"></fa-icon>
                     <span>Save</span>
@@ -469,11 +469,11 @@
                     </form>
 
                     <div class="d-flex flex-wrap gap-2 justify-content-end pt-3 mt-3 border-top">
-                      <button type="button" class="btn admin-toolbar-btn mentor-profile-btn mentor-profile-btn--ghost" title="Cancel experience edit" aria-label="Cancel experience edit" (click)="cancelExperienceEdit()">
+                      <button type="button" class="btn admin-toolbar-btn mentor-profile-btn mentor-profile-btn--ghost mentor-profile-edit-btn" title="Cancel experience edit" aria-label="Cancel experience edit" (click)="cancelExperienceEdit()">
                         <fa-icon [icon]="faXmark"></fa-icon>
                         <span>Cancel</span>
                       </button>
-                      <button type="button" class="btn admin-toolbar-btn mentor-profile-btn mentor-profile-btn--primary mentor-profile-btn--save" title="Save experience" aria-label="Save experience" [disabled]="sectionSaving.experience" (click)="saveExperience()">
+                      <button type="button" class="btn admin-toolbar-btn mentor-profile-btn mentor-profile-btn--primary mentor-profile-btn--save mentor-profile-edit-btn" title="Save experience" aria-label="Save experience" [disabled]="sectionSaving.experience" (click)="saveExperience()">
                         <span *ngIf="sectionSaving.experience" class="spinner-border spinner-border-sm" aria-hidden="true"></span>
                         <fa-icon *ngIf="!sectionSaving.experience" [icon]="faFloppyDisk"></fa-icon>
                         <span>Save</span>
@@ -529,11 +529,11 @@
                 </form>
 
                 <div class="d-flex flex-wrap gap-2 justify-content-end pt-3 mt-3 border-top">
-                  <button type="button" class="btn admin-toolbar-btn mentor-profile-btn mentor-profile-btn--ghost" title="Cancel new experience" aria-label="Cancel new experience" (click)="cancelExperienceEdit()">
+                  <button type="button" class="btn admin-toolbar-btn mentor-profile-btn mentor-profile-btn--ghost mentor-profile-edit-btn" title="Cancel new experience" aria-label="Cancel new experience" (click)="cancelExperienceEdit()">
                     <fa-icon [icon]="faXmark"></fa-icon>
                     <span>Cancel</span>
                   </button>
-                  <button type="button" class="btn admin-toolbar-btn mentor-profile-btn mentor-profile-btn--primary mentor-profile-btn--save" title="Save new experience" aria-label="Save new experience" [disabled]="sectionSaving.experience" (click)="saveExperience()">
+                  <button type="button" class="btn admin-toolbar-btn mentor-profile-btn mentor-profile-btn--primary mentor-profile-btn--save mentor-profile-edit-btn" title="Save new experience" aria-label="Save new experience" [disabled]="sectionSaving.experience" (click)="saveExperience()">
                     <span *ngIf="sectionSaving.experience" class="spinner-border spinner-border-sm" aria-hidden="true"></span>
                     <fa-icon *ngIf="!sectionSaving.experience" [icon]="faFloppyDisk"></fa-icon>
                     <span>Save</span>
