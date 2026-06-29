@@ -10,11 +10,6 @@
       <span>{{ adminPreviewVisibilityMessage }}</span>
     </section>
 
-    <section *ngIf="mentorPreviewVisibilityMessage" class="alert alert-info d-flex flex-wrap align-items-center gap-2 mb-0">
-      <strong>Mentor preview</strong>
-      <span>{{ mentorPreviewVisibilityMessage }}</span>
-    </section>
-
     <ng-container *ngIf="isLoading">
       <section class="mnd-hero mnd-card placeholder-wave mb-4">
         <div class="row g-4 align-items-stretch">
@@ -87,7 +82,7 @@
                 </a>
 
                 <p class="mnd-note mb-0 text-muted">
-                  {{ isAdminPreview ? 'Preview shows the mentee-facing profile presentation. Use manage to change profile status or operational fields.' : isMentorPreview ? 'Preview shows the mentee-facing profile presentation for your own profile. Lifecycle status and operational controls still stay with admins.' : 'Choose a mentor whose background fits the questions you need answered next, then use a session to turn that insight into a plan.' }}
+                  {{ isAdminPreview ? 'Preview shows the mentee-facing profile presentation. Use manage to change profile status or operational fields.' : isMentorPreview ? (mentorPreviewVisibilityMessage || 'This is how mentees can see your profile.') + ' Booking and lifecycle controls remain disabled here.' : 'Choose a mentor whose background fits the questions you need answered next, then use a session to turn that insight into a plan.' }}
                 </p>
               </div>
             </div>

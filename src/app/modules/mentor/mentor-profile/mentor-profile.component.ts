@@ -1,4 +1,15 @@
 import { Component, OnInit } from '@angular/core';
+import {
+  faArrowUpRightFromSquare,
+  faCalendarCheck,
+  faEye,
+  faFloppyDisk,
+  faLink,
+  faPen,
+  faPlus,
+  faTrashCan,
+  faXmark
+} from '@fortawesome/free-solid-svg-icons';
 import { FormBuilder, Validators } from '@angular/forms';
 import { finalize } from 'rxjs';
 import { AuthService } from '../../../services/auth/auth.service';
@@ -24,6 +35,16 @@ type TaxonomyControlName = 'expertiseIds' | 'disciplineIds' | 'fluencyIds';
   styleUrl: './mentor-profile.component.scss'
 })
 export class MentorProfileComponent implements OnInit {
+  protected readonly faArrowUpRightFromSquare = faArrowUpRightFromSquare;
+  protected readonly faCalendarCheck = faCalendarCheck;
+  protected readonly faEye = faEye;
+  protected readonly faFloppyDisk = faFloppyDisk;
+  protected readonly faLink = faLink;
+  protected readonly faPen = faPen;
+  protected readonly faPlus = faPlus;
+  protected readonly faTrashCan = faTrashCan;
+  protected readonly faXmark = faXmark;
+
   profile: MentorSelfProfile | null = null;
   loading = true;
   error: string | null = null;
@@ -102,7 +123,10 @@ export class MentorProfileComponent implements OnInit {
   }
 
   get statusBadgeClass(): string {
-    return `mentor-profile__status-pill--${ this.statusTone }`;
+    if (this.statusTone === 'success') return 'admin-badge--success';
+    if (this.statusTone === 'warning') return 'admin-badge--warning';
+    if (this.statusTone === 'danger') return 'admin-badge--danger';
+    return 'admin-badge--muted';
   }
 
   get visibilityHeadline(): string {
