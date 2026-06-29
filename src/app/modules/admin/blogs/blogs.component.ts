@@ -1,7 +1,7 @@
 import { DatePipe, NgClass, NgForOf, NgIf } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { faEye, faFilter, faFloppyDisk, faPen, faPlus, faRotateRight, faXmark } from '@fortawesome/free-solid-svg-icons';
+import { faEye, faFilter, faPen, faPlus, faRotateRight, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { finalize, of, switchMap } from 'rxjs';
 import { AdminBlog, AdminBlogUpsert } from '../../../services/blog/blog.model';
 import { BlogService } from '../../../services/blog/blog.service';
@@ -24,7 +24,6 @@ export class AdminBlogsComponent implements OnInit {
   protected readonly faPlus = faPlus;
   protected readonly faEye = faEye;
   protected readonly faFilter = faFilter;
-  protected readonly faFloppyDisk = faFloppyDisk;
   protected readonly faPen = faPen;
   protected readonly faRotateRight = faRotateRight;
   protected readonly faXmark = faXmark;
