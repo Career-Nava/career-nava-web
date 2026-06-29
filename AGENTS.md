@@ -83,6 +83,8 @@ Keep the standalone component structure. Do not add NgModules or a new state-man
 - Avoid deep, page-specific nested SCSS for basic padding, margin, and layout.
 - Add component SCSS only when it provides clear brand-specific value or cannot be expressed cleanly with existing utilities and shared dashboard patterns.
 - For dashboard/detail pages, mirror existing mentee/admin card and grid patterns before inventing new page-specific structures.
+- For dashboard management/profile UIs, prefer compact icon-only action controls when the action is obvious, matching the admin table row action pattern; always include `title` and `aria-label`.
+- Avoid excessive font-weight; use bold text deliberately for page titles, section headings, and key emphasis only.
 
 ## Responsive UX
 

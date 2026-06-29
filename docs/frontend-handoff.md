@@ -158,6 +158,7 @@ Completed admin pages use page-level state handling:
 - Frontend route guards remain UX routing only; backend authorization protects sensitive admin endpoints.
 - Mentor self-service profile/detail pages should reuse the same card padding, section kicker spacing, and dashboard grid rhythm as the mentee mentor/scholarship detail pages instead of introducing one-off spacing systems.
 - Prefer Bootstrap utilities plus existing shared app/admin dashboard classes for layout, spacing, cards, grids, and action placement before adding page-specific SCSS. Keep component SCSS for brand-specific visuals or cases utilities cannot express cleanly.
+- For dashboard management/profile UIs, prefer compact icon-only action controls when the action is obvious, matching the admin table row action pattern, and avoid excessive font-weight outside page titles, section headings, and intentional emphasis.
 
 ## Implemented Features
 
