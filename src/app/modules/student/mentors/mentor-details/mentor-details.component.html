@@ -10,6 +10,11 @@
       <span>{{ adminPreviewVisibilityMessage }}</span>
     </section>
 
+    <section *ngIf="mentorPreviewVisibilityMessage" class="alert alert-info d-flex flex-wrap align-items-center gap-2 mb-0">
+      <strong>Mentor preview</strong>
+      <span>{{ mentorPreviewVisibilityMessage }}</span>
+    </section>
+
     <ng-container *ngIf="isLoading">
       <section class="mnd-hero mnd-card placeholder-wave mb-4">
         <div class="row g-4 align-items-stretch">
@@ -53,8 +58,8 @@
             <div class="mnd-hero__body">
               <div class="d-flex flex-wrap align-items-start justify-content-between gap-3 mb-3">
               <span class="mnd-kicker mb-0">Mentor spotlight</span>
-              <span class="mnd-pill" [class.mnd-pill--success]="calendlyVerified" [class.mnd-pill--muted]="!calendlyVerified">
-                  {{ isAdminPreview ? 'Admin preview' : calendlyVerified ? 'Ready to book' : 'Profile available' }}
+              <span class="mnd-pill" [class.mnd-pill--success]="calendlyVerified && !isAdminPreview && !isMentorPreview" [class.mnd-pill--muted]="!calendlyVerified || isAdminPreview || isMentorPreview">
+                  {{ isAdminPreview ? 'Admin preview' : isMentorPreview ? 'Preview mode' : calendlyVerified ? 'Ready to book' : 'Profile available' }}
                 </span>
               </div>
 
@@ -67,7 +72,7 @@
 
               <div class="mnd-actions">
                 <button type="button" class="btn btn-secondary mnd-cta" (click)="openCalendlyModal()">
-                  <span>Book session</span>
+                  <span>{{ isMentorPreview ? 'Preview scheduling' : 'Book session' }}</span>
                   <fa-icon [icon]="faCalendarCheck"></fa-icon>
                 </button>
 
@@ -82,7 +87,7 @@
                 </a>
 
                 <p class="mnd-note mb-0 text-muted">
-                  {{ isAdminPreview ? 'Preview shows the mentee-facing profile presentation. Use manage to change profile status or operational fields.' : 'Choose a mentor whose background fits the questions you need answered next, then use a session to turn that insight into a plan.' }}
+                  {{ isAdminPreview ? 'Preview shows the mentee-facing profile presentation. Use manage to change profile status or operational fields.' : isMentorPreview ? 'Preview shows the mentee-facing profile presentation for your own profile. Lifecycle status and operational controls still stay with admins.' : 'Choose a mentor whose background fits the questions you need answered next, then use a session to turn that insight into a plan.' }}
                 </p>
               </div>
             </div>
@@ -187,19 +192,19 @@
               </div>
               <div class="mnd-quick-item">
                 <span>Availability</span>
-                <strong>{{ calendlyVerified ? 'Ready to book' : 'Profile available' }}</strong>
+                <strong>{{ isMentorPreview ? 'Preview only' : calendlyVerified ? 'Ready to book' : 'Profile available' }}</strong>
               </div>
             </div>
           </section>
 
           <section class="mnd-card p-4">
             <span class="mnd-section-label">Next step</span>
-            <h2 class="mnd-section-title">Book a guidance session</h2>
+            <h2 class="mnd-section-title">{{ isMentorPreview ? 'Profile preview' : 'Book a guidance session' }}</h2>
             <p class="text-muted mb-3">
-              {{ isAdminPreview ? 'Booking is disabled in admin preview and does not mutate Calendly.' : 'Use a session to ask focused questions about experience, transitions, and how to prepare for your next career move.' }}
+              {{ isAdminPreview ? 'Booking is disabled in admin preview and does not mutate Calendly.' : isMentorPreview ? 'Scheduling is disabled in mentor preview. This view is here so you can review exactly what mentees would see.' : 'Use a session to ask focused questions about experience, transitions, and how to prepare for your next career move.' }}
             </p>
             <button type="button" class="btn btn-secondary w-100 mnd-cta" (click)="openCalendlyModal()">
-              <span>Schedule with {{ mentor.fullName }}</span>
+              <span>{{ isMentorPreview ? 'Preview scheduling flow' : 'Schedule with ' + mentor.fullName }}</span>
               <fa-icon [icon]="faCalendarCheck"></fa-icon>
             </button>
           </section>

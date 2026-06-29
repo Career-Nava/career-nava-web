@@ -147,7 +147,8 @@ export class MentorService extends RestService {
       yearsExperience: typeof dto.yearsExperience === 'number' ? dto.yearsExperience : null,
       availableExpertises: dto.availableExpertises ?? [],
       availableDisciplines: dto.availableDisciplines ?? [],
-      availableFluencies: dto.availableFluencies ?? []
+      availableFluencies: dto.availableFluencies ?? [],
+      scheduling: dto.scheduling ?? null
     };
   }
 

@@ -1,11 +1,20 @@
 import { Component, OnInit } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, Validators } from '@angular/forms';
 import { finalize } from 'rxjs';
 import { AuthService } from '../../../services/auth/auth.service';
-import { MentorLookupOption, MentorSelfProfile, MentorSelfExperienceInput, UpdateMentorSelfProfileRequest } from '../../../services/mentor/mentor.model';
+import {
+  MentorLookupOption,
+  MentorSelfExperienceInput,
+  MentorSelfProfile,
+  MentorSchedulingDetails,
+  UpdateMentorSelfProfileRequest
+} from '../../../services/mentor/mentor.model';
 import { MentorService } from '../../../services/mentor/mentor.service';
 import { ToastService } from '../../../services/toast.service';
 import { SharedModule } from '../../../shared/shared.module';
+
+type ProfileSectionKey = 'content' | 'taxonomy' | 'experience';
+type TaxonomyControlName = 'expertiseIds' | 'disciplineIds' | 'fluencyIds';
 
 @Component({
   selector: 'app-mentor-profile',
@@ -17,23 +26,55 @@ import { SharedModule } from '../../../shared/shared.module';
 export class MentorProfileComponent implements OnInit {
   profile: MentorSelfProfile | null = null;
   loading = true;
-  saving = false;
   error: string | null = null;
-  saveError: string | null = null;
-  saveMessage: string | null = null;
 
-  readonly profileForm = this.fb.group({
+  editingContent = false;
+  editingTaxonomy = false;
+  editingExperienceIndex: number | null = null;
+  addingExperience = false;
+
+  readonly sectionSaving: Record<ProfileSectionKey, boolean> = {
+    content: false,
+    taxonomy: false,
+    experience: false
+  };
+
+  readonly sectionError: Record<ProfileSectionKey, string | null> = {
+    content: null,
+    taxonomy: null,
+    experience: null
+  };
+
+  readonly sectionMessage: Record<ProfileSectionKey, string | null> = {
+    content: null,
+    taxonomy: null,
+    experience: null
+  };
+
+  readonly contentForm = this.fb.group({
     company: [ '' ],
     positionTitle: [ '' ],
     linkedInUrl: [ '' ],
-    bio: [ '', [ Validators.maxLength(2000) ] ],
     profilePicture: [ '' ],
     location: [ '' ],
     yearsExperience: [ null as number | null ],
+    bio: [ '', [ Validators.maxLength(2000) ] ]
+  });
+
+  readonly taxonomyForm = this.fb.group({
     expertiseIds: [ [] as number[] ],
     disciplineIds: [ [] as number[] ],
-    fluencyIds: [ [] as number[] ],
-    experiences: this.fb.array<FormGroup>([])
+    fluencyIds: [ [] as number[] ]
+  });
+
+  readonly experienceForm = this.fb.group({
+    mentorExperienceId: [ null as number | null ],
+    title: [ '', Validators.required ],
+    companyName: [ '' ],
+    startDate: [ '', Validators.required ],
+    endDate: [ '' ],
+    companyImage: [ '' ],
+    description: [ '', Validators.required ]
   });
 
   constructor(
@@ -48,14 +89,6 @@ export class MentorProfileComponent implements OnInit {
     this.loadProfile();
   }
 
-  get experiences(): FormArray<FormGroup> {
-    return this.profileForm.get('experiences') as FormArray<FormGroup>;
-  }
-
-  get canSave(): boolean {
-    return !this.loading && !this.saving && this.profileForm.valid;
-  }
-
   get statusLabel(): string {
     return this.profile?.mentorProfileStatus || 'unknown';
   }
@@ -66,6 +99,10 @@ export class MentorProfileComponent implements OnInit {
     if (status === 'draft') return 'warning';
     if (status === 'inactive' || status === 'suspended') return 'danger';
     return 'muted';
+  }
+
+  get statusBadgeClass(): string {
+    return `mentor-profile__status-pill--${ this.statusTone }`;
   }
 
   get visibilityHeadline(): string {
@@ -89,14 +126,29 @@ export class MentorProfileComponent implements OnInit {
     }
 
     if (status === 'draft') {
-      return 'You can keep refining your profile details here, but mentees cannot discover you until the mentor profile becomes active.';
+      return 'Keep refining your profile here. Mentees cannot discover you until the mentor profile becomes active.';
     }
 
     return 'Your public mentor visibility is controlled by admins. Profile edits here do not change lifecycle status on their own.';
   }
 
-  get statusBadgeClass(): string {
-    return `mentor-profile__status-pill--${ this.statusTone }`;
+  get hasProfile(): boolean {
+    return !!this.profile && !this.loading && !this.error;
+  }
+
+  get scheduling(): MentorSchedulingDetails | null {
+    return this.profile?.scheduling ?? null;
+  }
+
+  get schedulingStateLabel(): string {
+    if (!this.scheduling) {
+      return this.profile?.calendlyConnected ? 'Connected, details unavailable' : 'Not configured';
+    }
+
+    const status = (this.scheduling.activeStatus || '').toLowerCase();
+    if (status === 'active') return 'Active event type';
+    if (status) return `${ status.charAt(0).toUpperCase() + status.slice(1) } event type`;
+    return 'Scheduling configured';
   }
 
   trackOption(_: number, option: MentorLookupOption): number {
@@ -107,57 +159,188 @@ export class MentorProfileComponent implements OnInit {
     return index;
   }
 
-  isSelected(controlName: 'expertiseIds' | 'disciplineIds' | 'fluencyIds', optionId: number): boolean {
-    const selected = this.profileForm.get(controlName)?.value as number[] | null;
-    return Array.isArray(selected) && selected.includes(optionId);
+  startContentEdit(): void {
+    if (!this.profile) return;
+    this.clearSectionFeedback('content');
+    this.editingContent = true;
+    this.contentForm.reset({
+      company: this.profile.company ?? '',
+      positionTitle: this.profile.positionTitle ?? '',
+      linkedInUrl: this.profile.linkedInUrl ?? '',
+      profilePicture: this.profile.profilePicture ?? '',
+      location: this.profile.location ?? '',
+      yearsExperience: this.profile.yearsExperience ?? null,
+      bio: this.profile.bio ?? ''
+    });
   }
 
-  toggleSelection(controlName: 'expertiseIds' | 'disciplineIds' | 'fluencyIds', optionId: number, checked: boolean): void {
-    const selected = new Set<number>((this.profileForm.get(controlName)?.value as number[] | null) ?? []);
-    if (checked) {
-      selected.add(optionId);
-    } else {
-      selected.delete(optionId);
-    }
-
-    this.profileForm.get(controlName)?.setValue(Array.from(selected));
-    this.profileForm.get(controlName)?.markAsDirty();
+  cancelContentEdit(): void {
+    this.editingContent = false;
+    this.clearSectionFeedback('content');
+    this.contentForm.reset();
   }
 
-  addExperience(): void {
-    this.experiences.push(this.createExperienceGroup());
-    this.saveMessage = null;
-  }
-
-  removeExperience(index: number): void {
-    this.experiences.removeAt(index);
-    this.saveMessage = null;
-  }
-
-  saveProfile(): void {
-    if (this.profileForm.invalid) {
-      this.profileForm.markAllAsTouched();
+  saveContent(): void {
+    if (!this.profile) return;
+    if (this.contentForm.invalid) {
+      this.contentForm.markAllAsTouched();
       return;
     }
 
-    this.saving = true;
-    this.saveError = null;
-    this.saveMessage = null;
+    const value = this.contentForm.getRawValue();
+    this.saveSection('content', {
+      company: this.toNullable(value.company),
+      positionTitle: this.toNullable(value.positionTitle),
+      linkedInUrl: this.toNullable(value.linkedInUrl),
+      profilePicture: this.toNullable(value.profilePicture),
+      location: this.toNullable(value.location),
+      yearsExperience: this.toNullableNumber(value.yearsExperience),
+      bio: this.toNullable(value.bio)
+    }, 'Profile content updated.', () => {
+      this.editingContent = false;
+    });
+  }
 
-    this.mentorService.updateSelfProfile(this.buildPayload())
-      .pipe(finalize(() => this.saving = false))
-      .subscribe({
-        next: profile => {
-          this.profile = profile;
-          this.populateForm(profile);
-          this.saveMessage = 'Profile updated successfully.';
-          this.authService.updateUser({ profilePicture: profile.profilePicture ?? undefined, calendlyConnected: profile.calendlyConnected });
-          this.toastService.show('Profile updated successfully.', { classname: 'bg-success text-light', delay: 3500 });
-        },
-        error: err => {
-          this.saveError = this.getActionError(err, 'Unable to save your profile right now.');
-        }
-      });
+  startTaxonomyEdit(): void {
+    if (!this.profile) return;
+    this.clearSectionFeedback('taxonomy');
+    this.editingTaxonomy = true;
+    this.taxonomyForm.reset({
+      expertiseIds: this.getSelectedIds('expertise'),
+      disciplineIds: this.getSelectedIds('disciplines'),
+      fluencyIds: this.getSelectedIds('fluency')
+    });
+  }
+
+  cancelTaxonomyEdit(): void {
+    this.editingTaxonomy = false;
+    this.clearSectionFeedback('taxonomy');
+    this.taxonomyForm.reset();
+  }
+
+  saveTaxonomy(): void {
+    const value = this.taxonomyForm.getRawValue();
+    this.saveSection('taxonomy', {
+      expertiseIds: [ ...(value.expertiseIds ?? []) ],
+      disciplineIds: [ ...(value.disciplineIds ?? []) ],
+      fluencyIds: [ ...(value.fluencyIds ?? []) ]
+    }, 'Mentoring fit updated.', () => {
+      this.editingTaxonomy = false;
+    });
+  }
+
+  isSelected(controlName: TaxonomyControlName, optionId: number): boolean {
+    const selected = this.taxonomyForm.get(controlName)?.value as number[] | null;
+    return Array.isArray(selected) && selected.includes(optionId);
+  }
+
+  toggleSelection(controlName: TaxonomyControlName, optionId: number): void {
+    const selected = new Set<number>((this.taxonomyForm.get(controlName)?.value as number[] | null) ?? []);
+    if (selected.has(optionId)) {
+      selected.delete(optionId);
+    } else {
+      selected.add(optionId);
+    }
+
+    this.taxonomyForm.get(controlName)?.setValue(Array.from(selected));
+    this.taxonomyForm.get(controlName)?.markAsDirty();
+  }
+
+  startAddExperience(): void {
+    this.clearSectionFeedback('experience');
+    this.addingExperience = true;
+    this.editingExperienceIndex = null;
+    this.experienceForm.reset({
+      mentorExperienceId: null,
+      title: '',
+      companyName: '',
+      startDate: '',
+      endDate: '',
+      companyImage: '',
+      description: ''
+    });
+  }
+
+  startEditExperience(index: number): void {
+    if (!this.profile?.experiences?.[index]) return;
+    this.clearSectionFeedback('experience');
+    this.addingExperience = false;
+    this.editingExperienceIndex = index;
+    const experience = this.profile.experiences[index];
+    this.experienceForm.reset({
+      mentorExperienceId: experience.mentorExperienceId ?? null,
+      title: experience.title ?? '',
+      companyName: experience.companyName ?? '',
+      startDate: this.toDateInput(experience.startDate),
+      endDate: this.toDateInput(experience.endDate),
+      companyImage: experience.companyImage ?? '',
+      description: experience.description ?? ''
+    });
+  }
+
+  cancelExperienceEdit(): void {
+    this.addingExperience = false;
+    this.editingExperienceIndex = null;
+    this.clearSectionFeedback('experience');
+    this.experienceForm.reset();
+  }
+
+  saveExperience(): void {
+    if (!this.profile) return;
+    if (this.experienceForm.invalid) {
+      this.experienceForm.markAllAsTouched();
+      return;
+    }
+
+    const draft = this.toExperienceInput(this.experienceForm.getRawValue());
+    const nextExperiences = (this.profile.experiences ?? []).map(item => this.toExperienceInput(item));
+
+    if (this.addingExperience) {
+      nextExperiences.push(draft);
+    } else if (this.editingExperienceIndex != null) {
+      nextExperiences[this.editingExperienceIndex] = draft;
+    } else {
+      return;
+    }
+
+    this.saveSection('experience', { experiences: nextExperiences }, this.addingExperience ? 'Experience added.' : 'Experience updated.', () => {
+      this.addingExperience = false;
+      this.editingExperienceIndex = null;
+      this.experienceForm.reset();
+    });
+  }
+
+  removeExperience(index: number): void {
+    if (!this.profile?.experiences?.[index]) return;
+    const experience = this.profile.experiences[index];
+    const label = experience.title || `experience ${ index + 1 }`;
+    if (!window.confirm(`Remove ${ label } from your profile?`)) {
+      return;
+    }
+
+    const nextExperiences = (this.profile.experiences ?? [])
+      .filter((_, currentIndex) => currentIndex !== index)
+      .map(item => this.toExperienceInput(item));
+
+    this.saveSection('experience', { experiences: nextExperiences }, 'Experience removed.', () => {
+      this.addingExperience = false;
+      this.editingExperienceIndex = null;
+      this.experienceForm.reset();
+    });
+  }
+
+  getSelectedPills(group: 'expertise' | 'disciplines' | 'fluency'): string[] {
+    if (!this.profile) return [];
+
+    if (group === 'expertise') {
+      return (this.profile.expertise ?? []).map(item => item.expertiseName || '').filter(Boolean);
+    }
+
+    if (group === 'disciplines') {
+      return (this.profile.disciplines ?? []).map(item => item.disciplineName || '').filter(Boolean);
+    }
+
+    return (this.profile.fluency ?? []).map(item => item.fluencyName || '').filter(Boolean);
   }
 
   private loadProfile(): void {
@@ -168,8 +351,7 @@ export class MentorProfileComponent implements OnInit {
       .pipe(finalize(() => this.loading = false))
       .subscribe({
         next: profile => {
-          this.profile = profile;
-          this.populateForm(profile);
+          this.applyProfile(profile);
         },
         error: err => {
           this.error = this.getActionError(err, 'Unable to load your mentor profile right now.');
@@ -177,78 +359,129 @@ export class MentorProfileComponent implements OnInit {
       });
   }
 
-  private populateForm(profile: MentorSelfProfile): void {
-    this.profileForm.patchValue({
-      company: profile.company ?? '',
-      positionTitle: profile.positionTitle ?? '',
-      linkedInUrl: profile.linkedInUrl ?? '',
-      bio: profile.bio ?? '',
-      profilePicture: profile.profilePicture ?? '',
-      location: profile.location ?? '',
-      yearsExperience: profile.yearsExperience ?? null,
-      expertiseIds: (profile.expertise ?? []).map(item => item.expertiseId).filter((value): value is number => typeof value === 'number'),
-      disciplineIds: (profile.disciplines ?? []).map(item => item.disciplineId).filter((value): value is number => typeof value === 'number'),
-      fluencyIds: (profile.fluency ?? []).map(item => item.fluencyId).filter((value): value is number => typeof value === 'number')
-    });
-
-    this.experiences.clear();
-    (profile.experiences ?? []).forEach(experience => {
-      this.experiences.push(this.createExperienceGroup({
-        mentorExperienceId: experience.mentorExperienceId ?? null,
-        title: experience.title ?? '',
-        description: experience.description ?? '',
-        companyName: experience.companyName ?? '',
-        companyImage: experience.companyImage ?? '',
-        startDate: this.toDateInput(experience.startDate),
-        endDate: this.toDateInput(experience.endDate ?? undefined)
-      }));
-    });
-
-    this.profileForm.markAsPristine();
-  }
-
-  private createExperienceGroup(experience?: Partial<MentorSelfExperienceInput>): FormGroup {
-    return this.fb.group({
-      mentorExperienceId: [ experience?.mentorExperienceId ?? null ],
-      title: [ experience?.title ?? '', Validators.required ],
-      description: [ experience?.description ?? '', Validators.required ],
-      companyName: [ experience?.companyName ?? '' ],
-      companyImage: [ experience?.companyImage ?? '' ],
-      startDate: [ experience?.startDate ?? '', Validators.required ],
-      endDate: [ experience?.endDate ?? '' ]
+  private applyProfile(profile: MentorSelfProfile): void {
+    this.profile = profile;
+    this.authService.updateUser({
+      profilePicture: profile.profilePicture ?? undefined,
+      calendlyConnected: profile.calendlyConnected
     });
   }
 
-  private buildPayload(): UpdateMentorSelfProfileRequest {
-    const value = this.profileForm.getRawValue();
-    return {
-      company: this.toNullable(value.company),
-      positionTitle: this.toNullable(value.positionTitle),
-      linkedInUrl: this.toNullable(value.linkedInUrl),
-      bio: this.toNullable(value.bio),
-      profilePicture: this.toNullable(value.profilePicture),
-      location: this.toNullable(value.location),
-      yearsExperience: typeof value.yearsExperience === 'number' ? value.yearsExperience : null,
-      expertiseIds: [ ...(value.expertiseIds ?? []) ],
-      disciplineIds: [ ...(value.disciplineIds ?? []) ],
-      fluencyIds: [ ...(value.fluencyIds ?? []) ],
-      experiences: this.experiences.controls.map(control => {
-        const experience = control.getRawValue();
-        return {
-          mentorExperienceId: experience.mentorExperienceId ?? null,
-          title: experience.title,
-          description: experience.description,
-          companyName: this.toNullable(experience.companyName),
-          companyImage: this.toNullable(experience.companyImage),
-          startDate: experience.startDate,
-          endDate: this.toNullable(experience.endDate)
-        };
-      })
+  private saveSection(
+    section: ProfileSectionKey,
+    overrides: Partial<UpdateMentorSelfProfileRequest>,
+    successMessage: string,
+    onSuccess?: () => void
+  ): void {
+    if (!this.profile) return;
+
+    this.sectionSaving[section] = true;
+    this.sectionError[section] = null;
+    this.sectionMessage[section] = null;
+
+    this.mentorService.updateSelfProfile(this.buildPayload(overrides))
+      .pipe(finalize(() => this.sectionSaving[section] = false))
+      .subscribe({
+        next: profile => {
+          this.applyProfile(profile);
+          this.sectionMessage[section] = successMessage;
+          onSuccess?.();
+          this.toastService.show(successMessage, { classname: 'bg-success text-light', delay: 3200 });
+        },
+        error: err => {
+          this.sectionError[section] = this.getActionError(err, 'Unable to save your profile changes right now.');
+        }
+      });
+  }
+
+  private buildPayload(overrides: Partial<UpdateMentorSelfProfileRequest> = {}): UpdateMentorSelfProfileRequest {
+    if (!this.profile) {
+      return {
+        expertiseIds: [],
+        disciplineIds: [],
+        fluencyIds: [],
+        experiences: []
+      };
+    }
+
+    const basePayload: UpdateMentorSelfProfileRequest = {
+      company: this.toNullable(this.profile.company),
+      positionTitle: this.toNullable(this.profile.positionTitle),
+      linkedInUrl: this.toNullable(this.profile.linkedInUrl),
+      bio: this.toNullable(this.profile.bio),
+      profilePicture: this.toNullable(this.profile.profilePicture),
+      location: this.toNullable(this.profile.location),
+      yearsExperience: typeof this.profile.yearsExperience === 'number' ? this.profile.yearsExperience : null,
+      expertiseIds: this.getSelectedIds('expertise'),
+      disciplineIds: this.getSelectedIds('disciplines'),
+      fluencyIds: this.getSelectedIds('fluency'),
+      experiences: (this.profile.experiences ?? []).map(item => this.toExperienceInput(item))
     };
+
+    return {
+      ...basePayload,
+      ...overrides,
+      expertiseIds: overrides.expertiseIds ?? basePayload.expertiseIds,
+      disciplineIds: overrides.disciplineIds ?? basePayload.disciplineIds,
+      fluencyIds: overrides.fluencyIds ?? basePayload.fluencyIds,
+      experiences: overrides.experiences ?? basePayload.experiences
+    };
+  }
+
+  private getSelectedIds(group: 'expertise' | 'disciplines' | 'fluency'): number[] {
+    if (!this.profile) return [];
+
+    if (group === 'expertise') {
+      return (this.profile.expertise ?? []).map(item => item.expertiseId).filter((value): value is number => typeof value === 'number');
+    }
+
+    if (group === 'disciplines') {
+      return (this.profile.disciplines ?? []).map(item => item.disciplineId).filter((value): value is number => typeof value === 'number');
+    }
+
+    return (this.profile.fluency ?? []).map(item => item.fluencyId).filter((value): value is number => typeof value === 'number');
+  }
+
+  private toExperienceInput(experience: {
+    mentorExperienceId?: number | null;
+    title?: string | null;
+    description?: string | null;
+    companyName?: string | null;
+    companyImage?: string | null;
+    startDate?: string | null;
+    endDate?: string | null;
+  }): MentorSelfExperienceInput {
+    return {
+      mentorExperienceId: experience.mentorExperienceId ?? null,
+      title: experience.title?.trim() || '',
+      description: experience.description?.trim() || '',
+      companyName: this.toNullable(experience.companyName),
+      companyImage: this.toNullable(experience.companyImage),
+      startDate: this.toDateInput(experience.startDate),
+      endDate: this.toNullable(this.toDateInput(experience.endDate))
+    };
+  }
+
+  private clearSectionFeedback(section: ProfileSectionKey): void {
+    this.sectionError[section] = null;
+    this.sectionMessage[section] = null;
   }
 
   private toNullable(value: string | null | undefined): string | null {
     return value && value.trim().length ? value.trim() : null;
+  }
+
+  private toNullableNumber(value: number | string | null | undefined): number | null {
+    if (typeof value === 'number' && Number.isFinite(value)) {
+      return value;
+    }
+
+    if (typeof value === 'string' && value.trim().length) {
+      const parsed = Number(value);
+      return Number.isFinite(parsed) ? parsed : null;
+    }
+
+    return null;
   }
 
   private toDateInput(value?: string | null): string {

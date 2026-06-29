@@ -21,6 +21,16 @@ export interface MentorLookupOption {
   name: string;
 }
 
+export interface MentorSchedulingDetails {
+  mentorEventTypeId?: number | null;
+  eventTypeName?: string | null;
+  eventTypeDescription?: string | null;
+  schedulingUrl?: string | null;
+  durationMinutes?: number | null;
+  activeStatus?: string | null;
+  lastSyncedAt?: string | null;
+}
+
 export interface Mentor {
   userId?: number;
   mentorProfileId?: number;
@@ -137,6 +147,7 @@ export interface MentorSelfProfile extends Mentor {
   availableExpertises: MentorLookupOption[];
   availableDisciplines: MentorLookupOption[];
   availableFluencies: MentorLookupOption[];
+  scheduling?: MentorSchedulingDetails | null;
 }
 
 export interface MentorSelfExperienceInput {

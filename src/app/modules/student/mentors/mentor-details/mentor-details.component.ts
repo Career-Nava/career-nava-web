@@ -4,7 +4,7 @@ import { faArrowLeft, faArrowUpRightFromSquare, faBriefcase, faCalendarCheck, fa
 import { map, Subscription } from 'rxjs';
 import { AuthService } from '../../../../services/auth/auth.service';
 import { CalendlyService } from '../../../../services/calendly/calendly.service';
-import { AdminMentor, Mentor } from '../../../../services/mentor/mentor.model';
+import { AdminMentor, Mentor, MentorSelfProfile } from '../../../../services/mentor/mentor.model';
 import { MentorService } from '../../../../services/mentor/mentor.service';
 import { ToastService } from '../../../../services/toast.service';
 import { SharedModule } from '../../../../shared/shared.module';
@@ -32,6 +32,7 @@ export class MentorDetailsComponent implements OnInit, OnDestroy {
   isLoadingCalendly = false;
   showCalendlyModal = false;
   isAdminPreview = false;
+  isMentorPreview = false;
   adminPreviewStatus = '';
   adminPreviewAccountActive = true;
   private calendlyScriptLoaded = false;
@@ -56,6 +57,13 @@ export class MentorDetailsComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.isAdminPreview = this.isAdminRoute();
+    this.isMentorPreview = this.isMentorPreviewRoute();
+
+    if (this.isMentorPreview) {
+      this.fetchSelfPreview();
+      return;
+    }
+
     this.subs.add(
       this.route.paramMap.subscribe(params => {
         const id = Number(params.get('id'));
@@ -114,6 +122,10 @@ export class MentorDetailsComponent implements OnInit, OnDestroy {
   }
 
   get backLink(): string {
+    if (this.isMentorPreview) {
+      return '/mentor/profile';
+    }
+
     return this.isAdminPreview
       ? '/admin/mentors'
       : '/mentee/mentors';
@@ -125,6 +137,20 @@ export class MentorDetailsComponent implements OnInit, OnDestroy {
     if (this.adminPreviewAccountActive && status === 'active') return null;
     if (!this.adminPreviewAccountActive) return 'Account inactive - this mentor is not visible to mentees.';
     return `${ status.charAt(0).toUpperCase() + status.slice(1) } profile - not visible to mentees.`;
+  }
+
+  get mentorPreviewVisibilityMessage(): string | null {
+    if (!this.isMentorPreview) return null;
+    const status = (this.adminPreviewStatus || 'draft').toLowerCase();
+    if (this.adminPreviewAccountActive && status === 'active') {
+      return 'This is how mentees can see your profile.';
+    }
+
+    if (!this.adminPreviewAccountActive) {
+      return 'This is a preview only. Your account is inactive, so mentees cannot discover your profile.';
+    }
+
+    return 'This is a preview only. Your profile is not currently public to mentees.';
   }
 
   private waitForCalendlyScript(): Promise<void> {
@@ -154,8 +180,11 @@ export class MentorDetailsComponent implements OnInit, OnDestroy {
 
   openCalendlyModal(): void {
     if (!this.mentor) return;
-    if (this.isAdminPreview) {
-      this.toastService.show('Booking is disabled in admin preview.', { classname: 'bg-soft-warning text-dark' });
+    if (this.isAdminPreview || this.isMentorPreview) {
+      this.toastService.show(
+        this.isAdminPreview ? 'Booking is disabled in admin preview.' : 'Booking is disabled in mentor preview.',
+        { classname: 'bg-soft-warning text-dark' }
+      );
       return;
     }
 
@@ -226,6 +255,26 @@ export class MentorDetailsComponent implements OnInit, OnDestroy {
     return this.mentorService.getAdminMentorById(id).pipe(map(mentor => this.mapAdminMentorToPreview(mentor)));
   }
 
+  private fetchSelfPreview(): void {
+    this.isLoading = true;
+    this.hasError = false;
+
+    this.subs.add(
+      this.mentorService.getSelfProfile().subscribe({
+        next: profile => {
+          this.mentor = this.mapSelfProfileToPreview(profile);
+          this.calendlyVerified = profile.calendlyConnected ?? false;
+          this.isLoading = false;
+        },
+        error: () => {
+          this.mentor = undefined;
+          this.isLoading = false;
+          this.hasError = true;
+        }
+      })
+    );
+  }
+
   private mapAdminMentorToPreview(mentor: AdminMentor): Mentor {
     this.adminPreviewStatus = mentor.mentorProfileStatus || (mentor.isActive ? 'active' : 'inactive');
     this.adminPreviewAccountActive = mentor.isActive === true;
@@ -253,7 +302,38 @@ export class MentorDetailsComponent implements OnInit, OnDestroy {
     };
   }
 
+  private mapSelfProfileToPreview(profile: MentorSelfProfile): Mentor {
+    this.adminPreviewStatus = profile.mentorProfileStatus || (profile.isActive ? 'active' : 'inactive');
+    this.adminPreviewAccountActive = profile.isActive === true;
+
+    return {
+      userId: profile.userId,
+      mentorProfileId: profile.mentorProfileId,
+      fullName: profile.fullName,
+      email: profile.email,
+      role: profile.role,
+      isActive: profile.isActive,
+      calendlyConnected: profile.calendlyConnected === true,
+      company: profile.company,
+      positionTitle: profile.positionTitle,
+      linkedInUrl: profile.linkedInUrl,
+      avgRating: profile.avgRating ?? 0,
+      totalReviews: profile.totalReviews ?? 0,
+      totalSessions: profile.totalSessions ?? 0,
+      bio: profile.bio,
+      profilePicture: profile.profilePicture,
+      expertise: profile.expertise ?? [],
+      disciplines: profile.disciplines ?? [],
+      fluency: profile.fluency ?? [],
+      experiences: profile.experiences ?? []
+    };
+  }
+
   private isAdminRoute(): boolean {
     return this.route.snapshot.pathFromRoot.some(route => route.routeConfig?.path === 'admin');
+  }
+
+  private isMentorPreviewRoute(): boolean {
+    return this.route.snapshot.routeConfig?.path === 'profile/preview';
   }
 }

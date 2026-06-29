@@ -431,14 +431,18 @@ Backend-wired mentor self-service profile management is implemented.
 #### Route and service contract
 
 - `/mentor/profile` -> `getSelfProfile()` -> `GET /api/Mentor/Self/Profile`
+- `/mentor/profile/preview` -> reuses the mentor detail experience with mentor-scoped self-profile data
 - `updateSelfProfile(payload)` -> `PUT /api/Mentor/Self/Profile`
 
 #### Behavior
 
-- mentors can view their own profile content, visibility state, and operational read-only metadata
-- mentors can edit safe user-facing fields such as company, title, LinkedIn URL, profile picture URL, bio, location, years of experience, taxonomy selections, and experience entries
+- `/mentor/profile` is now read-first rather than a single giant form
+- mentors can view their own profile content, visibility state, scheduling/event-type state, and operational read-only metadata
+- mentors can edit safe user-facing fields through section-level edit flows for content, taxonomy, and experiences
+- the preview route shows the mentee-style mentor detail experience even when the mentor is not publicly active, with a clear preview-only notice
+- the scheduling section is read-only and only displays real backend data returned from the mentor self-profile contract
 - mentors cannot edit lifecycle/admin fields such as account active state, mentor profile status, verification, role, ratings, reviews, or session counts
-- the page shows loading, error, save-success, and save-error states
+- the page shows loading, error, per-section save-success, and per-section save-error states
 - the page makes profile visibility explicit so mentors can tell whether their profile is live or still non-public
 - admin mentor preview and admin manage/edit remain separate from mentor self-service
 - public mentor discovery remains active-account plus active-profile only
@@ -556,6 +560,7 @@ Phase 3F follow-up notes:
 - Admin filters now auto-apply on change. Clear filters is a compact icon action in the toolbar beside Filter and Refresh for mentors, scholarships, blogs/resources, and sessions; session filter panels no longer contain Apply/Clear action rows.
 - Phase 3G aligned mentor preview contracts. `GET /api/Mentor/Admin/GetMentorById/{id}` now returns the rich mentee-facing display fields used by public mentor detail, including `expertise`, `disciplines`, `fluency`, `experiences`, `positionTitle`, `linkedInUrl`, `avgRating`, `totalReviews`, `totalSessions`, `bio`, `profilePicture`, and `company`, while preserving admin-only operational fields such as `mentorProfileStatus`, `isActive`, `calendlyConnected`, `verified`, `createdAt`, and `updatedAt`. Public mentor list/detail remains restricted to active accounts with active mentor profiles only.
 - Phase 4 added a real `/mentor/profile` self-service workspace. Mentors can now edit safe public-facing profile content and taxonomy/experience selections through mentor-scoped backend endpoints while lifecycle status, verification, and visibility controls remain admin-only.
+- Phase 4A refined `/mentor/profile` into a premium read-first workspace with section-level edit/save/cancel flows, a mentor-facing `/mentor/profile/preview` route, and read-only scheduling/event-type visibility sourced from the self-profile contract.
 
 ## Known Caveats
 
@@ -577,6 +582,7 @@ Major pending areas after the current MVP foundation:
 - richer dashboard analytics
 - application tracker work
 - mentor Calendly/self-service connection improvements
+- preserve mentor experience row identities if richer non-replacement editing becomes necessary
 
 ## Recommended Next Frontend Iterations
 

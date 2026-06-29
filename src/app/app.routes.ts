@@ -72,6 +72,7 @@ export const routes: Routes = [
     path: 'mentor', canActivate: [ authGuard ], data: { roles: [ 'mentor' ], layoutRole: 'mentor' }, component: LayoutComponent, children: [
       { path: '', redirectTo: 'overview', pathMatch: 'full' },
       { path: 'overview', component: MentorOverviewComponent },
+      { path: 'profile/preview', component: MentorDetailsComponent },
       { path: 'profile', component: MentorProfileComponent },
       { path: 'sessions', component: MentorSessionsComponent },
     ]
