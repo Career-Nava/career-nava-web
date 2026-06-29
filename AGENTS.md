@@ -77,6 +77,13 @@ Keep the standalone component structure. Do not add NgModules or a new state-man
 - Avoid inline styles.
 - Do not introduce random border-radius, color, or spacing changes that diverge from the existing design language.
 
+## Frontend Styling Rule
+
+- Prefer Bootstrap utilities and existing shared app/admin dashboard classes for layout, spacing, cards, grids, and action placement.
+- Avoid deep, page-specific nested SCSS for basic padding, margin, and layout.
+- Add component SCSS only when it provides clear brand-specific value or cannot be expressed cleanly with existing utilities and shared dashboard patterns.
+- For dashboard/detail pages, mirror existing mentee/admin card and grid patterns before inventing new page-specific structures.
+
 ## Responsive UX
 
 - Ensure touched pages work on mobile, tablet, and desktop.
