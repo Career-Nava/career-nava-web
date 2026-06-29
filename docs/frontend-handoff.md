@@ -161,6 +161,7 @@ Completed admin pages use page-level state handling:
 - For dashboard management/profile UIs, prefer compact icon-only action controls when the action is obvious, matching the admin table row action pattern, and avoid excessive font-weight outside page titles, section headings, and intentional emphasis.
 - Persistence actions inside edit states, especially Save and Cancel, should keep icon + visible text labels for clarity. Primary CTAs such as Preview public profile should also keep icon + visible text and preserve strong contrast across default, hover, focus, and active states.
 - Save and Cancel in dashboard edit states should be compact, equal-sized pill buttons, and taxonomy/chip selectors should use standardized pill sizing, spacing, and wrapping so expertise, disciplines, and fluency controls feel visually consistent.
+- Shared dashboard CRUD/action buttons should use `src/app/shared/components/action-button/` rather than duplicating page-level button markup. Keep icon-only for obvious compact actions, icon + text for Save/Cancel and primary CTAs, and use danger variants with `title`/`aria-label` for destructive actions.
 
 ## Implemented Features
 
