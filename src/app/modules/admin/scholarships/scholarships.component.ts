@@ -1,7 +1,7 @@
 import { DatePipe, NgClass, NgForOf, NgIf } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { faArrowUpRightFromSquare, faEye, faFilter, faPen, faPlus, faRotateRight, faXmark } from '@fortawesome/free-solid-svg-icons';
+import { faArrowUpRightFromSquare, faEye, faFilter, faFloppyDisk, faPen, faPlus, faRotateRight, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { finalize, of, switchMap } from 'rxjs';
 import { AdminScholarship, AdminScholarshipUpsert } from '../../../services/scholarship/shcolarship.model';
 import { ScholarshipService } from '../../../services/scholarship/scholarship.service';
@@ -23,6 +23,7 @@ export class AdminScholarshipsComponent implements OnInit {
   protected readonly faPen = faPen;
   protected readonly faEye = faEye;
   protected readonly faFilter = faFilter;
+  protected readonly faFloppyDisk = faFloppyDisk;
   protected readonly faRotateRight = faRotateRight;
   protected readonly faArrowUpRightFromSquare = faArrowUpRightFromSquare;
   protected readonly faXmark = faXmark;
