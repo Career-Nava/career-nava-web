@@ -174,116 +174,6 @@
   color: #5b21b6;
 }
 
-.mentor-profile-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.55rem;
-  min-height: 2.4rem;
-  border: 1px solid transparent;
-  border-radius: 0.75rem;
-  padding: 0.45rem 0.9rem;
-  box-shadow: none;
-  font-weight: 600;
-  text-decoration: none;
-  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease, background-color 0.18s ease, color 0.18s ease;
-}
-
-.mentor-profile-btn:hover,
-.mentor-profile-btn:focus-visible {
-  transform: translateY(-1px);
-}
-
-.mentor-profile-btn--primary {
-  background: linear-gradient(135deg, #770ce2, #5b21b6);
-  color: #fff;
-  box-shadow: 0 10px 24px rgba(119, 12, 226, 0.18);
-}
-
-.mentor-profile-btn--primary:hover,
-.mentor-profile-btn--primary:focus-visible,
-.mentor-profile-btn--primary:active {
-  background: linear-gradient(135deg, #6d28d9, #4c1d95);
-  border-color: transparent;
-  color: #fff;
-  box-shadow: 0 14px 28px rgba(119, 12, 226, 0.24);
-}
-
-.mentor-profile-btn--ghost {
-  background: #fff;
-  border-color: rgba(209, 213, 219, 0.85);
-  color: #4b5563;
-}
-
-.mentor-profile-btn--ghost:hover,
-.mentor-profile-btn--ghost:focus-visible,
-.mentor-profile-btn--ghost:active {
-  border-color: rgba(119, 12, 226, 0.18);
-  background: rgba(248, 245, 255, 0.95);
-  color: #5b21b6;
-  box-shadow: 0 10px 18px rgba(15, 23, 42, 0.08);
-}
-
-.mentor-profile-btn--danger {
-  background: rgba(254, 242, 242, 0.95);
-  border-color: rgba(239, 68, 68, 0.18);
-  color: #b91c1c;
-}
-
-.mentor-profile-btn:disabled {
-  opacity: 0.7;
-  transform: none;
-}
-
-.mentor-profile-btn--cta {
-  min-height: 2.75rem;
-  padding-inline: 1rem;
-  box-shadow: 0 14px 26px rgba(119, 12, 226, 0.2);
-}
-
-.mentor-profile-btn--cta .svg-inline--fa,
-.mentor-profile-btn--save .svg-inline--fa {
-  font-size: 0.95rem;
-}
-
-.mentor-profile-btn .spinner-border-sm {
-  width: 0.95rem;
-  height: 0.95rem;
-}
-
-.mentor-profile-edit-btn {
-  min-height: 2.2rem;
-  min-width: 7.25rem;
-  padding: 0.42rem 0.95rem;
-  border-radius: 999px;
-  font-size: 0.88rem;
-  line-height: 1;
-}
-
-.mentor-profile-edit-btn .svg-inline--fa {
-  font-size: 0.9rem;
-}
-
-.mentor-profile-icon-action {
-  width: 2.35rem;
-  min-width: 2.35rem;
-  height: 2.35rem;
-  border-radius: 0.75rem;
-}
-
-.mentor-profile-icon-action--primary:not(:disabled) {
-  border-color: transparent;
-  background: linear-gradient(135deg, #770ce2, #5b21b6);
-  box-shadow: 0 10px 24px rgba(119, 12, 226, 0.18);
-  color: #fff;
-}
-
-.mentor-profile-icon-action--primary:hover,
-.mentor-profile-icon-action--primary:focus-visible {
-  background: linear-gradient(135deg, #6d28d9, #4c1d95);
-  color: #fff;
-}
-
 .mentor-profile-choice-pill {
   border: 1px solid rgba(209, 213, 219, 0.85);
   border-radius: 999px;
@@ -370,8 +260,7 @@
     height: 5rem;
   }
 
-  .mentor-profile-btn--cta,
-  .mentor-profile-edit-btn {
+  .mentor-profile-page app-action-button .dashboard-action-button--cta {
     width: 100%;
   }
 
