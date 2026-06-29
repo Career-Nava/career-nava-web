@@ -162,6 +162,20 @@ Completed admin pages use page-level state handling:
 - Persistence actions inside edit states, especially Save and Cancel, should keep icon + visible text labels for clarity. Primary CTAs such as Preview public profile should also keep icon + visible text and preserve strong contrast across default, hover, focus, and active states.
 - Save and Cancel in dashboard edit states should be compact, equal-sized pill buttons, and taxonomy/chip selectors should use standardized pill sizing, spacing, and wrapping so expertise, disciplines, and fluency controls feel visually consistent.
 
+## Dashboard Action Button Standardization
+
+Phase 4D should be handled incrementally. A broad shared Angular `app-action-button` migration was attempted and reverted because it created too much regression risk across admin and mentor screens.
+
+Going forward:
+
+- Standardize dashboard action button styles as shared CSS/SCSS utility classes first.
+- Apply them page-by-page, starting with `/admin/mentors`.
+- Keep row actions icon-only when obvious.
+- Keep Save/Cancel and primary CTAs icon + text.
+- Keep Save/Cancel compact and equal-sized when paired.
+- Do not migrate all admin pages in one pass without browser QA.
+- Consider a shared Angular component only after the class-based pattern is proven stable.
+
 ## Implemented Features
 
 ### Role Routing and Shells

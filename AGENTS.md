@@ -88,6 +88,16 @@ Keep the standalone component structure. Do not add NgModules or a new state-man
 - For dashboard edit states, Save and Cancel should use compact, equal-sized pill buttons with icon + text. They should differ only by variant color/icon, not by size. Taxonomy/chip selectors should use standardized pill sizing, spacing, and wrapping so expertise, disciplines, and fluency controls feel consistent across profile screens.
 - Avoid excessive font-weight; use bold text deliberately for page titles, section headings, and key emphasis only.
 
+## Dashboard Action Buttons
+
+- Do not perform broad dashboard-wide button component migrations in one pass.
+- For action button standardization, prefer shared CSS/SCSS utility classes first and apply them incrementally, one page at a time.
+- Start with `/admin/mentors` as the pilot before expanding to other admin or mentor surfaces.
+- Use icon-only buttons for obvious compact row or secondary actions, always with `title` and `aria-label`.
+- Use icon + text for Save, Cancel, Create/Add, and primary CTAs.
+- Keep paired Save and Cancel buttons compact and equal-sized.
+- Only consider a shared Angular action button component after the utility-class approach is proven stable in browser testing.
+
 ## Responsive UX
 
 - Ensure touched pages work on mobile, tablet, and desktop.
