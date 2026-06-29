@@ -1,25 +1,14 @@
 .mentor-profile-page {
-  --mentor-profile-shell-gap: 1.5rem;
-  --mentor-profile-card-padding: 1.7rem;
-  --mentor-profile-nested-card-padding: 1.3rem 1.35rem;
-  --mentor-profile-section-gap: 1.25rem;
-  --mentor-profile-header-gap: 1.45rem;
-  --mentor-profile-content-gap: 1.1rem;
-  --mentor-profile-row-gap: 1rem;
   color: #1f2937;
-  padding: 0 0 3.25rem;
 }
 
 .mentor-profile-shell {
   width: min(100%, 1440px);
   margin: 0 auto;
-  display: grid;
-  gap: var(--mentor-profile-shell-gap);
 }
 
 .mentor-profile-page .mnd-card,
-.mentor-profile-page .mnd-empty,
-.mentor-profile-page .mentor-profile-hero__status {
+.mentor-profile-page .mnd-empty {
   border: 1px solid rgba(119, 12, 226, 0.08);
   border-radius: 1.35rem;
   background: linear-gradient(180deg, #fff, #faf7ff);
@@ -30,7 +19,7 @@
 .mentor-profile-page .mnd-section-label {
   display: inline-flex;
   align-items: center;
-  margin-bottom: 0.85rem;
+  width: fit-content;
   padding: 0.35rem 0.72rem;
   border-radius: 999px;
   background: rgba(119, 12, 226, 0.08);
@@ -49,12 +38,12 @@
 }
 
 .mentor-profile-page .mnd-title {
-  font-size: clamp(2rem, 2vw + 1rem, 2.7rem);
+  font-size: clamp(2rem, 2vw + 1rem, 2.75rem);
 }
 
 .mentor-profile-page .mnd-section-title {
   margin: 0;
-  font-size: 1.3rem;
+  font-size: 1.35rem;
   font-weight: 700;
   line-height: 1.3;
 }
@@ -64,10 +53,19 @@
   line-height: 1.7;
 }
 
+.mentor-profile-page .mnd-empty {
+  padding: 2.5rem 1.5rem;
+}
+
+.mentor-profile-page .mnd-empty__title {
+  margin-bottom: 0.75rem;
+  font-size: clamp(1.8rem, 2vw + 1rem, 2.4rem);
+}
+
 .mentor-profile-page .mnd-badges {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.6rem;
+  gap: 0.55rem;
 }
 
 .mentor-profile-page .mnd-badge {
@@ -88,108 +86,71 @@
   color: #5b21b6;
 }
 
-.mentor-profile-page .mnd-empty {
-  padding: 2.5rem 1.5rem;
+.mentor-profile-surface {
+  border: 1px solid rgba(119, 12, 226, 0.08);
+  border-radius: 1.05rem;
+  background: rgba(255, 255, 255, 0.86);
 }
 
-.mentor-profile-page .mnd-empty__title {
-  margin-bottom: 0.75rem;
-  font-size: clamp(1.75rem, 2vw + 1rem, 2.35rem);
+.mentor-profile-meta-label {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  color: #6b7280;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  line-height: 1.35;
 }
 
-.mentor-profile-hero,
-.mentor-profile-overview,
-.mentor-profile-section {
-  padding: var(--mentor-profile-card-padding);
-}
-
-.mentor-profile-hero__grid,
-.mentor-profile-overview__grid,
-.mentor-profile-dashboard-grid {
-  display: grid;
-  gap: var(--mentor-profile-shell-gap);
-}
-
-.mentor-profile-hero__copy,
-.mentor-profile-hero__body,
-.mentor-profile-hero__status,
-.mentor-profile-overview__identity,
-.mentor-profile-editor-card,
-.mentor-profile-experience-card__body {
-  display: grid;
-  gap: var(--mentor-profile-content-gap);
-}
-
-.mentor-profile-hero__status,
-.mentor-profile-editor-card {
-  height: 100%;
-}
-
-.mentor-profile-main-column,
-.mentor-profile-side-column {
-  display: grid;
-  align-content: start;
-  gap: var(--mentor-profile-shell-gap);
-}
-
-.mentor-profile-card__header,
-.mentor-profile-card__top,
-.mentor-profile-actions,
-.mentor-profile-pill-actions,
-.mentor-profile-experience-card__head,
-.mentor-profile-experience-card__topline,
-.mentor-profile-experience-card__aside {
+.mentor-profile-avatar {
+  width: 4.85rem;
+  height: 4.85rem;
+  border-radius: 1.25rem;
+  border: 1px solid rgba(119, 12, 226, 0.1);
   display: flex;
-  gap: 0.85rem;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: linear-gradient(135deg, #ede9fe, #fef3c7);
+  color: #5b21b6;
+  font-size: 1.55rem;
+  font-weight: 700;
 }
 
-.mentor-profile-card__header,
-.mentor-profile-card__top,
-.mentor-profile-experience-card__head,
-.mentor-profile-experience-card__topline {
-  align-items: flex-start;
-  justify-content: space-between;
+.mentor-profile-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
-.mentor-profile-card__header {
-  margin-bottom: var(--mentor-profile-header-gap);
+.mentor-profile-overview__meta {
+  color: #6b7280;
+  line-height: 1.6;
 }
 
-.mentor-profile-card__header--editor {
-  margin-bottom: 0;
-  padding-bottom: 1.1rem;
-  border-bottom: 1px solid rgba(226, 232, 240, 0.85);
+.mentor-profile-surface strong,
+.mentor-profile-quick-row strong {
+  color: #111827;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
 }
 
-.mentor-profile-card__top .mnd-section-label {
-  margin-bottom: 0;
+.mentor-profile-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #6d28d9;
+  font-weight: 600;
+  line-height: 1.65;
+  word-break: break-word;
+  text-decoration: none;
 }
 
-.mentor-profile-card__header > div,
-.mentor-profile-overview__copy,
-.mentor-profile-experience-card__copy {
-  display: grid;
-  gap: 0.45rem;
-}
-
-.mentor-profile-card__header .mnd-section-label {
-  margin-bottom: 0;
-}
-
-.mentor-profile-actions,
-.mentor-profile-pill-actions {
-  flex-wrap: wrap;
-}
-
-.mentor-profile-card__header .mentor-profile-actions {
-  align-self: flex-start;
-}
-
-.mentor-profile-actions--footer {
-  margin-top: 0.4rem;
-  justify-content: flex-end;
-  padding-top: 1.2rem;
-  border-top: 1px solid rgba(226, 232, 240, 0.85);
+.mentor-profile-link:hover,
+.mentor-profile-link:focus-visible {
+  color: #5b21b6;
 }
 
 .mentor-profile-btn {
@@ -233,175 +194,6 @@
   transform: none;
 }
 
-.mentor-profile-note,
-.mentor-profile-pill-card,
-.mentor-profile-data-card,
-.mentor-profile-status-tile,
-.mentor-profile-stat-card,
-.mentor-profile-experience-card,
-.mentor-profile-empty-card,
-.mentor-profile-inline-state,
-.mentor-profile-editor-card {
-  border: 1px solid rgba(119, 12, 226, 0.08);
-  border-radius: 1.05rem;
-  background: rgba(255, 255, 255, 0.86);
-}
-
-.mentor-profile-note,
-.mentor-profile-pill-card,
-.mentor-profile-data-card,
-.mentor-profile-status-tile,
-.mentor-profile-stat-card,
-.mentor-profile-empty-card,
-.mentor-profile-inline-state,
-.mentor-profile-editor-card {
-  padding: var(--mentor-profile-nested-card-padding);
-}
-
-.mentor-profile-note__label,
-.mentor-profile-data-card span,
-.mentor-profile-status-tile span,
-.mentor-profile-stat-card span,
-.mentor-profile-quick-item span {
-  display: block;
-  color: #6b7280;
-  font-size: 0.8rem;
-}
-
-.mentor-profile-note,
-.mentor-profile-pill-card,
-.mentor-profile-data-card,
-.mentor-profile-status-tile,
-.mentor-profile-stat-card,
-.mentor-profile-empty-card {
-  display: grid;
-  gap: 0.65rem;
-}
-
-.mentor-profile-note__label {
-  margin-bottom: 0;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  line-height: 1.35;
-}
-
-.mentor-profile-overview__identity {
-  grid-template-columns: auto minmax(0, 1fr);
-  align-items: center;
-  gap: 1.25rem;
-}
-
-.mentor-profile-avatar {
-  width: 4.85rem;
-  height: 4.85rem;
-  border-radius: 1.25rem;
-  border: 1px solid rgba(119, 12, 226, 0.1);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  background: linear-gradient(135deg, #ede9fe, #fef3c7);
-  color: #5b21b6;
-  font-size: 1.55rem;
-  font-weight: 700;
-}
-
-.mentor-profile-avatar img,
-.mentor-profile-experience-card__logo {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.mentor-profile-overview__copy h3,
-.mentor-profile-experience-card h3,
-.mentor-profile-empty-card h3 {
-  margin: 0;
-  font-weight: 700;
-}
-
-.mentor-profile-overview__meta,
-.mentor-profile-experience-card__meta,
-.mentor-profile-experience-card__description {
-  color: #6b7280;
-}
-
-.mentor-profile-overview__copy {
-  gap: 0.5rem;
-}
-
-.mentor-profile-stat-grid,
-.mentor-profile-status-grid,
-.mentor-profile-data-grid,
-.mentor-profile-pill-grid {
-  display: grid;
-  gap: var(--mentor-profile-row-gap);
-}
-
-.mentor-profile-stat-grid {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-}
-
-.mentor-profile-status-grid {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-}
-
-.mentor-profile-data-grid {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-}
-
-.mentor-profile-pill-grid {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-}
-
-.mentor-profile-data-card--wide,
-.mentor-profile-status-tile--wide,
-.mentor-profile-quick-item--stacked {
-  grid-column: 1 / -1;
-}
-
-.mentor-profile-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  color: #6d28d9;
-  font-weight: 600;
-  word-break: break-word;
-}
-
-.mentor-profile-data-card strong,
-.mentor-profile-status-tile strong,
-.mentor-profile-stat-card strong {
-  color: #111827;
-  line-height: 1.45;
-  text-align: left;
-  overflow-wrap: anywhere;
-}
-
-.mentor-profile-quick-item strong {
-  color: #111827;
-  line-height: 1.45;
-  text-align: right;
-  overflow-wrap: anywhere;
-}
-
-.mentor-profile-data-card p,
-.mentor-profile-experience-card__description,
-.mentor-profile-note p,
-.mentor-profile-empty-card p {
-  margin: 0;
-}
-
-.mentor-profile-data-card p,
-.mentor-profile-data-card .mentor-profile-link {
-  line-height: 1.65;
-}
-
-.mentor-profile-pill-card--edit {
-  height: 100%;
-}
-
 .mentor-profile-choice-pill {
   border: 1px solid rgba(209, 213, 219, 0.85);
   border-radius: 999px;
@@ -419,213 +211,57 @@
   box-shadow: 0 10px 24px rgba(119, 12, 226, 0.18);
 }
 
-.mentor-profile-experience-stack,
-.mentor-profile-quick-list {
-  display: grid;
-  gap: var(--mentor-profile-content-gap);
-}
-
-.mentor-profile-experience-card__aside {
-  align-items: center;
-  justify-content: flex-end;
-}
-
-.mentor-profile-experience-card__logo {
+.mentor-profile-experience-logo {
   width: 3.25rem;
   height: 3.25rem;
   border-radius: 0.9rem;
   border: 1px solid rgba(226, 232, 240, 0.85);
   background: #fff;
+  object-fit: cover;
 }
 
 .mentor-profile-quick-list {
-  gap: 0;
+  display: flex;
+  flex-direction: column;
 }
 
-.mentor-profile-quick-item {
-  display: flex;
-  justify-content: space-between;
-  gap: 1rem;
-  padding: 1.05rem 0;
+.mentor-profile-quick-row {
   border-top: 1px solid rgba(226, 232, 240, 0.85);
 }
 
-.mentor-profile-quick-item:first-child {
-  padding-top: 0;
+.mentor-profile-quick-row:first-child {
+  padding-top: 0 !important;
   border-top: 0;
 }
 
-.mentor-profile-quick-item--stacked {
-  display: grid;
-  gap: 0.4rem;
+.mentor-profile-quick-row span {
+  display: block;
+  color: #6b7280;
+  font-size: 0.82rem;
+}
+
+.mentor-profile-quick-row strong {
+  text-align: right;
 }
 
 .mentor-profile-inline-state {
-  color: #1f2937;
-  margin-bottom: 1rem;
-}
-
-.mentor-profile-hero__status {
-  padding: 1.45rem 1.5rem;
-  align-content: start;
-}
-
-.mentor-profile-hero__actions {
-  padding-top: 0.3rem;
-}
-
-.mentor-profile-editor-card {
-  gap: var(--mentor-profile-section-gap);
-}
-
-.mentor-profile-editor-card .admin-form-grid {
-  gap: 1.1rem;
-}
-
-.mentor-profile-editor-card .admin-search-label {
-  gap: 0.5rem;
-}
-
-.mentor-profile-pill-card {
-  align-content: start;
-  gap: 0.8rem;
-}
-
-.mentor-profile-pill-actions {
-  gap: 0.75rem;
-}
-
-.mentor-profile-status-grid {
-  align-items: start;
-}
-
-.mentor-profile-experience-card {
-  overflow: hidden;
-}
-
-.mentor-profile-experience-card__body {
-  padding: 1.45rem 1.5rem;
-  gap: var(--mentor-profile-section-gap);
-}
-
-.mentor-profile-experience-card__topline {
-  align-items: center;
-  flex-wrap: wrap;
-  row-gap: 0.55rem;
-}
-
-.mentor-profile-experience-card__meta {
-  line-height: 1.5;
-}
-
-.mentor-profile-experience-card__description {
-  line-height: 1.65;
-}
-
-.mentor-profile-section .mnd-section-label,
-.mentor-profile-overview .mnd-section-label,
-.mentor-profile-hero .mnd-kicker {
-  margin-bottom: 0;
-}
-
-.mentor-profile-status-tile--wide {
-  min-height: 100%;
-}
-
-.mentor-profile-inline-state--success {
-  border-color: rgba(22, 163, 74, 0.12);
-  background: rgba(240, 253, 244, 0.95);
-}
-
-.mentor-profile-inline-state--danger {
-  border-color: rgba(239, 68, 68, 0.12);
-  background: rgba(254, 242, 242, 0.95);
-}
-
-@media (min-width: 1200px) {
-  .mentor-profile-hero__grid {
-    grid-template-columns: minmax(0, 1.55fr) minmax(320px, 0.8fr);
-  }
-
-  .mentor-profile-overview__grid {
-    grid-template-columns: minmax(0, 1.15fr) minmax(360px, 0.85fr);
-    align-items: center;
-  }
-
-  .mentor-profile-dashboard-grid {
-    grid-template-columns: minmax(0, 1.7fr) minmax(320px, 0.9fr);
-  }
-}
-
-@media (max-width: 1199.98px) {
-  .mentor-profile-pill-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .mentor-profile-experience-card__head {
-    flex-direction: column;
-  }
+  border-radius: 1rem;
 }
 
 @media (max-width: 991.98px) {
-  .mentor-profile-card__header,
-  .mentor-profile-card__top,
-  .mentor-profile-experience-card__topline {
+  .mentor-profile-quick-row {
     flex-direction: column;
   }
 
-  .mentor-profile-experience-card__aside {
-    justify-content: flex-start;
-  }
-
-  .mentor-profile-quick-item strong {
+  .mentor-profile-quick-row strong {
     text-align: left;
-  }
-
-  .mentor-profile-actions,
-  .mentor-profile-actions--footer {
-    width: 100%;
-    justify-content: flex-start;
-  }
-
-  .mentor-profile-pill-grid {
-    grid-template-columns: 1fr;
   }
 }
 
-@media (max-width: 767.98px) {
-  .mentor-profile-page {
-    padding-bottom: 2rem;
-  }
-
-  .mentor-profile-hero,
-  .mentor-profile-overview,
-  .mentor-profile-section {
-    padding: 1.1rem;
-  }
-
-  .mentor-profile-overview__identity,
-  .mentor-profile-quick-item {
-    grid-template-columns: 1fr;
-  }
-
-  .mentor-profile-hero__status,
-  .mentor-profile-note,
-  .mentor-profile-pill-card,
-  .mentor-profile-data-card,
-  .mentor-profile-status-tile,
-  .mentor-profile-stat-card,
-  .mentor-profile-empty-card,
-  .mentor-profile-inline-state,
-  .mentor-profile-editor-card,
-  .mentor-profile-experience-card__body {
-    padding: 1.05rem;
-  }
-
-  .mentor-profile-stat-grid,
-  .mentor-profile-status-grid,
-  .mentor-profile-data-grid {
-    grid-template-columns: 1fr;
+@media (max-width: 575.98px) {
+  .mentor-profile-avatar {
+    width: 4.25rem;
+    height: 4.25rem;
   }
 
   .mentor-profile-btn {
