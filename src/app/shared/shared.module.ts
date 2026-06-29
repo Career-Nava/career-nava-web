@@ -5,7 +5,6 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { ToastContainerComponent } from '../modules/shared/toast-container/toast-container.component';
-import { ActionButtonComponent } from './components/action-button/action-button.component';
 
 @NgModule({
   declarations: [ToastContainerComponent],
@@ -16,7 +15,6 @@ import { ActionButtonComponent } from './components/action-button/action-button.
     ReactiveFormsModule,
     RouterModule,
     FontAwesomeModule,
-    ActionButtonComponent
   ],
   exports: [
     CommonModule,
@@ -25,7 +23,6 @@ import { ActionButtonComponent } from './components/action-button/action-button.
     ReactiveFormsModule,
     RouterModule,
     FontAwesomeModule,
-    ActionButtonComponent,
     ToastContainerComponent
   ]
 })
