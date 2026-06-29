@@ -1,22 +1,22 @@
-<div class="mentor-profile-page container-fluid pb-5">
-  <div *ngIf="loading" class="mnd-empty mnd-card text-center">
-    <span class="mnd-kicker">Mentor profile</span>
-    <div class="spinner-border text-primary mx-auto mb-3" role="status" aria-label="Loading mentor profile"></div>
-    <h1 class="mnd-empty__title">Loading your workspace</h1>
-    <p class="text-muted mb-0">Pulling in your mentor profile, visibility state, and guidance details.</p>
-  </div>
+<div class="mentor-profile-page">
+  <div class="mentor-profile-shell">
+    <div *ngIf="loading" class="mnd-empty mnd-card text-center">
+      <span class="mnd-kicker">Mentor profile</span>
+      <div class="spinner-border text-primary mx-auto mb-3" role="status" aria-label="Loading mentor profile"></div>
+      <h1 class="mnd-empty__title">Loading your workspace</h1>
+      <p class="text-muted mb-0">Pulling in your mentor profile, visibility state, and guidance details.</p>
+    </div>
 
-  <div *ngIf="!loading && error" class="mnd-empty mnd-card text-center">
-    <span class="mnd-kicker">Mentor profile</span>
-    <h1 class="mnd-empty__title">Unable to load your profile</h1>
-    <p class="text-muted mb-0">{{ error }}</p>
-  </div>
+    <div *ngIf="!loading && error" class="mnd-empty mnd-card text-center">
+      <span class="mnd-kicker">Mentor profile</span>
+      <h1 class="mnd-empty__title">Unable to load your profile</h1>
+      <p class="text-muted mb-0">{{ error }}</p>
+    </div>
 
-  <ng-container *ngIf="hasProfile && profile as profile">
-    <section class="mnd-card mentor-profile-hero mb-4">
-      <div class="row g-4 align-items-stretch">
-        <div class="col-12 col-xl-7 col-xxl-8">
-          <div class="mentor-profile-hero__body">
+    <ng-container *ngIf="hasProfile && profile as profile">
+      <section class="mentor-profile-hero mnd-card">
+        <div class="mentor-profile-hero__grid">
+          <div class="mentor-profile-hero__copy">
             <span class="mnd-kicker">Mentor Profile</span>
             <h1 class="mnd-title mentor-profile-hero__title">Your mentor profile workspace</h1>
             <p class="mnd-copy mb-0">
@@ -30,54 +30,48 @@
               </a>
             </div>
           </div>
-        </div>
 
-        <div class="col-12 col-xl-5 col-xxl-4">
-          <div class="mentor-profile-status-card">
-            <div class="mentor-profile-status-card__top">
-              <span class="admin-section-label mb-0">Visibility</span>
+          <aside class="mentor-profile-hero__status mnd-card">
+            <div class="mentor-profile-card__top">
+              <span class="mnd-section-label">Visibility</span>
               <span class="admin-badge text-capitalize" [ngClass]="statusBadgeClass">{{ statusLabel | titlecase }}</span>
             </div>
-            <h2 class="mnd-section-title mb-2">{{ visibilityHeadline }}</h2>
+            <h2 class="mnd-section-title">{{ visibilityHeadline }}</h2>
             <p class="mnd-copy mb-0">{{ visibilityCopy }}</p>
 
-            <div class="mentor-profile-status-card__note">
-              <span class="mentor-profile-inline-label">What changes here do</span>
+            <div class="mentor-profile-note">
+              <span class="mentor-profile-note__label">What changes here do</span>
               <p class="mnd-copy mb-0">Mentors can update public-facing content here. Admins still control lifecycle state, verification, and operational access.</p>
             </div>
+          </aside>
+        </div>
+      </section>
+
+      <section class="mentor-profile-overview mnd-card">
+        <div class="mentor-profile-card__header">
+          <div>
+            <span class="mnd-section-label">Profile overview</span>
+            <h2 class="mnd-section-title mb-0">How your profile reads at a glance</h2>
           </div>
         </div>
-      </div>
-    </section>
 
-    <section class="mnd-card p-4 mentor-profile-overview mb-4">
-      <div class="mentor-profile-section-head mb-4">
-        <div>
-          <span class="mnd-section-label">Profile overview</span>
-          <h2 class="mnd-section-title mb-0">How your profile reads at a glance</h2>
-        </div>
-      </div>
-
-      <div class="row g-4 align-items-center">
-        <div class="col-12 col-xl-6">
-          <div class="mentor-profile-identity">
-            <div class="mentor-profile-avatar" [class.mentor-profile-avatar--image]="!!profile.profilePicture">
+        <div class="mentor-profile-overview__grid">
+          <div class="mentor-profile-overview__identity">
+            <div class="mentor-profile-avatar">
               <img *ngIf="profile.profilePicture" [src]="profile.profilePicture" [alt]="profile.fullName || 'Mentor profile picture'">
               <span *ngIf="!profile.profilePicture">{{ (profile.fullName || 'M').charAt(0) }}</span>
             </div>
 
-            <div class="mentor-profile-identity__copy">
+            <div class="mentor-profile-overview__copy">
               <h3>{{ profile.fullName }}</h3>
-              <p class="mentor-profile-identity__meta mb-1">
+              <p class="mentor-profile-overview__meta mb-1">
                 {{ profile.positionTitle || 'Mentor' }}
                 <span *ngIf="profile.company"> at {{ profile.company }}</span>
               </p>
-              <p class="mentor-profile-identity__meta mb-0">{{ profile.email }}</p>
+              <p class="mentor-profile-overview__meta mb-0">{{ profile.email }}</p>
             </div>
           </div>
-        </div>
 
-        <div class="col-12 col-xl-6">
           <div class="mentor-profile-stat-grid">
             <article class="mentor-profile-stat-card">
               <span>Sessions</span>
@@ -93,39 +87,23 @@
             </article>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <div class="row g-4 align-items-start">
-      <div class="col-12 col-xxl-8">
-        <div class="d-grid gap-4">
-          <section class="mnd-card p-4 mentor-profile-section">
-            <div class="mentor-profile-section-head">
+      <div class="mentor-profile-dashboard-grid">
+        <div class="mentor-profile-main-column">
+          <section class="mnd-card mentor-profile-section">
+            <div class="mentor-profile-card__header">
               <div>
                 <span class="mnd-section-label">Public profile content</span>
                 <h2 class="mnd-section-title mb-0">How your profile introduces you</h2>
               </div>
 
-              <div class="mentor-profile-actions" *ngIf="!editingContent; else contentEditActions">
+              <div class="mentor-profile-actions" *ngIf="!editingContent">
                 <button type="button" class="btn admin-toolbar-btn mentor-profile-btn mentor-profile-btn--ghost" (click)="startContentEdit()">
                   <fa-icon [icon]="faPen"></fa-icon>
                   <span>Edit</span>
                 </button>
               </div>
-
-              <ng-template #contentEditActions>
-                <div class="mentor-profile-actions">
-                  <button type="button" class="btn admin-toolbar-btn mentor-profile-btn mentor-profile-btn--ghost" (click)="cancelContentEdit()">
-                    <fa-icon [icon]="faXmark"></fa-icon>
-                    <span>Cancel</span>
-                  </button>
-                  <button type="button" class="btn admin-toolbar-btn mentor-profile-btn mentor-profile-btn--primary" [disabled]="sectionSaving.content" (click)="saveContent()">
-                    <span *ngIf="sectionSaving.content" class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
-                    <fa-icon *ngIf="!sectionSaving.content" [icon]="faFloppyDisk"></fa-icon>
-                    <span>Save</span>
-                  </button>
-                </div>
-              </ng-template>
             </div>
 
             <div *ngIf="sectionMessage.content" class="mentor-profile-inline-state mentor-profile-inline-state--success" role="status">{{ sectionMessage.content }}</div>
@@ -173,122 +151,104 @@
             </ng-container>
 
             <ng-template #contentEditor>
-              <form class="row g-3" [formGroup]="contentForm">
-                <div class="col-12 col-md-6">
+              <div class="mentor-profile-editor-card">
+                <form class="admin-form-grid" [formGroup]="contentForm">
                   <label class="admin-search-label">
                     <span class="admin-field-label">Company</span>
                     <input class="form-control admin-search-input" formControlName="company" placeholder="Where mentees know you from">
                   </label>
-                </div>
-                <div class="col-12 col-md-6">
                   <label class="admin-search-label">
                     <span class="admin-field-label">Position title</span>
                     <input class="form-control admin-search-input" formControlName="positionTitle" placeholder="Your current role">
                   </label>
-                </div>
-                <div class="col-12">
-                  <label class="admin-search-label">
+                  <label class="admin-search-label admin-form-span-2">
                     <span class="admin-field-label">LinkedIn URL</span>
                     <input class="form-control admin-search-input" formControlName="linkedInUrl" placeholder="https://www.linkedin.com/in/...">
                   </label>
-                </div>
-                <div class="col-12">
-                  <label class="admin-search-label">
+                  <label class="admin-search-label admin-form-span-2">
                     <span class="admin-field-label">Profile picture URL</span>
                     <input class="form-control admin-search-input" formControlName="profilePicture" placeholder="Public image URL">
                   </label>
-                </div>
-                <div class="col-12 col-md-6">
                   <label class="admin-search-label">
                     <span class="admin-field-label">Location</span>
                     <input class="form-control admin-search-input" formControlName="location" placeholder="City, country">
                   </label>
-                </div>
-                <div class="col-12 col-md-6">
                   <label class="admin-search-label">
                     <span class="admin-field-label">Years of experience</span>
                     <input type="number" min="0" class="form-control admin-search-input" formControlName="yearsExperience" placeholder="0">
                   </label>
-                </div>
-                <div class="col-12">
-                  <label class="admin-search-label">
+                  <label class="admin-search-label admin-form-span-2">
                     <span class="admin-field-label">Bio</span>
                     <textarea class="form-control admin-search-input admin-textarea" formControlName="bio" rows="5" placeholder="Introduce yourself to mentees."></textarea>
                   </label>
+                </form>
+
+                <div class="mentor-profile-actions mentor-profile-actions--footer">
+                  <button type="button" class="btn admin-toolbar-btn mentor-profile-btn mentor-profile-btn--ghost" (click)="cancelContentEdit()">
+                    <fa-icon [icon]="faXmark"></fa-icon>
+                    <span>Cancel</span>
+                  </button>
+                  <button type="button" class="btn admin-toolbar-btn mentor-profile-btn mentor-profile-btn--primary" [disabled]="sectionSaving.content" (click)="saveContent()">
+                    <span *ngIf="sectionSaving.content" class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
+                    <fa-icon *ngIf="!sectionSaving.content" [icon]="faFloppyDisk"></fa-icon>
+                    <span>Save</span>
+                  </button>
                 </div>
-              </form>
+              </div>
             </ng-template>
           </section>
 
-          <section class="mnd-card p-4 mentor-profile-section">
-            <div class="mentor-profile-section-head">
+          <section class="mnd-card mentor-profile-section">
+            <div class="mentor-profile-card__header">
               <div>
                 <span class="mnd-section-label">Expertise and mentoring fit</span>
                 <h2 class="mnd-section-title mb-0">What mentees can come to you for</h2>
               </div>
 
-              <div class="mentor-profile-actions" *ngIf="!editingTaxonomy; else taxonomyEditActions">
+              <div class="mentor-profile-actions" *ngIf="!editingTaxonomy">
                 <button type="button" class="btn admin-toolbar-btn mentor-profile-btn mentor-profile-btn--ghost" (click)="startTaxonomyEdit()">
                   <fa-icon [icon]="faPen"></fa-icon>
                   <span>Edit</span>
                 </button>
               </div>
-
-              <ng-template #taxonomyEditActions>
-                <div class="mentor-profile-actions">
-                  <button type="button" class="btn admin-toolbar-btn mentor-profile-btn mentor-profile-btn--ghost" (click)="cancelTaxonomyEdit()">
-                    <fa-icon [icon]="faXmark"></fa-icon>
-                    <span>Cancel</span>
-                  </button>
-                  <button type="button" class="btn admin-toolbar-btn mentor-profile-btn mentor-profile-btn--primary" [disabled]="sectionSaving.taxonomy" (click)="saveTaxonomy()">
-                    <span *ngIf="sectionSaving.taxonomy" class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
-                    <fa-icon *ngIf="!sectionSaving.taxonomy" [icon]="faFloppyDisk"></fa-icon>
-                    <span>Save</span>
-                  </button>
-                </div>
-              </ng-template>
             </div>
 
             <div *ngIf="sectionMessage.taxonomy" class="mentor-profile-inline-state mentor-profile-inline-state--success" role="status">{{ sectionMessage.taxonomy }}</div>
             <div *ngIf="sectionError.taxonomy" class="mentor-profile-inline-state mentor-profile-inline-state--danger" role="alert">{{ sectionError.taxonomy }}</div>
 
             <ng-container *ngIf="!editingTaxonomy; else taxonomyEditor">
-              <div class="row g-3">
-                <div class="col-12 col-xl-4">
-                  <article class="mentor-profile-pill-card">
-                    <span class="mentor-profile-inline-label">Expertise</span>
-                    <div class="mnd-badges" *ngIf="getSelectedPills('expertise').length; else noExpertise">
-                      <span class="mnd-badge mnd-badge--accent" *ngFor="let tag of getSelectedPills('expertise')">{{ tag }}</span>
-                    </div>
-                    <ng-template #noExpertise><p class="mnd-copy mb-0">No expertise added yet.</p></ng-template>
-                  </article>
-                </div>
-                <div class="col-12 col-xl-4">
-                  <article class="mentor-profile-pill-card">
-                    <span class="mentor-profile-inline-label">Disciplines</span>
-                    <div class="mnd-badges" *ngIf="getSelectedPills('disciplines').length; else noDisciplines">
-                      <span class="mnd-badge" *ngFor="let tag of getSelectedPills('disciplines')">{{ tag }}</span>
-                    </div>
-                    <ng-template #noDisciplines><p class="mnd-copy mb-0">No disciplines added yet.</p></ng-template>
-                  </article>
-                </div>
-                <div class="col-12 col-xl-4">
-                  <article class="mentor-profile-pill-card">
-                    <span class="mentor-profile-inline-label">Fluency</span>
-                    <div class="mnd-badges" *ngIf="getSelectedPills('fluency').length; else noFluency">
-                      <span class="mnd-badge" *ngFor="let tag of getSelectedPills('fluency')">{{ tag }}</span>
-                    </div>
-                    <ng-template #noFluency><p class="mnd-copy mb-0">No languages or fluency tags added yet.</p></ng-template>
-                  </article>
-                </div>
+              <div class="mentor-profile-pill-grid">
+                <article class="mentor-profile-pill-card">
+                  <span class="mentor-profile-note__label">Expertise</span>
+                  <div class="mnd-badges" *ngIf="getSelectedPills('expertise').length; else noExpertise">
+                    <span class="mnd-badge mnd-badge--accent" *ngFor="let tag of getSelectedPills('expertise')">{{ tag }}</span>
+                  </div>
+                  <ng-template #noExpertise><p class="mnd-copy mb-0">No expertise added yet.</p></ng-template>
+                </article>
+
+                <article class="mentor-profile-pill-card">
+                  <span class="mentor-profile-note__label">Disciplines</span>
+                  <div class="mnd-badges" *ngIf="getSelectedPills('disciplines').length; else noDisciplines">
+                    <span class="mnd-badge" *ngFor="let tag of getSelectedPills('disciplines')">{{ tag }}</span>
+                  </div>
+                  <ng-template #noDisciplines><p class="mnd-copy mb-0">No disciplines added yet.</p></ng-template>
+                </article>
+
+                <article class="mentor-profile-pill-card">
+                  <span class="mentor-profile-note__label">Fluency</span>
+                  <div class="mnd-badges" *ngIf="getSelectedPills('fluency').length; else noFluency">
+                    <span class="mnd-badge" *ngFor="let tag of getSelectedPills('fluency')">{{ tag }}</span>
+                  </div>
+                  <ng-template #noFluency><p class="mnd-copy mb-0">No languages or fluency tags added yet.</p></ng-template>
+                </article>
               </div>
             </ng-container>
 
             <ng-template #taxonomyEditor>
-              <div class="row g-3">
-                <div class="col-12 col-xl-4">
+              <div class="mentor-profile-editor-card">
+                <div class="mentor-profile-pill-grid">
                   <article class="mentor-profile-pill-card mentor-profile-pill-card--edit">
-                    <span class="mentor-profile-inline-label">Expertise</span>
+                    <span class="mentor-profile-note__label">Expertise</span>
                     <div class="mentor-profile-pill-actions">
                       <button
                         type="button"
@@ -301,10 +261,9 @@
                       </button>
                     </div>
                   </article>
-                </div>
-                <div class="col-12 col-xl-4">
+
                   <article class="mentor-profile-pill-card mentor-profile-pill-card--edit">
-                    <span class="mentor-profile-inline-label">Disciplines</span>
+                    <span class="mentor-profile-note__label">Disciplines</span>
                     <div class="mentor-profile-pill-actions">
                       <button
                         type="button"
@@ -317,10 +276,9 @@
                       </button>
                     </div>
                   </article>
-                </div>
-                <div class="col-12 col-xl-4">
+
                   <article class="mentor-profile-pill-card mentor-profile-pill-card--edit">
-                    <span class="mentor-profile-inline-label">Fluency</span>
+                    <span class="mentor-profile-note__label">Fluency</span>
                     <div class="mentor-profile-pill-actions">
                       <button
                         type="button"
@@ -334,12 +292,24 @@
                     </div>
                   </article>
                 </div>
+
+                <div class="mentor-profile-actions mentor-profile-actions--footer">
+                  <button type="button" class="btn admin-toolbar-btn mentor-profile-btn mentor-profile-btn--ghost" (click)="cancelTaxonomyEdit()">
+                    <fa-icon [icon]="faXmark"></fa-icon>
+                    <span>Cancel</span>
+                  </button>
+                  <button type="button" class="btn admin-toolbar-btn mentor-profile-btn mentor-profile-btn--primary" [disabled]="sectionSaving.taxonomy" (click)="saveTaxonomy()">
+                    <span *ngIf="sectionSaving.taxonomy" class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
+                    <fa-icon *ngIf="!sectionSaving.taxonomy" [icon]="faFloppyDisk"></fa-icon>
+                    <span>Save</span>
+                  </button>
+                </div>
               </div>
             </ng-template>
           </section>
 
-          <section class="mnd-card p-4 mentor-profile-section">
-            <div class="mentor-profile-section-head">
+          <section class="mnd-card mentor-profile-section">
+            <div class="mentor-profile-card__header">
               <div>
                 <span class="mnd-section-label">Professional experience</span>
                 <h2 class="mnd-section-title mb-0">The chapters mentees can learn from</h2>
@@ -395,9 +365,9 @@
 
                 <ng-template #editExperienceCard>
                   <div class="mentor-profile-editor-card">
-                    <div class="mentor-profile-section-head mentor-profile-section-head--editor">
+                    <div class="mentor-profile-card__header mentor-profile-card__header--editor">
                       <div>
-                        <span class="mentor-profile-inline-label">Edit experience</span>
+                        <span class="mentor-profile-note__label">Edit experience</span>
                         <p class="mnd-copy mb-0">Update this experience card, then save to return it to read-only mode.</p>
                       </div>
                       <button type="button" class="btn admin-toolbar-btn mentor-profile-btn mentor-profile-btn--danger" [disabled]="sectionSaving.experience" (click)="removeExperience(i)">
@@ -406,43 +376,31 @@
                       </button>
                     </div>
 
-                    <form class="row g-3" [formGroup]="experienceForm">
-                      <div class="col-12 col-md-6">
-                        <label class="admin-search-label">
-                          <span class="admin-field-label">Title</span>
-                          <input class="form-control admin-search-input" formControlName="title" placeholder="Senior Product Designer">
-                        </label>
-                      </div>
-                      <div class="col-12 col-md-6">
-                        <label class="admin-search-label">
-                          <span class="admin-field-label">Company</span>
-                          <input class="form-control admin-search-input" formControlName="companyName" placeholder="Company name">
-                        </label>
-                      </div>
-                      <div class="col-12 col-md-6">
-                        <label class="admin-search-label">
-                          <span class="admin-field-label">Start date</span>
-                          <input type="date" class="form-control admin-search-input" formControlName="startDate">
-                        </label>
-                      </div>
-                      <div class="col-12 col-md-6">
-                        <label class="admin-search-label">
-                          <span class="admin-field-label">End date</span>
-                          <input type="date" class="form-control admin-search-input" formControlName="endDate">
-                        </label>
-                      </div>
-                      <div class="col-12">
-                        <label class="admin-search-label">
-                          <span class="admin-field-label">Company image URL</span>
-                          <input class="form-control admin-search-input" formControlName="companyImage" placeholder="Optional image URL">
-                        </label>
-                      </div>
-                      <div class="col-12">
-                        <label class="admin-search-label">
-                          <span class="admin-field-label">Description</span>
-                          <textarea class="form-control admin-search-input admin-textarea" formControlName="description" rows="4" placeholder="What should mentees know about this chapter?"></textarea>
-                        </label>
-                      </div>
+                    <form class="admin-form-grid" [formGroup]="experienceForm">
+                      <label class="admin-search-label">
+                        <span class="admin-field-label">Title</span>
+                        <input class="form-control admin-search-input" formControlName="title" placeholder="Senior Product Designer">
+                      </label>
+                      <label class="admin-search-label">
+                        <span class="admin-field-label">Company</span>
+                        <input class="form-control admin-search-input" formControlName="companyName" placeholder="Company name">
+                      </label>
+                      <label class="admin-search-label">
+                        <span class="admin-field-label">Start date</span>
+                        <input type="date" class="form-control admin-search-input" formControlName="startDate">
+                      </label>
+                      <label class="admin-search-label">
+                        <span class="admin-field-label">End date</span>
+                        <input type="date" class="form-control admin-search-input" formControlName="endDate">
+                      </label>
+                      <label class="admin-search-label admin-form-span-2">
+                        <span class="admin-field-label">Company image URL</span>
+                        <input class="form-control admin-search-input" formControlName="companyImage" placeholder="Optional image URL">
+                      </label>
+                      <label class="admin-search-label admin-form-span-2">
+                        <span class="admin-field-label">Description</span>
+                        <textarea class="form-control admin-search-input admin-textarea" formControlName="description" rows="4" placeholder="What should mentees know about this chapter?"></textarea>
+                      </label>
                     </form>
 
                     <div class="mentor-profile-actions mentor-profile-actions--footer">
@@ -462,50 +420,38 @@
 
               <article class="mentor-profile-experience-card mentor-profile-experience-card--draft" *ngIf="addingExperience">
                 <div class="mentor-profile-editor-card">
-                  <div class="mentor-profile-section-head mentor-profile-section-head--editor">
+                  <div class="mentor-profile-card__header mentor-profile-card__header--editor">
                     <div>
-                      <span class="mentor-profile-inline-label">Add experience</span>
+                      <span class="mentor-profile-note__label">Add experience</span>
                       <p class="mnd-copy mb-0">Keep this concise and mentee-focused so the story of your work is easy to scan.</p>
                     </div>
                   </div>
 
-                  <form class="row g-3" [formGroup]="experienceForm">
-                    <div class="col-12 col-md-6">
-                      <label class="admin-search-label">
-                        <span class="admin-field-label">Title</span>
-                        <input class="form-control admin-search-input" formControlName="title" placeholder="Senior Product Designer">
-                      </label>
-                    </div>
-                    <div class="col-12 col-md-6">
-                      <label class="admin-search-label">
-                        <span class="admin-field-label">Company</span>
-                        <input class="form-control admin-search-input" formControlName="companyName" placeholder="Company name">
-                      </label>
-                    </div>
-                    <div class="col-12 col-md-6">
-                      <label class="admin-search-label">
-                        <span class="admin-field-label">Start date</span>
-                        <input type="date" class="form-control admin-search-input" formControlName="startDate">
-                      </label>
-                    </div>
-                    <div class="col-12 col-md-6">
-                      <label class="admin-search-label">
-                        <span class="admin-field-label">End date</span>
-                        <input type="date" class="form-control admin-search-input" formControlName="endDate">
-                      </label>
-                    </div>
-                    <div class="col-12">
-                      <label class="admin-search-label">
-                        <span class="admin-field-label">Company image URL</span>
-                        <input class="form-control admin-search-input" formControlName="companyImage" placeholder="Optional image URL">
-                      </label>
-                    </div>
-                    <div class="col-12">
-                      <label class="admin-search-label">
-                        <span class="admin-field-label">Description</span>
-                        <textarea class="form-control admin-search-input admin-textarea" formControlName="description" rows="4" placeholder="What should mentees know about this chapter?"></textarea>
-                      </label>
-                    </div>
+                  <form class="admin-form-grid" [formGroup]="experienceForm">
+                    <label class="admin-search-label">
+                      <span class="admin-field-label">Title</span>
+                      <input class="form-control admin-search-input" formControlName="title" placeholder="Senior Product Designer">
+                    </label>
+                    <label class="admin-search-label">
+                      <span class="admin-field-label">Company</span>
+                      <input class="form-control admin-search-input" formControlName="companyName" placeholder="Company name">
+                    </label>
+                    <label class="admin-search-label">
+                      <span class="admin-field-label">Start date</span>
+                      <input type="date" class="form-control admin-search-input" formControlName="startDate">
+                    </label>
+                    <label class="admin-search-label">
+                      <span class="admin-field-label">End date</span>
+                      <input type="date" class="form-control admin-search-input" formControlName="endDate">
+                    </label>
+                    <label class="admin-search-label admin-form-span-2">
+                      <span class="admin-field-label">Company image URL</span>
+                      <input class="form-control admin-search-input" formControlName="companyImage" placeholder="Optional image URL">
+                    </label>
+                    <label class="admin-search-label admin-form-span-2">
+                      <span class="admin-field-label">Description</span>
+                      <textarea class="form-control admin-search-input admin-textarea" formControlName="description" rows="4" placeholder="What should mentees know about this chapter?"></textarea>
+                    </label>
                   </form>
 
                   <div class="mentor-profile-actions mentor-profile-actions--footer">
@@ -524,12 +470,10 @@
             </div>
           </section>
         </div>
-      </div>
 
-      <div class="col-12 col-xxl-4">
-        <div class="d-grid gap-4">
-          <section class="mnd-card p-4 mentor-profile-section mentor-profile-section--sidebar">
-            <div class="mentor-profile-section-head">
+        <div class="mentor-profile-side-column">
+          <section class="mnd-card mentor-profile-section mentor-profile-section--side">
+            <div class="mentor-profile-card__header">
               <div>
                 <span class="mnd-section-label">Visibility and account status</span>
                 <h2 class="mnd-section-title mb-0">Operational status</h2>
@@ -546,18 +490,30 @@
                 <strong>{{ profile.verified ? 'Verified' : 'Pending' }}</strong>
               </article>
               <article class="mentor-profile-status-tile">
+                <span>Profile status</span>
+                <strong>{{ profile.mentorProfileStatus | titlecase }}</strong>
+              </article>
+              <article class="mentor-profile-status-tile">
                 <span>Calendly</span>
                 <strong>{{ profile.calendlyConnected ? 'Connected' : 'Not connected' }}</strong>
               </article>
               <article class="mentor-profile-status-tile">
-                <span>Profile status</span>
-                <strong>{{ profile.mentorProfileStatus | titlecase }}</strong>
+                <span>Sessions</span>
+                <strong>{{ profile.totalSessions || 0 }}</strong>
+              </article>
+              <article class="mentor-profile-status-tile">
+                <span>Reviews</span>
+                <strong>{{ profile.totalReviews || 0 }}</strong>
+              </article>
+              <article class="mentor-profile-status-tile mentor-profile-status-tile--wide">
+                <span>Rating</span>
+                <strong>{{ (profile.avgRating || 0) | number:'1.1-1' }}</strong>
               </article>
             </div>
           </section>
 
-          <section class="mnd-card p-4 mentor-profile-section mentor-profile-section--sidebar">
-            <div class="mentor-profile-section-head">
+          <section class="mnd-card mentor-profile-section mentor-profile-section--side">
+            <div class="mentor-profile-card__header">
               <div>
                 <span class="mnd-section-label">Scheduling / mentor event type</span>
                 <h2 class="mnd-section-title mb-0">Your current booking setup</h2>
@@ -609,6 +565,6 @@
           </section>
         </div>
       </div>
-    </div>
-  </ng-container>
+    </ng-container>
+  </div>
 </div>
