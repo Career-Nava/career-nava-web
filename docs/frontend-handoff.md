@@ -156,6 +156,7 @@ Completed admin pages use page-level state handling:
 - Toolbar order is primary action, Filter, Clear filters, Refresh. Clear filters is a compact icon action that renders only when the filter panel is open or filters/search are active, and it resets search plus active operational filters. Refresh reloads the current filtered view and must not clear filters.
 - Blog/resource author selection uses a user dropdown instead of raw internal ids. Anonymous author maps to a nullable author user id, and mentees are excluded from author choices.
 - Frontend route guards remain UX routing only; backend authorization protects sensitive admin endpoints.
+- Mentor self-service profile/detail pages should reuse the same card padding, section kicker spacing, and dashboard grid rhythm as the mentee mentor/scholarship detail pages instead of introducing one-off spacing systems.
 
 ## Implemented Features
 

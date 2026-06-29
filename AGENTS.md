@@ -71,6 +71,7 @@ Keep the standalone component structure. Do not add NgModules or a new state-man
 
 - Preserve the current premium dashboard look and feel.
 - Use clean spacing, soft surfaces, readable hierarchy, and responsive card/table patterns.
+- Mentor/self-service dashboard pages should reuse the same card and grid spacing rhythm as the mentee detail pages and established admin dashboard forms.
 - Prefer component-scoped SCSS for page-specific layout.
 - Keep shared admin styling in `src/styles/admin-console.scss` only when it is truly reusable.
 - Avoid inline styles.
