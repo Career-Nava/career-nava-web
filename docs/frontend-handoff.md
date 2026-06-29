@@ -159,6 +159,7 @@ Completed admin pages use page-level state handling:
 - Mentor self-service profile/detail pages should reuse the same card padding, section kicker spacing, and dashboard grid rhythm as the mentee mentor/scholarship detail pages instead of introducing one-off spacing systems.
 - Prefer Bootstrap utilities plus existing shared app/admin dashboard classes for layout, spacing, cards, grids, and action placement before adding page-specific SCSS. Keep component SCSS for brand-specific visuals or cases utilities cannot express cleanly.
 - For dashboard management/profile UIs, prefer compact icon-only action controls when the action is obvious, matching the admin table row action pattern, and avoid excessive font-weight outside page titles, section headings, and intentional emphasis.
+- Persistence actions inside edit states, especially Save and Cancel, should keep icon + visible text labels for clarity. Primary CTAs such as Preview public profile should also keep icon + visible text and preserve strong contrast across default, hover, focus, and active states.
 
 ## Implemented Features
 
