@@ -5,7 +5,7 @@ import { ApiResponse } from "../api-response";
 import { ConfigurationService } from "../configuration.service";
 import { LocalStorageCache } from "../local-storage-cache";
 import { RestService } from "../rest.service";
-import { AdminMentor, AdminMentorUpdate, EligibleMentorUser, Mentor, MentorOnboardingRequest } from "./mentor.model";
+import { AdminMentor, AdminMentorUpdate, EligibleMentorUser, Mentor, MentorOnboardingRequest, MentorSelfProfile, UpdateMentorSelfProfileRequest } from "./mentor.model";
 
 @Injectable({ providedIn: 'root' })
 export class MentorService extends RestService {
@@ -83,6 +83,24 @@ export class MentorService extends RestService {
       );
   }
 
+  getSelfProfile(): Observable<MentorSelfProfile> {
+    return this.http
+      .get<ApiResponse<MentorSelfProfile>>(`${ this.baseUrl }/Self/Profile`)
+      .pipe(
+        map(res => this.mapSelfProfile(res.data)),
+        catchError(err => throwError(() => err))
+      );
+  }
+
+  updateSelfProfile(payload: UpdateMentorSelfProfileRequest): Observable<MentorSelfProfile> {
+    return this.http
+      .put<ApiResponse<MentorSelfProfile>>(`${ this.baseUrl }/Self/Profile`, payload)
+      .pipe(
+        map(res => this.mapSelfProfile(res.data)),
+        catchError(err => throwError(() => err))
+      );
+  }
+
   updateAdminMentor(id: number, payload: AdminMentorUpdate): Observable<AdminMentor> {
     return this.http
       .put<ApiResponse<AdminMentor>>(`${ this.baseUrl }/Admin/UpdateMentor/${ id }`, payload)
@@ -115,6 +133,21 @@ export class MentorService extends RestService {
       totalSessions: typeof dto.totalSessions === 'number' ? dto.totalSessions : 0,
       totalReviews: typeof dto.totalReviews === 'number' ? dto.totalReviews : 0,
       avgRating: typeof dto.avgRating === 'number' ? dto.avgRating : 0
+    };
+  }
+
+  private mapSelfProfile(dto: MentorSelfProfile): MentorSelfProfile {
+    const mappedMentor = this.mapMentor(dto);
+    return {
+      ...mappedMentor,
+      mentorProfileId: dto.mentorProfileId,
+      mentorProfileStatus: dto.mentorProfileStatus,
+      verified: dto.verified,
+      location: dto.location ?? null,
+      yearsExperience: typeof dto.yearsExperience === 'number' ? dto.yearsExperience : null,
+      availableExpertises: dto.availableExpertises ?? [],
+      availableDisciplines: dto.availableDisciplines ?? [],
+      availableFluencies: dto.availableFluencies ?? []
     };
   }
 

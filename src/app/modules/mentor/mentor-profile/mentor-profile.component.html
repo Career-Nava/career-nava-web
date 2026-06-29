@@ -1,20 +1,236 @@
-﻿<div class="container shell-page">
-  <section class="card border-0 shadow-sm p-4 shell-card">
-    <p class="text-uppercase text-muted small fw-semibold mb-2 shell-eyebrow">Mentor</p>
-    <h1 class="mb-3">My Profile</h1>
-    <p class="text-muted mb-4">
-      This page will let mentors manage the information mentees see before booking a guidance session.
-    </p>
+<div class="mentor-profile-page">
+  <div class="container">
+    <section class="mentor-profile-hero">
+      <div class="mentor-profile-hero__copy">
+        <p class="mentor-profile-hero__eyebrow">Mentor Profile</p>
+        <h1>Keep your mentor profile ready for discovery</h1>
+        <p class="mentor-profile-hero__lede">
+          Update the details mentees see, maintain your expertise and experience, and check whether your profile is currently visible.
+        </p>
+      </div>
 
-    <div class="shell-empty-state p-4">
-      <h2 class="h5 mb-2">Profile tools are not implemented yet</h2>
-      <p class="text-muted mb-4">No profile form is wired in during this scaffolding phase.</p>
-      <h3 class="h6 mb-3">Future profile fields</h3>
-      <ul class="shell-list mb-0">
-        <li>Bio, expertise, disciplines, and languages.</li>
-        <li>Availability and Calendly/session setup.</li>
-        <li>Profile visibility and public mentor details.</li>
-      </ul>
+      <div class="mentor-profile-hero__status" *ngIf="profile">
+        <span class="mentor-profile__status-pill" [ngClass]="statusBadgeClass">{{ statusLabel | titlecase }}</span>
+        <h2>{{ visibilityHeadline }}</h2>
+        <p>{{ visibilityCopy }}</p>
+      </div>
+    </section>
+
+    <div *ngIf="loading" class="mentor-profile-state mentor-profile-state--loading">
+      <div class="spinner-border text-primary" role="status" aria-label="Loading mentor profile"></div>
+      <p class="mb-0">Loading your mentor profile...</p>
     </div>
-  </section>
+
+    <div *ngIf="!loading && error" class="mentor-profile-state mentor-profile-state--error">
+      <h2>Unable to load your profile</h2>
+      <p class="mb-0">{{ error }}</p>
+    </div>
+
+    <form *ngIf="!loading && !error && profile" class="mentor-profile-grid" [formGroup]="profileForm" (ngSubmit)="saveProfile()">
+      <section class="mentor-profile-card mentor-profile-card--summary">
+        <div class="mentor-profile-card__header">
+          <div>
+            <p class="mentor-profile-card__eyebrow">Visibility</p>
+            <h2>Current profile status</h2>
+          </div>
+          <span class="mentor-profile__status-pill" [ngClass]="statusBadgeClass">{{ profile.mentorProfileStatus | titlecase }}</span>
+        </div>
+
+        <div class="mentor-profile-metrics">
+          <div class="mentor-profile-metric">
+            <span class="mentor-profile-metric__label">Account</span>
+            <strong>{{ profile.isActive ? 'Active' : 'Inactive' }}</strong>
+          </div>
+          <div class="mentor-profile-metric">
+            <span class="mentor-profile-metric__label">Verified</span>
+            <strong>{{ profile.verified ? 'Verified' : 'Pending' }}</strong>
+          </div>
+          <div class="mentor-profile-metric">
+            <span class="mentor-profile-metric__label">Calendly</span>
+            <strong>{{ profile.calendlyConnected ? 'Connected' : 'Not connected' }}</strong>
+          </div>
+          <div class="mentor-profile-metric">
+            <span class="mentor-profile-metric__label">Rating</span>
+            <strong>{{ (profile.avgRating || 0) | number:'1.1-1' }}</strong>
+          </div>
+          <div class="mentor-profile-metric">
+            <span class="mentor-profile-metric__label">Reviews</span>
+            <strong>{{ profile.totalReviews || 0 }}</strong>
+          </div>
+          <div class="mentor-profile-metric">
+            <span class="mentor-profile-metric__label">Sessions</span>
+            <strong>{{ profile.totalSessions || 0 }}</strong>
+          </div>
+        </div>
+
+        <div class="mentor-profile-note">
+          <h3>What you can edit here</h3>
+          <p class="mb-0">Public-facing profile content only. Admins still control lifecycle status, verification, and broader operational access.</p>
+        </div>
+      </section>
+
+      <section class="mentor-profile-card mentor-profile-card--details">
+        <div class="mentor-profile-card__header">
+          <div>
+            <p class="mentor-profile-card__eyebrow">Details</p>
+            <h2>Public profile content</h2>
+          </div>
+        </div>
+
+        <div *ngIf="saveMessage" class="alert alert-success mentor-profile-alert" role="status">{{ saveMessage }}</div>
+        <div *ngIf="saveError" class="alert alert-danger mentor-profile-alert" role="alert">{{ saveError }}</div>
+
+        <div class="mentor-profile-fields">
+          <label class="mentor-profile-field mentor-profile-field--readonly">
+            <span class="mentor-profile-field__label">Full name</span>
+            <input class="form-control" [value]="profile.fullName || ''" readonly>
+          </label>
+          <label class="mentor-profile-field mentor-profile-field--readonly">
+            <span class="mentor-profile-field__label">Email</span>
+            <input class="form-control" [value]="profile.email || ''" readonly>
+          </label>
+          <label class="mentor-profile-field">
+            <span class="mentor-profile-field__label">Company</span>
+            <input class="form-control" formControlName="company" placeholder="Where mentees know you from">
+          </label>
+          <label class="mentor-profile-field">
+            <span class="mentor-profile-field__label">Position title</span>
+            <input class="form-control" formControlName="positionTitle" placeholder="Your current role">
+          </label>
+          <label class="mentor-profile-field mentor-profile-field--wide">
+            <span class="mentor-profile-field__label">LinkedIn URL</span>
+            <input class="form-control" formControlName="linkedInUrl" placeholder="https://www.linkedin.com/in/...">
+          </label>
+          <label class="mentor-profile-field mentor-profile-field--wide">
+            <span class="mentor-profile-field__label">Profile picture URL</span>
+            <input class="form-control" formControlName="profilePicture" placeholder="Public image URL">
+          </label>
+          <label class="mentor-profile-field">
+            <span class="mentor-profile-field__label">Location</span>
+            <input class="form-control" formControlName="location" placeholder="City, country">
+          </label>
+          <label class="mentor-profile-field">
+            <span class="mentor-profile-field__label">Years of experience</span>
+            <input type="number" min="0" class="form-control" formControlName="yearsExperience" placeholder="0">
+          </label>
+          <label class="mentor-profile-field mentor-profile-field--wide">
+            <span class="mentor-profile-field__label">Bio</span>
+            <textarea class="form-control mentor-profile-field__textarea" formControlName="bio" rows="5" placeholder="Introduce yourself to mentees."></textarea>
+          </label>
+        </div>
+      </section>
+
+      <section class="mentor-profile-card mentor-profile-card--taxonomy">
+        <div class="mentor-profile-card__header">
+          <div>
+            <p class="mentor-profile-card__eyebrow">Taxonomy</p>
+            <h2>Expertise and mentoring fit</h2>
+          </div>
+        </div>
+
+        <div class="mentor-profile-choice-grid">
+          <div class="mentor-profile-choice-group">
+            <h3>Expertise</h3>
+            <div class="mentor-profile-choice-list">
+              <label class="mentor-profile-choice" *ngFor="let option of profile.availableExpertises; trackBy: trackOption">
+                <input
+                  type="checkbox"
+                  [checked]="isSelected('expertiseIds', option.id)"
+                  (change)="toggleSelection('expertiseIds', option.id, $any($event.target).checked)">
+                <span>{{ option.name }}</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="mentor-profile-choice-group">
+            <h3>Disciplines</h3>
+            <div class="mentor-profile-choice-list">
+              <label class="mentor-profile-choice" *ngFor="let option of profile.availableDisciplines; trackBy: trackOption">
+                <input
+                  type="checkbox"
+                  [checked]="isSelected('disciplineIds', option.id)"
+                  (change)="toggleSelection('disciplineIds', option.id, $any($event.target).checked)">
+                <span>{{ option.name }}</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="mentor-profile-choice-group">
+            <h3>Fluency</h3>
+            <div class="mentor-profile-choice-list">
+              <label class="mentor-profile-choice" *ngFor="let option of profile.availableFluencies; trackBy: trackOption">
+                <input
+                  type="checkbox"
+                  [checked]="isSelected('fluencyIds', option.id)"
+                  (change)="toggleSelection('fluencyIds', option.id, $any($event.target).checked)">
+                <span>{{ option.name }}</span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="mentor-profile-card mentor-profile-card--experience">
+        <div class="mentor-profile-card__header mentor-profile-card__header--actions">
+          <div>
+            <p class="mentor-profile-card__eyebrow">Experience</p>
+            <h2>Professional highlights</h2>
+          </div>
+          <button type="button" class="btn btn-outline-primary mentor-profile-add-btn" (click)="addExperience()">Add experience</button>
+        </div>
+
+        <div *ngIf="!experiences.length" class="mentor-profile-empty">
+          <h3>No experience entries yet</h3>
+          <p class="mb-0">Add the milestones that help mentees understand your background.</p>
+        </div>
+
+        <div formArrayName="experiences" class="mentor-profile-experiences">
+          <article class="mentor-profile-experience" *ngFor="let experience of experiences.controls; let i = index; trackBy: trackExperience" [formGroupName]="i">
+            <div class="mentor-profile-experience__header">
+              <h3>Experience {{ i + 1 }}</h3>
+              <button type="button" class="btn btn-link mentor-profile-remove-btn" (click)="removeExperience(i)">Remove</button>
+            </div>
+
+            <div class="mentor-profile-fields mentor-profile-fields--experience">
+              <label class="mentor-profile-field">
+                <span class="mentor-profile-field__label">Title</span>
+                <input class="form-control" formControlName="title" placeholder="Senior Product Designer">
+              </label>
+              <label class="mentor-profile-field">
+                <span class="mentor-profile-field__label">Company</span>
+                <input class="form-control" formControlName="companyName" placeholder="Company name">
+              </label>
+              <label class="mentor-profile-field">
+                <span class="mentor-profile-field__label">Start date</span>
+                <input type="date" class="form-control" formControlName="startDate">
+              </label>
+              <label class="mentor-profile-field">
+                <span class="mentor-profile-field__label">End date</span>
+                <input type="date" class="form-control" formControlName="endDate">
+              </label>
+              <label class="mentor-profile-field mentor-profile-field--wide">
+                <span class="mentor-profile-field__label">Company image URL</span>
+                <input class="form-control" formControlName="companyImage" placeholder="Optional image URL">
+              </label>
+              <label class="mentor-profile-field mentor-profile-field--wide">
+                <span class="mentor-profile-field__label">Description</span>
+                <textarea class="form-control mentor-profile-field__textarea mentor-profile-field__textarea--compact" formControlName="description" rows="4" placeholder="What should mentees know about this chapter?"></textarea>
+              </label>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="mentor-profile-card mentor-profile-card--actions">
+        <div>
+          <h2>Save your profile</h2>
+          <p class="mb-0">Changes update your mentor profile content only. They do not change your visibility status or account access.</p>
+        </div>
+        <button type="submit" class="btn btn-primary mentor-profile-save-btn" [disabled]="!canSave">
+          <span *ngIf="saving" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+          Save changes
+        </button>
+      </section>
+    </form>
+  </div>
 </div>

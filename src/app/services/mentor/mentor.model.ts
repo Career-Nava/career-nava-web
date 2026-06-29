@@ -1,16 +1,24 @@
 export interface MentorExpertise {
   mentorExpertiseId?: number;
+  expertiseId?: number;
   expertiseName?: string;
 }
 
 export interface MentorDiscipline {
   mentorDisciplineId?: number;
+  disciplineId?: number;
   disciplineName?: string;
 }
 
 export interface MentorFluency {
   mentorFluencyId?: number;
+  fluencyId?: number;
   fluencyName?: string;
+}
+
+export interface MentorLookupOption {
+  id: number;
+  name: string;
 }
 
 export interface Mentor {
@@ -110,10 +118,47 @@ export interface AdminMentorUpdate {
 }
 
 export interface MentorExperience {
+  mentorExperienceId?: number;
   title?: string;
+  companyName?: string;
   companyImage?: string;
   year: string;
   description?: string;
   startDate?: string;  // ISO string
   endDate?: string | null; // null = Present
+}
+
+export interface MentorSelfProfile extends Mentor {
+  mentorProfileId: number;
+  mentorProfileStatus: string;
+  verified: boolean;
+  location?: string | null;
+  yearsExperience?: number | null;
+  availableExpertises: MentorLookupOption[];
+  availableDisciplines: MentorLookupOption[];
+  availableFluencies: MentorLookupOption[];
+}
+
+export interface MentorSelfExperienceInput {
+  mentorExperienceId?: number | null;
+  title: string;
+  description: string;
+  companyName?: string | null;
+  companyImage?: string | null;
+  startDate: string;
+  endDate?: string | null;
+}
+
+export interface UpdateMentorSelfProfileRequest {
+  company?: string | null;
+  positionTitle?: string | null;
+  linkedInUrl?: string | null;
+  bio?: string | null;
+  profilePicture?: string | null;
+  location?: string | null;
+  yearsExperience?: number | null;
+  expertiseIds: number[];
+  disciplineIds: number[];
+  fluencyIds: number[];
+  experiences: MentorSelfExperienceInput[];
 }

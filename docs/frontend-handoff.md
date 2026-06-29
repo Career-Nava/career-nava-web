@@ -424,6 +424,25 @@ The overview links to existing admin pages:
 - responsive card grid that stacks on mobile
 - no CRUD or mutation actions
 
+### Mentor Self-Service
+
+Backend-wired mentor self-service profile management is implemented.
+
+#### Route and service contract
+
+- `/mentor/profile` -> `getSelfProfile()` -> `GET /api/Mentor/Self/Profile`
+- `updateSelfProfile(payload)` -> `PUT /api/Mentor/Self/Profile`
+
+#### Behavior
+
+- mentors can view their own profile content, visibility state, and operational read-only metadata
+- mentors can edit safe user-facing fields such as company, title, LinkedIn URL, profile picture URL, bio, location, years of experience, taxonomy selections, and experience entries
+- mentors cannot edit lifecycle/admin fields such as account active state, mentor profile status, verification, role, ratings, reviews, or session counts
+- the page shows loading, error, save-success, and save-error states
+- the page makes profile visibility explicit so mentors can tell whether their profile is live or still non-public
+- admin mentor preview and admin manage/edit remain separate from mentor self-service
+- public mentor discovery remains active-account plus active-profile only
+
 ## Shared Components
 
 Shared components currently important to future work:
@@ -459,6 +478,8 @@ Guidance:
 
 - `MentorService.getAllMentors()` -> public mentor list
 - `MentorService.getMentorById(id)` -> public mentor detail
+- `MentorService.getSelfProfile()` -> `GET /api/Mentor/Self/Profile`
+- `MentorService.updateSelfProfile(payload)` -> `PUT /api/Mentor/Self/Profile`
 - `MentorService.getAdminMentors()` -> `GET /api/Mentor/GetAllMentorsForAdmin`
 - `MentorService.getEligibleMentorUsers()` -> `GET /api/Mentor/Admin/EligibleUsers`
 - `MentorService.onboardExistingUser(...)` -> `POST /api/Mentor/Admin/OnboardExistingUser`
@@ -534,6 +555,7 @@ Phase 3F follow-up notes:
 - Admin blog/resource create and edit forms use an author dropdown from the admin user list. `Anonymous author` saves `authorId = null`; users with the `mentee` role are excluded from author choices.
 - Admin filters now auto-apply on change. Clear filters is a compact icon action in the toolbar beside Filter and Refresh for mentors, scholarships, blogs/resources, and sessions; session filter panels no longer contain Apply/Clear action rows.
 - Phase 3G aligned mentor preview contracts. `GET /api/Mentor/Admin/GetMentorById/{id}` now returns the rich mentee-facing display fields used by public mentor detail, including `expertise`, `disciplines`, `fluency`, `experiences`, `positionTitle`, `linkedInUrl`, `avgRating`, `totalReviews`, `totalSessions`, `bio`, `profilePicture`, and `company`, while preserving admin-only operational fields such as `mentorProfileStatus`, `isActive`, `calendlyConnected`, `verified`, `createdAt`, and `updatedAt`. Public mentor list/detail remains restricted to active accounts with active mentor profiles only.
+- Phase 4 added a real `/mentor/profile` self-service workspace. Mentors can now edit safe public-facing profile content and taxonomy/experience selections through mentor-scoped backend endpoints while lifecycle status, verification, and visibility controls remain admin-only.
 
 ## Known Caveats
 
@@ -550,16 +572,16 @@ Phase 3F follow-up notes:
 
 Major pending areas after the current MVP foundation:
 
-- mentor self-profile editing
 - richer pagination/search/filtering across admin lists
 - better automated frontend validation and tests
 - richer dashboard analytics
 - application tracker work
+- mentor Calendly/self-service connection improvements
 
 ## Recommended Next Frontend Iterations
 
 1. Add lint/test scripts or at least basic test tooling.
-2. Add mentor self-profile editing.
+2. Add mentor Calendly/self-service connection improvements.
 3. Add payments and Paystack verification UI once backend payment contracts are implemented.
 4. Add persisted scholarship bookmark UI once backend bookmark mutation endpoints exist.
 5. Add pagination/search/filtering refinements to admin lists.
