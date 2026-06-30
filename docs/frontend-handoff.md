@@ -175,6 +175,10 @@ The revised Phase 4D approach is utility-first:
 3. Browser-test each page before expanding.
 4. Consider a shared Angular component only after the utility-class approach is stable across multiple pages.
 
+For Phase 4D.1, use the approved Phase 4C `/mentor/profile` button and pill styling as the visual source of truth. Inspect `src/styles/mentor-profile.scss` and the current `/mentor/profile` template before defining shared dashboard action utilities. The goal is to extract and generalize the proven compact icon-action and compact equal-sized pill-action treatment, not invent a new dashboard button language.
+
+During Phase 4D.1, `/mentor/profile` should be treated as a read-only visual reference and should not be modified unless explicitly scoped. The pilot target remains `/admin/mentors` only. Shared utility classes should probably live in the existing shared admin/dashboard style layer, such as `src/styles/admin-console.scss`, unless inspection shows a better existing location; document the chosen location in the implementation report.
+
 ### Phase 4D sub-phases
 
 #### Phase 4D.1 - Admin Mentors Action Button Utility Pilot
@@ -185,9 +189,11 @@ Scope:
 
 - `/admin/mentors` only.
 - Define or refine shared CSS/SCSS utility classes for dashboard action buttons.
+- Base the visual treatment on the approved Phase 4C `/mentor/profile` button and pill styling in `src/styles/mentor-profile.scss`.
 - Apply them to admin mentor toolbar, filter, clear, refresh, row preview/manage/edit actions, and form/panel Save/Cancel actions where applicable.
 - Preserve all current behavior and handlers.
 - Do not create a shared Angular button component.
+- Do not modify `/mentor/profile`; use it only as a read-only visual reference during this pilot.
 - Do not migrate other admin pages yet.
 - Browser-test `/admin/mentors` before expanding.
 

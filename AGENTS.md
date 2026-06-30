@@ -94,7 +94,10 @@ Keep the standalone component structure. Do not add NgModules or a new state-man
 - Do not create or reintroduce a shared Angular `app-action-button` during the current Phase 4D rollout.
 - For action button standardization, use shared CSS/SCSS utility classes first and apply them incrementally, one page at a time.
 - Start with `/admin/mentors` as the utility pilot before expanding to other admin or mentor surfaces.
+- For Phase 4D.1, inspect `/mentor/profile` and `src/styles/mentor-profile.scss` as the approved Phase 4C visual baseline before defining utilities.
+- During the `/admin/mentors` pilot, treat `/mentor/profile` as a read-only visual reference; do not modify it unless explicitly scoped.
 - Migrate one admin page at a time and browser-test each page before expanding.
+- Generalize the proven compact icon-action and compact equal-sized pill-action treatment into reusable CSS utility classes; do not invent a new dashboard button language.
 - Use icon-only buttons for obvious compact row or secondary actions, always with `title` and `aria-label`.
 - Use icon + text for Save, Cancel, Create/Add, and primary CTAs.
 - Keep paired Save and Cancel buttons compact and equal-sized.
