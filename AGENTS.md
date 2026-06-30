@@ -91,12 +91,17 @@ Keep the standalone component structure. Do not add NgModules or a new state-man
 ## Dashboard Action Buttons
 
 - Do not perform broad dashboard-wide button component migrations in one pass.
-- For action button standardization, prefer shared CSS/SCSS utility classes first and apply them incrementally, one page at a time.
-- Start with `/admin/mentors` as the pilot before expanding to other admin or mentor surfaces.
+- Do not create or reintroduce a shared Angular `app-action-button` during the current Phase 4D rollout.
+- For action button standardization, use shared CSS/SCSS utility classes first and apply them incrementally, one page at a time.
+- Start with `/admin/mentors` as the utility pilot before expanding to other admin or mentor surfaces.
+- Migrate one admin page at a time and browser-test each page before expanding.
 - Use icon-only buttons for obvious compact row or secondary actions, always with `title` and `aria-label`.
 - Use icon + text for Save, Cancel, Create/Add, and primary CTAs.
 - Keep paired Save and Cancel buttons compact and equal-sized.
-- Only consider a shared Angular action button component after the utility-class approach is proven stable in browser testing.
+- Use restrained danger styling for destructive actions and preserve confirmation behavior where applicable.
+- Avoid raw Bootstrap default button colors for final dashboard action styling.
+- Avoid deep page-specific SCSS for basic button spacing/layout.
+- Only consider a shared Angular action button component after the utility-class approach is proven stable across multiple admin pages in browser testing.
 
 ## Responsive UX
 

@@ -164,17 +164,97 @@ Completed admin pages use page-level state handling:
 
 ## Dashboard Action Button Standardization
 
-Phase 4D should be handled incrementally. A broad shared Angular `app-action-button` migration was attempted and reverted because it created too much regression risk across admin and mentor screens.
+Status: Pending / revised plan documented
 
-Going forward:
+Phase 4D should be handled incrementally. A broad shared Angular `app-action-button` migration was previously attempted across admin mentors, sessions, scholarships, blogs/resources, and `/mentor/profile`. Although it compiled, it touched too many surfaces at once, caused UI regressions, and was reverted. Do not recreate or reintroduce `app-action-button`; any remaining mentions should be historical docs only.
 
-- Standardize dashboard action button styles as shared CSS/SCSS utility classes first.
-- Apply them page-by-page, starting with `/admin/mentors`.
-- Keep row actions icon-only when obvious.
-- Keep Save/Cancel and primary CTAs icon + text.
-- Keep Save/Cancel compact and equal-sized when paired.
-- Do not migrate all admin pages in one pass without browser QA.
-- Consider a shared Angular component only after the class-based pattern is proven stable.
+The revised Phase 4D approach is utility-first:
+
+1. Define small shared dashboard action button CSS/SCSS utility classes.
+2. Apply them to one page at a time.
+3. Browser-test each page before expanding.
+4. Consider a shared Angular component only after the utility-class approach is stable across multiple pages.
+
+### Phase 4D sub-phases
+
+#### Phase 4D.1 - Admin Mentors Action Button Utility Pilot
+
+Status: Next recommended implementation step
+
+Scope:
+
+- `/admin/mentors` only.
+- Define or refine shared CSS/SCSS utility classes for dashboard action buttons.
+- Apply them to admin mentor toolbar, filter, clear, refresh, row preview/manage/edit actions, and form/panel Save/Cancel actions where applicable.
+- Preserve all current behavior and handlers.
+- Do not create a shared Angular button component.
+- Do not migrate other admin pages yet.
+- Browser-test `/admin/mentors` before expanding.
+
+#### Phase 4D.2 - Admin Scholarships Action Button Migration
+
+Status: Planned after 4D.1 is visually approved
+
+Scope:
+
+- `/admin/scholarships`.
+- Reuse the utilities proven in 4D.1.
+- Standardize add/create, preview/view, edit/manage, publish, draft, close, archive, filter, clear, refresh, and Save/Cancel actions.
+- Preserve lifecycle behavior.
+- Browser-test before expanding.
+
+#### Phase 4D.3 - Admin Blogs/Resources Action Button Migration
+
+Status: Planned after 4D.2
+
+Scope:
+
+- `/admin/blogs` or the current admin blogs/resources route.
+- Reuse proven utilities.
+- Standardize create, edit/manage, preview/open, publish, draft, archive, filter, clear, refresh, and Save/Cancel actions.
+- Preserve author selector and blog lifecycle behavior.
+- Browser-test before expanding.
+
+#### Phase 4D.4 - Admin Sessions Action Button Migration
+
+Status: Planned after 4D.3
+
+Scope:
+
+- `/admin/sessions`.
+- Reuse proven utilities.
+- Standardize view/manage, complete, cancel, move-to-pending, filter, clear, refresh, close panel, and other operational actions.
+- Be careful with lifecycle actions because sessions have operational/payment implications.
+- Browser-test before expanding.
+
+#### Phase 4D.5 - Mentor Profile Action Alignment Review
+
+Status: Optional / only if needed
+
+Scope:
+
+- `/mentor/profile`.
+- Do not change it unless the utility classes can improve or simplify the already-approved Phase 4C styling without regression.
+- Preserve Bootstrap-first layout, read-first mentor profile behavior, icon-only secondary actions, Save/Cancel icon + text equal-sized compact pill buttons, standardized taxonomy pills, and the premium preview CTA.
+
+### Dashboard action button rules
+
+- Prefer shared CSS/SCSS utility classes before creating Angular button components.
+- Use icon-only buttons for obvious compact row/secondary actions.
+- Always include `title` and `aria-label` for icon-only actions.
+- Use icon + visible text for Save, Cancel, Create/Add, and primary CTAs.
+- Save and Cancel should be compact, equal-sized pill buttons when paired.
+- Destructive actions should use restrained danger styling and preserve confirmation behavior where applicable.
+- Avoid raw Bootstrap default button colors for final dashboard action styling.
+- Avoid broad cross-dashboard button migrations without browser verification.
+- Avoid deep page-specific SCSS for basic button spacing/layout.
+- Consider a shared Angular action button component only after the CSS utility approach is stable across multiple admin pages.
+
+### Validation expectations
+
+- Run `npm run build` for any implementation phase.
+- Browser-QA the touched page before expanding to another page.
+- For Phase 4D.1 specifically, verify `/admin/mentors` at desktop and narrow widths before starting 4D.2.
 
 ## Implemented Features
 
@@ -596,6 +676,7 @@ Phase 3F follow-up notes:
 
 Major pending areas after the current MVP foundation:
 
+- Phase 4D.1 `/admin/mentors` dashboard action button utility pilot
 - richer pagination/search/filtering across admin lists
 - better automated frontend validation and tests
 - richer dashboard analytics
@@ -605,17 +686,19 @@ Major pending areas after the current MVP foundation:
 
 ## Recommended Next Frontend Iterations
 
-1. Add lint/test scripts or at least basic test tooling.
-2. Add mentor Calendly/self-service connection improvements.
-3. Add payments and Paystack verification UI once backend payment contracts are implemented.
-4. Add persisted scholarship bookmark UI once backend bookmark mutation endpoints exist.
-5. Add pagination/search/filtering refinements to admin lists.
-6. Fix `shcolarship.model.ts` typo safely.
-7. Add richer admin overview charts/recent activity.
+1. Implement Phase 4D.1 on `/admin/mentors` only using shared CSS/SCSS utilities, then run `npm run build` and browser QA before expanding.
+2. Add lint/test scripts or at least basic test tooling.
+3. Add mentor Calendly/self-service connection improvements.
+4. Add payments and Paystack verification UI once backend payment contracts are implemented.
+5. Add persisted scholarship bookmark UI once backend bookmark mutation endpoints exist.
+6. Add pagination/search/filtering refinements to admin lists.
+7. Fix `shcolarship.model.ts` typo safely.
+8. Add richer admin overview charts/recent activity.
 
 ## Notes for Future Codex Sessions
 
 - Treat the current backend-backed admin pages as stable MVP management slices unless the new task explicitly expands scope.
+- Phase 4D is pending and should start with `/admin/mentors` only; do not repeat the reverted broad `app-action-button` migration.
 - Preserve the role-safe session endpoints:
   - mentee -> `/api/Session/me/mentee`
   - mentor -> `/api/Session/me/mentor`
