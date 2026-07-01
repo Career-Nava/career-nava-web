@@ -94,6 +94,7 @@ Keep the standalone component structure. Do not add NgModules or a new state-man
 - Do not create or reintroduce a shared Angular `app-action-button` unless a future task explicitly scopes it.
 - For action button standardization, use shared CSS/SCSS utility classes first and apply them incrementally.
 - Phase 4D admin action standardization is complete for `/admin/mentors`, `/admin/scholarships`, `/admin/blogs`, and `/admin/sessions`; preserve that utility pattern.
+- Phase 4E should standardize user-facing CTA buttons separately from Phase 4D admin operational actions; do not blindly reuse `admin-action-*` utilities for mentor/mentee/admin-preview CTAs.
 - Treat `/mentor/profile` and `src/styles/mentor-profile.scss` as the approved visual reference; do not modify them unless explicitly scoped.
 - Apply action utilities directly to actual clickable elements, not only to child wrapper spans.
 - Product owner performs manual visual smoke tests; do not run browser automation or screenshot tooling unless explicitly requested.

@@ -261,8 +261,101 @@ Scope:
 ### Validation expectations
 
 - Run `npm run build` for any implementation phase.
-- Browser-QA the touched page before expanding to another page.
-- For Phase 4D.1 specifically, verify `/admin/mentors` at desktop and narrow widths before starting 4D.2.
+- Product owner performs manual visual smoke tests for touched UI pages before expanding to another page.
+- Do not run browser automation or screenshot tooling unless explicitly requested.
+
+## Phase 4E - Dashboard CTA Button Standardization
+
+Status: Planned / next tracked frontend styling phase
+
+Phase 4E should standardize user-facing CTA buttons across mentor, mentee, and admin preview dashboards. Do not confuse this with Phase 4D admin operational actions. Phase 4D handled actions such as Save, Close, Filter, Refresh, Manage, Preview, and Edit. Phase 4E should handle CTAs such as Book session, Schedule, Open meeting, Join Session, View mentor profile, View scholarship, Visit scholarship, Open official page, and View LinkedIn.
+
+Do not blindly reuse `admin-action-pill` or other Phase 4D admin utilities for Phase 4E. Those utilities live in `src/styles/admin-console.scss` and are admin-console operational action utilities. Phase 4E likely needs a separate CTA utility family after implementation-time inspection of the current style organization, such as `dashboard-cta` or `profile-cta` variants.
+
+Discovered Phase 4E target routes and files:
+
+- `/admin/mentors/preview/:id` -> `MentorDetailsComponent`, using `src/app/modules/student/mentors/mentor-details/mentor-details.component.html` and `.scss`.
+- `/mentor/profile/preview` -> `MentorDetailsComponent`, using `src/app/modules/student/mentors/mentor-details/mentor-details.component.html` and `.scss`.
+- `/mentee/mentors/mentor-details/:id` -> `MentorDetailsComponent`, using `src/app/modules/student/mentors/mentor-details/mentor-details.component.html` and `.scss`.
+- `/mentee/mentors` -> `MentorsComponent`, using `src/app/modules/student/mentors/mentors.component.html` and `.scss`.
+- `/admin/scholarships/preview/:id` -> `ScholarshipDetailsComponent`, using `src/app/modules/student/scholarships/scholarship-details/scholarship-details.component.html` and `.scss`.
+- `/mentee/scholarships` -> `ScholarshipsComponent`, using `src/app/modules/student/scholarships/scholarships.component.html` and `.scss`.
+- `/mentee/scholarships/:id` and `/mentee/scholarship-details/:id` -> `ScholarshipDetailsComponent`, using `src/app/modules/student/scholarships/scholarship-details/scholarship-details.component.html` and `.scss`.
+- `/mentor/sessions` -> `MentorSessionsComponent`, using shared `SessionGroupPanelComponent` and `SessionCardComponent` under `src/app/modules/shared/session-group-panel/` and `src/app/modules/shared/session-card/`.
+- `/mentee/sessions` -> `StudentSessionsComponent`, also using shared `SessionGroupPanelComponent` and `SessionCardComponent`.
+
+Discovered CTA text/actions:
+
+- Mentor detail/admin preview/mentor preview: `Book session`, `Preview scheduling`, `Schedule with <mentor>`, `Preview scheduling flow`, `View LinkedIn`.
+- Mentee mentor list: `View mentor profile`.
+- Scholarship list/detail/admin preview: `View scholarship`, `Visit scholarship`, `Open official scholarship page`.
+- Session cards: `Open meeting`, `Join Session`.
+
+### Phase 4E sub-phases
+
+#### Phase 4E.1 - CTA Utility Baseline
+
+Scope:
+
+- Inspect current CTA styling across mentor, mentee, and admin preview surfaces.
+- Establish shared CTA utility classes in the most appropriate shared dashboard/profile style location after inspecting existing styles.
+- Use the existing yellow/gold CTA style as the likely primary CTA language unless repo inspection suggests otherwise.
+- Do not alter Phase 4D admin action utilities except for a tiny documentation clarification if needed.
+- Do not migrate every page in this baseline unless the implementation prompt explicitly scopes it.
+
+#### Phase 4E.2 - Mentor Preview/Profile CTA Migration
+
+Scope:
+
+- `/mentor/profile/preview`.
+- `/admin/mentors/preview/:id`.
+- `/mentee/mentors/mentor-details/:id`.
+- Likely CTAs: Book session, Preview scheduling, Preview scheduling flow, Schedule with mentor, View LinkedIn.
+
+#### Phase 4E.3 - Scholarship CTA Migration
+
+Scope:
+
+- `/admin/scholarships/preview/:id`.
+- `/mentee/scholarships`.
+- `/mentee/scholarships/:id` and `/mentee/scholarship-details/:id`.
+- Likely CTAs: View scholarship, Visit scholarship, Open official scholarship page.
+
+#### Phase 4E.4 - Session CTA Migration
+
+Scope:
+
+- `/mentor/sessions`.
+- `/mentee/sessions`.
+- Shared session card CTA surface.
+- Likely CTAs: Open meeting, Join Session.
+
+#### Phase 4E.5 - CTA Audit and Docs Closeout
+
+Scope:
+
+- Audit all Phase 4E target routes.
+- Confirm CTA utilities are applied directly to actual clickable elements.
+- Update docs and tracker.
+- Do not run browser automation or screenshot tooling unless explicitly requested.
+
+### Phase 4E guardrails
+
+- Do not change business logic, booking logic, scheduling logic, payment logic, session lifecycle logic, or public mentor visibility rules.
+- Do not change URLs, router links, `href`s, `target` behavior, disabled states, click handlers, or form behavior.
+- Do not replace Phase 4D admin action utilities with CTA utilities.
+- Apply CTA utility classes directly to actual clickable elements, not only to child spans.
+- Preserve visible labels, icons, `title`, `aria-label`, disabled states, and external-link behavior.
+- Product owner performs manual visual smoke tests. Do not run browser automation or screenshot tooling unless explicitly requested.
+
+### Phase 4E acceptance criteria
+
+- User-facing CTAs across targeted mentor, mentee, and admin preview routes share a consistent visual language.
+- Primary CTAs have consistent height, radius, spacing, icon placement, hover/focus affordance, and full-width behavior where intended.
+- Secondary CTAs such as LinkedIn/open external links have consistent neutral treatment.
+- CTA classes are applied directly to actual clickable elements.
+- Existing behavior is preserved.
+- Product owner manually visually approves the touched routes.
 
 ## Implemented Features
 
@@ -684,7 +777,7 @@ Phase 3F follow-up notes:
 
 Major pending areas after the current MVP foundation:
 
-- Phase 4D.1 `/admin/mentors` dashboard action button utility pilot
+- Phase 4E dashboard CTA button standardization
 - richer pagination/search/filtering across admin lists
 - better automated frontend validation and tests
 - richer dashboard analytics
@@ -694,18 +787,20 @@ Major pending areas after the current MVP foundation:
 
 ## Recommended Next Frontend Iterations
 
-1. Add lint/test scripts or at least basic test tooling.
-2. Add mentor Calendly/self-service connection improvements.
-3. Add payments and Paystack verification UI once backend payment contracts are implemented.
-4. Add persisted scholarship bookmark UI once backend bookmark mutation endpoints exist.
-5. Add pagination/search/filtering refinements to admin lists.
-6. Fix `shcolarship.model.ts` typo safely.
-7. Add richer admin overview charts/recent activity.
+1. Implement Phase 4E.1 CTA utility baseline planning/implementation prompt.
+2. Add lint/test scripts or at least basic test tooling.
+3. Add mentor Calendly/self-service connection improvements.
+4. Add payments and Paystack verification UI once backend payment contracts are implemented.
+5. Add persisted scholarship bookmark UI once backend bookmark mutation endpoints exist.
+6. Add pagination/search/filtering refinements to admin lists.
+7. Fix `shcolarship.model.ts` typo safely.
+8. Add richer admin overview charts/recent activity.
 
 ## Notes for Future Codex Sessions
 
 - Treat the current backend-backed admin pages as stable MVP management slices unless the new task explicitly expands scope.
 - Phase 4D admin action button standardization is complete for `/admin/mentors`, `/admin/scholarships`, `/admin/blogs`, and `/admin/sessions`; do not repeat the reverted broad `app-action-button` migration.
+- Phase 4E is the next tracked dashboard styling phase and should focus on user-facing CTA buttons, not admin operational action buttons.
 - Preserve the role-safe session endpoints:
   - mentee -> `/api/Session/me/mentee`
   - mentor -> `/api/Session/me/mentor`
