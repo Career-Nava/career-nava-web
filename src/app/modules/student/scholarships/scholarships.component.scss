@@ -21,8 +21,7 @@
 }
 
 .sch-kicker,
-.sch-cat,
-.sch-role {
+.sch-taxonomy-chip {
   font-size: 0.74rem;
   font-weight: 700;
   letter-spacing: 0.06em;
@@ -178,14 +177,28 @@
   gap: 0.95rem;
 }
 
-.sch-topline,
+.sch-taxonomy,
 .sch-interest {
   display: flex;
-  gap: 1rem;
+  gap: 0.55rem;
 }
 
-.sch-topline {
-  justify-content: space-between;
+.sch-taxonomy {
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.sch-taxonomy-chip {
+  display: inline-flex;
+  padding: 0.34rem 0.7rem;
+  border-radius: 999px;
+  background: rgba(119, 12, 226, 0.08);
+  color: #5b21b6;
+}
+
+.sch-taxonomy-chip--audience {
+  background: rgba(248, 250, 252, 0.96);
+  color: #4b5563;
 }
 
 .sch-card-title {
@@ -224,15 +237,6 @@
   display: flex;
   align-items: center;
   padding-left: 0.45rem;
-}
-
-.sch-cta {
-  display: inline-flex;
-  width: 100%;
-  min-height: 2.9rem;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
 }
 
 .sch-skel .sch-media,

@@ -141,14 +141,6 @@
   align-items: center;
 }
 
-.schd-cta {
-  display: inline-flex;
-  min-height: 2.9rem;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-}
-
 .schd-note {
   max-width: 26rem;
 }
@@ -305,10 +297,6 @@
   .schd-hero__img,
   .schd-media-skel {
     min-height: 14rem;
-  }
-
-  .schd-cta {
-    width: 100%;
   }
 
   .schd-avatar {

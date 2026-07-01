@@ -130,9 +130,9 @@
         </div>
 
         <div class="sch-body">
-          <div class="sch-topline">
-            <span class="sch-cat">{{ scholarship.category }}</span>
-            <span class="sch-role" *ngIf="scholarship.role">{{ scholarship.role }}</span>
+          <div class="sch-taxonomy" *ngIf="scholarship.category || scholarship.role">
+            <span class="sch-taxonomy-chip" *ngIf="scholarship.category">{{ scholarship.category }}</span>
+            <span class="sch-taxonomy-chip sch-taxonomy-chip--audience" *ngIf="scholarship.role">{{ scholarship.role }}</span>
           </div>
 
           <h3 class="sch-card-title">{{ scholarship.title }}</h3>
@@ -172,9 +172,8 @@
         </div>
 
         <div class="sch-footer">
-          <a class="btn btn-secondary sch-cta" [routerLink]="['/mentee/scholarships', scholarship.scholarshipId]">
-            <span>View scholarship</span>
-            <fa-icon [icon]="faArrowRight"></fa-icon>
+          <a class="dashboard-cta dashboard-cta--primary dashboard-cta--full" [routerLink]="['/mentee/scholarships', scholarship.scholarshipId]">
+            <span class="dashboard-cta__content"><span>View scholarship</span><fa-icon [icon]="faArrowRight"></fa-icon></span>
           </a>
         </div>
       </article>

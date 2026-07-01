@@ -103,14 +103,13 @@
                   [href]="s.link"
                   target="_blank"
                   rel="noopener noreferrer"
-                  class="btn btn-secondary schd-cta">
-                  <span>Visit scholarship</span>
-                  <fa-icon [icon]="faArrowUpRightFromSquare"></fa-icon>
+                  class="dashboard-cta dashboard-cta--primary dashboard-cta--compact">
+                  <span class="dashboard-cta__content"><span>Visit scholarship</span><fa-icon [icon]="faArrowUpRightFromSquare"></fa-icon></span>
                 </a>
 
                 <ng-template #unavailableLink>
-                  <button type="button" class="btn btn-outline-secondary schd-cta" disabled>
-                    Application link unavailable
+                  <button type="button" class="dashboard-cta dashboard-cta--secondary dashboard-cta--compact" disabled>
+                    <span class="dashboard-cta__content"><span>Application link unavailable</span></span>
                   </button>
                 </ng-template>
 
@@ -242,14 +241,13 @@
               [href]="s.link"
               target="_blank"
               rel="noopener noreferrer"
-              class="btn btn-secondary w-100 schd-cta">
-              <span>Open official scholarship page</span>
-              <fa-icon [icon]="faArrowUpRightFromSquare"></fa-icon>
+              class="dashboard-cta dashboard-cta--primary dashboard-cta--full">
+              <span class="dashboard-cta__content"><span>Open official scholarship page</span><fa-icon [icon]="faArrowUpRightFromSquare"></fa-icon></span>
             </a>
 
             <ng-template #noActionLink>
-              <button type="button" class="btn btn-outline-secondary w-100 schd-cta" disabled>
-                Official scholarship link unavailable
+              <button type="button" class="dashboard-cta dashboard-cta--secondary dashboard-cta--full" disabled>
+                <span class="dashboard-cta__content"><span>Official scholarship link unavailable</span></span>
               </button>
             </ng-template>
           </section>

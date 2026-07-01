@@ -266,7 +266,7 @@ Scope:
 
 ## Phase 4E - Dashboard CTA Button Standardization
 
-Status: Phase 4E.2 implemented / pending product-owner manual visual approval
+Status: Phase 4E.3 implemented and manually visually approved by the product owner
 
 Phase 4E should standardize user-facing CTA buttons across mentor, mentee, and admin preview dashboards. Do not confuse this with Phase 4D admin operational actions. Phase 4D handled actions such as Save, Close, Filter, Refresh, Manage, Preview, and Edit. Phase 4E should handle CTAs such as Book session, Schedule, Open meeting, Join Session, View mentor profile, View scholarship, Visit scholarship, Open official page, and View LinkedIn.
 
@@ -329,7 +329,7 @@ Scope:
 
 #### Phase 4E.2 - Mentor Preview/Profile CTA Migration
 
-Status: Implemented / pending product-owner manual visual approval
+Status: Implemented and manually visually approved by the product owner
 
 Scope:
 
@@ -340,16 +340,25 @@ Scope:
 - Migrated `/mentee/mentors` card `View mentor profile` CTAs to the approved full-width primary dashboard CTA utility.
 - Audited shared `MentorDetailsComponent` CTAs for `/mentor/profile/preview`, `/admin/mentors/preview/:id`, and `/mentee/mentors/mentor-details/:id`; Phase 4E.1 CTA utilities remain the active implementation for Book session, View LinkedIn, Preview scheduling, Preview scheduling flow, and Schedule with mentor.
 - Preserve router links, booking/scheduling behavior, LinkedIn behavior, filtering/search, and public mentor visibility rules.
-- Do not proceed to Phase 4E.3 until product-owner manual visual approval of the mentor CTA migration.
+- Phase 4E.2 was manually visually approved by the product owner.
 
 #### Phase 4E.3 - Scholarship CTA Migration
+
+Status: Implemented and manually visually approved by the product owner
 
 Scope:
 
 - `/admin/scholarships/preview/:id`.
 - `/mentee/scholarships`.
 - `/mentee/scholarships/:id` and `/mentee/scholarship-details/:id`.
-- Likely CTAs: View scholarship, Visit scholarship, Open official scholarship page.
+- Migrated `/mentee/scholarships` card `View scholarship` CTAs to the approved full-width primary dashboard CTA utility.
+- Migrated scholarship detail hero `Visit scholarship` CTA to the approved compact primary dashboard CTA utility.
+- Migrated scholarship detail sidebar `Open official scholarship page` CTA to the approved full-width primary dashboard CTA utility.
+- Migrated unavailable scholarship link states to disabled secondary dashboard CTA utilities.
+- Refined `/mentee/scholarships` card category/audience labels into rounded taxonomy chips after product-owner feedback.
+- `/admin/scholarships/preview/:id` reuses `ScholarshipDetailsComponent`, so the detail CTA migration also covers admin scholarship preview.
+- Preserve router links, external `href`/`target`/`rel` behavior, bookmark/shortlist behavior, filtering/search, scholarship visibility/status logic, and admin preview behavior.
+- Phase 4E.3 was manually visually approved by the product owner after the taxonomy pill refinement.
 
 #### Phase 4E.4 - Session CTA Migration
 
@@ -817,7 +826,7 @@ Major pending areas after the current MVP foundation:
 
 ## Recommended Next Frontend Iterations
 
-1. Get product-owner manual visual approval for the Phase 4E.2 mentor CTA migration before starting Phase 4E.3.
+1. Implement Phase 4E.4 session CTA migration after inspecting the current shared session card/panel implementation.
 2. Add lint/test scripts or at least basic test tooling.
 3. Add mentor Calendly/self-service connection improvements.
 4. Add payments and Paystack verification UI once backend payment contracts are implemented.
