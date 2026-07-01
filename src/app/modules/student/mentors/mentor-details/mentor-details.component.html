@@ -66,19 +66,17 @@
               <p class="mnd-copy text-muted mb-4" *ngIf="mentor.bio">{{ mentor.bio }}</p>
 
               <div class="mnd-actions">
-                <button type="button" class="btn btn-secondary mnd-cta" (click)="openCalendlyModal()">
-                  <span>{{ isMentorPreview ? 'Preview scheduling' : 'Book session' }}</span>
-                  <fa-icon [icon]="faCalendarCheck"></fa-icon>
+                <button type="button" class="dashboard-cta dashboard-cta--primary dashboard-cta--compact" (click)="openCalendlyModal()">
+                  <span class="dashboard-cta__content"><span>{{ isMentorPreview ? 'Preview scheduling' : 'Book session' }}</span><fa-icon [icon]="faCalendarCheck"></fa-icon></span>
                 </button>
 
                 <a
-                  *ngIf="mentor.linkedInUrl"
-                  [href]="mentor.linkedInUrl"
+                  *ngIf="getLinkedInUrl(mentor) as linkedInUrl"
+                  [href]="linkedInUrl"
                   target="_blank"
                   rel="noopener noreferrer"
-                  class="btn btn-outline-secondary mnd-cta">
-                  <span>View LinkedIn</span>
-                  <fa-icon [icon]="faArrowUpRightFromSquare"></fa-icon>
+                  class="dashboard-cta dashboard-cta--secondary dashboard-cta--compact">
+                  <span class="dashboard-cta__content"><span>View LinkedIn</span><fa-icon [icon]="faArrowUpRightFromSquare"></fa-icon></span>
                 </a>
 
                 <p class="mnd-note mb-0 text-muted">
@@ -198,9 +196,8 @@
             <p class="text-muted mb-3">
               {{ isAdminPreview ? 'Booking is disabled in admin preview and does not mutate Calendly.' : isMentorPreview ? 'Scheduling is disabled in mentor preview. This view is here so you can review exactly what mentees would see.' : 'Use a session to ask focused questions about experience, transitions, and how to prepare for your next career move.' }}
             </p>
-            <button type="button" class="btn btn-secondary w-100 mnd-cta" (click)="openCalendlyModal()">
-              <span>{{ isMentorPreview ? 'Preview scheduling flow' : 'Schedule with ' + mentor.fullName }}</span>
-              <fa-icon [icon]="faCalendarCheck"></fa-icon>
+            <button type="button" class="dashboard-cta dashboard-cta--primary dashboard-cta--full" (click)="openCalendlyModal()">
+              <span class="dashboard-cta__content"><span>{{ isMentorPreview ? 'Preview scheduling flow' : 'Schedule with ' + mentor.fullName }}</span><fa-icon [icon]="faCalendarCheck"></fa-icon></span>
             </button>
           </section>
         </div>

@@ -153,6 +153,14 @@ export class MentorDetailsComponent implements OnInit, OnDestroy {
     return 'This is a preview only. Your profile is not currently public to mentees.';
   }
 
+  getLinkedInUrl(mentor: Mentor): string | null {
+    const url = (mentor.linkedInUrl ?? (mentor as Mentor & { linkedIn?: string | null }).linkedIn ?? '').trim();
+    if (!url) return null;
+    if (/^https?:\/\//i.test(url)) return url;
+    if (/^(www\.)?linkedin\.com\//i.test(url)) return `https://${ url }`;
+    return null;
+  }
+
   private waitForCalendlyScript(): Promise<void> {
     if (this.calendlyScriptLoaded) return Promise.resolve();
 
