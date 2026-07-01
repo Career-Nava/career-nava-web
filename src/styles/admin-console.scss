@@ -182,6 +182,153 @@
   font-size: 0.95rem;
 }
 
+.admin-action-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  min-height: 2.4rem;
+  padding: 0.45rem 0.9rem;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: transparent;
+  box-shadow: none;
+  font-weight: 600;
+  line-height: 1;
+  text-decoration: none;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease, background-color 0.18s ease, color 0.18s ease;
+}
+
+.admin-action-pill:hover,
+.admin-action-pill:focus-visible {
+  transform: translateY(-1px);
+}
+
+.admin-action-pill:focus-visible {
+  outline: none;
+}
+
+.admin-action-pill:disabled {
+  opacity: 0.7;
+  transform: none;
+}
+
+.admin-action-pill--compact {
+  min-height: 2.2rem;
+  min-width: 7.25rem;
+  padding: 0.42rem 0.95rem;
+  font-size: 0.88rem;
+}
+
+.admin-action-content {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+}
+
+.admin-action-pill--primary {
+  border-color: transparent;
+  background: linear-gradient(135deg, #770ce2, #5b21b6);
+  box-shadow: 0 10px 24px rgba(119, 12, 226, 0.18);
+  color: #fff;
+}
+
+.admin-action-pill--primary:hover,
+.admin-action-pill--primary:focus-visible,
+.admin-action-pill--primary:active {
+  border-color: transparent;
+  background: linear-gradient(135deg, #6d28d9, #4c1d95);
+  box-shadow: 0 14px 28px rgba(119, 12, 226, 0.24);
+  color: #fff;
+}
+
+.admin-action-pill--ghost {
+  border-color: rgba(209, 213, 219, 0.85);
+  background: #fff;
+  color: #4b5563;
+}
+
+.admin-action-pill--ghost:hover,
+.admin-action-pill--ghost:focus-visible,
+.admin-action-pill--ghost:active {
+  border-color: rgba(119, 12, 226, 0.18);
+  background: rgba(248, 245, 255, 0.95);
+  box-shadow: 0 10px 18px rgba(15, 23, 42, 0.08);
+  color: #5b21b6;
+}
+
+.admin-action-pill--danger {
+  border-color: rgba(239, 68, 68, 0.18);
+  background: rgba(254, 242, 242, 0.95);
+  color: #b91c1c;
+}
+
+.admin-action-pill--danger:hover,
+.admin-action-pill--danger:focus-visible,
+.admin-action-pill--danger:active {
+  border-color: rgba(248, 113, 113, 0.4);
+  background: rgba(254, 242, 242, 0.95);
+  box-shadow: 0 10px 18px rgba(127, 29, 29, 0.08);
+  color: #991b1b;
+}
+
+.admin-action-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.35rem;
+  min-width: 2.35rem;
+  height: 2.35rem;
+  padding: 0;
+  border: 1px solid rgba(209, 213, 219, 0.85);
+  border-radius: 0.75rem;
+  background: #fff;
+  color: #475569;
+  text-decoration: none;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease, color 0.18s ease, background-color 0.18s ease;
+}
+
+.admin-action-icon .svg-inline--fa {
+  font-size: 0.8rem;
+}
+
+.admin-action-icon:hover,
+.admin-action-icon:focus-visible {
+  border-color: rgba(119, 12, 226, 0.22);
+  background: rgba(248, 245, 255, 0.95);
+  box-shadow: 0 10px 18px rgba(15, 23, 42, 0.08);
+  color: #6d28d9;
+  transform: translateY(-1px);
+}
+
+.admin-action-icon:focus-visible {
+  outline: none;
+}
+
+.admin-action-icon:disabled {
+  opacity: 0.7;
+  border-color: rgba(209, 213, 219, 0.85);
+  background: rgba(248, 250, 252, 0.95);
+  color: #94a3b8;
+  box-shadow: none;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.admin-action-icon--primary:not(:disabled) {
+  border-color: transparent;
+  background: linear-gradient(135deg, #770ce2, #5b21b6);
+  box-shadow: 0 10px 24px rgba(119, 12, 226, 0.18);
+  color: #fff;
+}
+
+.admin-action-icon--primary:hover,
+.admin-action-icon--primary:focus-visible {
+  background: linear-gradient(135deg, #6d28d9, #4c1d95);
+  color: #fff;
+}
+
 .admin-editor-panel {
   overflow: hidden;
 }
@@ -592,6 +739,12 @@
     flex: 1 1 0;
   }
 
+  .admin-toolbar__actions .admin-action-pill,
+  .admin-form-actions .admin-action-pill {
+    width: auto;
+    flex: 0 1 auto;
+  }
+
   .admin-repeat-row {
     grid-template-columns: 1fr;
   }
@@ -605,5 +758,11 @@
     width: 2.4rem;
     min-width: 2.4rem;
     height: 2.4rem;
+  }
+
+  .admin-action-icon {
+    width: 2.35rem;
+    min-width: 2.35rem;
+    height: 2.35rem;
   }
 }
