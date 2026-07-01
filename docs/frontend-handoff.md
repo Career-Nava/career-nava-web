@@ -164,97 +164,99 @@ Completed admin pages use page-level state handling:
 
 ## Dashboard Action Button Standardization
 
-Status: Pending / revised plan documented
+Status: Phase 4D.1-4D.4 implemented and manually visually approved by the product owner
 
-Phase 4D should be handled incrementally. A broad shared Angular `app-action-button` migration was previously attempted across admin mentors, sessions, scholarships, blogs/resources, and `/mentor/profile`. Although it compiled, it touched too many surfaces at once, caused UI regressions, and was reverted. Do not recreate or reintroduce `app-action-button`; any remaining mentions should be historical docs only.
+Phase 4D was completed with an incremental CSS/SCSS utility-first approach. A broad shared Angular `app-action-button` migration was previously attempted across admin mentors, sessions, scholarships, blogs/resources, and `/mentor/profile`. Although it compiled, it touched too many surfaces at once, caused UI regressions, and was reverted. Do not recreate or reintroduce `app-action-button`; any remaining mentions should be historical docs only.
 
-The revised Phase 4D approach is utility-first:
+The completed Phase 4D implementation uses shared admin action utilities in `src/styles/admin-console.scss` and applies those utilities directly to the actual clickable element (`button`, `a`, or router-link anchor), not only to inner wrapper spans.
 
-1. Define small shared dashboard action button CSS/SCSS utility classes.
-2. Apply them to one page at a time.
-3. Browser-test each page before expanding.
-4. Consider a shared Angular component only after the utility-class approach is stable across multiple pages.
+Current shared admin action utilities:
 
-For Phase 4D.1, use the approved Phase 4C `/mentor/profile` button and pill styling as the visual source of truth. Inspect `src/styles/mentor-profile.scss` and the current `/mentor/profile` template before defining shared dashboard action utilities. The goal is to extract and generalize the proven compact icon-action and compact equal-sized pill-action treatment, not invent a new dashboard button language.
+- `admin-action-pill`
+- `admin-action-pill--primary`
+- `admin-action-pill--ghost`
+- `admin-action-pill--danger`
+- `admin-action-pill--compact`
+- `admin-action-content`
+- `admin-action-icon`
+- `admin-action-icon--primary`
 
-During Phase 4D.1, `/mentor/profile` should be treated as a read-only visual reference and should not be modified unless explicitly scoped. The pilot target remains `/admin/mentors` only. Shared utility classes should probably live in the existing shared admin/dashboard style layer, such as `src/styles/admin-console.scss`, unless inspection shows a better existing location; document the chosen location in the implementation report.
+The visual source of truth for the reset was the approved `/mentor/profile` dashboard action treatment in `src/styles/mentor-profile.scss`. `/mentor/profile` remained a read-only reference during Phase 4D.
 
 ### Phase 4D sub-phases
 
 #### Phase 4D.1 - Admin Mentors Action Button Utility Pilot
 
-Status: Next recommended implementation step
+Status: Implemented and manually visually approved by the product owner
 
 Scope:
 
-- `/admin/mentors` only.
-- Define or refine shared CSS/SCSS utility classes for dashboard action buttons.
-- Base the visual treatment on the approved Phase 4C `/mentor/profile` button and pill styling in `src/styles/mentor-profile.scss`.
-- Apply them to admin mentor toolbar, filter, clear, refresh, row preview/manage/edit actions, and form/panel Save/Cancel actions where applicable.
+- `/admin/mentors`.
+- Corrected after reset against the `/mentor/profile` visual reference.
+- Defined/refined shared CSS/SCSS utility classes for dashboard action buttons in `src/styles/admin-console.scss`.
+- Applied utilities to admin mentor toolbar, filter, clear, refresh, row preview/manage/edit actions, and form/panel Close/Onboard/Save actions where applicable.
 - Preserve all current behavior and handlers.
 - Do not create a shared Angular button component.
-- Do not modify `/mentor/profile`; use it only as a read-only visual reference during this pilot.
-- Do not migrate other admin pages yet.
-- Browser-test `/admin/mentors` before expanding.
+- Do not modify `/mentor/profile`; use it only as a read-only visual reference.
 
 #### Phase 4D.2 - Admin Scholarships Action Button Migration
 
-Status: Planned after 4D.1 is visually approved
+Status: Implemented and manually visually approved by the product owner
 
 Scope:
 
 - `/admin/scholarships`.
-- Reuse the utilities proven in 4D.1.
-- Standardize add/create, preview/view, edit/manage, publish, draft, close, archive, filter, clear, refresh, and Save/Cancel actions.
+- Reused the corrected admin utilities.
+- Standardized add/create, preview/view, edit/manage, official listing, filter, clear, refresh, Close, Add/Remove benefit, and Save actions where present.
 - Preserve lifecycle behavior.
-- Browser-test before expanding.
 
 #### Phase 4D.3 - Admin Blogs/Resources Action Button Migration
 
-Status: Planned after 4D.2
+Status: Implemented and manually visually approved by the product owner
 
 Scope:
 
-- `/admin/blogs` or the current admin blogs/resources route.
-- Reuse proven utilities.
-- Standardize create, edit/manage, preview/open, publish, draft, archive, filter, clear, refresh, and Save/Cancel actions.
+- `/admin/blogs`; resources are managed through this route and no separate `/admin/resources` admin component was found.
+- Reused the corrected admin utilities.
+- Standardized create, edit/manage, preview/open, unavailable preview, filter, clear, refresh, Close, Add/Remove block, and Save actions where present.
 - Preserve author selector and blog lifecycle behavior.
-- Browser-test before expanding.
 
 #### Phase 4D.4 - Admin Sessions Action Button Migration
 
-Status: Planned after 4D.3
+Status: Implemented and manually visually approved by the product owner
 
 Scope:
 
 - `/admin/sessions`.
-- Reuse proven utilities.
-- Standardize view/manage, complete, cancel, move-to-pending, filter, clear, refresh, close panel, and other operational actions.
-- Be careful with lifecycle actions because sessions have operational/payment implications.
-- Browser-test before expanding.
+- Reused the corrected admin utilities.
+- Standardized manage/open meeting, filter, clear, refresh, and close panel actions.
+- Session lifecycle and payment-sensitive behavior were not changed.
 
 #### Phase 4D.5 - Mentor Profile Action Alignment Review
 
-Status: Optional / only if needed
+Status: Not needed / no implementation required at this time
 
 Scope:
 
 - `/mentor/profile`.
-- Do not change it unless the utility classes can improve or simplify the already-approved Phase 4C styling without regression.
+- `/mentor/profile` was the visual source of truth for Phase 4D and should remain untouched unless a future task explicitly scopes an improvement.
 - Preserve Bootstrap-first layout, read-first mentor profile behavior, icon-only secondary actions, Save/Cancel icon + text equal-sized compact pill buttons, standardized taxonomy pills, and the premium preview CTA.
 
 ### Dashboard action button rules
 
 - Prefer shared CSS/SCSS utility classes before creating Angular button components.
+- Apply action utilities directly to the clickable element, not only to inner wrapper spans.
+- Avoid mixing old Bootstrap/admin action classes with corrected utilities when they conflict.
 - Use icon-only buttons for obvious compact row/secondary actions.
 - Always include `title` and `aria-label` for icon-only actions.
 - Use icon + visible text for Save, Cancel, Create/Add, and primary CTAs.
 - Save and Cancel should be compact, equal-sized pill buttons when paired.
 - Destructive actions should use restrained danger styling and preserve confirmation behavior where applicable.
 - Avoid raw Bootstrap default button colors for final dashboard action styling.
-- Avoid broad cross-dashboard button migrations without browser verification.
+- Avoid broad cross-dashboard button migrations.
 - Avoid deep page-specific SCSS for basic button spacing/layout.
-- Consider a shared Angular action button component only after the CSS utility approach is stable across multiple admin pages.
+- The product owner performs manual visual smoke tests; do not run browser automation or screenshot tooling unless explicitly requested.
+- Consider a shared Angular action button component only after the CSS utility approach remains stable across multiple admin pages and a future task explicitly scopes that work.
 
 ### Validation expectations
 
@@ -692,19 +694,18 @@ Major pending areas after the current MVP foundation:
 
 ## Recommended Next Frontend Iterations
 
-1. Implement Phase 4D.1 on `/admin/mentors` only using shared CSS/SCSS utilities, then run `npm run build` and browser QA before expanding.
-2. Add lint/test scripts or at least basic test tooling.
-3. Add mentor Calendly/self-service connection improvements.
-4. Add payments and Paystack verification UI once backend payment contracts are implemented.
-5. Add persisted scholarship bookmark UI once backend bookmark mutation endpoints exist.
-6. Add pagination/search/filtering refinements to admin lists.
-7. Fix `shcolarship.model.ts` typo safely.
-8. Add richer admin overview charts/recent activity.
+1. Add lint/test scripts or at least basic test tooling.
+2. Add mentor Calendly/self-service connection improvements.
+3. Add payments and Paystack verification UI once backend payment contracts are implemented.
+4. Add persisted scholarship bookmark UI once backend bookmark mutation endpoints exist.
+5. Add pagination/search/filtering refinements to admin lists.
+6. Fix `shcolarship.model.ts` typo safely.
+7. Add richer admin overview charts/recent activity.
 
 ## Notes for Future Codex Sessions
 
 - Treat the current backend-backed admin pages as stable MVP management slices unless the new task explicitly expands scope.
-- Phase 4D is pending and should start with `/admin/mentors` only; do not repeat the reverted broad `app-action-button` migration.
+- Phase 4D admin action button standardization is complete for `/admin/mentors`, `/admin/scholarships`, `/admin/blogs`, and `/admin/sessions`; do not repeat the reverted broad `app-action-button` migration.
 - Preserve the role-safe session endpoints:
   - mentee -> `/api/Session/me/mentee`
   - mentor -> `/api/Session/me/mentor`
