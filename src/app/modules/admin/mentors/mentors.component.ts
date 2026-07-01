@@ -1,7 +1,7 @@
 import { DatePipe, NgClass, NgForOf, NgIf } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { faEye, faFilter, faPen, faPlus, faRotateRight, faXmark } from '@fortawesome/free-solid-svg-icons';
+import { faEye, faFilter, faFloppyDisk, faPen, faPlus, faRotateRight, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { finalize, of, switchMap } from 'rxjs';
 import { AdminMentor, EligibleMentorUser } from '../../../services/mentor/mentor.model';
 import { MentorService } from '../../../services/mentor/mentor.service';
@@ -25,6 +25,7 @@ export class AdminMentorsComponent implements OnInit {
   protected readonly faPen = faPen;
   protected readonly faRotateRight = faRotateRight;
   protected readonly faXmark = faXmark;
+  protected readonly faFloppyDisk = faFloppyDisk;
 
   readonly mentorStatuses = [ 'draft', 'active', 'inactive', 'suspended' ];
 

@@ -26,12 +26,12 @@
         <p class="admin-copy mb-0">Profile status controls discovery visibility. Account access remains separate.</p>
       </div>
       <div class="admin-toolbar__actions">
-        <button type="button" class="btn btn-primary admin-toolbar-btn" (click)="openOnboarding()">
-          <span class="admin-toolbar-btn__content"><fa-icon [icon]="faPlus"></fa-icon><span>Onboard mentor</span></span>
+        <button type="button" class="admin-action-pill admin-action-pill--primary admin-action-pill--compact" (click)="openOnboarding()">
+          <span class="admin-action-content"><fa-icon [icon]="faPlus"></fa-icon><span>Onboard mentor</span></span>
         </button>
-        <button type="button" class="admin-icon-action" title="Toggle filters" aria-label="Toggle filters" (click)="toggleFilters()"><fa-icon [icon]="faFilter"></fa-icon></button>
-        <button *ngIf="showClearFilters" type="button" class="admin-icon-action" title="Clear filters" aria-label="Clear filters" (click)="clearFilters()"><fa-icon [icon]="faXmark"></fa-icon></button>
-        <button type="button" class="admin-icon-action" title="Refresh mentors" aria-label="Refresh mentors" (click)="loadMentors()"><fa-icon [icon]="faRotateRight"></fa-icon></button>
+        <button type="button" class="admin-action-icon" title="Toggle filters" aria-label="Toggle filters" (click)="toggleFilters()"><fa-icon [icon]="faFilter"></fa-icon></button>
+        <button *ngIf="showClearFilters" type="button" class="admin-action-icon" title="Clear filters" aria-label="Clear filters" (click)="clearFilters()"><fa-icon [icon]="faXmark"></fa-icon></button>
+        <button type="button" class="admin-action-icon" title="Refresh mentors" aria-label="Refresh mentors" (click)="loadMentors()"><fa-icon [icon]="faRotateRight"></fa-icon></button>
       </div>
     </div>
 
@@ -70,7 +70,9 @@
         <h2 class="admin-panel__title">{{ mode === 'onboard' ? 'Promote an eligible user' : selectedMentor?.fullName || 'Mentor record' }}</h2>
         <p class="admin-copy mb-0">Mentor profile status controls public mentor discovery. User account activation is not changed here.</p>
       </div>
-      <button type="button" class="btn btn-outline-secondary admin-toolbar-btn" (click)="closePanel()">Close</button>
+      <button type="button" class="admin-action-pill admin-action-pill--ghost admin-action-pill--compact" (click)="closePanel()">
+        <span class="admin-action-content"><fa-icon [icon]="faXmark"></fa-icon><span>Close</span></span>
+      </button>
     </div>
 
     <div class="admin-panel__body">
@@ -100,7 +102,9 @@
         <label class="admin-search-label admin-form-span-2"><span class="admin-field-label">LinkedIn URL</span><input class="form-control admin-search-input" formControlName="linkedInUrl"></label>
         <label class="admin-search-label admin-form-span-2"><span class="admin-field-label">Bio</span><textarea class="form-control admin-search-input admin-textarea" formControlName="bio"></textarea></label>
         <div class="admin-form-actions admin-form-span-2">
-          <button type="submit" class="btn btn-primary admin-toolbar-btn" [disabled]="saving || onboardingForm.invalid">Onboard user</button>
+          <button type="submit" class="admin-action-pill admin-action-pill--primary admin-action-pill--compact" [disabled]="saving || onboardingForm.invalid">
+            <span class="admin-action-content"><fa-icon [icon]="faPlus"></fa-icon><span>Onboard user</span></span>
+          </button>
         </div>
       </form>
 
@@ -117,7 +121,9 @@
         <label class="admin-search-label admin-form-span-2"><span class="admin-field-label">Bio</span><textarea class="form-control admin-search-input admin-textarea" formControlName="bio"></textarea></label>
         <label class="admin-check-row admin-form-span-2"><input type="checkbox" class="form-check-input" formControlName="verified"><span>Verified mentor profile</span></label>
         <div class="admin-form-actions admin-form-span-2">
-          <button type="submit" class="btn btn-primary admin-toolbar-btn" [disabled]="saving || mentorForm.invalid">Save mentor</button>
+          <button type="submit" class="admin-action-pill admin-action-pill--primary admin-action-pill--compact" [disabled]="saving || mentorForm.invalid">
+            <span class="admin-action-content"><fa-icon [icon]="faFloppyDisk"></fa-icon><span>Save mentor</span></span>
+          </button>
         </div>
       </form>
 
@@ -163,8 +169,8 @@
               <td>{{ getReviewsSummary(mentor) }}</td>
               <td class="admin-table__actions">
                 <div class="admin-action-group">
-                  <a class="admin-icon-action" [routerLink]="['/admin/mentors/preview', getMentorPreviewId(mentor)]" title="Preview mentee view" aria-label="Preview mentee view"><fa-icon [icon]="faEye"></fa-icon></a>
-                  <button type="button" class="admin-icon-action" title="Manage mentor" aria-label="Manage mentor" (click)="editMentor(mentor)"><fa-icon [icon]="faPen"></fa-icon></button>
+                  <a class="admin-action-icon" [routerLink]="['/admin/mentors/preview', getMentorPreviewId(mentor)]" title="Preview mentee view" aria-label="Preview mentee view"><fa-icon [icon]="faEye"></fa-icon></a>
+                  <button type="button" class="admin-action-icon" title="Manage mentor" aria-label="Manage mentor" (click)="editMentor(mentor)"><fa-icon [icon]="faPen"></fa-icon></button>
                 </div>
               </td>
             </tr>
@@ -184,8 +190,8 @@
             <div class="admin-detail-list__item"><span class="admin-detail-list__label">Calendly</span><span class="admin-detail-list__value">{{ getCalendlyLabel(mentor) }}</span></div>
           </div>
           <div class="admin-action-group">
-            <a class="admin-icon-action" [routerLink]="['/admin/mentors/preview', getMentorPreviewId(mentor)]" title="Preview mentee view" aria-label="Preview mentee view"><fa-icon [icon]="faEye"></fa-icon></a>
-            <button type="button" class="admin-icon-action" title="Manage mentor" aria-label="Manage mentor" (click)="editMentor(mentor)"><fa-icon [icon]="faPen"></fa-icon></button>
+            <a class="admin-action-icon" [routerLink]="['/admin/mentors/preview', getMentorPreviewId(mentor)]" title="Preview mentee view" aria-label="Preview mentee view"><fa-icon [icon]="faEye"></fa-icon></a>
+            <button type="button" class="admin-action-icon" title="Manage mentor" aria-label="Manage mentor" (click)="editMentor(mentor)"><fa-icon [icon]="faPen"></fa-icon></button>
           </div>
         </article>
       </div>
