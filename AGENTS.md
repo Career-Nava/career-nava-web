@@ -91,12 +91,12 @@ Keep the standalone component structure. Do not add NgModules or a new state-man
 ## Dashboard Action Buttons
 
 - Do not perform broad dashboard-wide button component migrations in one pass.
-- Do not create or reintroduce a shared Angular `app-action-button` during the current Phase 4D rollout.
-- For action button standardization, use shared CSS/SCSS utility classes first and apply them incrementally, one page at a time.
-- Start with `/admin/mentors` as the utility pilot before expanding to other admin or mentor surfaces.
-- For Phase 4D.1, inspect `/mentor/profile` and `src/styles/mentor-profile.scss` as the approved Phase 4C visual baseline before defining utilities.
-- During the `/admin/mentors` pilot, treat `/mentor/profile` as a read-only visual reference; do not modify it unless explicitly scoped.
-- Migrate one admin page at a time and browser-test each page before expanding.
+- Do not create or reintroduce a shared Angular `app-action-button` unless a future task explicitly scopes it.
+- For action button standardization, use shared CSS/SCSS utility classes first and apply them incrementally.
+- Phase 4D admin action standardization is complete for `/admin/mentors`, `/admin/scholarships`, `/admin/blogs`, and `/admin/sessions`; preserve that utility pattern.
+- Treat `/mentor/profile` and `src/styles/mentor-profile.scss` as the approved visual reference; do not modify them unless explicitly scoped.
+- Apply action utilities directly to actual clickable elements, not only to child wrapper spans.
+- Product owner performs manual visual smoke tests; do not run browser automation or screenshot tooling unless explicitly requested.
 - Generalize the proven compact icon-action and compact equal-sized pill-action treatment into reusable CSS utility classes; do not invent a new dashboard button language.
 - Use icon-only buttons for obvious compact row or secondary actions, always with `title` and `aria-label`.
 - Use icon + text for Save, Cancel, Create/Add, and primary CTAs.
@@ -104,7 +104,7 @@ Keep the standalone component structure. Do not add NgModules or a new state-man
 - Use restrained danger styling for destructive actions and preserve confirmation behavior where applicable.
 - Avoid raw Bootstrap default button colors for final dashboard action styling.
 - Avoid deep page-specific SCSS for basic button spacing/layout.
-- Only consider a shared Angular action button component after the utility-class approach is proven stable across multiple admin pages in browser testing.
+- Only consider a shared Angular action button component after the utility-class approach remains stable across multiple admin pages and a future task explicitly scopes that work.
 
 ## Responsive UX
 
@@ -127,6 +127,7 @@ Keep the standalone component structure. Do not add NgModules or a new state-man
 - There is currently no `test` script.
 - If adding tests or linting, wire scripts in `package.json` and keep them practical.
 - Document any validation warnings, especially budget or third-party CSS warnings.
+- Do not run browser automation or screenshot tooling for visual smoke tests unless explicitly requested; the product owner performs manual visual smoke tests. For UI styling tasks, validate code correctness, build success, and behavior preservation, and do not claim browser visual QA passed unless the product owner performed it or explicitly requested it.
 
 ## Commit Rules
 
