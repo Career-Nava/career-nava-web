@@ -266,7 +266,7 @@ Scope:
 
 ## Phase 4E - Dashboard CTA Button Standardization
 
-Status: Phase 4E.1 implemented / pending product-owner manual visual approval
+Status: Phase 4E.2 implemented / pending product-owner manual visual approval
 
 Phase 4E should standardize user-facing CTA buttons across mentor, mentee, and admin preview dashboards. Do not confuse this with Phase 4D admin operational actions. Phase 4D handled actions such as Save, Close, Filter, Refresh, Manage, Preview, and Edit. Phase 4E should handle CTAs such as Book session, Schedule, Open meeting, Join Session, View mentor profile, View scholarship, Visit scholarship, Open official page, and View LinkedIn.
 
@@ -281,13 +281,13 @@ Current shared dashboard CTA utilities:
 - `dashboard-cta--compact`
 - `dashboard-cta__content`
 
-Phase 4E.1 refinement note:
+Phase 4E.1 approval note:
 
 - Product-owner manual smoke testing requested primary CTA color calibration toward the Career Nava yellow family: `#F6C360` default and `#EEBB62` hover/active.
 - The shared mentor detail LinkedIn CTA should render consistently when a valid `linkedInUrl` or legacy `linkedIn` value exists.
 - Final refinement requested admin mentor preview LinkedIn CTA consistency, including LinkedIn values stored without an explicit `http://` or `https://` protocol.
 - Final refinement requested mentor dashboard sidebar yellow alignment to the same `#F6C360` / `#EEBB62` family, without changing admin or mentee sidebars.
-- Phase 4E.1 remains pending product-owner manual visual approval.
+- Phase 4E.1 was manually visually approved by the product owner after final refinement.
 
 Discovered Phase 4E target routes and files:
 
@@ -312,7 +312,7 @@ Discovered CTA text/actions:
 
 #### Phase 4E.1 - CTA Utility Baseline
 
-Status: Implemented / pending product-owner manual visual approval
+Status: Implemented and manually visually approved by the product owner
 
 Scope:
 
@@ -325,16 +325,22 @@ Scope:
 - Aligned the mentor dashboard sidebar gradient to the Phase 4E.1 yellow family; admin and mentee sidebar themes remain separate.
 - Because `/mentor/profile/preview`, `/admin/mentors/preview/:id`, and `/mentee/mentors/mentor-details/:id` reuse `MentorDetailsComponent`, the same CTA utility markup is now present on those shared mentor detail surfaces.
 - Do not alter Phase 4D admin action utilities except for a tiny documentation clarification if needed.
-- Do not proceed to 4E.2 until product-owner manual visual approval of the pilot baseline.
+- Phase 4E.1 is the approved CTA utility baseline for subsequent Phase 4E pages.
 
 #### Phase 4E.2 - Mentor Preview/Profile CTA Migration
+
+Status: Implemented / pending product-owner manual visual approval
 
 Scope:
 
 - `/mentor/profile/preview`.
 - `/admin/mentors/preview/:id`.
 - `/mentee/mentors/mentor-details/:id`.
-- Likely CTAs: Book session, Preview scheduling, Preview scheduling flow, Schedule with mentor, View LinkedIn.
+- `/mentee/mentors`.
+- Migrated `/mentee/mentors` card `View mentor profile` CTAs to the approved full-width primary dashboard CTA utility.
+- Audited shared `MentorDetailsComponent` CTAs for `/mentor/profile/preview`, `/admin/mentors/preview/:id`, and `/mentee/mentors/mentor-details/:id`; Phase 4E.1 CTA utilities remain the active implementation for Book session, View LinkedIn, Preview scheduling, Preview scheduling flow, and Schedule with mentor.
+- Preserve router links, booking/scheduling behavior, LinkedIn behavior, filtering/search, and public mentor visibility rules.
+- Do not proceed to Phase 4E.3 until product-owner manual visual approval of the mentor CTA migration.
 
 #### Phase 4E.3 - Scholarship CTA Migration
 
@@ -811,7 +817,7 @@ Major pending areas after the current MVP foundation:
 
 ## Recommended Next Frontend Iterations
 
-1. Get product-owner manual visual approval for the Phase 4E.1 CTA utility baseline before starting Phase 4E.2.
+1. Get product-owner manual visual approval for the Phase 4E.2 mentor CTA migration before starting Phase 4E.3.
 2. Add lint/test scripts or at least basic test tooling.
 3. Add mentor Calendly/self-service connection improvements.
 4. Add payments and Paystack verification UI once backend payment contracts are implemented.

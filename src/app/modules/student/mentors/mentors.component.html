@@ -139,9 +139,8 @@
         </div>
 
         <div class="mnt-footer">
-          <a class="btn btn-secondary mnt-cta" [routerLink]="['/mentee/mentors/mentor-details', mentor.userId]">
-            <span>View mentor profile</span>
-            <fa-icon [icon]="faArrowRight"></fa-icon>
+          <a class="dashboard-cta dashboard-cta--primary dashboard-cta--full" [routerLink]="['/mentee/mentors/mentor-details', mentor.userId]">
+            <span class="dashboard-cta__content"><span>View mentor profile</span><fa-icon [icon]="faArrowRight"></fa-icon></span>
           </a>
         </div>
       </article>
