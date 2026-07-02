@@ -42,6 +42,7 @@ Keep the standalone component structure. Do not add NgModules or a new state-man
 - Keep service methods typed and small.
 - Do not hide real backend failures as empty data unless the UI intentionally needs that behavior and the tradeoff is documented.
 - Avoid adding broad generic API abstractions; prefer clear service methods per feature.
+- Do not use `localStorage`, cache-only state, or in-memory toggles as the durable source of truth for mentee bookmarks; backend-owned current-user persistence must own saved scholarship state.
 
 ## Models And Types
 
