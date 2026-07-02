@@ -266,7 +266,7 @@ Scope:
 
 ## Phase 4E - Dashboard CTA Button Standardization
 
-Status: Phase 4E.3 implemented and manually visually approved by the product owner
+Status: Complete through Phase 4E.5 / manually visually approved by the product owner
 
 Phase 4E should standardize user-facing CTA buttons across mentor, mentee, and admin preview dashboards. Do not confuse this with Phase 4D admin operational actions. Phase 4D handled actions such as Save, Close, Filter, Refresh, Manage, Preview, and Edit. Phase 4E should handle CTAs such as Book session, Schedule, Open meeting, Join Session, View mentor profile, View scholarship, Visit scholarship, Open official page, and View LinkedIn.
 
@@ -362,14 +362,21 @@ Scope:
 
 #### Phase 4E.4 - Session CTA Migration
 
+Status: Implemented and manually visually approved by the product owner
+
 Scope:
 
 - `/mentor/sessions`.
 - `/mentee/sessions`.
 - Shared session card CTA surface.
-- Likely CTAs: Open meeting, Join Session.
+- Migrated the shared session card action surface used for Open meeting, Join Session, and disabled no-link states to the approved full-width primary dashboard CTA utility.
+- Migrated the mentee join/payment confirmation modal CTAs, Pay & Join and Join Session, to the approved dashboard CTA utility family.
+- Preserved session grouping, session action labels, disabled bindings, payment modal behavior, join/payment confirmation behavior, click handlers, and meeting-link behavior.
+- Mentor and shared session components remain payment-agnostic; mentee payment behavior remains only in the mentee session page.
 
 #### Phase 4E.5 - CTA Audit and Docs Closeout
+
+Status: Complete
 
 Scope:
 
@@ -377,6 +384,14 @@ Scope:
 - Confirm CTA utilities are applied directly to actual clickable elements.
 - Update docs and tracker.
 - Do not run browser automation or screenshot tooling unless explicitly requested.
+
+Audit findings:
+
+- Phase 4E.1 through Phase 4E.4 are complete and manually visually approved by the product owner.
+- The approved CTA utility family remains `dashboard-cta`, `dashboard-cta--primary`, `dashboard-cta--secondary`, `dashboard-cta--full`, `dashboard-cta--compact`, and `dashboard-cta__content`.
+- The audited Phase 4E target CTA labels now use the approved CTA utilities on their actual clickable elements: Book session, Preview scheduling, Preview scheduling flow, Schedule with mentor, View LinkedIn, View mentor profile, View scholarship, Visit scholarship, Open official scholarship page, Open meeting, Join Session, and Pay & Join.
+- Remaining raw Bootstrap buttons found by source search are outside Phase 4E scope, such as public landing/auth/blog/page-not-found buttons, back-navigation links on detail pages, and the approved `/mentor/profile` dashboard action baseline.
+- Phase 4D admin operational utilities remain separate and were not replaced with CTA utilities. The reverted broad `app-action-button` approach remains historical only and should not be retried.
 
 ### Phase 4E guardrails
 
@@ -816,7 +831,6 @@ Phase 3F follow-up notes:
 
 Major pending areas after the current MVP foundation:
 
-- Phase 4E dashboard CTA button standardization
 - richer pagination/search/filtering across admin lists
 - better automated frontend validation and tests
 - richer dashboard analytics
@@ -826,20 +840,20 @@ Major pending areas after the current MVP foundation:
 
 ## Recommended Next Frontend Iterations
 
-1. Implement Phase 4E.4 session CTA migration after inspecting the current shared session card/panel implementation.
-2. Add lint/test scripts or at least basic test tooling.
-3. Add mentor Calendly/self-service connection improvements.
-4. Add payments and Paystack verification UI once backend payment contracts are implemented.
-5. Add persisted scholarship bookmark UI once backend bookmark mutation endpoints exist.
-6. Add pagination/search/filtering refinements to admin lists.
-7. Fix `shcolarship.model.ts` typo safely.
-8. Add richer admin overview charts/recent activity.
+1. Add payments and Paystack verification UI once backend payment contracts are implemented.
+2. Add persisted scholarship bookmark UI once backend bookmark mutation endpoints exist.
+3. Add lint/test scripts or at least basic test tooling.
+4. Add mentor Calendly/self-service connection improvements.
+5. Add pagination/search/filtering refinements to admin lists.
+6. Fix `shcolarship.model.ts` typo safely.
+7. Add richer admin overview charts/recent activity.
 
 ## Notes for Future Codex Sessions
 
 - Treat the current backend-backed admin pages as stable MVP management slices unless the new task explicitly expands scope.
 - Phase 4D admin action button standardization is complete for `/admin/mentors`, `/admin/scholarships`, `/admin/blogs`, and `/admin/sessions`; do not repeat the reverted broad `app-action-button` migration.
-- Phase 4E is the next tracked dashboard styling phase and should focus on user-facing CTA buttons, not admin operational action buttons.
+- Phase 4E dashboard CTA standardization is complete through the audit/docs closeout. Future CTA work should be scoped to a specific new surface rather than reopening a broad migration.
+- Commit messages should follow Conventional Commits: `<type>(<scope>): <imperative summary>`. Use scopes such as `web`, `api`, `docs`, or the relevant feature area. Examples: `feat(web): migrate session CTAs`, `docs(web): close frontend handoff`, `fix(api): enforce authorization`. Do not use vague phase-only messages such as `Close Phase X` without a conventional type and scope.
 - Preserve the role-safe session endpoints:
   - mentee -> `/api/Session/me/mentee`
   - mentor -> `/api/Session/me/mentor`

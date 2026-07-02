@@ -132,7 +132,10 @@ Keep the standalone component structure. Do not add NgModules or a new state-man
 
 ## Commit Rules
 
-- Use conventional commits, for example `fix(web): ...` or `docs: ...`.
+- Use Conventional Commits: `<type>(<scope>): <imperative summary>`.
+- Prefer scopes such as `web`, `api`, `docs`, or a specific feature area when useful.
+- Examples: `feat(web): migrate session CTAs`, `docs(web): close frontend handoff`, `fix(api): enforce authorization`.
+- Do not use vague phase-only messages such as `Close Phase X` without a conventional type and scope.
 - Keep commits scoped and review diffs before committing.
 - Do not push to GitHub unless explicitly asked.
 
