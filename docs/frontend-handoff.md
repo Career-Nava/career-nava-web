@@ -778,19 +778,22 @@ Guidance:
 
 ### Phase 6 - Bookmarks and Mentee Persistence
 
-Current status: Phase 6.3 implemented. Phase 6.4/6.5 remain pending.
+Current status: Phase 6.4 decision completed. Phase 6.5 tests/docs closeout remains pending.
 
 Verified frontend baseline:
 
 - `/mentee/scholarships` has bookmark buttons and a `Bookmarked` tab.
 - Bookmark toggles call backend save/delete endpoints and update display state from the backend bookmark response.
 - The `Bookmarked` tab filters backend-derived `ScholarshipDto.isBookmarked` values from `GET /api/Scholarship/me`.
+- The existing `Bookmarked` tab is sufficient for MVP saved-scholarship discovery; a separate saved-scholarships workspace is deferred unless product requests it.
+- `ScholarshipDetailsComponent` is reused by `/admin/scholarships/preview/:id`, `/mentee/scholarships/:id`, and `/mentee/scholarship-details/:id`. It currently uses the public scholarship detail service, so mentee detail does not show current-user bookmark state. Do not switch this shared component wholesale to the mentee current-user detail endpoint; split or route-scope the detail behavior in a later focused pass if product wants bookmark controls on detail.
 - `src/app/services/scholarship/shcolarship.model.ts` still contains the legacy filename typo; do not rename it as part of Phase 6 unless cleanup is explicitly scoped.
 
 Recommended frontend Phase 6 scope:
 
 - Keep scholarship bookmark state backend-owned; do not reintroduce `localStorage` or cache-only bookmark persistence.
 - Preserve the existing `/mentee/scholarships` layout, filters, `Bookmarked` tab, CTA styling, and public scholarship visibility behavior.
+- Phase 6.5 should validate build success, source searches for cache-only bookmark mutations/user-id leakage, and docs closeout. Browser visual QA remains product-owner manual review.
 - Do not add saved mentors, saved resources/blogs, application tracker persistence, or a generic saved-items platform unless product explicitly expands scope.
 - Payment UI later iteration: refine the payment/verification modal UX after manual product review and/or deployed Paystack sandbox testing. This may include clearer payment-progress states, retry/recheck affordances, provider-return messaging, and mobile polish. Do not change backend payment truth rules: frontend must not decide payment success or paid access.
 
