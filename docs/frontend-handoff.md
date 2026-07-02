@@ -824,6 +824,7 @@ Phase 3F follow-up notes:
 - `shcolarship.model.ts` typo still exists.
 - Some admin pages may need pagination/search/filtering later.
 - Payment/join behavior exists only for mentee sessions and should not be moved into shared session components.
+- Phase 5 payments must start with backend-owned initialization. The frontend must not decide amount, currency, payment reference, success, paid access, or booked session state.
 - Admin overview currently uses aggregate counts only; charts/recent activity/trends are deferred.
 - Public blog detail now resolves through the dedicated published-only slug endpoint.
 
@@ -840,7 +841,7 @@ Major pending areas after the current MVP foundation:
 
 ## Recommended Next Frontend Iterations
 
-1. Add payments and Paystack verification UI once backend payment contracts are implemented.
+1. Add payments and Paystack UI only after backend payment initialization and verification contracts exist.
 2. Add persisted scholarship bookmark UI once backend bookmark mutation endpoints exist.
 3. Add lint/test scripts or at least basic test tooling.
 4. Add mentor Calendly/self-service connection improvements.
@@ -859,6 +860,7 @@ Major pending areas after the current MVP foundation:
   - mentor -> `/api/Session/me/mentor`
   - admin -> `/api/Session`
 - Do not move mentee payment behavior into shared session components.
+- For Phase 5 frontend work, call backend-owned payment initialization and verification endpoints. Do not keep the hardcoded Paystack URL as the source of truth, and do not let frontend code decide payment success or unlock paid sessions.
 - Avoid renaming broad folders/files such as the scholarship model typo unless the task explicitly covers cleanup and imports are updated safely.
 - When adding new admin pages, follow the existing state pattern:
   - `loading`
