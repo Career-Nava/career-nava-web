@@ -23,13 +23,44 @@
       <p class="mt-2 text-muted small">Preparing payment window...</p>
     </div>
 
-    <div class="payment-iframe-container" *ngIf="!isLoadingPayment">
+    <div class="payment-status" *ngIf="!isLoadingPayment && (paymentMessage || paymentError)">
+      <div *ngIf="paymentMessage" class="payment-status__message" role="status">
+        {{ paymentMessage }}
+      </div>
+
+      <div *ngIf="paymentError" class="payment-status__error" role="alert">
+        {{ paymentError }}
+      </div>
+    </div>
+
+    <div class="payment-iframe-container" *ngIf="!isLoadingPayment && safePaymentUrl">
       <iframe
         class="payment-iframe"
         [src]="safePaymentUrl"
         allow="clipboard-write; payment; camera; microphone; fullscreen"
         sandbox="allow-forms allow-scripts allow-same-origin allow-popups allow-modals">
       </iframe>
+    </div>
+
+    <div class="payment-modal__footer" *ngIf="!isLoadingPayment">
+      <button
+        type="button"
+        class="dashboard-cta dashboard-cta--secondary"
+        (click)="closePaymentModal()">
+        <span class="dashboard-cta__content">
+          <span>Close</span>
+        </span>
+      </button>
+
+      <button
+        type="button"
+        class="dashboard-cta dashboard-cta--primary"
+        [disabled]="!activePayment || verifyingPaymentSessionId === activeSessionToJoin?.sessionId"
+        (click)="verifyActivePayment()">
+        <span class="dashboard-cta__content">
+          <span>{{ verifyingPaymentSessionId === activeSessionToJoin?.sessionId ? 'Verifying...' : 'Verify payment' }}</span>
+        </span>
+      </button>
     </div>
   </div>
 </div>
@@ -52,7 +83,7 @@
           This session has not been paid for yet.
         </p>
         <p class="text-muted mb-0">
-          You can join now, or complete payment before joining.
+          Complete backend-verified payment before joining this session.
         </p>
       </div>
 
@@ -60,18 +91,19 @@
         <button
           type="button"
           class="dashboard-cta dashboard-cta--primary flex-fill"
+          [disabled]="initializingPaymentSessionId === activeSessionToJoin?.sessionId"
           (click)="payBeforeJoining()">
           <span class="dashboard-cta__content">
-            <span>Pay & Join</span>
+            <span>{{ initializingPaymentSessionId === activeSessionToJoin?.sessionId ? 'Preparing payment...' : 'Pay & Join' }}</span>
           </span>
         </button>
 
         <button
           type="button"
           class="dashboard-cta dashboard-cta--secondary flex-fill"
-          (click)="joinWithoutPayment()">
+          (click)="closeJoinConfirmModal()">
           <span class="dashboard-cta__content">
-            <span>Join Session</span>
+            <span>Cancel</span>
           </span>
         </button>
       </div>

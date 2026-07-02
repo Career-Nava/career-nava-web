@@ -462,6 +462,10 @@ Backend-backed sessions pages are implemented for all three role contexts.
 - admin session UI does not grant paid access and does not mutate Calendly state
 - mentor does not see payment prompts
 - payment behavior remains mentee-only
+- Phase 5.3 removed the hardcoded Paystack Shop URL from `/mentee/sessions`
+- unpaid paid sessions now call backend payment initialization before opening checkout
+- payment verification is requested through the backend and frontend code does not decide payment success or booked access
+- after successful backend verification, the mentee session list is refreshed so paid/booked state comes from the API
 
 #### Shared session UI
 
@@ -489,6 +493,7 @@ Important boundary:
 
 - payment and join/payment flow remains only in the mentee session page
 - mentor and shared session components must remain payment-agnostic
+- Paystack webhook/callback handling remains a backend Phase 5.4 item
 
 ### Admin Mentors
 
@@ -732,6 +737,12 @@ Guidance:
 - `SessionService.cancelAdminSession(sessionId)` -> `PATCH /api/Session/Admin/Cancel/{sessionId}`
 - `SessionService.moveAdminSessionToPending(sessionId)` -> `PATCH /api/Session/Admin/MoveToPending/{sessionId}`
 
+### Payments
+
+- `PaymentService.initializeSessionPayment(sessionId)` -> `POST /api/Payment/Sessions/{sessionId}/Initialize`
+- `PaymentService.verifyPayment(request)` -> `POST /api/Payment/Verify`
+- `/mentee/sessions` uses these endpoints for `Pay & Join`; the frontend sends only safe payment identifiers for verification and never sends amount, currency, status, or a success flag.
+
 ### Mentors
 
 - `MentorService.getAllMentors()` -> public mentor list
@@ -824,7 +835,8 @@ Phase 3F follow-up notes:
 - `shcolarship.model.ts` typo still exists.
 - Some admin pages may need pagination/search/filtering later.
 - Payment/join behavior exists only for mentee sessions and should not be moved into shared session components.
-- Phase 5 payments must start with backend-owned initialization. The frontend must not decide amount, currency, payment reference, success, paid access, or booked session state.
+- Phase 5.3 frontend payment integration is wired to backend-owned initialization and verification. The frontend must not decide amount, currency, payment reference, success, paid access, or booked session state.
+- Paystack webhook/callback processing remains pending for Phase 5.4.
 - Admin overview currently uses aggregate counts only; charts/recent activity/trends are deferred.
 - Public blog detail now resolves through the dedicated published-only slug endpoint.
 
@@ -841,7 +853,7 @@ Major pending areas after the current MVP foundation:
 
 ## Recommended Next Frontend Iterations
 
-1. Add payments and Paystack UI only after backend payment initialization and verification contracts exist.
+1. Add Paystack webhook/callback handling support once the backend Phase 5.4 contract exists.
 2. Add persisted scholarship bookmark UI once backend bookmark mutation endpoints exist.
 3. Add lint/test scripts or at least basic test tooling.
 4. Add mentor Calendly/self-service connection improvements.
@@ -860,7 +872,7 @@ Major pending areas after the current MVP foundation:
   - mentor -> `/api/Session/me/mentor`
   - admin -> `/api/Session`
 - Do not move mentee payment behavior into shared session components.
-- For Phase 5 frontend work, call backend-owned payment initialization and verification endpoints. Do not keep the hardcoded Paystack URL as the source of truth, and do not let frontend code decide payment success or unlock paid sessions.
+- For Phase 5 frontend work, keep payment checkout and verification backend-owned. Do not reintroduce a hardcoded Paystack URL as the source of truth, and do not let frontend code decide payment success or unlock paid sessions.
 - Avoid renaming broad folders/files such as the scholarship model typo unless the task explicitly covers cleanup and imports are updated safely.
 - When adding new admin pages, follow the existing state pattern:
   - `loading`
