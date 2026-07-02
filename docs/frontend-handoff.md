@@ -493,7 +493,7 @@ Important boundary:
 
 - payment and join/payment flow remains only in the mentee session page
 - mentor and shared session components must remain payment-agnostic
-- Paystack webhook/callback handling remains a backend Phase 5.4 item
+- Paystack webhook/callback handling is backend-owned and implemented in Phase 5.4; the frontend should not process raw provider webhook payloads
 
 ### Admin Mentors
 
@@ -836,7 +836,7 @@ Phase 3F follow-up notes:
 - Some admin pages may need pagination/search/filtering later.
 - Payment/join behavior exists only for mentee sessions and should not be moved into shared session components.
 - Phase 5.3 frontend payment integration is wired to backend-owned initialization and verification. The frontend must not decide amount, currency, payment reference, success, paid access, or booked session state.
-- Paystack webhook/callback processing remains pending for Phase 5.4.
+- Phase 5.5 closed payment docs/build validation, but external Paystack sandbox delivery and manual visual review of the payment modal remain production-readiness caveats.
 - Admin overview currently uses aggregate counts only; charts/recent activity/trends are deferred.
 - Public blog detail now resolves through the dedicated published-only slug endpoint.
 
@@ -853,13 +853,12 @@ Major pending areas after the current MVP foundation:
 
 ## Recommended Next Frontend Iterations
 
-1. Add Paystack webhook/callback handling support once the backend Phase 5.4 contract exists.
-2. Add persisted scholarship bookmark UI once backend bookmark mutation endpoints exist.
-3. Add lint/test scripts or at least basic test tooling.
-4. Add mentor Calendly/self-service connection improvements.
-5. Add pagination/search/filtering refinements to admin lists.
-6. Fix `shcolarship.model.ts` typo safely.
-7. Add richer admin overview charts/recent activity.
+1. Add persisted scholarship bookmark UI once backend bookmark mutation endpoints exist.
+2. Add lint/test scripts or at least basic test tooling.
+3. Add mentor Calendly/self-service connection improvements.
+4. Add pagination/search/filtering refinements to admin lists.
+5. Fix `shcolarship.model.ts` typo safely.
+6. Add richer admin overview charts/recent activity.
 
 ## Notes for Future Codex Sessions
 
