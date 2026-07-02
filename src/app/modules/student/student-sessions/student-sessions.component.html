@@ -57,12 +57,22 @@
       </div>
 
       <div class="modal-footer justify-content-between px-4 join-modal__footer">
-        <button class="btn btn-secondary flex-fill" (click)="payBeforeJoining()">
-          Pay & Join
+        <button
+          type="button"
+          class="dashboard-cta dashboard-cta--primary flex-fill"
+          (click)="payBeforeJoining()">
+          <span class="dashboard-cta__content">
+            <span>Pay & Join</span>
+          </span>
         </button>
 
-        <button class="btn btn-outline-secondary flex-fill" (click)="joinWithoutPayment()">
-          Join Session
+        <button
+          type="button"
+          class="dashboard-cta dashboard-cta--secondary flex-fill"
+          (click)="joinWithoutPayment()">
+          <span class="dashboard-cta__content">
+            <span>Join Session</span>
+          </span>
         </button>
       </div>
     </div>

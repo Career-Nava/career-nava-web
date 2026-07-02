@@ -42,10 +42,12 @@
   <div class="session-footer" *ngIf="showAction">
     <button
       type="button"
-      class="btn btn-secondary session-cta"
+      class="dashboard-cta dashboard-cta--primary dashboard-cta--full session-cta"
       [disabled]="actionDisabled"
       (click)="handleAction()">
-      {{ actionLabel }}
+      <span class="dashboard-cta__content">
+        <span>{{ actionLabel }}</span>
+      </span>
     </button>
   </div>
 </article>

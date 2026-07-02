@@ -139,11 +139,7 @@
 }
 
 .session-cta {
-  display: inline-flex;
-  width: 100%;
-  min-height: 2.9rem;
-  align-items: center;
-  justify-content: center;
+  overflow-wrap: anywhere;
 }
 
 .session-cta:disabled {
