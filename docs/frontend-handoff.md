@@ -778,7 +778,7 @@ Guidance:
 
 ### Phase 6 - Bookmarks and Mentee Persistence
 
-Current status: Phase 6.4 decision completed. Phase 6.5 tests/docs closeout remains pending.
+Current status: Phase 6 is closed for MVP saved-scholarship persistence.
 
 Verified frontend baseline:
 
@@ -788,12 +788,13 @@ Verified frontend baseline:
 - The existing `Bookmarked` tab is sufficient for MVP saved-scholarship discovery; a separate saved-scholarships workspace is deferred unless product requests it.
 - `ScholarshipDetailsComponent` is reused by `/admin/scholarships/preview/:id`, `/mentee/scholarships/:id`, and `/mentee/scholarship-details/:id`. It currently uses the public scholarship detail service, so mentee detail does not show current-user bookmark state. Do not switch this shared component wholesale to the mentee current-user detail endpoint; split or route-scope the detail behavior in a later focused pass if product wants bookmark controls on detail.
 - `src/app/services/scholarship/shcolarship.model.ts` still contains the legacy filename typo; do not rename it as part of Phase 6 unless cleanup is explicitly scoped.
+- Phase 6.5 closeout validated build success and source inspection for backend-owned bookmark state, absence of cache-only `updateBookmark(...)`, absence of user-id ownership fields in bookmark calls, and preservation of scholarship CTA/taxonomy markup.
 
 Recommended frontend Phase 6 scope:
 
 - Keep scholarship bookmark state backend-owned; do not reintroduce `localStorage` or cache-only bookmark persistence.
 - Preserve the existing `/mentee/scholarships` layout, filters, `Bookmarked` tab, CTA styling, and public scholarship visibility behavior.
-- Phase 6.5 should validate build success, source searches for cache-only bookmark mutations/user-id leakage, and docs closeout. Browser visual QA remains product-owner manual review.
+- Browser visual QA remains product-owner manual review.
 - Do not add saved mentors, saved resources/blogs, application tracker persistence, or a generic saved-items platform unless product explicitly expands scope.
 - Payment UI later iteration: refine the payment/verification modal UX after manual product review and/or deployed Paystack sandbox testing. This may include clearer payment-progress states, retry/recheck affordances, provider-return messaging, and mobile polish. Do not change backend payment truth rules: frontend must not decide payment success or paid access.
 
@@ -880,12 +881,13 @@ Major pending areas after the current MVP foundation:
 
 ## Recommended Next Frontend Iterations
 
-1. Add persisted scholarship bookmark UI once backend bookmark mutation endpoints exist.
-2. Add lint/test scripts or at least basic test tooling.
-3. Add mentor Calendly/self-service connection improvements.
-4. Add pagination/search/filtering refinements to admin lists.
-5. Fix `shcolarship.model.ts` typo safely.
-6. Add richer admin overview charts/recent activity.
+1. Add lint/test scripts or at least basic test tooling.
+2. Add mentor Calendly/self-service connection improvements.
+3. Add pagination/search/filtering refinements to admin lists.
+4. Add a scholarship detail bookmark split/current-user detail path if product wants bookmark controls on detail.
+5. Add a dedicated saved-scholarships workspace if product requests it.
+6. Fix `shcolarship.model.ts` typo safely.
+7. Add richer admin overview charts/recent activity.
 
 ## Notes for Future Codex Sessions
 
