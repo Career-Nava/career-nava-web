@@ -99,7 +99,9 @@
           <button
             type="button"
             class="book-btn"
+            [disabled]="bookmarkingScholarshipId === scholarship.scholarshipId"
             [attr.aria-label]="scholarship.isBookmarked ? 'Remove bookmark' : 'Bookmark scholarship'"
+            [attr.title]="scholarship.isBookmarked ? 'Remove bookmark' : 'Bookmark scholarship'"
             (click)="toggleBookmark(scholarship)">
             <fa-icon [icon]="scholarship.isBookmarked ? faBookmarkSolid : faBookmarkRegular"></fa-icon>
           </button>

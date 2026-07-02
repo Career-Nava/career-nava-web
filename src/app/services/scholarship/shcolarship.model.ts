@@ -20,6 +20,13 @@ export interface ScholarshipDto {
   menteesInterested: UserModel[] | [];
 }
 
+export interface ScholarshipBookmarkDto {
+  scholarshipId: number;
+  isBookmarked: boolean;
+  bookmarkCount: number;
+  message: string;
+}
+
 export interface AdminScholarship {
   scholarshipId?: number;
   mentorProfileId?: number | null;

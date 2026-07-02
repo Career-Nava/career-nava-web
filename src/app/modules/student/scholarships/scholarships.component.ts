@@ -34,6 +34,7 @@ export class ScholarshipsComponent implements OnInit, OnDestroy {
   selectedTab: Tab = 'all';
   searchQuery = '';
   isLoading = true;
+  bookmarkingScholarshipId: number | null = null;
   readonly skeletonCards = Array.from({ length: 6 });
 
   scholarships: ScholarshipDto[] = [];
@@ -74,39 +75,50 @@ export class ScholarshipsComponent implements OnInit, OnDestroy {
   }
 
   toggleBookmark(s: ScholarshipDto): void {
-    const prev = s.isBookmarked;
-    s.isBookmarked = !prev;
+    if (this.bookmarkingScholarshipId === s.scholarshipId) {
+      return;
+    }
 
-    this.scholarshipService
-      .updateBookmark(s.scholarshipId, s.isBookmarked)
-      .subscribe({
-        next: () =>
+    const shouldSave = !s.isBookmarked;
+    this.bookmarkingScholarshipId = s.scholarshipId;
+
+    const request = shouldSave
+      ? this.scholarshipService.saveScholarship(s.scholarshipId)
+      : this.scholarshipService.deleteSavedScholarship(s.scholarshipId);
+
+    this.subs.add(
+      request.subscribe({
+        next: result => {
+          s.isBookmarked = result.isBookmarked;
           this.toast.show(
-            s.isBookmarked
+            result.isBookmarked
               ? `${ s.title } bookmarked`
               : `${ s.title } removed from bookmarks`,
             {
-              classname: s.isBookmarked
+              classname: result.isBookmarked
                 ? 'bg-success text-light'
                 : 'bg-secondary text-light',
               delay: 2500
             }
-          ),
+          );
+          this.bookmarkingScholarshipId = null;
+        },
         error: () => {
-          s.isBookmarked = prev; // rollback
+          this.bookmarkingScholarshipId = null;
           this.toast.show('Bookmark update failed', {
             classname: 'bg-danger text-light',
             delay: 4000
           });
         }
-      });
+      })
+    );
   }
 
   private fetchScholarships(): void {
     this.isLoading = true;
 
     this.subs.add(
-      this.scholarshipService.getAllScholarships().subscribe({
+      this.scholarshipService.getMenteeScholarships().subscribe({
         next: data => {
           this.scholarships = data;
           this.isLoading = false;

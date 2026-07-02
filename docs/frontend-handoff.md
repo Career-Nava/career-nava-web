@@ -761,9 +761,14 @@ Guidance:
 
 - `ScholarshipService.getAllScholarships()` -> public scholarship list
 - `ScholarshipService.getScholarshipById(id)` -> public scholarship detail
+- `ScholarshipService.getMenteeScholarships()` -> `GET /api/Scholarship/me`
+- `ScholarshipService.getSavedScholarships()` -> `GET /api/Scholarship/me/saved`
+- `ScholarshipService.getMenteeScholarshipById(id)` -> `GET /api/Scholarship/me/{id}`
+- `ScholarshipService.saveScholarship(id)` -> `POST /api/Scholarship/{id}/save`
+- `ScholarshipService.deleteSavedScholarship(id)` -> `DELETE /api/Scholarship/{id}/save`
 - `ScholarshipService.getAdminScholarships()` -> `GET /api/Scholarship/GetAllScholarshipsForAdmin`
 - `ScholarshipService.getAdminScholarshipById(id)` -> `GET /api/Scholarship/Admin/GetScholarshipById/{id}`
-- Current bookmark behavior is not durable: `ScholarshipService.updateBookmark(...)` only updates the local scholarship cache and the `/mentee/scholarships` `Bookmarked` tab filters that frontend state. Phase 6 should replace this with backend-owned current-user saved scholarship persistence.
+- `/mentee/scholarships` uses backend current-user saved-scholarship endpoints for bookmark state and bookmark mutations. The frontend no longer uses a cache-only bookmark source of truth and does not send `userId` for bookmark operations.
 - `ScholarshipService.createAdminScholarship(...)` -> `POST /api/Scholarship/Admin/CreateScholarship`
 - `ScholarshipService.updateAdminScholarship(id, ...)` -> `PUT /api/Scholarship/Admin/UpdateScholarship/{id}`
 - `ScholarshipService.publishAdminScholarship(id)` -> `PATCH /api/Scholarship/Admin/Publish/{id}`
@@ -773,19 +778,18 @@ Guidance:
 
 ### Phase 6 - Bookmarks and Mentee Persistence
 
-Current status: analysis/planning. Do not implement frontend bookmark persistence before backend saved-scholarship endpoints exist.
+Current status: Phase 6.3 implemented. Phase 6.4/6.5 remain pending.
 
 Verified frontend baseline:
 
 - `/mentee/scholarships` has bookmark buttons and a `Bookmarked` tab.
-- Bookmark toggles currently update `ScholarshipDto.isBookmarked` optimistically through `ScholarshipService.updateBookmark(...)`.
-- `updateBookmark(...)` only mutates `LocalStorageCache` data and does not call the backend.
+- Bookmark toggles call backend save/delete endpoints and update display state from the backend bookmark response.
+- The `Bookmarked` tab filters backend-derived `ScholarshipDto.isBookmarked` values from `GET /api/Scholarship/me`.
 - `src/app/services/scholarship/shcolarship.model.ts` still contains the legacy filename typo; do not rename it as part of Phase 6 unless cleanup is explicitly scoped.
 
 Recommended frontend Phase 6 scope:
 
-- After backend endpoints exist, wire scholarship bookmark toggles to current-user saved-scholarship API calls.
-- Refresh/derive `isBookmarked` from backend state so bookmarks survive reloads and devices.
+- Keep scholarship bookmark state backend-owned; do not reintroduce `localStorage` or cache-only bookmark persistence.
 - Preserve the existing `/mentee/scholarships` layout, filters, `Bookmarked` tab, CTA styling, and public scholarship visibility behavior.
 - Do not add saved mentors, saved resources/blogs, application tracker persistence, or a generic saved-items platform unless product explicitly expands scope.
 - Payment UI later iteration: refine the payment/verification modal UX after manual product review and/or deployed Paystack sandbox testing. This may include clearer payment-progress states, retry/recheck affordances, provider-return messaging, and mobile polish. Do not change backend payment truth rules: frontend must not decide payment success or paid access.

@@ -5,7 +5,7 @@ import { ApiResponse } from "../api-response";
 import { ConfigurationService } from "../configuration.service";
 import { LocalStorageCache } from "../local-storage-cache";
 import { RestService } from "../rest.service";
-import { AdminScholarship, AdminScholarshipUpsert, ScholarshipDto } from "./shcolarship.model";
+import { AdminScholarship, AdminScholarshipUpsert, ScholarshipBookmarkDto, ScholarshipDto } from "./shcolarship.model";
 
 type AdminScholarshipResponse = Partial<AdminScholarship> & {
   image?: string;
@@ -54,6 +54,41 @@ export class ScholarshipService extends RestService {
         this.cache.set(all);
         return mapped;
       }),
+      catchError(err => throwError(() => err))
+    );
+  }
+
+  getMenteeScholarships(): Observable<ScholarshipDto[]> {
+    return this.http.get<ApiResponse<ScholarshipDto[]>>(`${ this.baseUrl }/me`).pipe(
+      map(res => (res.data ?? []).map(dto => this.mapScholarship(dto))),
+      catchError(err => throwError(() => err))
+    );
+  }
+
+  getSavedScholarships(): Observable<ScholarshipDto[]> {
+    return this.http.get<ApiResponse<ScholarshipDto[]>>(`${ this.baseUrl }/me/saved`).pipe(
+      map(res => (res.data ?? []).map(dto => this.mapScholarship(dto))),
+      catchError(err => throwError(() => err))
+    );
+  }
+
+  getMenteeScholarshipById(id: number): Observable<ScholarshipDto> {
+    return this.http.get<ApiResponse<ScholarshipDto>>(`${ this.baseUrl }/me/${ id }`).pipe(
+      map(res => this.mapScholarship(res.data)),
+      catchError(err => throwError(() => err))
+    );
+  }
+
+  saveScholarship(scholarshipId: number): Observable<ScholarshipBookmarkDto> {
+    return this.http.post<ApiResponse<ScholarshipBookmarkDto>>(`${ this.baseUrl }/${ scholarshipId }/save`, {}).pipe(
+      map(res => res.data),
+      catchError(err => throwError(() => err))
+    );
+  }
+
+  deleteSavedScholarship(scholarshipId: number): Observable<ScholarshipBookmarkDto> {
+    return this.http.delete<ApiResponse<ScholarshipBookmarkDto>>(`${ this.baseUrl }/${ scholarshipId }/save`).pipe(
+      map(res => res.data),
       catchError(err => throwError(() => err))
     );
   }
@@ -108,17 +143,6 @@ export class ScholarshipService extends RestService {
 
   archiveAdminScholarship(id: number): Observable<AdminScholarship> {
     return this.patchAdminScholarshipStatus(id, 'Archive');
-  }
-
-  updateBookmark(id: number, isBookmarked: boolean): Observable<ScholarshipDto | undefined> {
-    const all = this.cache.get() ?? [];
-    const index = all.findIndex(s => s.scholarshipId === id);
-    if (index !== -1) {
-      all[index].isBookmarked = isBookmarked;
-      this.cache.set(all);
-      return of(all[index]);
-    }
-    return of(undefined);
   }
 
   clearCache(): void {
