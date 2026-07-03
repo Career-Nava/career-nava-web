@@ -798,6 +798,41 @@ Recommended frontend Phase 6 scope:
 - Do not add saved mentors, saved resources/blogs, application tracker persistence, or a generic saved-items platform unless product explicitly expands scope.
 - Payment UI later iteration: refine the payment/verification modal UX after manual product review and/or deployed Paystack sandbox testing. This may include clearer payment-progress states, retry/recheck affordances, provider-return messaging, and mobile polish. Do not change backend payment truth rules: frontend must not decide payment success or paid access.
 
+### Phase 7 - Admin Payment and Event Type Operations
+
+Current status: planning inserted before launch hardening. Start backend-first with admin payment/payment-event read APIs before adding frontend pages.
+
+Verified frontend baseline:
+
+- Admin routes currently include `/admin/overview`, `/admin/mentors`, `/admin/sessions`, `/admin/scholarships`, `/admin/scholarships/preview/:id`, `/admin/blogs`, and `/admin/mentors/preview/:id`.
+- The admin sidebar currently links Overview, Mentors, Sessions, Scholarships, and Blogs / Resources.
+- No `/admin/payments`, `/admin/payment-events`, or `/admin/event-types` routes/pages exist.
+- `/admin/sessions` shows safe payment summary state and has a payment-status filter, but it is session-centered and does not provide payment/event audit lists.
+- `PaymentService` exists for mentee session checkout/verification only. Do not reuse it to create admin mutation controls.
+- `CalendlyService` exposes connect URL and scheduling/booking link helpers only; no frontend admin sync/event-type service method exists yet.
+
+Recommended Phase 7 frontend sub-phases:
+
+1. Phase 7.2 - Admin payments/payment-events read-only UI after Phase 7.1 backend APIs exist.
+   - Add `/admin/payments` and, if cleaner, `/admin/payments/:id` or an in-page detail panel.
+   - Show payment events as read-only audit records from backend DTOs, either nested under payment detail or through a focused event-audit view.
+   - Use existing admin table, toolbar, collapsed filter, detail/manage panel, loading/error/empty-state, and Phase 4D `admin-action-*` utility patterns.
+   - Do not expose controls that mark payments paid/failed/cancelled/refunded, edit raw payloads, or grant paid access.
+2. Phase 7.4 - Admin mentor event type UI after Phase 7.3 backend APIs exist.
+   - Add `/admin/event-types` or place event-type management under the admin mentor operations area if product prefers a mentor-scoped workflow.
+   - Display Calendly-owned fields read-only and editable Career Nava-owned metadata separately.
+   - Provide an admin sync action wired to backend `POST /api/Calendly/sync-event-types`.
+   - Use existing Calendly connect/refresh endpoints only through backend service calls or redirects; never put provider secrets in frontend code.
+
+Phase 7 frontend guardrails:
+
+- Admin payment/payment-event UI is read-only for MVP.
+- Payment truth remains backend-owned; frontend/admin UI must not decide payment success or paid access.
+- Payment events are audit records. Do not display raw webhook payloads/signatures in normal admin list views unless a later explicit audit-detail phase scopes it.
+- Use Phase 4D admin operational utilities for admin actions; do not use Phase 4E dashboard CTA utilities for admin toolbar/table operations.
+- Calendly-owned identifiers, booking URLs, and synced provider fields are read-only in UI and refreshed via backend sync.
+- Price/free/currency edits should be presented as future-effective metadata and must not imply historical payment/session rewrites.
+
 ### Blogs
 
 - `BlogService.getAllBlogs()` -> public blog list
@@ -865,6 +900,7 @@ Phase 3F follow-up notes:
 - Payment/join behavior exists only for mentee sessions and should not be moved into shared session components.
 - Phase 5.3 frontend payment integration is wired to backend-owned initialization and verification. The frontend must not decide amount, currency, payment reference, success, paid access, or booked session state.
 - Phase 5.5 closed payment docs/build validation, but external Paystack sandbox delivery and manual visual review of the payment modal remain production-readiness caveats.
+- Admin payment/event audit and mentor event type management pages are not implemented yet; Phase 7 inserts them before launch hardening.
 - Admin overview currently uses aggregate counts only; charts/recent activity/trends are deferred.
 - Public blog detail now resolves through the dedicated published-only slug endpoint.
 
@@ -874,6 +910,8 @@ Major pending areas after the current MVP foundation:
 
 - richer pagination/search/filtering across admin lists
 - better automated frontend validation and tests
+- admin payment/payment-event read-only audit UI
+- admin mentor event type management UI with Calendly sync action
 - richer dashboard analytics
 - application tracker work
 - mentor Calendly/self-service connection improvements
@@ -881,13 +919,15 @@ Major pending areas after the current MVP foundation:
 
 ## Recommended Next Frontend Iterations
 
-1. Add lint/test scripts or at least basic test tooling.
-2. Add mentor Calendly/self-service connection improvements.
-3. Add pagination/search/filtering refinements to admin lists.
-4. Add a scholarship detail bookmark split/current-user detail path if product wants bookmark controls on detail.
-5. Add a dedicated saved-scholarships workspace if product requests it.
-6. Fix `shcolarship.model.ts` typo safely.
-7. Add richer admin overview charts/recent activity.
+1. Add admin payment/payment-event read-only audit UI after backend Phase 7.1 APIs exist.
+2. Add admin mentor event type management UI after backend Phase 7.3 APIs exist.
+3. Add lint/test scripts or at least basic test tooling.
+4. Add mentor Calendly/self-service connection improvements.
+5. Add pagination/search/filtering refinements to admin lists.
+6. Add a scholarship detail bookmark split/current-user detail path if product wants bookmark controls on detail.
+7. Add a dedicated saved-scholarships workspace if product requests it.
+8. Fix `shcolarship.model.ts` typo safely.
+9. Add richer admin overview charts/recent activity.
 
 ## Notes for Future Codex Sessions
 
@@ -901,6 +941,7 @@ Major pending areas after the current MVP foundation:
   - admin -> `/api/Session`
 - Do not move mentee payment behavior into shared session components.
 - For Phase 5 frontend work, keep payment checkout and verification backend-owned. Do not reintroduce a hardcoded Paystack URL as the source of truth, and do not let frontend code decide payment success or unlock paid sessions.
+- For Phase 7 frontend work, keep admin payment/payment-event pages read-only and use backend event type APIs for Career Nava-owned pricing/free metadata. Do not edit Calendly-owned fields or expose provider secrets/raw payloads in normal admin screens.
 - Avoid renaming broad folders/files such as the scholarship model typo unless the task explicitly covers cleanup and imports are updated safely.
 - When adding new admin pages, follow the existing state pattern:
   - `loading`

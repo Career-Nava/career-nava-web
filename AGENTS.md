@@ -58,6 +58,9 @@ Keep the standalone component structure. Do not add NgModules or a new state-man
 - Keep payment-specific behavior out of shared session components.
 - Mentor session UI must remain payment-agnostic.
 - Admin CRUD controls should stay disabled until backend endpoints and product rules exist.
+- Admin payment/payment-event UI should be read-only for MVP. Do not add controls that manually mark payments paid/failed/cancelled/refunded, edit provider event payloads, or grant paid access.
+- Admin mentor event type UI may edit only Career Nava-owned metadata when backend endpoints exist, such as mentor assignment, free/paid flag, price, currency, and active/visible state. Calendly-owned identifiers, booking URLs, and synced provider fields should be displayed read-only and refreshed through backend sync actions.
+- Calendly admin sync/auth controls must use backend endpoints; never put provider secrets in frontend code.
 - Admin table action columns should use compact icon buttons with accessible titles/labels.
 - Keep lifecycle/status changes in detail, edit, or manage panels where practical instead of large row buttons.
 - Public/admin preview actions must render the real user-facing detail experience, preferably under the correct dashboard shell; do not add fake admin detail stubs for content preview.
