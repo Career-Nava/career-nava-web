@@ -806,7 +806,7 @@ Recommended frontend Phase 6 scope:
 
 ### Phase 7 - Admin Payment and Event Type Operations
 
-Current status: Phase 7.2 admin payment/payment-event read-only UI is complete. Phase 7.3 mentor event type admin API/model alignment is the next recommended implementation step and should start backend-first.
+Current status: Phase 7.2 admin payment/payment-event read-only UI is complete. Phase 7.3 mentor event type admin API/model alignment is complete in `career-nava-api`. Phase 7.4 admin mentor event type UI is the next recommended frontend implementation step.
 
 Verified frontend baseline:
 
@@ -816,6 +816,11 @@ Verified frontend baseline:
 - `/admin/sessions` shows safe payment summary state and has a payment-status filter, but it is session-centered and does not provide payment/event audit lists.
 - `PaymentService` supports mentee session checkout/verification plus admin-only read methods for payments and payment events. Do not extend it with admin mutation controls unless a later reconciliation phase explicitly scopes that work.
 - `CalendlyService` exposes connect URL and scheduling/booking link helpers only; no frontend admin sync/event-type service method exists yet.
+- Phase 7.3 backend endpoints available for Phase 7.4:
+  - `GET /api/Calendly/Admin/EventTypes`
+  - `GET /api/Calendly/Admin/EventTypes/{eventTypeId}`
+  - `PATCH /api/Calendly/Admin/EventTypes/{eventTypeId}/Assignment`
+  - `PATCH /api/Calendly/Admin/EventTypes/{eventTypeId}/Pricing`
 - Backend Phase 7.1 exposes read-only admin audit endpoints under `GET /api/Payment/Admin`, `GET /api/Payment/Admin/{paymentId}`, `GET /api/Payment/Admin/Events`, `GET /api/Payment/Admin/{paymentId}/Events`, and `GET /api/Payment/Admin/Events/{paymentEventId}`.
 
 Recommended Phase 7 frontend sub-phases:
@@ -826,9 +831,11 @@ Recommended Phase 7 frontend sub-phases:
    - The payment-event list uses a provider-event dropdown with Paystack baseline values and dynamically loaded extra event names.
    - Manual QA refinements removed visible raw database primary-key labels/fallbacks and stacked detail back links above the hero pill/title.
    - The UI remains read-only and does not expose payment mutation, replay, reconciliation, refund, override, or paid-access controls.
-2. Phase 7.4 - Admin mentor event type UI after Phase 7.3 backend APIs exist.
+2. Phase 7.4 - Admin mentor event type UI using the Phase 7.3 backend APIs.
    - Add `/admin/event-types` or place event-type management under the admin mentor operations area if product prefers a mentor-scoped workflow.
    - Display Calendly-owned fields read-only and editable Career Nava-owned metadata separately.
+   - Allow edits only for active mentor assignment and free/paid pricing metadata (`isFreeSession`, `priceAmount`, `priceCurrency`).
+   - Do not edit provider-owned Calendly fields: URI, booking URL, name, description, duration, color, or provider active status. No separate Career Nava-owned active/visible flag exists yet.
    - Provide an admin sync action wired to backend `POST /api/Calendly/sync-event-types`.
    - Use existing Calendly connect/refresh endpoints only through backend service calls or redirects; never put provider secrets in frontend code.
 
@@ -908,7 +915,7 @@ Phase 3F follow-up notes:
 - Payment/join behavior exists only for mentee sessions and should not be moved into shared session components.
 - Phase 5.3 frontend payment integration is wired to backend-owned initialization and verification. The frontend must not decide amount, currency, payment reference, success, paid access, or booked session state.
 - Phase 5.5 closed payment docs/build validation, but external Paystack sandbox delivery and manual visual review of the payment modal remain production-readiness caveats.
-- Admin payment/event audit pages are implemented and read-only. Mentor event type management pages are not implemented yet; Phase 7 inserts them before launch hardening.
+- Admin payment/event audit pages are implemented and read-only. Phase 7.3 backend event type management APIs are available. Mentor event type management pages are not implemented yet; Phase 7.4 inserts them before launch hardening.
 - Admin overview currently uses aggregate counts only; charts/recent activity/trends are deferred.
 - Public blog detail now resolves through the dedicated published-only slug endpoint.
 
@@ -926,15 +933,14 @@ Major pending areas after the current MVP foundation:
 
 ## Recommended Next Frontend Iterations
 
-1. Add Phase 7.3 mentor event type admin API/model alignment backend-first.
-2. Add admin mentor event type management UI after backend Phase 7.3 APIs exist.
-3. Add lint/test scripts or at least basic test tooling.
-4. Add mentor Calendly/self-service connection improvements.
-5. Add pagination/search/filtering refinements to admin lists.
-6. Add a scholarship detail bookmark split/current-user detail path if product wants bookmark controls on detail.
-7. Add a dedicated saved-scholarships workspace if product requests it.
-8. Fix `shcolarship.model.ts` typo safely.
-9. Add richer admin overview charts/recent activity.
+1. Add Phase 7.4 admin mentor event type management UI using the backend Phase 7.3 APIs.
+2. Add lint/test scripts or at least basic test tooling.
+3. Add mentor Calendly/self-service connection improvements.
+4. Add pagination/search/filtering refinements to admin lists.
+5. Add a scholarship detail bookmark split/current-user detail path if product wants bookmark controls on detail.
+6. Add a dedicated saved-scholarships workspace if product requests it.
+7. Fix `shcolarship.model.ts` typo safely.
+8. Add richer admin overview charts/recent activity.
 
 ## Notes for Future Codex Sessions
 
