@@ -806,7 +806,7 @@ Recommended frontend Phase 6 scope:
 
 ### Phase 7 - Admin Payment and Event Type Operations
 
-Current status: Phase 7.2 admin payment/payment-event read-only UI is complete. Phase 7.3 mentor event type admin API/model alignment is complete in `career-nava-api`. Phase 7.4 admin mentor event type UI is complete in `career-nava-web`. Phase 7.5 tests/docs closeout is the next recommended implementation step.
+Current status: Phase 7.2 admin payment/payment-event read-only UI is complete. Phase 7.3 mentor event type admin API/model alignment is complete in `career-nava-api`. Phase 7.4 admin mentor event type UI is complete in `career-nava-web`. Phase 7.5 tests/docs closeout is complete. Phase 8 launch hardening is the next recommended phase.
 
 Verified frontend baseline:
 
@@ -839,8 +839,11 @@ Recommended Phase 7 frontend sub-phases:
    - Provides an admin sync action wired to backend `POST /api/Calendly/sync-event-types`.
    - Use existing Calendly connect/refresh endpoints only through backend service calls or redirects; never put provider secrets in frontend code.
    - `npm run build` passed with existing unrelated SCSS budget warnings. `git diff --check` passed with LF-to-CRLF warnings only.
-3. Phase 7.5 - Tests and docs closeout. Next.
-   - Focus on validation, smoke/build caveats, documentation consistency, and MVP readiness tracker accuracy.
+3. Phase 7.5 - Tests and docs closeout. Complete.
+   - Re-ran `npm run build`; it passed with existing unrelated SCSS budget warnings.
+   - Confirmed `package.json` still has no lint/test scripts.
+   - Targeted source checks found no payment mutation controls, no direct provider API calls, and no editable provider-owned Calendly fields.
+   - Documentation now points to Phase 8 launch hardening as the next phase.
 
 Phase 7 frontend guardrails:
 
@@ -918,7 +921,7 @@ Phase 3F follow-up notes:
 - Payment/join behavior exists only for mentee sessions and should not be moved into shared session components.
 - Phase 5.3 frontend payment integration is wired to backend-owned initialization and verification. The frontend must not decide amount, currency, payment reference, success, paid access, or booked session state.
 - Phase 5.5 closed payment docs/build validation, but external Paystack sandbox delivery and manual visual review of the payment modal remain production-readiness caveats.
-- Admin payment/event audit pages are implemented and read-only. Phase 7.4 mentor event type management pages are implemented with backend-only sync, active mentor assignment, and pricing metadata controls. Phase 7.5 tests/docs closeout is next before launch hardening.
+- Admin payment/event audit pages are implemented and read-only. Phase 7.4 mentor event type management pages are implemented with backend-only sync, active mentor assignment, and pricing metadata controls. Phase 7.5 closeout validation is complete; Phase 8 launch hardening is next.
 - Admin overview currently uses aggregate counts only; charts/recent activity/trends are deferred.
 - Public blog detail now resolves through the dedicated published-only slug endpoint.
 
@@ -935,7 +938,7 @@ Major pending areas after the current MVP foundation:
 
 ## Recommended Next Frontend Iterations
 
-1. Complete Phase 7.5 tests/docs closeout without adding new features.
+1. Start Phase 8 launch hardening without adding new product features.
 2. Add lint/test scripts or at least basic test tooling.
 3. Add mentor Calendly/self-service connection improvements.
 4. Add pagination/search/filtering refinements to admin lists.
