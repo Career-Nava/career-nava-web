@@ -1,0 +1,29 @@
+<div class="admin-page admin-list-page admin-payment-event-detail-page container-fluid pb-5">
+  <div class="admin-detail-back-row mb-3">
+    <a class="admin-action-pill admin-action-pill--ghost admin-action-pill--compact" routerLink="/admin/payment-events"><span class="admin-action-content"><fa-icon [icon]="faArrowLeft"></fa-icon><span>Back to payment events</span></span></a>
+  </div>
+
+  <section class="admin-surface admin-hero admin-list-hero mb-4">
+    <div class="row g-4 admin-hero__row"><div class="col-12 col-xl-8"><span class="admin-kicker">Payment event detail</span><h1 class="admin-title">{{ event?.providerEvent || 'Provider event audit record' }}</h1><p class="admin-copy mb-0">Read-only event processing details returned by the backend audit API.</p></div><div class="col-12 col-xl-4" *ngIf="event"><div class="admin-hero__panel"><span class="admin-total">{{ event.provider || 'provider unavailable' }}</span><span class="admin-subtotal">{{ getPaymentReference(event) }}</span><span class="admin-subtotal text-capitalize">{{ event.eventStatus || 'status unavailable' }}</span></div></div></div>
+  </section>
+
+  <div *ngIf="loading" class="admin-state admin-list-state text-center mb-4"><div class="spinner-border text-primary" role="status" aria-label="Loading payment event detail"></div><p class="admin-copy mb-0 mt-3">Loading payment event...</p></div>
+  <div *ngIf="!loading && error" class="alert alert-danger mb-4">{{ error }}</div>
+
+  <section *ngIf="!loading && !error && event" class="admin-surface admin-panel admin-editor-panel mb-4">
+    <div class="admin-panel__head"><div><span class="admin-section-label">Event state</span><h2 class="admin-panel__title">{{ event.providerEvent || 'Provider event' }}</h2><p class="admin-copy mb-0">Only safe backend audit fields are shown here.</p></div><button type="button" class="admin-action-icon" title="Refresh event" aria-label="Refresh event" (click)="loadEvent()"><fa-icon [icon]="faRotateRight"></fa-icon></button></div>
+    <div class="admin-panel__body">
+      <div class="admin-detail-list">
+        <div class="admin-detail-list__item"><span class="admin-detail-list__label">Status</span><span class="admin-detail-list__value"><span class="admin-badge text-capitalize" [ngClass]="getStatusBadgeClass(event.eventStatus)">{{ event.eventStatus || 'unknown' }}</span></span></div>
+        <div class="admin-detail-list__item"><span class="admin-detail-list__label">Provider</span><span class="admin-detail-list__value">{{ event.provider || '-' }}</span></div>
+        <div class="admin-detail-list__item"><span class="admin-detail-list__label">Provider event</span><span class="admin-detail-list__value">{{ event.providerEvent || '-' }}</span></div>
+        <div class="admin-detail-list__item"><span class="admin-detail-list__label">Provider reference</span><span class="admin-detail-list__value">{{ event.providerReference || event.paymentProviderReference || '-' }}</span></div>
+        <div class="admin-detail-list__item"><span class="admin-detail-list__label">Payment reference</span><span class="admin-detail-list__value">{{ event.paymentInternalReference || '-' }}</span></div>
+        <div class="admin-detail-list__item"><span class="admin-detail-list__label">Mentee</span><span class="admin-detail-list__value">{{ event.menteeName || 'Mentee unavailable' }} {{ event.menteeEmail ? '/ ' + event.menteeEmail : '' }}</span></div>
+        <div class="admin-detail-list__item"><span class="admin-detail-list__label">Received / processed</span><span class="admin-detail-list__value">{{ event.receivedAt | date:'medium' }} / {{ event.processedAt ? (event.processedAt | date:'medium') : '-' }}</span></div>
+        <div class="admin-detail-list__item"><span class="admin-detail-list__label">Processing summary</span><span class="admin-detail-list__value">{{ event.processingError || '-' }}</span></div>
+        <div class="admin-detail-list__item"><span class="admin-detail-list__label">Created / updated</span><span class="admin-detail-list__value">{{ event.createdAt | date:'medium' }} / {{ event.updatedAt | date:'medium' }}</span></div>
+      </div>
+    </div>
+  </section>
+</div>

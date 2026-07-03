@@ -5,6 +5,10 @@ import { LayoutComponent } from './layout/layout.component';
 import { AdminBlogsComponent } from './modules/admin/blogs/blogs.component';
 import { AdminMentorsComponent } from './modules/admin/mentors/mentors.component';
 import { OverviewComponent } from './modules/admin/overview/overview.component';
+import { AdminPaymentEventDetailComponent } from './modules/admin/payment-event-detail/payment-event-detail.component';
+import { AdminPaymentEventsComponent } from './modules/admin/payment-events/payment-events.component';
+import { AdminPaymentDetailComponent } from './modules/admin/payment-detail/payment-detail.component';
+import { AdminPaymentsComponent } from './modules/admin/payments/payments.component';
 import { AdminScholarshipsComponent } from './modules/admin/scholarships/scholarships.component';
 import { AdminSessionsComponent } from './modules/admin/sessions/sessions.component';
 import { AuthLayoutComponent } from './modules/auth/auth-layout/auth-layout.component';
@@ -61,6 +65,10 @@ export const routes: Routes = [
       { path: 'overview', component: OverviewComponent },
       { path: 'mentors', component: AdminMentorsComponent },
       { path: 'sessions', component: AdminSessionsComponent },
+      { path: 'payments', component: AdminPaymentsComponent },
+      { path: 'payments/:paymentId', component: AdminPaymentDetailComponent },
+      { path: 'payment-events', component: AdminPaymentEventsComponent },
+      { path: 'payment-events/:paymentEventId', component: AdminPaymentEventDetailComponent },
       { path: 'scholarships', component: AdminScholarshipsComponent },
       { path: 'scholarships/preview/:id', component: ScholarshipDetailsComponent },
       { path: 'blogs', component: AdminBlogsComponent },

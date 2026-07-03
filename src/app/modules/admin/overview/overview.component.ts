@@ -55,6 +55,16 @@ export class OverviewComponent implements OnInit {
       route: '/admin/sessions'
     },
     {
+      title: 'Payment audit',
+      description: 'Review backend-owned payment state and linked session context.',
+      route: '/admin/payments'
+    },
+    {
+      title: 'Payment event audit',
+      description: 'Inspect provider event processing state without mutation controls.',
+      route: '/admin/payment-events'
+    },
+    {
       title: 'Scholarship management',
       description: 'Maintain opportunity inventory and review scholarship visibility.',
       route: '/admin/scholarships'

@@ -1,0 +1,15 @@
+@use '../sessions/sessions.component';
+
+:host {
+  display: block;
+}
+
+.admin-summary-card__value {
+  font-size: 1.15rem;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+
+.admin-detail-back-row {
+  display: flex;
+}

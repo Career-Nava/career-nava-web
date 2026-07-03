@@ -2,9 +2,11 @@ import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 import {
   faCertificate,
   faChartLine,
+  faCreditCard,
   faFile,
   faHouse,
   faLaptop,
+  faReceipt,
   faUser,
   faUsers
 } from '@fortawesome/free-solid-svg-icons';
@@ -43,6 +45,8 @@ export const AUTH_SIDEBAR_CONFIG: Record<AuthRole, SidebarRoleConfig> = {
       { label: 'Overview', icon: faHouse, route: '/admin/overview', exact: true },
       { label: 'Mentors', icon: faUser, route: '/admin/mentors' },
       { label: 'Sessions', icon: faChartLine, route: '/admin/sessions' },
+      { label: 'Payments', icon: faCreditCard, route: '/admin/payments', activePrefixes: [ '/admin/payments' ] },
+      { label: 'Payment Events', icon: faReceipt, route: '/admin/payment-events', activePrefixes: [ '/admin/payment-events' ] },
       { label: 'Scholarships', icon: faFile, route: '/admin/scholarships' },
       { label: 'Blogs / Resources', icon: faFile, route: '/admin/blogs' }
     ]

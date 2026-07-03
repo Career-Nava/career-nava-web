@@ -1,0 +1,9 @@
+@use '../sessions/sessions.component';
+
+:host {
+  display: block;
+}
+
+.admin-detail-back-row {
+  display: flex;
+}
