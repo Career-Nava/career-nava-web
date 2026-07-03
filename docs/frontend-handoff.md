@@ -800,20 +800,21 @@ Recommended frontend Phase 6 scope:
 
 ### Phase 7 - Admin Payment and Event Type Operations
 
-Current status: planning inserted before launch hardening. Start backend-first with admin payment/payment-event read APIs before adding frontend pages.
+Current status: Phase 7.1 backend admin payment/payment-event read APIs are available. Phase 7.2 admin payment/payment-event read-only UI is the next recommended frontend implementation step.
 
 Verified frontend baseline:
 
 - Admin routes currently include `/admin/overview`, `/admin/mentors`, `/admin/sessions`, `/admin/scholarships`, `/admin/scholarships/preview/:id`, `/admin/blogs`, and `/admin/mentors/preview/:id`.
 - The admin sidebar currently links Overview, Mentors, Sessions, Scholarships, and Blogs / Resources.
-- No `/admin/payments`, `/admin/payment-events`, or `/admin/event-types` routes/pages exist.
+- No `/admin/payments`, `/admin/payment-events`, or `/admin/event-types` routes/pages exist yet.
 - `/admin/sessions` shows safe payment summary state and has a payment-status filter, but it is session-centered and does not provide payment/event audit lists.
 - `PaymentService` exists for mentee session checkout/verification only. Do not reuse it to create admin mutation controls.
 - `CalendlyService` exposes connect URL and scheduling/booking link helpers only; no frontend admin sync/event-type service method exists yet.
+- Backend Phase 7.1 exposes read-only admin audit endpoints under `GET /api/Payment/Admin`, `GET /api/Payment/Admin/{paymentId}`, `GET /api/Payment/Admin/Events`, `GET /api/Payment/Admin/{paymentId}/Events`, and `GET /api/Payment/Admin/Events/{paymentEventId}`.
 
 Recommended Phase 7 frontend sub-phases:
 
-1. Phase 7.2 - Admin payments/payment-events read-only UI after Phase 7.1 backend APIs exist.
+1. Phase 7.2 - Admin payments/payment-events read-only UI.
    - Add `/admin/payments` and, if cleaner, `/admin/payments/:id` or an in-page detail panel.
    - Show payment events as read-only audit records from backend DTOs, either nested under payment detail or through a focused event-audit view.
    - Use existing admin table, toolbar, collapsed filter, detail/manage panel, loading/error/empty-state, and Phase 4D `admin-action-*` utility patterns.
@@ -919,7 +920,7 @@ Major pending areas after the current MVP foundation:
 
 ## Recommended Next Frontend Iterations
 
-1. Add admin payment/payment-event read-only audit UI after backend Phase 7.1 APIs exist.
+1. Add admin payment/payment-event read-only audit UI using the backend Phase 7.1 APIs.
 2. Add admin mentor event type management UI after backend Phase 7.3 APIs exist.
 3. Add lint/test scripts or at least basic test tooling.
 4. Add mentor Calendly/self-service connection improvements.
