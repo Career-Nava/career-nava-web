@@ -1,0 +1,122 @@
+<div class="admin-page admin-list-page admin-event-type-detail-page container-fluid pb-5">
+  <div class="admin-detail-back-row mb-3">
+    <a class="admin-action-pill admin-action-pill--ghost admin-action-pill--compact" routerLink="/admin/event-types"><span class="admin-action-content"><fa-icon [icon]="faArrowLeft"></fa-icon><span>Back to event types</span></span></a>
+  </div>
+
+  <section class="admin-surface admin-hero admin-list-hero mb-4">
+    <div class="row g-4 admin-hero__row">
+      <div class="col-12 col-xl-8">
+        <span class="admin-kicker">Event type detail</span>
+        <h1 class="admin-title">{{ eventType?.name || 'Calendly event type' }}</h1>
+        <p class="admin-copy mb-0">Provider-owned fields are synced from Calendly. Only assignment and pricing metadata are editable here.</p>
+      </div>
+      <div class="col-12 col-xl-4" *ngIf="eventType">
+        <div class="admin-hero__panel">
+          <span class="admin-total">{{ formatPrice(eventType) }}</span>
+          <span class="admin-subtotal">{{ formatDuration(eventType) }}</span>
+          <span class="admin-subtotal">{{ getMentorLabel(eventType) }}</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div *ngIf="loading" class="admin-state admin-list-state text-center mb-4"><div class="spinner-border text-primary" role="status" aria-label="Loading event type"></div><p class="admin-copy mb-0 mt-3">Loading event type...</p></div>
+  <div *ngIf="!loading && error" class="alert alert-danger mb-4" role="alert">{{ error }}</div>
+
+  <ng-container *ngIf="!loading && !error && eventType">
+    <div *ngIf="actionError" class="alert alert-danger mb-4" role="alert">{{ actionError }}</div>
+    <div *ngIf="actionMessage" class="alert alert-success mb-4" role="status">{{ actionMessage }}</div>
+
+    <section class="admin-surface admin-panel admin-editor-panel mb-4">
+      <div class="admin-panel__head">
+        <div>
+          <span class="admin-section-label">Synced provider fields</span>
+          <h2 class="admin-panel__title">{{ eventType.name || 'Unnamed event type' }}</h2>
+          <p class="admin-copy mb-0">These fields are read-only and should be changed in Calendly, then refreshed by backend sync.</p>
+        </div>
+        <button type="button" class="admin-action-icon" title="Refresh event type" aria-label="Refresh event type" (click)="loadEventType()"><fa-icon [icon]="faRotateRight"></fa-icon></button>
+      </div>
+      <div class="admin-panel__body">
+        <div class="admin-detail-list">
+          <div class="admin-detail-list__item"><span class="admin-detail-list__label">Provider</span><span class="admin-detail-list__value">{{ eventType.provider || 'calendly' }}</span></div>
+          <div class="admin-detail-list__item"><span class="admin-detail-list__label">Provider status</span><span class="admin-detail-list__value"><span class="admin-badge text-capitalize" [ngClass]="getProviderStatusBadgeClass(eventType.activeStatus)">{{ eventType.activeStatus || 'unknown' }}</span></span></div>
+          <div class="admin-detail-list__item"><span class="admin-detail-list__label">Description</span><span class="admin-detail-list__value">{{ eventType.description || '-' }}</span></div>
+          <div class="admin-detail-list__item"><span class="admin-detail-list__label">Duration</span><span class="admin-detail-list__value">{{ formatDuration(eventType) }}</span></div>
+          <div class="admin-detail-list__item"><span class="admin-detail-list__label">Color</span><span class="admin-detail-list__value"><span *ngIf="eventType.color" class="event-color-swatch" [style.background]="eventType.color"></span>{{ eventType.color || '-' }}</span></div>
+          <div class="admin-detail-list__item"><span class="admin-detail-list__label">Booking link</span><span class="admin-detail-list__value"><a *ngIf="eventType.bookingUri" [href]="eventType.bookingUri" target="_blank" rel="noopener">{{ eventType.bookingUri }}</a><span *ngIf="!eventType.bookingUri">-</span></span></div>
+          <div class="admin-detail-list__item"><span class="admin-detail-list__label">Provider URI</span><span class="admin-detail-list__value">{{ eventType.uri || '-' }}</span></div>
+          <div class="admin-detail-list__item"><span class="admin-detail-list__label">Created / updated</span><span class="admin-detail-list__value">{{ eventType.createdAt | date:'medium' }} / {{ eventType.updatedAt | date:'medium' }}</span></div>
+        </div>
+      </div>
+    </section>
+
+    <div class="row g-4">
+      <div class="col-12 col-xl-6">
+        <section class="admin-surface admin-panel admin-editor-panel h-100">
+          <div class="admin-panel__head">
+            <div>
+              <span class="admin-section-label">Career Nava assignment</span>
+              <h2 class="admin-panel__title">Mentor assignment</h2>
+              <p class="admin-copy mb-0">Assign this event type to one active mentor profile, or leave it unassigned.</p>
+            </div>
+          </div>
+          <div class="admin-panel__body">
+            <div *ngIf="mentorsError" class="alert alert-warning" role="alert">{{ mentorsError }}</div>
+            <form [formGroup]="assignmentForm" (ngSubmit)="saveAssignment()" class="admin-form-grid">
+              <label class="admin-select-label admin-form-span-2">
+                <span class="admin-field-label">Mentor</span>
+                <select class="form-select admin-select" formControlName="mentorProfileId">
+                  <option value="">{{ mentorsLoading ? 'Loading mentors...' : 'Unassigned' }}</option>
+                  <option *ngFor="let mentor of mentors; trackBy: trackMentor" [value]="mentor.mentorProfileId">{{ mentor.fullName || mentor.email }} - {{ mentor.email || 'Email unavailable' }}</option>
+                </select>
+              </label>
+              <div class="admin-form-actions admin-form-span-2">
+                <button type="submit" class="admin-action-pill admin-action-pill--primary admin-action-pill--compact" [disabled]="savingAssignment || mentorsLoading">
+                  <span class="admin-action-content"><fa-icon [icon]="faFloppyDisk"></fa-icon><span>{{ savingAssignment ? 'Saving...' : 'Save assignment' }}</span></span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </section>
+      </div>
+
+      <div class="col-12 col-xl-6">
+        <section class="admin-surface admin-panel admin-editor-panel h-100">
+          <div class="admin-panel__head">
+            <div>
+              <span class="admin-section-label">Career Nava pricing</span>
+              <h2 class="admin-panel__title">Free or paid metadata</h2>
+              <p class="admin-copy mb-0">Pricing updates affect future backend payment initialization only.</p>
+            </div>
+          </div>
+          <div class="admin-panel__body">
+            <form [formGroup]="pricingForm" (ngSubmit)="savePricing()" class="admin-form-grid">
+              <label class="admin-select-label">
+                <span class="admin-field-label">Session pricing</span>
+                <select class="form-select admin-select" formControlName="isFreeSession">
+                  <option [ngValue]="true">Free</option>
+                  <option [ngValue]="false">Paid</option>
+                </select>
+              </label>
+              <label class="admin-search-label">
+                <span class="admin-field-label">Currency</span>
+                <input class="form-control admin-search-input" formControlName="priceCurrency" maxlength="3">
+              </label>
+              <label class="admin-search-label admin-form-span-2">
+                <span class="admin-field-label">Amount</span>
+                <input type="number" min="0.01" step="0.01" class="form-control admin-search-input" formControlName="priceAmount" [attr.aria-describedby]="getPricingMode() === 'free' ? 'free-pricing-note' : null">
+              </label>
+              <p id="free-pricing-note" *ngIf="getPricingMode() === 'free'" class="admin-copy admin-form-span-2 mb-0">Free sessions do not require an amount.</p>
+              <div *ngIf="pricingForm.get('priceAmount')?.invalid && pricingForm.get('priceAmount')?.touched" class="admin-form-span-2 text-danger small">Paid sessions require a positive amount.</div>
+              <div class="admin-form-actions admin-form-span-2">
+                <button type="submit" class="admin-action-pill admin-action-pill--primary admin-action-pill--compact" [disabled]="savingPricing">
+                  <span class="admin-action-content"><fa-icon [icon]="faFloppyDisk"></fa-icon><span>{{ savingPricing ? 'Saving...' : 'Save pricing' }}</span></span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </section>
+      </div>
+    </div>
+  </ng-container>
+</div>

@@ -6,6 +6,7 @@ import {
   faFile,
   faHouse,
   faLaptop,
+  faListCheck,
   faReceipt,
   faUser,
   faUsers
@@ -44,6 +45,7 @@ export const AUTH_SIDEBAR_CONFIG: Record<AuthRole, SidebarRoleConfig> = {
     items: [
       { label: 'Overview', icon: faHouse, route: '/admin/overview', exact: true },
       { label: 'Mentors', icon: faUser, route: '/admin/mentors' },
+      { label: 'Event Types', icon: faListCheck, route: '/admin/event-types', activePrefixes: [ '/admin/event-types' ] },
       { label: 'Sessions', icon: faChartLine, route: '/admin/sessions' },
       { label: 'Payments', icon: faCreditCard, route: '/admin/payments', activePrefixes: [ '/admin/payments' ] },
       { label: 'Payment Events', icon: faReceipt, route: '/admin/payment-events', activePrefixes: [ '/admin/payment-events' ] },

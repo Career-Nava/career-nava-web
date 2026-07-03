@@ -50,6 +50,11 @@ export class OverviewComponent implements OnInit {
       route: '/admin/mentors'
     },
     {
+      title: 'Event type management',
+      description: 'Review Calendly event types and maintain mentor assignment and pricing metadata.',
+      route: '/admin/event-types'
+    },
+    {
       title: 'Session operations',
       description: 'Track platform sessions booked between mentees and mentors.',
       route: '/admin/sessions'

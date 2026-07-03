@@ -3,6 +3,8 @@ import { authGuard } from './guards/auth.guard';
 import { HomeLayoutComponent } from './layout/home/home-layout.component';
 import { LayoutComponent } from './layout/layout.component';
 import { AdminBlogsComponent } from './modules/admin/blogs/blogs.component';
+import { AdminEventTypeDetailComponent } from './modules/admin/event-type-detail/event-type-detail.component';
+import { AdminEventTypesComponent } from './modules/admin/event-types/event-types.component';
 import { AdminMentorsComponent } from './modules/admin/mentors/mentors.component';
 import { OverviewComponent } from './modules/admin/overview/overview.component';
 import { AdminPaymentEventDetailComponent } from './modules/admin/payment-event-detail/payment-event-detail.component';
@@ -64,6 +66,8 @@ export const routes: Routes = [
       { path: '', redirectTo: 'overview', pathMatch: 'full' },
       { path: 'overview', component: OverviewComponent },
       { path: 'mentors', component: AdminMentorsComponent },
+      { path: 'event-types', component: AdminEventTypesComponent },
+      { path: 'event-types/:eventTypeId', component: AdminEventTypeDetailComponent },
       { path: 'sessions', component: AdminSessionsComponent },
       { path: 'payments', component: AdminPaymentsComponent },
       { path: 'payments/:paymentId', component: AdminPaymentDetailComponent },
