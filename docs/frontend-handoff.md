@@ -806,16 +806,16 @@ Recommended frontend Phase 6 scope:
 
 ### Phase 7 - Admin Payment and Event Type Operations
 
-Current status: Phase 7.2 admin payment/payment-event read-only UI is complete. Phase 7.3 mentor event type admin API/model alignment is complete in `career-nava-api`. Phase 7.4 admin mentor event type UI is the next recommended frontend implementation step.
+Current status: Phase 7.2 admin payment/payment-event read-only UI is complete. Phase 7.3 mentor event type admin API/model alignment is complete in `career-nava-api`. Phase 7.4 admin mentor event type UI is complete in `career-nava-web`. Phase 7.5 tests/docs closeout is the next recommended implementation step.
 
 Verified frontend baseline:
 
-- Admin routes currently include `/admin/overview`, `/admin/mentors`, `/admin/sessions`, `/admin/payments`, `/admin/payments/:paymentId`, `/admin/payment-events`, `/admin/payment-events/:paymentEventId`, `/admin/scholarships`, `/admin/scholarships/preview/:id`, `/admin/blogs`, and `/admin/mentors/preview/:id`.
-- The admin sidebar currently links Overview, Mentors, Sessions, Payments, Payment Events, Scholarships, and Blogs / Resources.
-- No `/admin/event-types` route/page exists yet.
+- Admin routes currently include `/admin/overview`, `/admin/mentors`, `/admin/event-types`, `/admin/event-types/:eventTypeId`, `/admin/sessions`, `/admin/payments`, `/admin/payments/:paymentId`, `/admin/payment-events`, `/admin/payment-events/:paymentEventId`, `/admin/scholarships`, `/admin/scholarships/preview/:id`, `/admin/blogs`, and `/admin/mentors/preview/:id`.
+- The admin sidebar currently links Overview, Mentors, Event Types, Sessions, Payments, Payment Events, Scholarships, and Blogs / Resources.
+- `/admin/event-types` and `/admin/event-types/:eventTypeId` provide the Phase 7.4 admin event type UI. They use the backend Phase 7.3 endpoints, expose the backend sync action, and edit only Career Nava-owned mentor assignment and pricing metadata.
 - `/admin/sessions` shows safe payment summary state and has a payment-status filter, but it is session-centered and does not provide payment/event audit lists.
 - `PaymentService` supports mentee session checkout/verification plus admin-only read methods for payments and payment events. Do not extend it with admin mutation controls unless a later reconciliation phase explicitly scopes that work.
-- `CalendlyService` exposes connect URL and scheduling/booking link helpers only; no frontend admin sync/event-type service method exists yet.
+- `CalendlyService` exposes connect URL, scheduling/booking link helpers, and admin event type list/detail/assignment/pricing/sync methods.
 - Phase 7.3 backend endpoints available for Phase 7.4:
   - `GET /api/Calendly/Admin/EventTypes`
   - `GET /api/Calendly/Admin/EventTypes/{eventTypeId}`
@@ -831,13 +831,16 @@ Recommended Phase 7 frontend sub-phases:
    - The payment-event list uses a provider-event dropdown with Paystack baseline values and dynamically loaded extra event names.
    - Manual QA refinements removed visible raw database primary-key labels/fallbacks and stacked detail back links above the hero pill/title.
    - The UI remains read-only and does not expose payment mutation, replay, reconciliation, refund, override, or paid-access controls.
-2. Phase 7.4 - Admin mentor event type UI using the Phase 7.3 backend APIs.
-   - Add `/admin/event-types` or place event-type management under the admin mentor operations area if product prefers a mentor-scoped workflow.
-   - Display Calendly-owned fields read-only and editable Career Nava-owned metadata separately.
-   - Allow edits only for active mentor assignment and free/paid pricing metadata (`isFreeSession`, `priceAmount`, `priceCurrency`).
+2. Phase 7.4 - Admin mentor event type UI using the Phase 7.3 backend APIs. Complete.
+   - Added `/admin/event-types` and `/admin/event-types/:eventTypeId`.
+   - Displays Calendly-owned fields read-only and editable Career Nava-owned metadata separately.
+   - Allows edits only for active mentor assignment and free/paid pricing metadata (`isFreeSession`, `priceAmount`, `priceCurrency`).
    - Do not edit provider-owned Calendly fields: URI, booking URL, name, description, duration, color, or provider active status. No separate Career Nava-owned active/visible flag exists yet.
-   - Provide an admin sync action wired to backend `POST /api/Calendly/sync-event-types`.
+   - Provides an admin sync action wired to backend `POST /api/Calendly/sync-event-types`.
    - Use existing Calendly connect/refresh endpoints only through backend service calls or redirects; never put provider secrets in frontend code.
+   - `npm run build` passed with existing unrelated SCSS budget warnings. `git diff --check` passed with LF-to-CRLF warnings only.
+3. Phase 7.5 - Tests and docs closeout. Next.
+   - Focus on validation, smoke/build caveats, documentation consistency, and MVP readiness tracker accuracy.
 
 Phase 7 frontend guardrails:
 
@@ -915,7 +918,7 @@ Phase 3F follow-up notes:
 - Payment/join behavior exists only for mentee sessions and should not be moved into shared session components.
 - Phase 5.3 frontend payment integration is wired to backend-owned initialization and verification. The frontend must not decide amount, currency, payment reference, success, paid access, or booked session state.
 - Phase 5.5 closed payment docs/build validation, but external Paystack sandbox delivery and manual visual review of the payment modal remain production-readiness caveats.
-- Admin payment/event audit pages are implemented and read-only. Phase 7.3 backend event type management APIs are available. Mentor event type management pages are not implemented yet; Phase 7.4 inserts them before launch hardening.
+- Admin payment/event audit pages are implemented and read-only. Phase 7.4 mentor event type management pages are implemented with backend-only sync, active mentor assignment, and pricing metadata controls. Phase 7.5 tests/docs closeout is next before launch hardening.
 - Admin overview currently uses aggregate counts only; charts/recent activity/trends are deferred.
 - Public blog detail now resolves through the dedicated published-only slug endpoint.
 
@@ -925,7 +928,6 @@ Major pending areas after the current MVP foundation:
 
 - richer pagination/search/filtering across admin lists
 - better automated frontend validation and tests
-- admin mentor event type management UI with Calendly sync action
 - richer dashboard analytics
 - application tracker work
 - mentor Calendly/self-service connection improvements
@@ -933,7 +935,7 @@ Major pending areas after the current MVP foundation:
 
 ## Recommended Next Frontend Iterations
 
-1. Add Phase 7.4 admin mentor event type management UI using the backend Phase 7.3 APIs.
+1. Complete Phase 7.5 tests/docs closeout without adding new features.
 2. Add lint/test scripts or at least basic test tooling.
 3. Add mentor Calendly/self-service connection improvements.
 4. Add pagination/search/filtering refinements to admin lists.
