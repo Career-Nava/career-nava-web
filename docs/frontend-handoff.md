@@ -742,6 +742,12 @@ Guidance:
 - `PaymentService.initializeSessionPayment(sessionId)` -> `POST /api/Payment/Sessions/{sessionId}/Initialize`
 - `PaymentService.verifyPayment(request)` -> `POST /api/Payment/Verify`
 - `/mentee/sessions` uses these endpoints for `Pay & Join`; the frontend sends only safe payment identifiers for verification and never sends amount, currency, status, or a success flag.
+- `PaymentService.getAdminPayments(filters?)` -> `GET /api/Payment/Admin`
+- `PaymentService.getAdminPaymentById(paymentId)` -> `GET /api/Payment/Admin/{paymentId}`
+- `PaymentService.getAdminPaymentEvents(filters?)` -> `GET /api/Payment/Admin/Events`
+- `PaymentService.getAdminPaymentEventsByPaymentId(paymentId)` -> `GET /api/Payment/Admin/{paymentId}/Events`
+- `PaymentService.getAdminPaymentEventById(paymentEventId)` -> `GET /api/Payment/Admin/Events/{paymentEventId}`
+- `/admin/payments` and `/admin/payment-events` use these endpoints for read-only audit visibility. Admin UI does not decide payment success, paid access, amount, or references.
 
 ### Mentors
 
@@ -800,25 +806,26 @@ Recommended frontend Phase 6 scope:
 
 ### Phase 7 - Admin Payment and Event Type Operations
 
-Current status: Phase 7.1 backend admin payment/payment-event read APIs are available. Phase 7.2 admin payment/payment-event read-only UI is the next recommended frontend implementation step.
+Current status: Phase 7.2 admin payment/payment-event read-only UI is complete. Phase 7.3 mentor event type admin API/model alignment is the next recommended implementation step and should start backend-first.
 
 Verified frontend baseline:
 
-- Admin routes currently include `/admin/overview`, `/admin/mentors`, `/admin/sessions`, `/admin/scholarships`, `/admin/scholarships/preview/:id`, `/admin/blogs`, and `/admin/mentors/preview/:id`.
-- The admin sidebar currently links Overview, Mentors, Sessions, Scholarships, and Blogs / Resources.
-- No `/admin/payments`, `/admin/payment-events`, or `/admin/event-types` routes/pages exist yet.
+- Admin routes currently include `/admin/overview`, `/admin/mentors`, `/admin/sessions`, `/admin/payments`, `/admin/payments/:paymentId`, `/admin/payment-events`, `/admin/payment-events/:paymentEventId`, `/admin/scholarships`, `/admin/scholarships/preview/:id`, `/admin/blogs`, and `/admin/mentors/preview/:id`.
+- The admin sidebar currently links Overview, Mentors, Sessions, Payments, Payment Events, Scholarships, and Blogs / Resources.
+- No `/admin/event-types` route/page exists yet.
 - `/admin/sessions` shows safe payment summary state and has a payment-status filter, but it is session-centered and does not provide payment/event audit lists.
-- `PaymentService` exists for mentee session checkout/verification only. Do not reuse it to create admin mutation controls.
+- `PaymentService` supports mentee session checkout/verification plus admin-only read methods for payments and payment events. Do not extend it with admin mutation controls unless a later reconciliation phase explicitly scopes that work.
 - `CalendlyService` exposes connect URL and scheduling/booking link helpers only; no frontend admin sync/event-type service method exists yet.
 - Backend Phase 7.1 exposes read-only admin audit endpoints under `GET /api/Payment/Admin`, `GET /api/Payment/Admin/{paymentId}`, `GET /api/Payment/Admin/Events`, `GET /api/Payment/Admin/{paymentId}/Events`, and `GET /api/Payment/Admin/Events/{paymentEventId}`.
 
 Recommended Phase 7 frontend sub-phases:
 
-1. Phase 7.2 - Admin payments/payment-events read-only UI.
-   - Add `/admin/payments` and, if cleaner, `/admin/payments/:id` or an in-page detail panel.
-   - Show payment events as read-only audit records from backend DTOs, either nested under payment detail or through a focused event-audit view.
-   - Use existing admin table, toolbar, collapsed filter, detail/manage panel, loading/error/empty-state, and Phase 4D `admin-action-*` utility patterns.
-   - Do not expose controls that mark payments paid/failed/cancelled/refunded, edit raw payloads, or grant paid access.
+1. Phase 7.2 - Admin payments/payment-events read-only UI. Complete.
+   - Added `/admin/payments`, `/admin/payments/:paymentId`, `/admin/payment-events`, and `/admin/payment-events/:paymentEventId`.
+   - Payment detail shows scoped payment events from the backend read API.
+   - The payment-event list uses a provider-event dropdown with Paystack baseline values and dynamically loaded extra event names.
+   - Manual QA refinements removed visible raw database primary-key labels/fallbacks and stacked detail back links above the hero pill/title.
+   - The UI remains read-only and does not expose payment mutation, replay, reconciliation, refund, override, or paid-access controls.
 2. Phase 7.4 - Admin mentor event type UI after Phase 7.3 backend APIs exist.
    - Add `/admin/event-types` or place event-type management under the admin mentor operations area if product prefers a mentor-scoped workflow.
    - Display Calendly-owned fields read-only and editable Career Nava-owned metadata separately.
@@ -901,7 +908,7 @@ Phase 3F follow-up notes:
 - Payment/join behavior exists only for mentee sessions and should not be moved into shared session components.
 - Phase 5.3 frontend payment integration is wired to backend-owned initialization and verification. The frontend must not decide amount, currency, payment reference, success, paid access, or booked session state.
 - Phase 5.5 closed payment docs/build validation, but external Paystack sandbox delivery and manual visual review of the payment modal remain production-readiness caveats.
-- Admin payment/event audit and mentor event type management pages are not implemented yet; Phase 7 inserts them before launch hardening.
+- Admin payment/event audit pages are implemented and read-only. Mentor event type management pages are not implemented yet; Phase 7 inserts them before launch hardening.
 - Admin overview currently uses aggregate counts only; charts/recent activity/trends are deferred.
 - Public blog detail now resolves through the dedicated published-only slug endpoint.
 
@@ -911,7 +918,6 @@ Major pending areas after the current MVP foundation:
 
 - richer pagination/search/filtering across admin lists
 - better automated frontend validation and tests
-- admin payment/payment-event read-only audit UI
 - admin mentor event type management UI with Calendly sync action
 - richer dashboard analytics
 - application tracker work
@@ -920,7 +926,7 @@ Major pending areas after the current MVP foundation:
 
 ## Recommended Next Frontend Iterations
 
-1. Add admin payment/payment-event read-only audit UI using the backend Phase 7.1 APIs.
+1. Add Phase 7.3 mentor event type admin API/model alignment backend-first.
 2. Add admin mentor event type management UI after backend Phase 7.3 APIs exist.
 3. Add lint/test scripts or at least basic test tooling.
 4. Add mentor Calendly/self-service connection improvements.
