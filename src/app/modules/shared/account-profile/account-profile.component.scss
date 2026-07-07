@@ -1,0 +1,59 @@
+.account-profile-page {
+  .account-profile-shell {
+    max-width: 1180px;
+    margin: 0 auto;
+  }
+
+  .account-profile-hero {
+    margin-bottom: 0;
+    padding: 1.25rem;
+  }
+
+  .account-profile-hero .admin-hero__row {
+    align-items: center;
+  }
+
+  .account-profile-hero .admin-hero__panel {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.65rem;
+    padding: 1.25rem;
+    max-width: 24rem;
+  }
+
+  .account-profile-hero__panel {
+    width: fit-content;
+    max-width: 100%;
+  }
+
+  .account-profile-hero__chip {
+    width: fit-content;
+    align-self: flex-start;
+  }
+
+  .admin-panel__body {
+    padding: 1.1rem 1.25rem 1.25rem;
+  }
+
+  .admin-detail-list__value {
+    overflow-wrap: anywhere;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .account-profile-page {
+    .account-profile-hero {
+      padding: 1rem;
+    }
+
+    .account-profile-hero .admin-hero__panel {
+      padding: 1rem;
+      max-width: none;
+    }
+
+    .admin-panel__body {
+      padding: 1rem;
+    }
+  }
+}

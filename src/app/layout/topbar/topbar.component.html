@@ -14,8 +14,12 @@
             aria-expanded="false"
             aria-label="Open user menu"
             class="auth-topbar__user-trigger nav-link dropdown-toggle d-flex align-items-center gap-3 p-2 rounded">
-            <div *ngIf="user.role === 'mentor'" class="check-badge"
-                 [ngClass]="user.calendlyConnected ? 'text-success' : 'text-danger'">
+            <div
+              *ngIf="showsCalendlyStatus(user.role)"
+              class="calendly-status-badge"
+              [ngClass]="user.calendlyConnected ? 'calendly-status-badge--connected' : 'calendly-status-badge--disconnected'"
+              [attr.title]="getCalendlyStatusLabel(user)"
+              [attr.aria-label]="getCalendlyStatusLabel(user)">
               <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
                 <path *ngIf="user.calendlyConnected"
                       fill-rule="evenodd"
@@ -26,6 +30,7 @@
                       d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm-1.72 6.97a.75.75 0 1 0-1.06 1.06L10.94 12l-1.72 1.72a.75.75 0 1 0 1.06 1.06L12 13.06l1.72 1.72a.75.75 0 1 0 1.06-1.06L13.06 12l1.72-1.72a.75.75 0 1 0-1.06-1.06L12 10.94l-1.72-1.72Z"
                       clip-rule="evenodd"/>
               </svg>
+              <span class="visually-hidden">{{ getCalendlyStatusLabel(user) }}</span>
             </div>
 
             <div class="avatar-wrapper bg-gradient-purple text-white rounded-circle d-flex align-items-center justify-content-center">
@@ -51,13 +56,9 @@
               <button
                 type="button"
                 class="dropdown-item auth-user-menu__item"
-                [disabled]="!hasProfileRoute(user.role)"
-                [attr.aria-disabled]="!hasProfileRoute(user.role)"
-                [attr.title]="!hasProfileRoute(user.role) ? 'Profile management coming soon' : null"
                 (click)="openProfile(user.role)">
                 <fa-icon [icon]="faUser"></fa-icon>
                 <span>Profile</span>
-                <small *ngIf="!hasProfileRoute(user.role)" class="auth-user-menu__hint">Soon</small>
               </button>
             </li>
 
@@ -73,12 +74,11 @@
               </button>
             </li>
 
-            <!-- TODO: Calendly status in token-only restore flows is still limited by available auth payload data. -->
-            <!-- <li *ngIf="!user.calendlyConnected && user.role === 'mentor'" class="dropdown-item p-3">
-              <button class="btn btn-gradient-purple w-100 fw-semibold" (click)="connectCalendly(user.userId)">
-                Link My Calendly
-              </button>
-            </li> -->
+            <li *ngIf="showsCalendlyStatus(user.role)" class="auth-user-menu__status">
+              <span class="admin-badge" [ngClass]="user.calendlyConnected ? 'admin-badge--success' : 'admin-badge--warning'">
+                {{ getCalendlyStatusLabel(user) }}
+              </span>
+            </li>
           </ul>
         </div>
 

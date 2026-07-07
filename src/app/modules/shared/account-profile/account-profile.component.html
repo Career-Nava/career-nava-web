@@ -1,0 +1,134 @@
+<div class="account-profile-page container-fluid pb-5">
+  <div class="account-profile-shell d-flex flex-column gap-4">
+    <section class="admin-surface admin-hero account-profile-hero">
+      <div class="row g-4 admin-hero__row">
+        <div class="col-12 col-xl-8">
+          <span class="admin-kicker">Account profile</span>
+          <h1 class="admin-title">Manage your Career Nava profile</h1>
+          <p class="admin-copy mb-0">
+            Keep your visible account details current. Security fields, role, and email are managed by the platform.
+          </p>
+        </div>
+        <div class="col-12 col-xl-4">
+          <div class="admin-hero__panel account-profile-hero__panel">
+            <span class="admin-total account-profile-hero__chip">{{ profile?.fullName || 'Your profile' }}</span>
+            <span class="admin-subtotal text-capitalize account-profile-hero__chip">{{ profile?.role || 'Authenticated user' }}</span>
+            <span *ngIf="canManageCalendly" class="admin-badge account-profile-hero__chip" [ngClass]="calendlyStatusClass">
+              {{ calendlyStatusLabel }}
+            </span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div *ngIf="loading" class="admin-state text-center">
+      <div class="spinner-border text-primary" role="status" aria-label="Loading profile"></div>
+      <p class="admin-copy mb-0 mt-3">Loading your profile...</p>
+    </div>
+
+    <div *ngIf="!loading && error" class="alert alert-danger" role="alert">{{ error }}</div>
+    <div *ngIf="!loading && message" class="alert alert-success" role="status">{{ message }}</div>
+
+    <ng-container *ngIf="!loading && profile as profile">
+      <div class="row g-4 align-items-start">
+        <div class="col-12 col-xl-8">
+          <section class="admin-surface admin-panel">
+            <div class="admin-panel__head">
+              <div>
+                <span class="admin-section-label">Profile details</span>
+                <h2 class="admin-panel__title">Editable account fields</h2>
+                <p class="admin-copy mb-0">Name and avatar are Career Nava-owned profile fields. Email and role are read-only.</p>
+              </div>
+            </div>
+
+            <div class="admin-panel__body">
+              <form class="row g-3" [formGroup]="profileForm">
+                <div class="col-12 col-md-6">
+                  <label class="admin-search-label">
+                    <span class="admin-field-label">Full name</span>
+                    <input class="form-control admin-search-input" formControlName="fullName" maxlength="150">
+                  </label>
+                </div>
+                <div class="col-12 col-md-6">
+                  <label class="admin-search-label">
+                    <span class="admin-field-label">Profile picture URL</span>
+                    <input class="form-control admin-search-input" formControlName="profilePicture" maxlength="2048" placeholder="Optional public image URL">
+                  </label>
+                </div>
+              </form>
+
+              <div class="d-flex flex-wrap justify-content-end gap-2 pt-3 mt-3 border-top">
+                <button type="button" class="admin-action-pill admin-action-pill--primary admin-action-pill--compact" [disabled]="saving" (click)="saveProfile()">
+                  <span class="admin-action-content">
+                    <span *ngIf="saving" class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+                    <fa-icon *ngIf="!saving" [icon]="faFloppyDisk"></fa-icon>
+                    <span>Save profile</span>
+                  </span>
+                </button>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <aside class="col-12 col-xl-4 d-flex flex-column gap-4">
+          <section class="admin-surface admin-panel">
+            <div class="admin-panel__head">
+              <div>
+                <span class="admin-section-label">Account</span>
+                <h2 class="admin-panel__title">Read-only account state</h2>
+              </div>
+            </div>
+            <div class="admin-panel__body">
+              <div class="admin-detail-list">
+                <div class="admin-detail-list__item">
+                  <span class="admin-detail-list__label">Email</span>
+                  <span class="admin-detail-list__value">{{ profile.email || '-' }}</span>
+                </div>
+                <div class="admin-detail-list__item">
+                  <span class="admin-detail-list__label">Role</span>
+                  <span class="admin-detail-list__value text-capitalize">{{ profile.role || '-' }}</span>
+                </div>
+                <div class="admin-detail-list__item">
+                  <span class="admin-detail-list__label">Account status</span>
+                  <span class="admin-detail-list__value">{{ profile.isActive ? 'Active' : 'Inactive' }}</span>
+                </div>
+                <div class="admin-detail-list__item">
+                  <span class="admin-detail-list__label">Created</span>
+                  <span class="admin-detail-list__value">{{ profile.createdAt ? (profile.createdAt | date:'medium') : '-' }}</span>
+                </div>
+                <div class="admin-detail-list__item">
+                  <span class="admin-detail-list__label">Updated</span>
+                  <span class="admin-detail-list__value">{{ profile.updatedAt ? (profile.updatedAt | date:'medium') : '-' }}</span>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section *ngIf="canManageCalendly" class="admin-surface admin-panel">
+            <div class="admin-panel__head">
+              <div>
+                <span class="admin-section-label">Calendly connection</span>
+                <h2 class="admin-panel__title">Scheduling account</h2>
+                <p class="admin-copy mb-0">Connect Calendly so Career Nava can sync event types and scheduling availability through the backend.</p>
+              </div>
+            </div>
+            <div class="admin-panel__body">
+              <span class="admin-badge mb-3" [ngClass]="calendlyStatusClass">{{ calendlyStatusLabel }}</span>
+              <div class="d-flex flex-wrap gap-2">
+                <button type="button" class="admin-action-pill admin-action-pill--primary admin-action-pill--compact" (click)="connectCalendly()">
+                  <span class="admin-action-content">
+                    <fa-icon [icon]="faLink"></fa-icon>
+                    <span>{{ profile.calendlyConnected ? 'Reconnect Calendly' : 'Connect Calendly' }}</span>
+                  </span>
+                </button>
+                <button type="button" class="admin-action-icon" title="Refresh profile status" aria-label="Refresh profile status" (click)="refreshProfile()">
+                  <fa-icon [icon]="faRotateRight"></fa-icon>
+                </button>
+              </div>
+            </div>
+          </section>
+        </aside>
+      </div>
+    </ng-container>
+  </div>
+</div>

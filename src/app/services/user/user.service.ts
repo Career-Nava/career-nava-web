@@ -5,7 +5,7 @@ import { ApiResponse } from "../api-response";
 import { ConfigurationService } from "../configuration.service";
 import { LocalStorageCache } from "../local-storage-cache";
 import { RestService } from "../rest.service";
-import { UserModel } from "./user.model";
+import { UpdateUserProfileRequest, UserModel, UserProfile } from "./user.model";
 
 @Injectable({ providedIn: 'root' })
 export class UserService extends RestService {
@@ -50,6 +50,24 @@ export class UserService extends RestService {
   getCurrentUser(): Observable<UserModel> {
     return this.http
       .get<ApiResponse<UserModel>>(`${ this.baseUrl }/me`)
+      .pipe(
+        map(res => res.data),
+        catchError(err => throwError(() => err))
+      );
+  }
+
+  getCurrentProfile(): Observable<UserProfile> {
+    return this.http
+      .get<ApiResponse<UserProfile>>(`${ this.baseUrl }/Profile`)
+      .pipe(
+        map(res => res.data),
+        catchError(err => throwError(() => err))
+      );
+  }
+
+  updateCurrentProfile(payload: UpdateUserProfileRequest): Observable<UserProfile> {
+    return this.http
+      .patch<ApiResponse<UserProfile>>(`${ this.baseUrl }/Profile`, payload)
       .pipe(
         map(res => res.data),
         catchError(err => throwError(() => err))

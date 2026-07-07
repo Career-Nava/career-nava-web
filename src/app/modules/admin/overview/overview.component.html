@@ -11,6 +11,9 @@
           <p *ngIf="user?.fullName" class="admin-copy mt-3 mb-0">
             Signed in as <strong>{{ user?.fullName }}</strong>.
           </p>
+          <span *ngIf="user" class="admin-badge mt-3" [ngClass]="calendlyStatusClass">
+            {{ calendlyStatusLabel }}
+          </span>
         </div>
       </div>
 
@@ -53,9 +56,11 @@
           <p *ngIf="card.secondaryMeta" class="admin-summary-card__meta mb-0">{{ card.secondaryMeta }}</p>
           <a
             *ngIf="card.route && card.actionLabel"
-            class="btn btn-outline-secondary admin-link-btn mt-2"
+            class="admin-action-pill admin-action-pill--primary admin-action-pill--compact mt-2"
             [routerLink]="card.route">
-            {{ card.actionLabel }}
+            <span class="admin-action-content">
+              <span>{{ card.actionLabel }}</span>
+            </span>
           </a>
         </article>
       </div>

@@ -8,3 +8,20 @@ export interface UserModel {
   googleId?: string;
   profilePicture?: string;
 }
+
+export interface UserProfile {
+  userId: number;
+  fullName: string;
+  email: string;
+  role: string;
+  isActive: boolean;
+  calendlyConnected: boolean;
+  profilePicture?: string | null;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface UpdateUserProfileRequest {
+  fullName: string;
+  profilePicture?: string | null;
+}

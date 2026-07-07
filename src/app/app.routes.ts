@@ -24,6 +24,7 @@ import { MentorOverviewComponent } from './modules/mentor/mentor-overview/mentor
 import { MentorProfileComponent } from './modules/mentor/mentor-profile/mentor-profile.component';
 import { MentorSessionsComponent } from './modules/mentor/mentor-sessions/mentor-sessions.component';
 import { PageNotFoundComponent } from './modules/page-not-found/page-not-found.component';
+import { AccountProfileComponent } from './modules/shared/account-profile/account-profile.component';
 import { MentorDetailsComponent } from './modules/student/mentors/mentor-details/mentor-details.component';
 import { MentorsComponent } from './modules/student/mentors/mentors.component';
 import { ScholarshipDetailsComponent } from './modules/student/scholarships/scholarship-details/scholarship-details.component';
@@ -55,6 +56,7 @@ export const routes: Routes = [
       { path: 'mentors', component: MentorsComponent },
       { path: 'mentors/mentor-details/:id', component: MentorDetailsComponent },
       { path: 'sessions', component: StudentSessionsComponent },
+      { path: 'profile', component: AccountProfileComponent },
       { path: 'scholarships/:id', component: ScholarshipDetailsComponent },
       { path: 'scholarships', component: ScholarshipsComponent },
       { path: 'scholarship-details/:id', component: ScholarshipDetailsComponent }
@@ -65,6 +67,7 @@ export const routes: Routes = [
     path: 'admin', canActivate: [ authGuard ], data: { roles: [ 'admin' ], layoutRole: 'admin' }, component: LayoutComponent, children: [
       { path: '', redirectTo: 'overview', pathMatch: 'full' },
       { path: 'overview', component: OverviewComponent },
+      { path: 'profile', component: AccountProfileComponent },
       { path: 'mentors', component: AdminMentorsComponent },
       { path: 'event-types', component: AdminEventTypesComponent },
       { path: 'event-types/:eventTypeId', component: AdminEventTypeDetailComponent },
@@ -86,6 +89,7 @@ export const routes: Routes = [
       { path: 'overview', component: MentorOverviewComponent },
       { path: 'profile/preview', component: MentorDetailsComponent },
       { path: 'profile', component: MentorProfileComponent },
+      { path: 'account', component: AccountProfileComponent },
       { path: 'sessions', component: MentorSessionsComponent },
     ]
   },

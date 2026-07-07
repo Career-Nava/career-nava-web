@@ -166,13 +166,13 @@ export class MentorProfileComponent implements OnInit {
 
   get schedulingStateLabel(): string {
     if (!this.scheduling) {
-      return this.profile?.calendlyConnected ? 'Connected, details unavailable' : 'Not configured';
+      return 'No assigned event type';
     }
 
     const status = (this.scheduling.activeStatus || '').toLowerCase();
-    if (status === 'active') return 'Active event type';
+    if (status === 'active') return 'Assigned event type active';
     if (status) return `${ status.charAt(0).toUpperCase() + status.slice(1) } event type`;
-    return 'Scheduling configured';
+    return 'Booking setup configured';
   }
 
   trackOption(_: number, option: MentorLookupOption): number {
@@ -385,10 +385,7 @@ export class MentorProfileComponent implements OnInit {
 
   private applyProfile(profile: MentorSelfProfile): void {
     this.profile = profile;
-    this.authService.updateUser({
-      profilePicture: profile.profilePicture ?? undefined,
-      calendlyConnected: profile.calendlyConnected
-    });
+    this.authService.updateUser({ profilePicture: profile.profilePicture ?? undefined });
   }
 
   private saveSection(

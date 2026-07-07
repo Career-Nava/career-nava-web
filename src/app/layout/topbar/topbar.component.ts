@@ -1,8 +1,8 @@
 import { Component, Input } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth/auth.service';
-import { CalendlyService } from "../../services/calendly/calendly.service";
 import { SidebarService } from '../../services/sidebar/sidebar.service';
+import { UserModel } from '../../services/user/user.model';
 import { SharedModule } from '../../shared/shared.module';
 import { faArrowRightFromBracket, faBars, faUser } from '@fortawesome/free-solid-svg-icons';
 
@@ -23,7 +23,6 @@ export class TopbarComponent {
 
   constructor(
     private authService: AuthService,
-    private calendlyService: CalendlyService,
     private sidebarService: SidebarService,
     private router: Router
   ) {
@@ -33,34 +32,26 @@ export class TopbarComponent {
     this.sidebarService.toggle();
   }
 
-  connectCalendly(userId: number): void {
-    window.location.href = this.calendlyService.getConnectUrl(userId);
+  getProfileRoute(role: string | undefined): string {
+    if (role === 'admin') return '/admin/profile';
+    if (role === 'mentor') return '/mentor/account';
+    return '/mentee/profile';
   }
 
-  hasProfileRoute(role: string | undefined): boolean {
-    return this.getProfileRoute(role) !== null;
-  }
-
-  // TODO: Wire to profile management once profile routes are available for all roles.
   openProfile(role: string | undefined): void {
-    const profileRoute = this.getProfileRoute(role);
-    if (!profileRoute) {
-      return;
-    }
+    this.router.navigateByUrl(this.getProfileRoute(role));
+  }
 
-    this.router.navigateByUrl(profileRoute);
+  showsCalendlyStatus(role: string | undefined): boolean {
+    return role === 'admin';
+  }
+
+  getCalendlyStatusLabel(user: UserModel): string {
+    return user.calendlyConnected ? 'Calendly connected' : 'Calendly not connected';
   }
 
   logout() {
     this.sidebarService.close();
     this.authService.logout();
-  }
-
-  private getProfileRoute(role: string | undefined): string | null {
-    if (role === 'mentor') {
-      return '/mentor/profile';
-    }
-
-    return null;
   }
 }

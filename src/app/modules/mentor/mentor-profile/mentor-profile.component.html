@@ -1,5 +1,5 @@
 <div class="mentor-profile-page container-fluid pb-5">
-  <div class="mentor-profile-shell d-flex flex-column gap-4">
+  <div class="mentor-profile-shell mentor-profile-shell__stack">
     <div *ngIf="loading" class="mnd-empty mnd-card text-center">
       <span class="mnd-kicker">Mentor profile</span>
       <div class="spinner-border text-primary mx-auto mb-3" role="status" aria-label="Loading mentor profile"></div>
@@ -14,17 +14,17 @@
     </div>
 
     <ng-container *ngIf="hasProfile && profile as profile">
-      <section class="mnd-card p-4 p-xl-5">
-        <div class="row g-4 align-items-stretch">
-          <div class="col-12 col-xl-7">
-            <div class="d-flex flex-column gap-3 h-100">
+      <section class="mnd-card mentor-profile-hero">
+        <div class="mentor-profile-hero__grid">
+          <div class="mentor-profile-hero__content">
+            <div class="mentor-profile-hero__stack">
               <span class="mnd-kicker mb-0">Mentor profile</span>
               <h1 class="mnd-title mb-0">Your mentor profile workspace</h1>
               <p class="mnd-copy mb-0">
                 Review how your profile reads, refine one section at a time, and preview the exact mentor detail experience mentees would see when your profile is live.
               </p>
 
-              <div class="pt-1">
+              <div class="mentor-profile-hero__actions">
                 <a routerLink="/mentor/profile/preview" class="btn admin-toolbar-btn mentor-profile-btn mentor-profile-btn--primary mentor-profile-btn--cta" title="Preview public profile" aria-label="Preview public profile">
                   <fa-icon [icon]="faEye"></fa-icon>
                   <span>Preview public profile</span>
@@ -33,16 +33,16 @@
             </div>
           </div>
 
-          <div class="col-12 col-xl-5">
-            <aside class="mnd-card mentor-profile-surface p-4 h-100 d-flex flex-column gap-3">
-              <div class="d-flex flex-column flex-sm-row align-items-start justify-content-between gap-3">
+          <div class="mentor-profile-hero__aside">
+            <aside class="mnd-card mentor-profile-surface mentor-profile-hero__status-card">
+              <div class="mentor-profile-hero__status-head">
                 <span class="mnd-section-label mb-0">Visibility</span>
                 <span class="admin-badge text-capitalize" [ngClass]="statusBadgeClass">{{ statusLabel | titlecase }}</span>
               </div>
               <h2 class="mnd-section-title mb-0">{{ visibilityHeadline }}</h2>
               <p class="mnd-copy mb-0">{{ visibilityCopy }}</p>
 
-              <div class="mentor-profile-surface p-3 d-flex flex-column gap-2">
+              <div class="mentor-profile-surface mentor-profile-callout p-3">
                 <span class="mentor-profile-meta-label">What changes here do</span>
                 <p class="mnd-copy mb-0">Mentors can update public-facing content here. Admins still control lifecycle state, verification, and operational access.</p>
               </div>
@@ -51,21 +51,20 @@
         </div>
       </section>
 
-      <section class="mnd-card p-4">
-        <div class="d-grid gap-2 mb-4">
+      <section class="mnd-card mentor-profile-section mentor-profile-section--overview">
+        <div class="mentor-profile-section__header">
           <span class="mnd-section-label mb-0">Profile overview</span>
           <h2 class="mnd-section-title mb-0">How your profile reads at a glance</h2>
         </div>
 
-        <div class="row g-4 align-items-center">
-          <div class="col-12 col-lg-7">
-            <div class="d-flex flex-column flex-sm-row align-items-start align-items-sm-center gap-3">
+        <div class="mentor-profile-overview__grid">
+          <div class="mentor-profile-overview__identity">
               <div class="mentor-profile-avatar mentor-profile-avatar--prominent flex-shrink-0">
                 <img *ngIf="profile.profilePicture" [src]="profile.profilePicture" [alt]="profile.fullName || 'Mentor profile picture'">
                 <span *ngIf="!profile.profilePicture">{{ (profile.fullName || 'M').charAt(0) }}</span>
               </div>
 
-              <div class="d-flex flex-column gap-2">
+              <div class="mentor-profile-stack mentor-profile-stack--sm mentor-profile-overview__details">
                 <h3 class="mb-0">{{ profile.fullName }}</h3>
                 <p class="mentor-profile-overview__meta mb-0">
                   {{ profile.positionTitle || 'Mentor' }}
@@ -74,24 +73,23 @@
                 <p class="mentor-profile-overview__meta mb-0">{{ profile.email }}</p>
               </div>
             </div>
-          </div>
 
-          <div class="col-12 col-lg-5">
+          <div class="mentor-profile-overview__metrics">
             <div class="row g-3">
               <div class="col-12 col-sm-4">
-                <article class="mentor-profile-surface p-3 p-lg-4 h-100 d-flex flex-column gap-2">
+                <article class="mentor-profile-surface mentor-profile-card mentor-profile-card--metric">
                   <span class="mentor-profile-meta-label">Sessions</span>
                   <strong>{{ profile.totalSessions || 0 }}</strong>
                 </article>
               </div>
               <div class="col-12 col-sm-4">
-                <article class="mentor-profile-surface p-3 p-lg-4 h-100 d-flex flex-column gap-2">
+                <article class="mentor-profile-surface mentor-profile-card mentor-profile-card--metric">
                   <span class="mentor-profile-meta-label">Reviews</span>
                   <strong>{{ profile.totalReviews || 0 }}</strong>
                 </article>
               </div>
               <div class="col-12 col-sm-4">
-                <article class="mentor-profile-surface p-3 p-lg-4 h-100 d-flex flex-column gap-2">
+                <article class="mentor-profile-surface mentor-profile-card mentor-profile-card--metric">
                   <span class="mentor-profile-meta-label">Rating</span>
                   <strong>{{ (profile.avgRating || 0) | number:'1.1-1' }}</strong>
                 </article>
@@ -101,16 +99,16 @@
         </div>
       </section>
 
-      <div class="row g-4 align-items-start">
-        <div class="col-12 col-xl-8 d-flex flex-column gap-4">
-          <section class="mnd-card p-4">
-            <div class="d-flex flex-column flex-lg-row align-items-start justify-content-between gap-3 mb-4">
-              <div class="d-grid gap-2">
+      <div class="row g-4 align-items-start mentor-profile-workspace">
+        <div class="col-12 col-xl-8 mentor-profile-workspace__main">
+          <section class="mnd-card mentor-profile-section mentor-profile-section--content">
+            <div class="mentor-profile-section__header mentor-profile-section__header--actions">
+              <div class="mentor-profile-section__eyebrow">
                 <span class="mnd-section-label mb-0">Public profile content</span>
                 <h2 class="mnd-section-title mb-0">How your profile introduces you</h2>
               </div>
 
-              <div *ngIf="!editingContent">
+              <div *ngIf="!editingContent" class="mentor-profile-section__actions">
                 <button type="button" class="admin-icon-action mentor-profile-icon-action" title="Edit public profile content" aria-label="Edit public profile content" (click)="startContentEdit()">
                   <fa-icon [icon]="faPen"></fa-icon>
                 </button>
@@ -121,45 +119,45 @@
             <div *ngIf="sectionError.content" class="mentor-profile-inline-state alert alert-danger mb-3" role="alert">{{ sectionError.content }}</div>
 
             <ng-container *ngIf="!editingContent; else contentEditor">
-              <div class="row g-3">
+              <div class="row g-3 mentor-profile-detail-grid">
                 <div class="col-12 col-md-6">
-                  <article class="mentor-profile-surface p-3 p-lg-4 h-100 d-flex flex-column gap-2">
+                  <article class="mentor-profile-surface mentor-profile-card">
                     <span class="mentor-profile-meta-label">Full name</span>
                     <strong>{{ profile.fullName || '-' }}</strong>
                   </article>
                 </div>
                 <div class="col-12 col-md-6">
-                  <article class="mentor-profile-surface p-3 p-lg-4 h-100 d-flex flex-column gap-2">
+                  <article class="mentor-profile-surface mentor-profile-card">
                     <span class="mentor-profile-meta-label">Email</span>
                     <strong>{{ profile.email || '-' }}</strong>
                   </article>
                 </div>
                 <div class="col-12 col-md-6">
-                  <article class="mentor-profile-surface p-3 p-lg-4 h-100 d-flex flex-column gap-2">
+                  <article class="mentor-profile-surface mentor-profile-card">
                     <span class="mentor-profile-meta-label">Company</span>
                     <strong>{{ profile.company || '-' }}</strong>
                   </article>
                 </div>
                 <div class="col-12 col-md-6">
-                  <article class="mentor-profile-surface p-3 p-lg-4 h-100 d-flex flex-column gap-2">
+                  <article class="mentor-profile-surface mentor-profile-card">
                     <span class="mentor-profile-meta-label">Position title</span>
                     <strong>{{ profile.positionTitle || '-' }}</strong>
                   </article>
                 </div>
                 <div class="col-12 col-md-6">
-                  <article class="mentor-profile-surface p-3 p-lg-4 h-100 d-flex flex-column gap-2">
+                  <article class="mentor-profile-surface mentor-profile-card">
                     <span class="mentor-profile-meta-label">Location</span>
                     <strong>{{ profile.location || '-' }}</strong>
                   </article>
                 </div>
                 <div class="col-12 col-md-6">
-                  <article class="mentor-profile-surface p-3 p-lg-4 h-100 d-flex flex-column gap-2">
+                  <article class="mentor-profile-surface mentor-profile-card">
                     <span class="mentor-profile-meta-label">Years of experience</span>
                     <strong>{{ profile.yearsExperience ?? '-' }}</strong>
                   </article>
                 </div>
                 <div class="col-12">
-                  <article class="mentor-profile-surface p-3 p-lg-4 d-flex flex-column gap-2">
+                  <article class="mentor-profile-surface mentor-profile-card">
                     <span class="mentor-profile-meta-label">LinkedIn</span>
                     <a *ngIf="profile.linkedInUrl; else noLinkedIn" [href]="profile.linkedInUrl" target="_blank" rel="noopener noreferrer" class="mentor-profile-link">
                       <span>{{ profile.linkedInUrl }}</span>
@@ -169,7 +167,7 @@
                   </article>
                 </div>
                 <div class="col-12">
-                  <article class="mentor-profile-surface p-3 p-lg-4 d-flex flex-column gap-2">
+                  <article class="mentor-profile-surface mentor-profile-card">
                     <span class="mentor-profile-meta-label">Bio</span>
                     <p class="mnd-copy mb-0">{{ profile.bio || 'Add a short introduction so mentees understand what kind of guidance you offer.' }}</p>
                   </article>
@@ -178,7 +176,7 @@
             </ng-container>
 
             <ng-template #contentEditor>
-              <div class="mentor-profile-surface p-4">
+              <div class="mentor-profile-surface mentor-profile-editor">
                 <form class="row g-3" [formGroup]="contentForm">
                   <div class="col-12 col-md-6">
                     <label class="admin-search-label">
@@ -224,7 +222,7 @@
                   </div>
                 </form>
 
-                <div class="d-flex flex-wrap gap-2 justify-content-end pt-3 mt-3 border-top">
+                <div class="mentor-profile-form-actions">
                   <button type="button" class="btn admin-toolbar-btn mentor-profile-btn mentor-profile-btn--ghost mentor-profile-edit-btn" title="Cancel public profile content edit" aria-label="Cancel public profile content edit" (click)="cancelContentEdit()">
                     <fa-icon [icon]="faXmark"></fa-icon>
                     <span>Cancel</span>
@@ -239,14 +237,14 @@
             </ng-template>
           </section>
 
-          <section class="mnd-card p-4">
-            <div class="d-flex flex-column flex-lg-row align-items-start justify-content-between gap-3 mb-4">
-              <div class="d-grid gap-2">
+          <section class="mnd-card mentor-profile-section mentor-profile-section--taxonomy">
+            <div class="mentor-profile-section__header mentor-profile-section__header--actions">
+              <div class="mentor-profile-section__eyebrow">
                 <span class="mnd-section-label mb-0">Expertise and mentoring fit</span>
                 <h2 class="mnd-section-title mb-0">What mentees can come to you for</h2>
               </div>
 
-              <div *ngIf="!editingTaxonomy">
+              <div *ngIf="!editingTaxonomy" class="mentor-profile-section__actions">
                 <button type="button" class="admin-icon-action mentor-profile-icon-action" title="Edit expertise and mentoring fit" aria-label="Edit expertise and mentoring fit" (click)="startTaxonomyEdit()">
                   <fa-icon [icon]="faPen"></fa-icon>
                 </button>
@@ -257,9 +255,9 @@
             <div *ngIf="sectionError.taxonomy" class="mentor-profile-inline-state alert alert-danger mb-3" role="alert">{{ sectionError.taxonomy }}</div>
 
             <ng-container *ngIf="!editingTaxonomy; else taxonomyEditor">
-              <div class="row g-3">
+              <div class="row g-3 mentor-profile-detail-grid">
                 <div class="col-12 col-lg-4">
-                  <article class="mentor-profile-surface p-3 p-lg-4 h-100 d-flex flex-column gap-3">
+                  <article class="mentor-profile-surface mentor-profile-card mentor-profile-card--stacked">
                     <span class="mentor-profile-meta-label">Expertise</span>
                     <div class="d-flex flex-wrap gap-2 mentor-profile-taxonomy-pills" *ngIf="getSelectedPills('expertise').length; else noExpertise">
                       <span class="mnd-badge mnd-badge--accent" *ngFor="let tag of getSelectedPills('expertise')">{{ tag }}</span>
@@ -269,7 +267,7 @@
                 </div>
 
                 <div class="col-12 col-lg-4">
-                  <article class="mentor-profile-surface p-3 p-lg-4 h-100 d-flex flex-column gap-3">
+                  <article class="mentor-profile-surface mentor-profile-card mentor-profile-card--stacked">
                     <span class="mentor-profile-meta-label">Disciplines</span>
                     <div class="d-flex flex-wrap gap-2 mentor-profile-taxonomy-pills" *ngIf="getSelectedPills('disciplines').length; else noDisciplines">
                       <span class="mnd-badge" *ngFor="let tag of getSelectedPills('disciplines')">{{ tag }}</span>
@@ -279,7 +277,7 @@
                 </div>
 
                 <div class="col-12 col-lg-4">
-                  <article class="mentor-profile-surface p-3 p-lg-4 h-100 d-flex flex-column gap-3">
+                  <article class="mentor-profile-surface mentor-profile-card mentor-profile-card--stacked">
                     <span class="mentor-profile-meta-label">Fluency</span>
                     <div class="d-flex flex-wrap gap-2 mentor-profile-taxonomy-pills" *ngIf="getSelectedPills('fluency').length; else noFluency">
                       <span class="mnd-badge" *ngFor="let tag of getSelectedPills('fluency')">{{ tag }}</span>
@@ -291,10 +289,10 @@
             </ng-container>
 
             <ng-template #taxonomyEditor>
-              <div class="d-flex flex-column gap-3">
+              <div class="mentor-profile-stack">
                 <div class="row g-3">
                   <div class="col-12 col-lg-4">
-                    <article class="mentor-profile-surface p-3 p-lg-4 h-100 d-flex flex-column gap-3">
+                    <article class="mentor-profile-surface mentor-profile-card mentor-profile-card--stacked">
                       <span class="mentor-profile-meta-label">Expertise</span>
                       <div class="d-flex flex-wrap gap-2 mentor-profile-taxonomy-pills">
                         <button
@@ -311,7 +309,7 @@
                   </div>
 
                   <div class="col-12 col-lg-4">
-                    <article class="mentor-profile-surface p-3 p-lg-4 h-100 d-flex flex-column gap-3">
+                    <article class="mentor-profile-surface mentor-profile-card mentor-profile-card--stacked">
                       <span class="mentor-profile-meta-label">Disciplines</span>
                       <div class="d-flex flex-wrap gap-2 mentor-profile-taxonomy-pills">
                         <button
@@ -328,7 +326,7 @@
                   </div>
 
                   <div class="col-12 col-lg-4">
-                    <article class="mentor-profile-surface p-3 p-lg-4 h-100 d-flex flex-column gap-3">
+                    <article class="mentor-profile-surface mentor-profile-card mentor-profile-card--stacked">
                       <span class="mentor-profile-meta-label">Fluency</span>
                       <div class="d-flex flex-wrap gap-2 mentor-profile-taxonomy-pills">
                         <button
@@ -345,7 +343,7 @@
                   </div>
                 </div>
 
-                <div class="d-flex flex-wrap gap-2 justify-content-end pt-3 border-top">
+                <div class="mentor-profile-form-actions">
                   <button type="button" class="btn admin-toolbar-btn mentor-profile-btn mentor-profile-btn--ghost mentor-profile-edit-btn" title="Cancel expertise and mentoring fit edit" aria-label="Cancel expertise and mentoring fit edit" (click)="cancelTaxonomyEdit()">
                     <fa-icon [icon]="faXmark"></fa-icon>
                     <span>Cancel</span>
@@ -360,14 +358,14 @@
             </ng-template>
           </section>
 
-          <section class="mnd-card p-4">
-            <div class="d-flex flex-column flex-lg-row align-items-start justify-content-between gap-3 mb-4">
-              <div class="d-grid gap-2">
+          <section class="mnd-card mentor-profile-section mentor-profile-section--experience">
+            <div class="mentor-profile-section__header mentor-profile-section__header--actions">
+              <div class="mentor-profile-section__eyebrow">
                 <span class="mnd-section-label mb-0">Professional experience</span>
                 <h2 class="mnd-section-title mb-0">The chapters mentees can learn from</h2>
               </div>
 
-              <div>
+              <div class="mentor-profile-section__actions">
                 <button
                   type="button"
                   class="admin-icon-action mentor-profile-icon-action mentor-profile-icon-action--primary"
@@ -383,24 +381,24 @@
             <div *ngIf="sectionMessage.experience" class="mentor-profile-inline-state alert alert-success mb-3" role="status">{{ sectionMessage.experience }}</div>
             <div *ngIf="sectionError.experience" class="mentor-profile-inline-state alert alert-danger mb-3" role="alert">{{ sectionError.experience }}</div>
 
-            <div *ngIf="!(profile.experiences?.length) && !addingExperience" class="mentor-profile-surface p-4 d-flex flex-column gap-2">
+            <div *ngIf="!(profile.experiences?.length) && !addingExperience" class="mentor-profile-surface mentor-profile-card mentor-profile-empty-card">
               <h3 class="mb-0">No experience entries yet</h3>
               <p class="mnd-copy mb-0">Add the milestones that help mentees understand your background.</p>
             </div>
 
-            <div class="d-flex flex-column gap-3">
+            <div class="mentor-profile-stack">
               <article class="mentor-profile-surface" *ngFor="let experience of profile.experiences; let i = index; trackBy: trackExperience">
-                <div *ngIf="editingExperienceIndex !== i; else editExperienceCard" class="p-3 p-lg-4 d-flex flex-column gap-3">
-                  <div class="d-flex flex-column flex-lg-row align-items-start justify-content-between gap-3">
-                    <div class="d-flex flex-column gap-2">
-                      <div class="d-flex flex-wrap align-items-center gap-2">
+                <div *ngIf="editingExperienceIndex !== i; else editExperienceCard" class="mentor-profile-card mentor-profile-card--experience">
+                  <div class="mentor-profile-experience__head">
+                    <div class="mentor-profile-stack mentor-profile-stack--sm">
+                      <div class="mentor-profile-experience__title-row">
                         <h3 class="mb-0">{{ experience.title || 'Untitled role' }}</h3>
                         <span class="admin-badge admin-badge--muted">{{ experience.year || 'Dates unavailable' }}</span>
                       </div>
                       <p class="mentor-profile-overview__meta mb-0">{{ experience.companyName || 'Company unavailable' }}</p>
                     </div>
 
-                    <div class="d-flex flex-wrap align-items-center gap-3">
+                    <div class="mentor-profile-experience__actions">
                       <img *ngIf="experience.companyImage" [src]="experience.companyImage" [alt]="experience.companyName || experience.title || 'Experience logo'" class="mentor-profile-experience-logo">
                       <button
                         type="button"
@@ -418,15 +416,17 @@
                 </div>
 
                 <ng-template #editExperienceCard>
-                  <div class="mentor-profile-surface p-4">
-                    <div class="d-flex flex-column flex-lg-row align-items-start justify-content-between gap-3 mb-4">
-                      <div class="d-grid gap-2">
+                  <div class="mentor-profile-surface mentor-profile-editor">
+                    <div class="mentor-profile-section__header mentor-profile-section__header--actions">
+                      <div class="mentor-profile-section__eyebrow">
                         <span class="mentor-profile-meta-label">Edit experience</span>
                         <p class="mnd-copy mb-0">Update this experience card, then save to return it to read-only mode.</p>
                       </div>
-                      <button type="button" class="admin-icon-action admin-icon-action--danger mentor-profile-icon-action" title="Remove experience" aria-label="Remove experience" [disabled]="sectionSaving.experience" (click)="removeExperience(i)">
-                        <fa-icon [icon]="faTrashCan"></fa-icon>
-                      </button>
+                      <div class="mentor-profile-section__actions">
+                        <button type="button" class="admin-icon-action admin-icon-action--danger mentor-profile-icon-action" title="Remove experience" aria-label="Remove experience" [disabled]="sectionSaving.experience" (click)="removeExperience(i)">
+                          <fa-icon [icon]="faTrashCan"></fa-icon>
+                        </button>
+                      </div>
                     </div>
 
                     <form class="row g-3" [formGroup]="experienceForm">
@@ -468,7 +468,7 @@
                       </div>
                     </form>
 
-                    <div class="d-flex flex-wrap gap-2 justify-content-end pt-3 mt-3 border-top">
+                    <div class="mentor-profile-form-actions">
                       <button type="button" class="btn admin-toolbar-btn mentor-profile-btn mentor-profile-btn--ghost mentor-profile-edit-btn" title="Cancel experience edit" aria-label="Cancel experience edit" (click)="cancelExperienceEdit()">
                         <fa-icon [icon]="faXmark"></fa-icon>
                         <span>Cancel</span>
@@ -483,8 +483,8 @@
                 </ng-template>
               </article>
 
-              <article class="mentor-profile-surface p-4" *ngIf="addingExperience">
-                <div class="d-grid gap-2 mb-4">
+              <article class="mentor-profile-surface mentor-profile-editor" *ngIf="addingExperience">
+                <div class="mentor-profile-section__eyebrow mentor-profile-section__eyebrow--tight">
                   <span class="mentor-profile-meta-label">Add experience</span>
                   <p class="mnd-copy mb-0">Keep this concise and mentee-focused so the story of your work is easy to scan.</p>
                 </div>
@@ -528,7 +528,7 @@
                   </div>
                 </form>
 
-                <div class="d-flex flex-wrap gap-2 justify-content-end pt-3 mt-3 border-top">
+                <div class="mentor-profile-form-actions">
                   <button type="button" class="btn admin-toolbar-btn mentor-profile-btn mentor-profile-btn--ghost mentor-profile-edit-btn" title="Cancel new experience" aria-label="Cancel new experience" (click)="cancelExperienceEdit()">
                     <fa-icon [icon]="faXmark"></fa-icon>
                     <span>Cancel</span>
@@ -544,74 +544,74 @@
           </section>
         </div>
 
-        <aside class="col-12 col-xl-4 d-flex flex-column gap-4">
-          <section class="mnd-card p-4">
-            <div class="d-grid gap-2 mb-3">
+        <aside class="col-12 col-xl-4 mentor-profile-workspace__sidebar">
+          <section class="mnd-card mentor-profile-section mentor-profile-section--status">
+            <div class="mentor-profile-section__eyebrow mentor-profile-section__eyebrow--tight">
               <span class="mnd-section-label mb-0">Visibility and account status</span>
               <h2 class="mnd-section-title mb-0">Operational status</h2>
             </div>
 
             <div class="mentor-profile-quick-list">
-              <div class="mentor-profile-quick-row d-flex justify-content-between gap-3 py-3">
+              <div class="mentor-profile-quick-row">
                 <span>Account</span>
                 <strong>{{ profile.isActive ? 'Active' : 'Inactive' }}</strong>
               </div>
-              <div class="mentor-profile-quick-row d-flex justify-content-between gap-3 py-3">
+              <div class="mentor-profile-quick-row">
                 <span>Verified</span>
                 <strong>{{ profile.verified ? 'Verified' : 'Pending' }}</strong>
               </div>
-              <div class="mentor-profile-quick-row d-flex justify-content-between gap-3 py-3">
+              <div class="mentor-profile-quick-row">
                 <span>Profile status</span>
                 <strong>{{ profile.mentorProfileStatus | titlecase }}</strong>
               </div>
-              <div class="mentor-profile-quick-row d-flex justify-content-between gap-3 py-3">
-                <span>Calendly</span>
-                <strong>{{ profile.calendlyConnected ? 'Connected' : 'Not connected' }}</strong>
+              <div class="mentor-profile-quick-row">
+                <span>Booking setup</span>
+                <strong>{{ scheduling ? 'Configured' : 'Pending assignment' }}</strong>
               </div>
-              <div class="mentor-profile-quick-row d-flex justify-content-between gap-3 py-3">
+              <div class="mentor-profile-quick-row">
                 <span>Sessions</span>
                 <strong>{{ profile.totalSessions || 0 }}</strong>
               </div>
-              <div class="mentor-profile-quick-row d-flex justify-content-between gap-3 py-3">
+              <div class="mentor-profile-quick-row">
                 <span>Reviews</span>
                 <strong>{{ profile.totalReviews || 0 }}</strong>
               </div>
-              <div class="mentor-profile-quick-row d-flex justify-content-between gap-3 py-3">
+              <div class="mentor-profile-quick-row">
                 <span>Rating</span>
                 <strong>{{ (profile.avgRating || 0) | number:'1.1-1' }}</strong>
               </div>
             </div>
           </section>
 
-          <section class="mnd-card p-4">
-            <div class="d-flex flex-column flex-lg-row align-items-start justify-content-between gap-3 mb-3">
-              <div class="d-grid gap-2">
+          <section class="mnd-card mentor-profile-section mentor-profile-section--schedule">
+            <div class="mentor-profile-section__header mentor-profile-section__header--tight">
+              <div class="mentor-profile-section__eyebrow">
                 <span class="mnd-section-label mb-0">Scheduling / mentor event type</span>
                 <h2 class="mnd-section-title mb-0">Your current booking setup</h2>
               </div>
-              <span class="admin-badge" [ngClass]="profile.calendlyConnected ? 'admin-badge--success' : 'admin-badge--muted'">
-                {{ profile.calendlyConnected ? 'Calendly connected' : 'Not connected' }}
+              <span class="admin-badge admin-badge--muted">
+                {{ scheduling ? 'Booking setup configured' : 'No assigned event type' }}
               </span>
             </div>
 
             <div *ngIf="scheduling as scheduling; else schedulingEmpty" class="mentor-profile-quick-list">
-              <div class="mentor-profile-quick-row d-flex justify-content-between gap-3 py-3">
-                <span>Event type</span>
+              <div class="mentor-profile-quick-row">
+                <span>Assigned event type</span>
                 <strong>{{ scheduling.eventTypeName || '-' }}</strong>
               </div>
-              <div class="mentor-profile-quick-row d-flex justify-content-between gap-3 py-3">
+              <div class="mentor-profile-quick-row">
                 <span>Status</span>
                 <strong>{{ schedulingStateLabel }}</strong>
               </div>
-              <div class="mentor-profile-quick-row d-flex justify-content-between gap-3 py-3">
+              <div class="mentor-profile-quick-row">
                 <span>Duration</span>
                 <strong>{{ scheduling.durationMinutes ? (scheduling.durationMinutes + ' min') : '-' }}</strong>
               </div>
-              <div class="mentor-profile-quick-row d-flex justify-content-between gap-3 py-3">
+              <div class="mentor-profile-quick-row">
                 <span>Last synced</span>
                 <strong>{{ scheduling.lastSyncedAt ? (scheduling.lastSyncedAt | date:'medium') : '-' }}</strong>
               </div>
-              <div class="mentor-profile-quick-row d-flex flex-column gap-2 py-3">
+              <div class="mentor-profile-quick-row mentor-profile-quick-row--stacked">
                 <span>Scheduling link</span>
                 <a *ngIf="scheduling.schedulingUrl; else noSchedulingLink" [href]="scheduling.schedulingUrl || ''" target="_blank" rel="noopener noreferrer" class="mentor-profile-link">
                   <fa-icon [icon]="faLink"></fa-icon>
@@ -619,18 +619,16 @@
                 </a>
                 <ng-template #noSchedulingLink><strong>-</strong></ng-template>
               </div>
-              <div class="mentor-profile-quick-row d-flex flex-column gap-2 py-3" *ngIf="scheduling.eventTypeDescription">
+              <div class="mentor-profile-quick-row mentor-profile-quick-row--stacked" *ngIf="scheduling.eventTypeDescription">
                 <span>Event type description</span>
                 <p class="mnd-copy mb-0">{{ scheduling.eventTypeDescription }}</p>
               </div>
             </div>
 
             <ng-template #schedulingEmpty>
-              <div class="mentor-profile-surface p-4 d-flex flex-column gap-2">
+              <div class="mentor-profile-surface mentor-profile-card mentor-profile-empty-card">
                 <h3 class="mb-0">Scheduling details are limited right now</h3>
-                <p class="mnd-copy mb-0">
-                  {{ profile.calendlyConnected ? 'Calendly is connected, but no mentor event type details are currently assigned to this profile.' : 'Connect and assign a Calendly mentor event type to surface richer scheduling details here.' }}
-                </p>
+                <p class="mnd-copy mb-0">An admin can assign a Calendly mentor event type to surface richer booking details here.</p>
               </div>
             </ng-template>
           </section>

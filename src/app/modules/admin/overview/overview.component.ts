@@ -169,6 +169,14 @@ export class OverviewComponent implements OnInit {
     return `${ this.getCount(overview.totalUsers) } total users across the platform`;
   }
 
+  get calendlyStatusLabel(): string {
+    return this.user?.calendlyConnected ? 'Calendly connected' : 'Calendly not connected';
+  }
+
+  get calendlyStatusClass(): string {
+    return this.user?.calendlyConnected ? 'admin-badge--success' : 'admin-badge--warning';
+  }
+
   trackCard(_: number, card: OverviewCard): string {
     return card.title;
   }
