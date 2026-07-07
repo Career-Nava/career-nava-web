@@ -79,9 +79,16 @@ The branch currently includes:
 
 - `/admin` -> `/admin/overview`
 - `/admin/overview`
+- `/admin/profile`
 - `/admin/mentors`
 - `/admin/mentors/preview/:id`
+- `/admin/event-types`
+- `/admin/event-types/:eventTypeId`
 - `/admin/sessions`
+- `/admin/payments`
+- `/admin/payments/:paymentId`
+- `/admin/payment-events`
+- `/admin/payment-events/:paymentEventId`
 - `/admin/scholarships`
 - `/admin/scholarships/preview/:id`
 - `/admin/blogs`
@@ -91,6 +98,7 @@ The branch currently includes:
 - `/mentor` -> `/mentor/overview`
 - `/mentor/overview`
 - `/mentor/profile`
+- `/mentor/account`
 - `/mentor/sessions`
 
 ### Mentee
@@ -99,6 +107,7 @@ The branch currently includes:
 - `/mentee/mentors`
 - `/mentee/mentors/mentor-details/:id`
 - `/mentee/sessions`
+- `/mentee/profile`
 - `/mentee/scholarships`
 - `/mentee/scholarship-details/:id`
 
@@ -806,7 +815,7 @@ Recommended frontend Phase 6 scope:
 
 ### Phase 7 - Admin Payment and Event Type Operations
 
-Current status: Phase 7.2 admin payment/payment-event read-only UI is complete. Phase 7.3 mentor event type admin API/model alignment is complete in `career-nava-api`. Phase 7.4 admin mentor event type UI is complete in `career-nava-web`. Phase 7.5 tests/docs closeout is complete. Phase 8 launch hardening is the next recommended phase.
+Current status: Phase 7.2 admin payment/payment-event read-only UI is complete. Phase 7.3 mentor event type admin API/model alignment is complete in `career-nava-api`. Phase 7.4 admin mentor event type UI is complete in `career-nava-web`. Phase 7.5 tests/docs closeout is complete. Phase 7.6 authenticated user profile and admin-only Calendly connection is complete. Phase 7.7 account profile expansion and linked account management is planned next. Phase 8 launch hardening follows Phase 7.7.
 
 Verified frontend baseline:
 
@@ -843,7 +852,19 @@ Recommended Phase 7 frontend sub-phases:
    - Re-ran `npm run build`; it passed with existing unrelated SCSS budget warnings.
    - Confirmed `package.json` still has no lint/test scripts.
    - Targeted source checks found no payment mutation controls, no direct provider API calls, and no editable provider-owned Calendly fields.
-   - Documentation now points to Phase 8 launch hardening as the next phase.
+   - Documentation was synchronized before the next pre-hardening phase.
+4. Phase 7.6 - Authenticated user profile and admin-only Calendly connection. Complete.
+   - Close the top-right Profile menu gap for authenticated roles.
+   - Provide profile pages for admin, mentor, and mentee users using safe current-user data.
+   - Keep the mentor workspace at `/mentor/profile` and route the mentor account menu entry to `/mentor/account`.
+   - Calendly connection controls and indicators are admin-only for MVP; mentees and mentors should not see account-level Calendly controls.
+   - Use backend Calendly connect/callback routes only. Do not call Calendly directly or expose provider tokens/secrets.
+5. Phase 7.7 - Account profile expansion and linked account management. Planned next.
+   - Add password change after current-password verification.
+   - Expand account profile metadata to include safe fields such as bio and LinkedIn URL after backend safety review.
+   - Add Google linked-account status plus safe link/unlink handling after sign-in impact analysis.
+   - Do not claim any Phase 7.7 feature exists yet.
+   - Phase 8 launch hardening remains next after Phase 7.7.
 
 Phase 7 frontend guardrails:
 
@@ -921,7 +942,7 @@ Phase 3F follow-up notes:
 - Payment/join behavior exists only for mentee sessions and should not be moved into shared session components.
 - Phase 5.3 frontend payment integration is wired to backend-owned initialization and verification. The frontend must not decide amount, currency, payment reference, success, paid access, or booked session state.
 - Phase 5.5 closed payment docs/build validation, but external Paystack sandbox delivery and manual visual review of the payment modal remain production-readiness caveats.
-- Admin payment/event audit pages are implemented and read-only. Phase 7.4 mentor event type management pages are implemented with backend-only sync, active mentor assignment, and pricing metadata controls. Phase 7.5 closeout validation is complete; Phase 8 launch hardening is next.
+- Admin payment/event audit pages are implemented and read-only. Phase 7.4 mentor event type management pages are implemented with backend-only sync, active mentor assignment, and pricing metadata controls. Phase 7.5 closeout validation is complete; Phase 7.6 profile/Calendly connection work is complete and Phase 7.7 account profile expansion is next.
 - Admin overview currently uses aggregate counts only; charts/recent activity/trends are deferred.
 - Public blog detail now resolves through the dedicated published-only slug endpoint.
 
@@ -933,19 +954,20 @@ Major pending areas after the current MVP foundation:
 - better automated frontend validation and tests
 - richer dashboard analytics
 - application tracker work
-- mentor Calendly/self-service connection improvements
+- launch hardening after Phase 7.7 account profile expansion closeout
 - preserve mentor experience row identities if richer non-replacement editing becomes necessary
 
 ## Recommended Next Frontend Iterations
 
-1. Start Phase 8 launch hardening without adding new product features.
-2. Add lint/test scripts or at least basic test tooling.
-3. Add mentor Calendly/self-service connection improvements.
-4. Add pagination/search/filtering refinements to admin lists.
-5. Add a scholarship detail bookmark split/current-user detail path if product wants bookmark controls on detail.
-6. Add a dedicated saved-scholarships workspace if product requests it.
-7. Fix `shcolarship.model.ts` typo safely.
-8. Add richer admin overview charts/recent activity.
+1. Complete Phase 7.6 profile/Calendly connection diff review and closeout.
+2. Prepare Phase 7.7 account profile expansion and linked account management planning before implementation.
+3. Start Phase 8 launch hardening without adding new product features.
+4. Add lint/test scripts or at least basic test tooling.
+5. Add pagination/search/filtering refinements to admin lists.
+6. Add a scholarship detail bookmark split/current-user detail path if product wants bookmark controls on detail.
+7. Add a dedicated saved-scholarships workspace if product requests it.
+8. Fix `shcolarship.model.ts` typo safely.
+9. Add richer admin overview charts/recent activity.
 
 ## Notes for Future Codex Sessions
 
