@@ -6,7 +6,7 @@ import { finalize, forkJoin, Subscription } from 'rxjs';
 import { AuthService } from '../../../services/auth/auth.service';
 import { CalendlyService } from '../../../services/calendly/calendly.service';
 import { ToastService } from '../../../services/toast.service';
-import { ChangePasswordRequest, UpdateUserProfileRequest, UserProfile, UserSecurityStatus } from '../../../services/user/user.model';
+import { ChangePasswordRequest, SetupPasswordRequest, UpdateUserProfileRequest, UserProfile, UserSecurityStatus } from '../../../services/user/user.model';
 import { UserService } from '../../../services/user/user.service';
 import { SharedModule } from '../../../shared/shared.module';
 
@@ -35,9 +35,14 @@ export class AccountProfileComponent implements OnInit, OnDestroy {
   message: string | null = null;
   passwordError: string | null = null;
   passwordMessage: string | null = null;
+  setupPasswordError: string | null = null;
+  setupPasswordMessage: string | null = null;
+  settingUpPassword = false;
   showCurrentPassword = false;
   showNewPassword = false;
   showConfirmPassword = false;
+  showSetupNewPassword = false;
+  showSetupConfirmPassword = false;
 
   readonly profileForm = this.fb.group({
     fullName: [ '', [ Validators.required, Validators.maxLength(150) ] ],
@@ -46,6 +51,11 @@ export class AccountProfileComponent implements OnInit, OnDestroy {
 
   readonly passwordForm = this.fb.group({
     currentPassword: [ '', [ Validators.required ] ],
+    newPassword: [ '', [ Validators.required, Validators.minLength(6), Validators.maxLength(200) ] ],
+    confirmPassword: [ '', [ Validators.required ] ]
+  }, { validators: [ AccountProfileComponent.passwordMatchValidator ] });
+
+  readonly setupPasswordForm = this.fb.group({
     newPassword: [ '', [ Validators.required, Validators.minLength(6), Validators.maxLength(200) ] ],
     confirmPassword: [ '', [ Validators.required ] ]
   }, { validators: [ AccountProfileComponent.passwordMatchValidator ] });
@@ -89,6 +99,14 @@ export class AccountProfileComponent implements OnInit, OnDestroy {
   get googleLinked(): boolean {
     if (this.securityStatus) return this.securityStatus.googleLinked;
     return this.profile?.googleLinked ?? false;
+  }
+
+  get showChangePasswordForm(): boolean {
+    return this.securityStatus?.hasLocalPassword ?? false;
+  }
+
+  get showSetupPasswordForm(): boolean {
+    return this.securityStatus?.canSetupPassword ?? false;
   }
 
   connectCalendly(): void {
@@ -171,6 +189,41 @@ export class AccountProfileComponent implements OnInit, OnDestroy {
       });
   }
 
+  setupPassword(): void {
+    if (this.setupPasswordForm.invalid) {
+      this.setupPasswordForm.markAllAsTouched();
+      return;
+    }
+
+    const value = this.setupPasswordForm.getRawValue();
+    const payload: SetupPasswordRequest = {
+      newPassword: value.newPassword ?? '',
+      confirmPassword: value.confirmPassword ?? ''
+    };
+
+    this.settingUpPassword = true;
+    this.setupPasswordError = null;
+    this.setupPasswordMessage = null;
+
+    this.userService.setupCurrentPassword(payload)
+      .pipe(finalize(() => this.settingUpPassword = false))
+      .subscribe({
+        next: () => {
+          this.resetSetupPasswordVisibility();
+          this.setupPasswordForm.reset({
+            newPassword: '',
+            confirmPassword: ''
+          });
+          this.setupPasswordMessage = 'Password set.';
+          this.toast.show('Password set.', { classname: 'bg-success text-light', delay: 3200 });
+          this.refreshSecurityStatus();
+        },
+        error: err => {
+          this.setupPasswordError = this.getActionError(err, 'Unable to set your password right now.');
+        }
+      });
+  }
+
   private loadProfile(): void {
     this.loading = true;
     this.error = null;
@@ -189,6 +242,15 @@ export class AccountProfileComponent implements OnInit, OnDestroy {
           this.error = this.getActionError(err, 'Unable to load your profile right now.');
         }
       });
+  }
+
+  private refreshSecurityStatus(): void {
+    this.userService.getCurrentSecurityStatus().subscribe({
+      next: securityStatus => {
+        this.securityStatus = securityStatus;
+      },
+      error: () => undefined
+    });
   }
 
   private applyProfile(profile: UserProfile): void {
@@ -242,6 +304,15 @@ export class AccountProfileComponent implements OnInit, OnDestroy {
     this.showConfirmPassword = !this.showConfirmPassword;
   }
 
+  toggleSetupPasswordVisibility(field: 'new' | 'confirm'): void {
+    if (field === 'new') {
+      this.showSetupNewPassword = !this.showSetupNewPassword;
+      return;
+    }
+
+    this.showSetupConfirmPassword = !this.showSetupConfirmPassword;
+  }
+
   private getActionError(err: any, fallback: string): string {
     if (err?.status === 401) return 'Please sign in again to manage your profile.';
     if (err?.status === 403) return 'You do not have permission to manage this profile.';
@@ -252,6 +323,11 @@ export class AccountProfileComponent implements OnInit, OnDestroy {
     this.showCurrentPassword = false;
     this.showNewPassword = false;
     this.showConfirmPassword = false;
+  }
+
+  private resetSetupPasswordVisibility(): void {
+    this.showSetupNewPassword = false;
+    this.showSetupConfirmPassword = false;
   }
 
   private static passwordMatchValidator(form: AbstractControl): ValidationErrors | null {

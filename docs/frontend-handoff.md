@@ -815,7 +815,7 @@ Recommended frontend Phase 6 scope:
 
 ### Phase 7 - Admin Payment and Event Type Operations
 
-Current status: Phase 7.2 admin payment/payment-event read-only UI is complete. Phase 7.3 mentor event type admin API/model alignment is complete in `career-nava-api`. Phase 7.4 admin mentor event type UI is complete in `career-nava-web`. Phase 7.5 tests/docs closeout is complete. Phase 7.6 authenticated user profile and admin-only Calendly connection is complete. Phase 7.7A backend-first account profile contract foundation is complete. Phase 7.7B password change safety foundation is complete. Phase 7.7C account security status contract and provider identifier hardening is complete. A later account-security phase should handle linked-account mutation or dedicated password-setup rules before Phase 8 launch hardening.
+Current status: Phase 7.2 admin payment/payment-event read-only UI is complete. Phase 7.3 mentor event type admin API/model alignment is complete in `career-nava-api`. Phase 7.4 admin mentor event type UI is complete in `career-nava-web`. Phase 7.5 tests/docs closeout is complete. Phase 7.6 authenticated user profile and admin-only Calendly connection is complete. Phase 7.7A backend-first account profile contract foundation is complete. Phase 7.7B password change safety foundation is complete. Phase 7.7C account security status contract and provider identifier hardening is complete. Phase 7.7D Google-only local password setup foundation is complete. Google link/unlink mutation remains deferred until backend uniqueness and re-auth/link safety rules are defined.
 
 Verified frontend baseline:
 
@@ -876,12 +876,20 @@ Recommended Phase 7 frontend sub-phases:
 8. Phase 7.7C - Account security status contract and provider identifier hardening. Complete.
    - The frontend now consumes `GET /api/User/Security` for backend-derived account-security state instead of inferring security eligibility from raw provider identifiers.
    - Normal frontend-facing auth/current-user contracts no longer include raw `googleId`; the web app now relies on safe booleans such as `googleLinked` and the security-status eligibility flags.
-   - The shared account profile keeps Google sign-in read-only and does not render Google link/unlink or password-setup actions.
-   - The shared account profile shows a compact backend-derived note when password change is blocked because no local password exists yet.
+   - The shared account profile keeps Google sign-in read-only and does not render Google link/unlink actions.
    - Admin-only Calendly controls remain admin-only, and `/mentor/profile` remains untouched.
-9. Later account-security follow-up. Planned next.
-   - Define whether Google-first accounts may create a local password through a dedicated verified flow.
+9. Phase 7.7D - Google-only local password setup foundation. Complete.
+   - The shared account profile Account security section now switches between two backend-owned flows:
+     - Google-linked users without a local password see a dedicated `Set password` form.
+     - Users with a local password continue to see the existing `Change password` form.
+   - The setup form posts to `POST /api/User/SetupPassword` with `newPassword` and `confirmPassword`.
+   - The setup form uses the same subtle reveal/hide eye toggles as the change-password form and does not log password values.
+   - After successful setup, the page refreshes `GET /api/User/Security` so the UI naturally switches from `Set password` to `Change password` while Google sign-in remains read-only and linked.
+   - No Google link/unlink controls, forgot-password UI, or password-reset UI were added.
+   - Admin-only Calendly controls remain admin-only, and `/mentor/profile` remains untouched.
+10. Later account-security follow-up. Planned next.
    - Define any safe Google link/unlink behavior only after sign-in fallback rules are explicit and backend-owned.
+   - Enforce or audit backend `google_id` uniqueness before any explicit account-link mutation UI is introduced.
    - Phase 8 launch hardening remains next after the remaining Phase 7.7 account-security decisions.
 
 Phase 7 frontend guardrails:
@@ -960,7 +968,7 @@ Phase 3F follow-up notes:
 - Payment/join behavior exists only for mentee sessions and should not be moved into shared session components.
 - Phase 5.3 frontend payment integration is wired to backend-owned initialization and verification. The frontend must not decide amount, currency, payment reference, success, paid access, or booked session state.
 - Phase 5.5 closed payment docs/build validation, but external Paystack sandbox delivery and manual visual review of the payment modal remain production-readiness caveats.
-- Admin payment/event audit pages are implemented and read-only. Phase 7.4 mentor event type management pages are implemented with backend-only sync, active mentor assignment, and pricing metadata controls. Phase 7.5 closeout validation is complete; Phase 7.6 profile/Calendly connection work is complete; Phase 7.7A account profile contract foundation is complete; and Phase 7.7B password change/linked-account mutation planning is next.
+- Admin payment/event audit pages are implemented and read-only. Phase 7.4 mentor event type management pages are implemented with backend-only sync, active mentor assignment, and pricing metadata controls. Phase 7.5 closeout validation is complete; Phase 7.6 profile/Calendly connection work is complete; Phase 7.7A account profile contract foundation is complete; Phase 7.7B password change safety foundation is complete; Phase 7.7C account-security status hardening is complete; and Phase 7.7D Google-only local password setup is complete. Google link/unlink mutation remains deferred.
 - Admin overview currently uses aggregate counts only; charts/recent activity/trends are deferred.
 - Public blog detail now resolves through the dedicated published-only slug endpoint.
 
@@ -977,15 +985,14 @@ Major pending areas after the current MVP foundation:
 
 ## Recommended Next Frontend Iterations
 
-1. Complete Phase 7.6 profile/Calendly connection diff review and closeout.
-2. Start Phase 7.7B password change and linked-account mutation planning after explicit auth safety review.
-3. Start Phase 8 launch hardening without adding new product features.
-4. Add lint/test scripts or at least basic test tooling.
-5. Add pagination/search/filtering refinements to admin lists.
-6. Add a scholarship detail bookmark split/current-user detail path if product wants bookmark controls on detail.
-7. Add a dedicated saved-scholarships workspace if product requests it.
-8. Fix `shcolarship.model.ts` typo safely.
-9. Add richer admin overview charts/recent activity.
+1. Define a backend-first Google link/unlink safety contract only after `google_id` uniqueness and re-auth rules are explicit.
+2. Start Phase 8 launch hardening without adding new product features.
+3. Add lint/test scripts or at least basic test tooling.
+4. Add pagination/search/filtering refinements to admin lists.
+5. Add a scholarship detail bookmark split/current-user detail path if product wants bookmark controls on detail.
+6. Add a dedicated saved-scholarships workspace if product requests it.
+7. Fix `shcolarship.model.ts` typo safely.
+8. Add richer admin overview charts/recent activity.
 
 ## Notes for Future Codex Sessions
 

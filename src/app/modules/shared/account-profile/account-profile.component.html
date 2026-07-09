@@ -74,96 +74,166 @@
               <div class="admin-panel__head">
                 <div>
                   <span class="admin-section-label">Account security</span>
-                  <h2 class="admin-panel__title">Change password</h2>
-                  <p class="admin-copy mb-0">Password changes are applied to your current signed-in account through backend verification.</p>
+                  <h2 class="admin-panel__title">{{ showSetupPasswordForm ? 'Set password' : 'Change password' }}</h2>
+                  <p class="admin-copy mb-0">
+                    {{ showSetupPasswordForm
+                      ? 'Create a local password so you can also sign in with email and password.'
+                      : 'Password changes are applied to your current signed-in account through backend verification.' }}
+                  </p>
                 </div>
               </div>
 
               <div class="admin-panel__body">
-                <div *ngIf="passwordError" class="alert alert-danger mb-3" role="alert">{{ passwordError }}</div>
-                <div *ngIf="passwordMessage" class="alert alert-success mb-3" role="status">{{ passwordMessage }}</div>
-                <div *ngIf="securityStatus && !securityStatus.canChangePassword && securityStatus.passwordChangeBlockedReason" class="account-profile-security-note">
-                  {{ securityStatus.passwordChangeBlockedReason }}
-                </div>
+                <ng-container *ngIf="showSetupPasswordForm; else changePasswordBlock">
+                  <div *ngIf="setupPasswordError" class="alert alert-danger mb-3" role="alert">{{ setupPasswordError }}</div>
+                  <div *ngIf="setupPasswordMessage" class="alert alert-success mb-3" role="status">{{ setupPasswordMessage }}</div>
 
-                <form class="row g-3" [formGroup]="passwordForm">
-                  <div class="col-12">
-                    <label class="admin-search-label">
-                      <span class="admin-field-label">Current password</span>
-                      <div class="account-profile-password-field">
-                        <input
-                          class="form-control admin-search-input pe-5"
-                          [type]="showCurrentPassword ? 'text' : 'password'"
-                          formControlName="currentPassword"
-                          autocomplete="current-password">
-                        <button
-                          type="button"
-                          class="account-profile-password-toggle"
-                          [attr.aria-label]="showCurrentPassword ? 'Hide current password' : 'Show current password'"
-                          [attr.title]="showCurrentPassword ? 'Hide current password' : 'Show current password'"
-                          (click)="togglePasswordVisibility('current')">
-                          <fa-icon [icon]="showCurrentPassword ? faEyeSlash : faEye"></fa-icon>
-                        </button>
+                  <form class="row g-3" [formGroup]="setupPasswordForm">
+                    <div class="col-12 col-md-6">
+                      <label class="admin-search-label">
+                        <span class="admin-field-label">New password</span>
+                        <div class="account-profile-password-field">
+                          <input
+                            class="form-control admin-search-input pe-5"
+                            [type]="showSetupNewPassword ? 'text' : 'password'"
+                            formControlName="newPassword"
+                            autocomplete="new-password">
+                          <button
+                            type="button"
+                            class="account-profile-password-toggle"
+                            [attr.aria-label]="showSetupNewPassword ? 'Hide new password' : 'Show new password'"
+                            [attr.title]="showSetupNewPassword ? 'Hide new password' : 'Show new password'"
+                            (click)="toggleSetupPasswordVisibility('new')">
+                            <fa-icon [icon]="showSetupNewPassword ? faEyeSlash : faEye"></fa-icon>
+                          </button>
+                        </div>
+                      </label>
+                      <div *ngIf="setupPasswordForm.get('newPassword')?.touched && setupPasswordForm.get('newPassword')?.errors?.['minlength']" class="account-profile-help text-danger">
+                        New password must be at least 6 characters.
                       </div>
-                    </label>
-                  </div>
-                  <div class="col-12 col-md-6">
-                    <label class="admin-search-label">
-                      <span class="admin-field-label">New password</span>
-                      <div class="account-profile-password-field">
-                        <input
-                          class="form-control admin-search-input pe-5"
-                          [type]="showNewPassword ? 'text' : 'password'"
-                          formControlName="newPassword"
-                          autocomplete="new-password">
-                        <button
-                          type="button"
-                          class="account-profile-password-toggle"
-                          [attr.aria-label]="showNewPassword ? 'Hide new password' : 'Show new password'"
-                          [attr.title]="showNewPassword ? 'Hide new password' : 'Show new password'"
-                          (click)="togglePasswordVisibility('new')">
-                          <fa-icon [icon]="showNewPassword ? faEyeSlash : faEye"></fa-icon>
-                        </button>
-                      </div>
-                    </label>
-                    <div *ngIf="passwordForm.get('newPassword')?.touched && passwordForm.get('newPassword')?.errors?.['minlength']" class="account-profile-help text-danger">
-                      New password must be at least 6 characters.
                     </div>
-                  </div>
-                  <div class="col-12 col-md-6">
-                    <label class="admin-search-label">
-                      <span class="admin-field-label">Confirm new password</span>
-                      <div class="account-profile-password-field">
-                        <input
-                          class="form-control admin-search-input pe-5"
-                          [type]="showConfirmPassword ? 'text' : 'password'"
-                          formControlName="confirmPassword"
-                          autocomplete="new-password">
-                        <button
-                          type="button"
-                          class="account-profile-password-toggle"
-                          [attr.aria-label]="showConfirmPassword ? 'Hide confirm password' : 'Show confirm password'"
-                          [attr.title]="showConfirmPassword ? 'Hide confirm password' : 'Show confirm password'"
-                          (click)="togglePasswordVisibility('confirm')">
-                          <fa-icon [icon]="showConfirmPassword ? faEyeSlash : faEye"></fa-icon>
-                        </button>
+                    <div class="col-12 col-md-6">
+                      <label class="admin-search-label">
+                        <span class="admin-field-label">Confirm new password</span>
+                        <div class="account-profile-password-field">
+                          <input
+                            class="form-control admin-search-input pe-5"
+                            [type]="showSetupConfirmPassword ? 'text' : 'password'"
+                            formControlName="confirmPassword"
+                            autocomplete="new-password">
+                          <button
+                            type="button"
+                            class="account-profile-password-toggle"
+                            [attr.aria-label]="showSetupConfirmPassword ? 'Hide confirm password' : 'Show confirm password'"
+                            [attr.title]="showSetupConfirmPassword ? 'Hide confirm password' : 'Show confirm password'"
+                            (click)="toggleSetupPasswordVisibility('confirm')">
+                            <fa-icon [icon]="showSetupConfirmPassword ? faEyeSlash : faEye"></fa-icon>
+                          </button>
+                        </div>
+                      </label>
+                      <div *ngIf="setupPasswordForm.touched && setupPasswordForm.errors?.['passwordMismatch']" class="account-profile-help text-danger">
+                        New password and confirm password must match.
                       </div>
-                    </label>
-                    <div *ngIf="passwordForm.touched && passwordForm.errors?.['passwordMismatch']" class="account-profile-help text-danger">
-                      New password and confirm password must match.
                     </div>
-                  </div>
-                </form>
+                  </form>
 
-                <div class="d-flex flex-wrap justify-content-end gap-2 pt-3 mt-3 border-top">
-                  <button type="button" class="admin-action-pill admin-action-pill--primary admin-action-pill--compact" [disabled]="changingPassword" (click)="changePassword()">
-                    <span class="admin-action-content">
-                      <span *ngIf="changingPassword" class="spinner-border spinner-border-sm" aria-hidden="true"></span>
-                      <fa-icon *ngIf="!changingPassword" [icon]="faKey"></fa-icon>
-                      <span>Change password</span>
-                    </span>
-                  </button>
-                </div>
+                  <div class="d-flex flex-wrap justify-content-end gap-2 pt-3 mt-3 border-top">
+                    <button type="button" class="admin-action-pill admin-action-pill--primary admin-action-pill--compact" [disabled]="settingUpPassword" (click)="setupPassword()">
+                      <span class="admin-action-content">
+                        <span *ngIf="settingUpPassword" class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+                        <fa-icon *ngIf="!settingUpPassword" [icon]="faKey"></fa-icon>
+                        <span>Set password</span>
+                      </span>
+                    </button>
+                  </div>
+                </ng-container>
+
+                <ng-template #changePasswordBlock>
+                  <div *ngIf="passwordError" class="alert alert-danger mb-3" role="alert">{{ passwordError }}</div>
+                  <div *ngIf="passwordMessage" class="alert alert-success mb-3" role="status">{{ passwordMessage }}</div>
+                  <div *ngIf="securityStatus && !showChangePasswordForm && securityStatus.passwordChangeBlockedReason" class="account-profile-security-note">
+                    {{ securityStatus.passwordChangeBlockedReason }}
+                  </div>
+
+                  <form *ngIf="showChangePasswordForm" class="row g-3" [formGroup]="passwordForm">
+                    <div class="col-12">
+                      <label class="admin-search-label">
+                        <span class="admin-field-label">Current password</span>
+                        <div class="account-profile-password-field">
+                          <input
+                            class="form-control admin-search-input pe-5"
+                            [type]="showCurrentPassword ? 'text' : 'password'"
+                            formControlName="currentPassword"
+                            autocomplete="current-password">
+                          <button
+                            type="button"
+                            class="account-profile-password-toggle"
+                            [attr.aria-label]="showCurrentPassword ? 'Hide current password' : 'Show current password'"
+                            [attr.title]="showCurrentPassword ? 'Hide current password' : 'Show current password'"
+                            (click)="togglePasswordVisibility('current')">
+                            <fa-icon [icon]="showCurrentPassword ? faEyeSlash : faEye"></fa-icon>
+                          </button>
+                        </div>
+                      </label>
+                    </div>
+                    <div class="col-12 col-md-6">
+                      <label class="admin-search-label">
+                        <span class="admin-field-label">New password</span>
+                        <div class="account-profile-password-field">
+                          <input
+                            class="form-control admin-search-input pe-5"
+                            [type]="showNewPassword ? 'text' : 'password'"
+                            formControlName="newPassword"
+                            autocomplete="new-password">
+                          <button
+                            type="button"
+                            class="account-profile-password-toggle"
+                            [attr.aria-label]="showNewPassword ? 'Hide new password' : 'Show new password'"
+                            [attr.title]="showNewPassword ? 'Hide new password' : 'Show new password'"
+                            (click)="togglePasswordVisibility('new')">
+                            <fa-icon [icon]="showNewPassword ? faEyeSlash : faEye"></fa-icon>
+                          </button>
+                        </div>
+                      </label>
+                      <div *ngIf="passwordForm.get('newPassword')?.touched && passwordForm.get('newPassword')?.errors?.['minlength']" class="account-profile-help text-danger">
+                        New password must be at least 6 characters.
+                      </div>
+                    </div>
+                    <div class="col-12 col-md-6">
+                      <label class="admin-search-label">
+                        <span class="admin-field-label">Confirm new password</span>
+                        <div class="account-profile-password-field">
+                          <input
+                            class="form-control admin-search-input pe-5"
+                            [type]="showConfirmPassword ? 'text' : 'password'"
+                            formControlName="confirmPassword"
+                            autocomplete="new-password">
+                          <button
+                            type="button"
+                            class="account-profile-password-toggle"
+                            [attr.aria-label]="showConfirmPassword ? 'Hide confirm password' : 'Show confirm password'"
+                            [attr.title]="showConfirmPassword ? 'Hide confirm password' : 'Show confirm password'"
+                            (click)="togglePasswordVisibility('confirm')">
+                            <fa-icon [icon]="showConfirmPassword ? faEyeSlash : faEye"></fa-icon>
+                          </button>
+                        </div>
+                      </label>
+                      <div *ngIf="passwordForm.touched && passwordForm.errors?.['passwordMismatch']" class="account-profile-help text-danger">
+                        New password and confirm password must match.
+                      </div>
+                    </div>
+                  </form>
+
+                  <div *ngIf="showChangePasswordForm" class="d-flex flex-wrap justify-content-end gap-2 pt-3 mt-3 border-top">
+                    <button type="button" class="admin-action-pill admin-action-pill--primary admin-action-pill--compact" [disabled]="changingPassword" (click)="changePassword()">
+                      <span class="admin-action-content">
+                        <span *ngIf="changingPassword" class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+                        <fa-icon *ngIf="!changingPassword" [icon]="faKey"></fa-icon>
+                        <span>Change password</span>
+                      </span>
+                    </button>
+                  </div>
+                </ng-template>
               </div>
             </section>
           </div>
