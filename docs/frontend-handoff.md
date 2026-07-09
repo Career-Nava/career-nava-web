@@ -815,7 +815,7 @@ Recommended frontend Phase 6 scope:
 
 ### Phase 7 - Admin Payment and Event Type Operations
 
-Current status: Phase 7.2 admin payment/payment-event read-only UI is complete. Phase 7.3 mentor event type admin API/model alignment is complete in `career-nava-api`. Phase 7.4 admin mentor event type UI is complete in `career-nava-web`. Phase 7.5 tests/docs closeout is complete. Phase 7.6 authenticated user profile and admin-only Calendly connection is complete. Phase 7.7A backend-first account profile contract foundation is complete. Phase 7.7B password change safety foundation is complete. Phase 7.7C account security status contract and provider identifier hardening is complete. Phase 7.7D Google-only local password setup foundation is complete. Google link/unlink mutation remains deferred until backend uniqueness and re-auth/link safety rules are defined.
+Current status: Phase 7.2 admin payment/payment-event read-only UI is complete. Phase 7.3 mentor event type admin API/model alignment is complete in `career-nava-api`. Phase 7.4 admin mentor event type UI is complete in `career-nava-web`. Phase 7.5 tests/docs closeout is complete. Phase 7.6 authenticated user profile and admin-only Calendly connection is complete. Phase 7.7A backend-first account profile contract foundation is complete. Phase 7.7B password change safety foundation is complete. Phase 7.7C account security status contract and provider identifier hardening is complete. Phase 7.7D Google-only local password setup foundation is complete. Phase 7.7E Google provider uniqueness and unlink safety groundwork is complete. Explicit Google link UI remains deferred.
 
 Verified frontend baseline:
 
@@ -888,8 +888,9 @@ Recommended Phase 7 frontend sub-phases:
    - No Google link/unlink controls, forgot-password UI, or password-reset UI were added.
    - Admin-only Calendly controls remain admin-only, and `/mentor/profile` remains untouched.
 10. Later account-security follow-up. Planned next.
-   - Define any safe Google link/unlink behavior only after sign-in fallback rules are explicit and backend-owned.
-   - Enforce or audit backend `google_id` uniqueness before any explicit account-link mutation UI is introduced.
+   - Phase 7.7E now hardens backend unlink eligibility and provider uniqueness, but the shared account profile still does not render a Google unlink action.
+   - Any future unlink UI must stay backend-owned, require the backend-confirmed eligibility flags, and preserve current-password confirmation if the backend contract continues to require it.
+   - Explicit Google link UI remains deferred until a dedicated current-user link flow exists and backend `google_id` uniqueness has already been enforced.
    - Phase 8 launch hardening remains next after the remaining Phase 7.7 account-security decisions.
 
 Phase 7 frontend guardrails:
