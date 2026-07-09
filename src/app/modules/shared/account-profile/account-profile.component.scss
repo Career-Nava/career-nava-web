@@ -39,6 +39,11 @@
   .admin-detail-list__value {
     overflow-wrap: anywhere;
   }
+
+  .account-profile-google-badge {
+    width: fit-content;
+    margin-left: auto;
+  }
 }
 
 @media (max-width: 575.98px) {

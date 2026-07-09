@@ -16,6 +16,7 @@ export interface UserProfile {
   role: string;
   isActive: boolean;
   calendlyConnected: boolean;
+  googleLinked: boolean;
   profilePicture?: string | null;
   createdAt?: string;
   updatedAt?: string;

@@ -815,7 +815,7 @@ Recommended frontend Phase 6 scope:
 
 ### Phase 7 - Admin Payment and Event Type Operations
 
-Current status: Phase 7.2 admin payment/payment-event read-only UI is complete. Phase 7.3 mentor event type admin API/model alignment is complete in `career-nava-api`. Phase 7.4 admin mentor event type UI is complete in `career-nava-web`. Phase 7.5 tests/docs closeout is complete. Phase 7.6 authenticated user profile and admin-only Calendly connection is complete. Phase 7.7 account profile expansion and linked account management is planned next. Phase 8 launch hardening follows Phase 7.7.
+Current status: Phase 7.2 admin payment/payment-event read-only UI is complete. Phase 7.3 mentor event type admin API/model alignment is complete in `career-nava-api`. Phase 7.4 admin mentor event type UI is complete in `career-nava-web`. Phase 7.5 tests/docs closeout is complete. Phase 7.6 authenticated user profile and admin-only Calendly connection is complete. Phase 7.7A backend-first account profile contract foundation is complete. Phase 7.7B remains next for password change and/or linked-account mutation planning after auth safety review. Phase 8 launch hardening follows Phase 7.7.
 
 Verified frontend baseline:
 
@@ -859,11 +859,17 @@ Recommended Phase 7 frontend sub-phases:
    - Keep the mentor workspace at `/mentor/profile` and route the mentor account menu entry to `/mentor/account`.
    - Calendly connection controls and indicators are admin-only for MVP; mentees and mentors should not see account-level Calendly controls.
    - Use backend Calendly connect/callback routes only. Do not call Calendly directly or expose provider tokens/secrets.
-5. Phase 7.7 - Account profile expansion and linked account management. Planned next.
-   - Add password change after current-password verification.
-   - Expand account profile metadata to include safe fields such as bio and LinkedIn URL after backend safety review.
-   - Add Google linked-account status plus safe link/unlink handling after sign-in impact analysis.
-   - Do not claim any Phase 7.7 feature exists yet.
+5. Phase 7.7A - Backend-first account profile contract foundation. Complete.
+   - The shared account profile page now consumes a stable read-only `googleLinked` flag from `GET /api/User/Profile`.
+   - Shared account profile edits remain intentionally narrow: `fullName` and `profilePicture` only.
+   - The UI still preserves admin-only Calendly connection controls and does not expose account-level Calendly actions to mentors or mentees.
+   - The mentor public-profile workflow remains owned by `/mentor/profile`; Phase 7.7A did not move `bio` or `linkedInUrl` into the shared account-profile editor because source inspection showed ownership overlap with mentor self-service profile data.
+   - No password-change UI was added.
+   - No Google link or unlink UI was added.
+6. Phase 7.7B - Password change and linked-account mutation planning. Planned next.
+   - Add password change after current-password verification and sign-in fallback review.
+   - Revisit whether any shared account metadata beyond name/avatar belongs to the shared account profile after role/ownership review.
+   - Add Google linked-account mutation only after sign-in impact analysis and backend safety rules are explicit.
    - Phase 8 launch hardening remains next after Phase 7.7.
 
 Phase 7 frontend guardrails:
@@ -942,7 +948,7 @@ Phase 3F follow-up notes:
 - Payment/join behavior exists only for mentee sessions and should not be moved into shared session components.
 - Phase 5.3 frontend payment integration is wired to backend-owned initialization and verification. The frontend must not decide amount, currency, payment reference, success, paid access, or booked session state.
 - Phase 5.5 closed payment docs/build validation, but external Paystack sandbox delivery and manual visual review of the payment modal remain production-readiness caveats.
-- Admin payment/event audit pages are implemented and read-only. Phase 7.4 mentor event type management pages are implemented with backend-only sync, active mentor assignment, and pricing metadata controls. Phase 7.5 closeout validation is complete; Phase 7.6 profile/Calendly connection work is complete and Phase 7.7 account profile expansion is next.
+- Admin payment/event audit pages are implemented and read-only. Phase 7.4 mentor event type management pages are implemented with backend-only sync, active mentor assignment, and pricing metadata controls. Phase 7.5 closeout validation is complete; Phase 7.6 profile/Calendly connection work is complete; Phase 7.7A account profile contract foundation is complete; and Phase 7.7B password change/linked-account mutation planning is next.
 - Admin overview currently uses aggregate counts only; charts/recent activity/trends are deferred.
 - Public blog detail now resolves through the dedicated published-only slug endpoint.
 
@@ -960,7 +966,7 @@ Major pending areas after the current MVP foundation:
 ## Recommended Next Frontend Iterations
 
 1. Complete Phase 7.6 profile/Calendly connection diff review and closeout.
-2. Prepare Phase 7.7 account profile expansion and linked account management planning before implementation.
+2. Start Phase 7.7B password change and linked-account mutation planning after explicit auth safety review.
 3. Start Phase 8 launch hardening without adding new product features.
 4. Add lint/test scripts or at least basic test tooling.
 5. Add pagination/search/filtering refinements to admin lists.
