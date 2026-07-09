@@ -6,7 +6,7 @@ import { finalize, forkJoin, Subscription } from 'rxjs';
 import { AuthService } from '../../../services/auth/auth.service';
 import { CalendlyService } from '../../../services/calendly/calendly.service';
 import { ToastService } from '../../../services/toast.service';
-import { ChangePasswordRequest, SetupPasswordRequest, UpdateUserProfileRequest, UserProfile, UserSecurityStatus } from '../../../services/user/user.model';
+import { ChangePasswordRequest, GoogleUnlinkRequest, SetupPasswordRequest, UpdateUserProfileRequest, UserProfile, UserSecurityStatus } from '../../../services/user/user.model';
 import { UserService } from '../../../services/user/user.service';
 import { SharedModule } from '../../../shared/shared.module';
 
@@ -37,12 +37,17 @@ export class AccountProfileComponent implements OnInit, OnDestroy {
   passwordMessage: string | null = null;
   setupPasswordError: string | null = null;
   setupPasswordMessage: string | null = null;
+  unlinkGoogleError: string | null = null;
+  unlinkGoogleMessage: string | null = null;
   settingUpPassword = false;
+  unlinkingGoogle = false;
+  showingGoogleUnlinkConfirmation = false;
   showCurrentPassword = false;
   showNewPassword = false;
   showConfirmPassword = false;
   showSetupNewPassword = false;
   showSetupConfirmPassword = false;
+  showUnlinkCurrentPassword = false;
 
   readonly profileForm = this.fb.group({
     fullName: [ '', [ Validators.required, Validators.maxLength(150) ] ],
@@ -59,6 +64,10 @@ export class AccountProfileComponent implements OnInit, OnDestroy {
     newPassword: [ '', [ Validators.required, Validators.minLength(6), Validators.maxLength(200) ] ],
     confirmPassword: [ '', [ Validators.required ] ]
   }, { validators: [ AccountProfileComponent.passwordMatchValidator ] });
+
+  readonly unlinkGoogleForm = this.fb.group({
+    currentPassword: [ '', [ Validators.required ] ]
+  });
 
   private readonly subscriptions = new Subscription();
 
@@ -107,6 +116,35 @@ export class AccountProfileComponent implements OnInit, OnDestroy {
 
   get showSetupPasswordForm(): boolean {
     return this.securityStatus?.canSetupPassword ?? false;
+  }
+
+  get showGoogleUnlinkSection(): boolean {
+    return this.securityStatus?.canUnlinkGoogle ?? false;
+  }
+
+  get canSubmitGoogleUnlink(): boolean {
+    const currentPassword = this.unlinkGoogleForm.get('currentPassword')?.value;
+    return !this.unlinkingGoogle && typeof currentPassword === 'string' && currentPassword.trim().length > 0;
+  }
+
+  get googleCardLabel(): string {
+    return this.showGoogleUnlinkSection ? 'Connected account' : 'Sign-in method';
+  }
+
+  get showGoogleCardIntro(): boolean {
+    return this.showGoogleUnlinkSection;
+  }
+
+  get googleCardIntro(): string {
+    return 'You can disconnect Google because your account also has a local password. You will still be able to sign in with email and password.';
+  }
+
+  get googleCardNotice(): string {
+    if (this.googleLinked) {
+      return this.securityStatus?.googleUnlinkBlockedReason || 'Google cannot be disconnected until this account also has a local password.';
+    }
+
+    return this.securityStatus?.googleLinkBlockedReason || 'Google connection is not available yet because the safe account-linking flow is still deferred.';
   }
 
   connectCalendly(): void {
@@ -224,6 +262,59 @@ export class AccountProfileComponent implements OnInit, OnDestroy {
       });
   }
 
+  unlinkGoogle(): void {
+    if (this.unlinkGoogleForm.invalid) {
+      this.unlinkGoogleForm.markAllAsTouched();
+      return;
+    }
+
+    const value = this.unlinkGoogleForm.getRawValue();
+    const payload: GoogleUnlinkRequest = {
+      currentPassword: value.currentPassword ?? ''
+    };
+
+    this.unlinkingGoogle = true;
+    this.unlinkGoogleError = null;
+    this.unlinkGoogleMessage = null;
+
+    this.userService.unlinkCurrentGoogle(payload)
+      .pipe(finalize(() => this.unlinkingGoogle = false))
+      .subscribe({
+        next: () => {
+          this.showUnlinkCurrentPassword = false;
+          this.unlinkGoogleForm.reset({
+            currentPassword: ''
+          });
+          this.unlinkGoogleMessage = 'Google sign-in disconnected.';
+          this.toast.show('Google sign-in disconnected.', { classname: 'bg-success text-light', delay: 3200 });
+          this.refreshAccountState();
+        },
+        error: err => {
+          this.unlinkGoogleError = this.getActionError(err, 'Unable to disconnect Google sign-in right now.');
+        }
+      });
+  }
+
+  beginGoogleUnlink(): void {
+    this.showingGoogleUnlinkConfirmation = true;
+    this.showUnlinkCurrentPassword = false;
+    this.unlinkGoogleError = null;
+    this.unlinkGoogleMessage = null;
+    this.unlinkGoogleForm.reset({
+      currentPassword: ''
+    });
+  }
+
+  cancelGoogleUnlink(): void {
+    this.showingGoogleUnlinkConfirmation = false;
+    this.showUnlinkCurrentPassword = false;
+    this.unlinkGoogleError = null;
+    this.unlinkGoogleMessage = null;
+    this.unlinkGoogleForm.reset({
+      currentPassword: ''
+    });
+  }
+
   private loadProfile(): void {
     this.loading = true;
     this.error = null;
@@ -248,6 +339,27 @@ export class AccountProfileComponent implements OnInit, OnDestroy {
     this.userService.getCurrentSecurityStatus().subscribe({
       next: securityStatus => {
         this.securityStatus = securityStatus;
+      },
+      error: () => undefined
+    });
+  }
+
+  private refreshAccountState(): void {
+    forkJoin({
+      profile: this.userService.getCurrentProfile(),
+      securityStatus: this.userService.getCurrentSecurityStatus()
+    }).subscribe({
+      next: ({ profile, securityStatus }) => {
+        this.securityStatus = securityStatus;
+        this.applyProfile(profile);
+        if (!securityStatus.canUnlinkGoogle) {
+          this.showingGoogleUnlinkConfirmation = false;
+          this.showUnlinkCurrentPassword = false;
+          this.unlinkGoogleForm.reset({
+            currentPassword: ''
+          });
+        }
+        this.unlinkGoogleError = null;
       },
       error: () => undefined
     });
@@ -311,6 +423,10 @@ export class AccountProfileComponent implements OnInit, OnDestroy {
     }
 
     this.showSetupConfirmPassword = !this.showSetupConfirmPassword;
+  }
+
+  toggleUnlinkPasswordVisibility(): void {
+    this.showUnlinkCurrentPassword = !this.showUnlinkCurrentPassword;
   }
 
   private getActionError(err: any, fallback: string): string {

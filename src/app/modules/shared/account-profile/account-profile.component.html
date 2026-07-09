@@ -236,6 +236,99 @@
                 </ng-template>
               </div>
             </section>
+
+            <section class="admin-surface admin-panel">
+              <div class="admin-panel__head">
+                <div>
+                  <span class="admin-section-label text-uppercase">{{ googleCardLabel }}</span>
+                  <h2 class="admin-panel__title">Google sign-in</h2>
+                  <p *ngIf="showGoogleCardIntro" class="admin-copy mb-0">{{ googleCardIntro }}</p>
+                </div>
+              </div>
+
+              <div class="admin-panel__body">
+                <div class="account-profile-provider-card">
+                  <div class="account-profile-provider-card__summary">
+                    <div class="account-profile-provider-card__identity">
+                      <img src="assets/images/logo/google.png" class="account-profile-provider-card__logo" alt="Google">
+                      <div class="d-flex flex-column gap-1">
+                        <span class="account-profile-provider-card__name">Google</span>
+                        <span class="account-profile-provider-card__meta">Account sign-in status</span>
+                      </div>
+                    </div>
+                    <div class="account-profile-provider-card__actions">
+                      <span class="admin-badge account-profile-google-badge" [ngClass]="googleLinked ? 'admin-badge--success' : 'admin-badge--warning'">
+                        {{ googleLinked ? 'Linked' : 'Not linked' }}
+                      </span>
+                      <button
+                        *ngIf="showGoogleUnlinkSection && !showingGoogleUnlinkConfirmation"
+                        type="button"
+                        class="admin-action-pill admin-action-pill--danger admin-action-pill--compact"
+                        (click)="beginGoogleUnlink()">
+                        <span class="admin-action-content">
+                          <fa-icon [icon]="faLink"></fa-icon>
+                          <span>Disconnect Google</span>
+                        </span>
+                      </button>
+                    </div>
+                  </div>
+
+                  <div *ngIf="unlinkGoogleError" class="alert alert-danger mb-3" role="alert">{{ unlinkGoogleError }}</div>
+                  <div *ngIf="unlinkGoogleMessage" class="alert alert-success mb-3" role="status">{{ unlinkGoogleMessage }}</div>
+
+                  <ng-container *ngIf="showGoogleUnlinkSection; else googleReadOnlyNote">
+                    <ng-container *ngIf="showingGoogleUnlinkConfirmation" [ngTemplateOutlet]="googleUnlinkConfirmBlock"></ng-container>
+                  </ng-container>
+
+                  <ng-template #googleReadOnlyNote>
+                    <div class="account-profile-security-note mb-0">
+                      {{ googleCardNotice }}
+                    </div>
+                  </ng-template>
+
+                  <ng-template #googleUnlinkConfirmBlock>
+                    <form class="row g-3" [formGroup]="unlinkGoogleForm">
+                      <div class="col-12 col-md-7">
+                        <label class="admin-search-label">
+                          <span class="admin-field-label">Current password</span>
+                          <div class="account-profile-password-field">
+                            <input
+                              class="form-control admin-search-input pe-5"
+                              [type]="showUnlinkCurrentPassword ? 'text' : 'password'"
+                              formControlName="currentPassword"
+                              autocomplete="current-password">
+                            <button
+                              type="button"
+                              class="account-profile-password-toggle"
+                              [attr.aria-label]="showUnlinkCurrentPassword ? 'Hide current password' : 'Show current password'"
+                              [attr.title]="showUnlinkCurrentPassword ? 'Hide current password' : 'Show current password'"
+                              (click)="toggleUnlinkPasswordVisibility()">
+                              <fa-icon [icon]="showUnlinkCurrentPassword ? faEyeSlash : faEye"></fa-icon>
+                            </button>
+                          </div>
+                        </label>
+                        <div class="account-profile-help">Enter your current password to confirm this change.</div>
+                      </div>
+                    </form>
+
+                    <div class="d-flex flex-wrap justify-content-end gap-2 mt-2">
+                      <button type="button" class="admin-action-pill admin-action-pill--ghost admin-action-pill--compact" [disabled]="unlinkingGoogle" (click)="cancelGoogleUnlink()">
+                        <span class="admin-action-content">
+                          <span>Cancel</span>
+                        </span>
+                      </button>
+                      <button type="button" class="admin-action-pill admin-action-pill--danger admin-action-pill--compact" [disabled]="!canSubmitGoogleUnlink" (click)="unlinkGoogle()">
+                        <span class="admin-action-content">
+                          <span *ngIf="unlinkingGoogle" class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+                          <fa-icon *ngIf="!unlinkingGoogle" [icon]="faLink"></fa-icon>
+                          <span>Confirm disconnect</span>
+                        </span>
+                      </button>
+                    </div>
+                  </ng-template>
+                </div>
+              </div>
+            </section>
           </div>
         </div>
 
@@ -260,12 +353,6 @@
                 <div class="admin-detail-list__item">
                   <span class="admin-detail-list__label">Account status</span>
                   <span class="admin-detail-list__value">{{ profile.isActive ? 'Active' : 'Inactive' }}</span>
-                </div>
-                <div class="admin-detail-list__item">
-                  <span class="admin-detail-list__label">Google sign-in</span>
-                  <span class="admin-detail-list__value">
-                    <span class="admin-badge account-profile-google-badge" [ngClass]="googleLinked ? 'admin-badge--success' : 'admin-badge--warning'">{{ googleLinked ? 'Linked' : 'Not linked' }}</span>
-                  </span>
                 </div>
                 <div class="admin-detail-list__item">
                   <span class="admin-detail-list__label">Created</span>

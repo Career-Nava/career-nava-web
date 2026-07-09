@@ -37,6 +37,10 @@ export interface SetupPasswordRequest {
   confirmPassword: string;
 }
 
+export interface GoogleUnlinkRequest {
+  currentPassword: string;
+}
+
 export interface UserSecurityStatus {
   googleLinked: boolean;
   hasLocalPassword: boolean;
