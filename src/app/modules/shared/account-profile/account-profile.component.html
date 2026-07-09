@@ -369,23 +369,39 @@
           <section *ngIf="canManageCalendly" class="admin-surface admin-panel">
             <div class="admin-panel__head">
               <div>
-                <span class="admin-section-label">Calendly connection</span>
+                <span class="admin-section-label text-uppercase">Calendly connection</span>
                 <h2 class="admin-panel__title">Scheduling account</h2>
-                <p class="admin-copy mb-0">Connect Calendly so Career Nava can sync event types and scheduling availability through the backend.</p>
+                <p class="admin-copy mb-0">Connect Calendly so Career Nava can keep scheduling sync and event-type availability aligned through the backend.</p>
               </div>
             </div>
             <div class="admin-panel__body">
-              <span class="admin-badge mb-3" [ngClass]="calendlyStatusClass">{{ calendlyStatusLabel }}</span>
-              <div class="d-flex flex-wrap gap-2">
-                <button type="button" class="admin-action-pill admin-action-pill--primary admin-action-pill--compact" (click)="connectCalendly()">
-                  <span class="admin-action-content">
-                    <fa-icon [icon]="faLink"></fa-icon>
-                    <span>{{ profile.calendlyConnected ? 'Reconnect Calendly' : 'Connect Calendly' }}</span>
-                  </span>
-                </button>
-                <button type="button" class="admin-action-icon" title="Refresh profile status" aria-label="Refresh profile status" (click)="refreshProfile()">
-                  <fa-icon [icon]="faRotateRight"></fa-icon>
-                </button>
+              <div class="account-profile-provider-card">
+                <div class="account-profile-provider-card__summary">
+                  <div class="account-profile-provider-card__identity">
+                    <img src="assets/images/logo/calendly.png" class="account-profile-provider-card__logo" alt="Calendly">
+                    <div class="d-flex flex-column gap-1">
+                      <span class="account-profile-provider-card__name">Calendly</span>
+                      <span class="account-profile-provider-card__meta">Scheduling sync status</span>
+                    </div>
+                  </div>
+                  <span class="admin-badge" [ngClass]="calendlyStatusClass">{{ calendlyStatusBadgeLabel }}</span>
+                </div>
+
+                <div class="account-profile-provider-card__action-row">
+                  <button type="button" class="admin-action-pill admin-action-pill--primary admin-action-pill--compact" (click)="connectCalendly()">
+                    <span class="admin-action-content">
+                      <fa-icon [icon]="faLink"></fa-icon>
+                      <span>{{ profile.calendlyConnected ? 'Reconnect Calendly' : 'Connect Calendly' }}</span>
+                    </span>
+                  </button>
+                  <button type="button" class="admin-action-icon" title="Refresh profile status" aria-label="Refresh profile status" (click)="refreshProfile()">
+                    <fa-icon [icon]="faRotateRight"></fa-icon>
+                  </button>
+                </div>
+
+                <div class="account-profile-provider-card__note">
+                  <span class="account-profile-provider-card__meta">{{ calendlyStatusLabel }}</span>
+                </div>
               </div>
             </div>
           </section>

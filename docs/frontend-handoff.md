@@ -815,7 +815,7 @@ Recommended frontend Phase 6 scope:
 
 ### Phase 7 - Admin Payment and Event Type Operations
 
-Current status: Phase 7.2 admin payment/payment-event read-only UI is complete. Phase 7.3 mentor event type admin API/model alignment is complete in `career-nava-api`. Phase 7.4 admin mentor event type UI is complete in `career-nava-web`. Phase 7.5 tests/docs closeout is complete. Phase 7.6 authenticated user profile and admin-only Calendly connection is complete. Phase 7.7A backend-first account profile contract foundation is complete. Phase 7.7B password change safety foundation is complete. Phase 7.7C account security status contract and provider identifier hardening is complete. Phase 7.7D Google-only local password setup foundation is complete. Phase 7.7E Google provider uniqueness and unlink safety groundwork is complete. Phase 7.7F shared account-profile Google unlink UI is complete. Explicit Google link UI remains deferred.
+Current status: Phase 7.2 admin payment/payment-event read-only UI is complete. Phase 7.3 mentor event type admin API/model alignment is complete in `career-nava-api`. Phase 7.4 admin mentor event type UI is complete in `career-nava-web`. Phase 7.5 tests/docs closeout is complete. Phase 7.6 authenticated user profile and admin-only Calendly connection is complete. Phase 7.7A backend-first account profile contract foundation is complete. Phase 7.7B password change safety foundation is complete. Phase 7.7C account security status contract and provider identifier hardening is complete. Phase 7.7D Google-only local password setup foundation is complete. Phase 7.7E Google provider uniqueness and unlink safety groundwork is complete. Phase 7.7F shared account-profile Google unlink UI is complete. A small Phase 7.7G admin-only Calendly card visual refinement is complete. Explicit Google link UI remains deferred.
 
 Verified frontend baseline:
 
@@ -894,7 +894,11 @@ Recommended Phase 7 frontend sub-phases:
    - The Google sign-in management flow now lives in its own standalone account/sign-in card, separate from the password setup/change card, with backend-driven notes for dual-linked, Google-only, and local-only account states.
    - Google-only users and local-only users do not see unlink UI. Backend errors remain the source of truth.
    - No Google link UI, password reset UI, or forgot-password UI was added.
-11. Later account-security follow-up. Planned next.
+11. Phase 7.7G - Calendly connection card visual refinement. Complete.
+   - The admin-only Calendly connection card now uses a looser two-row provider layout aligned with the Google sign-in card, with the Calendly logo, a shorter connection-status pill, and a separate action row for connect/reconnect plus refresh.
+   - Existing connect/reconnect and refresh behavior was preserved exactly; no Calendly backend contracts, sync rules, or provider-owned field handling changed.
+   - Mentors and mentees still do not see account-level Calendly controls.
+12. Later account-security follow-up. Planned next.
    - Explicit Google link UI remains deferred until a dedicated current-user link flow exists and backend `google_id` uniqueness has already been enforced.
    - Phase 8 launch hardening remains next after the remaining Phase 7.7 account-security decisions.
 
@@ -974,7 +978,7 @@ Phase 3F follow-up notes:
 - Payment/join behavior exists only for mentee sessions and should not be moved into shared session components.
 - Phase 5.3 frontend payment integration is wired to backend-owned initialization and verification. The frontend must not decide amount, currency, payment reference, success, paid access, or booked session state.
 - Phase 5.5 closed payment docs/build validation, but external Paystack sandbox delivery and manual visual review of the payment modal remain production-readiness caveats.
-- Admin payment/event audit pages are implemented and read-only. Phase 7.4 mentor event type management pages are implemented with backend-only sync, active mentor assignment, and pricing metadata controls. Phase 7.5 closeout validation is complete; Phase 7.6 profile/Calendly connection work is complete; Phase 7.7A account profile contract foundation is complete; Phase 7.7B password change safety foundation is complete; Phase 7.7C account-security status hardening is complete; Phase 7.7D Google-only local password setup is complete; and Phase 7.7F shared Google unlink UI is complete on top of the Phase 7.7E backend groundwork. Explicit Google link mutation remains deferred.
+- Admin payment/event audit pages are implemented and read-only. Phase 7.4 mentor event type management pages are implemented with backend-only sync, active mentor assignment, and pricing metadata controls. Phase 7.5 closeout validation is complete; Phase 7.6 profile/Calendly connection work is complete; Phase 7.7A account profile contract foundation is complete; Phase 7.7B password change safety foundation is complete; Phase 7.7C account-security status hardening is complete; Phase 7.7D Google-only local password setup is complete; Phase 7.7F shared Google unlink UI is complete on top of the Phase 7.7E backend groundwork; and Phase 7.7G visually aligns the admin-only Calendly card without changing its behavior. Explicit Google link mutation remains deferred.
 - Admin overview currently uses aggregate counts only; charts/recent activity/trends are deferred.
 - Public blog detail now resolves through the dedicated published-only slug endpoint.
 

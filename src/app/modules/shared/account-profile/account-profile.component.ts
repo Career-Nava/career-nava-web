@@ -105,6 +105,11 @@ export class AccountProfileComponent implements OnInit, OnDestroy {
     return this.profile?.calendlyConnected ? 'admin-badge--success' : 'admin-badge--warning';
   }
 
+  get calendlyStatusBadgeLabel(): string {
+    if (!this.canManageCalendly) return 'Unavailable';
+    return this.profile?.calendlyConnected ? 'Connected' : 'Unconnected';
+  }
+
   get googleLinked(): boolean {
     if (this.securityStatus) return this.securityStatus.googleLinked;
     return this.profile?.googleLinked ?? false;
