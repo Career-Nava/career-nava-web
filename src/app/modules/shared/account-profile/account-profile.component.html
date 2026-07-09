@@ -82,6 +82,9 @@
               <div class="admin-panel__body">
                 <div *ngIf="passwordError" class="alert alert-danger mb-3" role="alert">{{ passwordError }}</div>
                 <div *ngIf="passwordMessage" class="alert alert-success mb-3" role="status">{{ passwordMessage }}</div>
+                <div *ngIf="securityStatus && !securityStatus.canChangePassword && securityStatus.passwordChangeBlockedReason" class="account-profile-security-note">
+                  {{ securityStatus.passwordChangeBlockedReason }}
+                </div>
 
                 <form class="row g-3" [formGroup]="passwordForm">
                   <div class="col-12">
@@ -191,7 +194,7 @@
                 <div class="admin-detail-list__item">
                   <span class="admin-detail-list__label">Google sign-in</span>
                   <span class="admin-detail-list__value">
-                    <span class="admin-badge account-profile-google-badge" [ngClass]="profile.googleLinked ? 'admin-badge--success' : 'admin-badge--warning'">{{ profile.googleLinked ? 'Linked' : 'Not linked' }}</span>
+                    <span class="admin-badge account-profile-google-badge" [ngClass]="googleLinked ? 'admin-badge--success' : 'admin-badge--warning'">{{ googleLinked ? 'Linked' : 'Not linked' }}</span>
                   </span>
                 </div>
                 <div class="admin-detail-list__item">

@@ -5,7 +5,6 @@ export interface UserModel {
   role: string;
   isActive: boolean;
   calendlyConnected: boolean;
-  googleId?: string;
   profilePicture?: string;
 }
 
@@ -31,4 +30,17 @@ export interface ChangePasswordRequest {
   currentPassword: string;
   newPassword: string;
   confirmPassword: string;
+}
+
+export interface UserSecurityStatus {
+  googleLinked: boolean;
+  hasLocalPassword: boolean;
+  canChangePassword: boolean;
+  canSetupPassword: boolean;
+  canLinkGoogle: boolean;
+  canUnlinkGoogle: boolean;
+  passwordChangeBlockedReason?: string | null;
+  passwordSetupBlockedReason?: string | null;
+  googleLinkBlockedReason?: string | null;
+  googleUnlinkBlockedReason?: string | null;
 }

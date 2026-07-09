@@ -2,11 +2,11 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, ValidationErrors, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { faCalendarCheck, faEye, faEyeSlash, faFloppyDisk, faKey, faLink, faRotateRight } from '@fortawesome/free-solid-svg-icons';
-import { finalize, Subscription } from 'rxjs';
+import { finalize, forkJoin, Subscription } from 'rxjs';
 import { AuthService } from '../../../services/auth/auth.service';
 import { CalendlyService } from '../../../services/calendly/calendly.service';
 import { ToastService } from '../../../services/toast.service';
-import { ChangePasswordRequest, UpdateUserProfileRequest, UserProfile } from '../../../services/user/user.model';
+import { ChangePasswordRequest, UpdateUserProfileRequest, UserProfile, UserSecurityStatus } from '../../../services/user/user.model';
 import { UserService } from '../../../services/user/user.service';
 import { SharedModule } from '../../../shared/shared.module';
 
@@ -27,6 +27,7 @@ export class AccountProfileComponent implements OnInit, OnDestroy {
   protected readonly faRotateRight = faRotateRight;
 
   profile: UserProfile | null = null;
+  securityStatus: UserSecurityStatus | null = null;
   loading = true;
   saving = false;
   changingPassword = false;
@@ -83,6 +84,11 @@ export class AccountProfileComponent implements OnInit, OnDestroy {
   get calendlyStatusClass(): string {
     if (!this.canManageCalendly) return 'admin-badge--muted';
     return this.profile?.calendlyConnected ? 'admin-badge--success' : 'admin-badge--warning';
+  }
+
+  get googleLinked(): boolean {
+    if (this.securityStatus) return this.securityStatus.googleLinked;
+    return this.profile?.googleLinked ?? false;
   }
 
   connectCalendly(): void {
@@ -169,10 +175,16 @@ export class AccountProfileComponent implements OnInit, OnDestroy {
     this.loading = true;
     this.error = null;
 
-    this.userService.getCurrentProfile()
+    forkJoin({
+      profile: this.userService.getCurrentProfile(),
+      securityStatus: this.userService.getCurrentSecurityStatus()
+    })
       .pipe(finalize(() => this.loading = false))
       .subscribe({
-        next: profile => this.applyProfile(profile),
+        next: ({ profile, securityStatus }) => {
+          this.securityStatus = securityStatus;
+          this.applyProfile(profile);
+        },
         error: err => {
           this.error = this.getActionError(err, 'Unable to load your profile right now.');
         }

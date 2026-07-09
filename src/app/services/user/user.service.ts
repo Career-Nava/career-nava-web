@@ -5,7 +5,7 @@ import { ApiResponse } from "../api-response";
 import { ConfigurationService } from "../configuration.service";
 import { LocalStorageCache } from "../local-storage-cache";
 import { RestService } from "../rest.service";
-import { ChangePasswordRequest, UpdateUserProfileRequest, UserModel, UserProfile } from "./user.model";
+import { ChangePasswordRequest, UpdateUserProfileRequest, UserModel, UserProfile, UserSecurityStatus } from "./user.model";
 
 @Injectable({ providedIn: 'root' })
 export class UserService extends RestService {
@@ -59,6 +59,15 @@ export class UserService extends RestService {
   getCurrentProfile(): Observable<UserProfile> {
     return this.http
       .get<ApiResponse<UserProfile>>(`${ this.baseUrl }/Profile`)
+      .pipe(
+        map(res => res.data),
+        catchError(err => throwError(() => err))
+      );
+  }
+
+  getCurrentSecurityStatus(): Observable<UserSecurityStatus> {
+    return this.http
+      .get<ApiResponse<UserSecurityStatus>>(`${ this.baseUrl }/Security`)
       .pipe(
         map(res => res.data),
         catchError(err => throwError(() => err))

@@ -815,7 +815,7 @@ Recommended frontend Phase 6 scope:
 
 ### Phase 7 - Admin Payment and Event Type Operations
 
-Current status: Phase 7.2 admin payment/payment-event read-only UI is complete. Phase 7.3 mentor event type admin API/model alignment is complete in `career-nava-api`. Phase 7.4 admin mentor event type UI is complete in `career-nava-web`. Phase 7.5 tests/docs closeout is complete. Phase 7.6 authenticated user profile and admin-only Calendly connection is complete. Phase 7.7A backend-first account profile contract foundation is complete. Phase 7.7B password change safety foundation is complete. Phase 7.7C should handle linked-account mutation or dedicated password-setup rules before Phase 8 launch hardening.
+Current status: Phase 7.2 admin payment/payment-event read-only UI is complete. Phase 7.3 mentor event type admin API/model alignment is complete in `career-nava-api`. Phase 7.4 admin mentor event type UI is complete in `career-nava-web`. Phase 7.5 tests/docs closeout is complete. Phase 7.6 authenticated user profile and admin-only Calendly connection is complete. Phase 7.7A backend-first account profile contract foundation is complete. Phase 7.7B password change safety foundation is complete. Phase 7.7C account security status contract and provider identifier hardening is complete. A later account-security phase should handle linked-account mutation or dedicated password-setup rules before Phase 8 launch hardening.
 
 Verified frontend baseline:
 
@@ -873,9 +873,15 @@ Recommended Phase 7 frontend sub-phases:
    - No Google link or unlink controls were added.
    - No password reset or forgot-password UI was added.
    - The mentor public-profile workflow remains separate under `/mentor/profile`.
-8. Phase 7.7C - Linked-account mutation and password-setup follow-up. Planned next.
+8. Phase 7.7C - Account security status contract and provider identifier hardening. Complete.
+   - The frontend now consumes `GET /api/User/Security` for backend-derived account-security state instead of inferring security eligibility from raw provider identifiers.
+   - Normal frontend-facing auth/current-user contracts no longer include raw `googleId`; the web app now relies on safe booleans such as `googleLinked` and the security-status eligibility flags.
+   - The shared account profile keeps Google sign-in read-only and does not render Google link/unlink or password-setup actions.
+   - The shared account profile shows a compact backend-derived note when password change is blocked because no local password exists yet.
+   - Admin-only Calendly controls remain admin-only, and `/mentor/profile` remains untouched.
+9. Later account-security follow-up. Planned next.
    - Define whether Google-first accounts may create a local password through a dedicated verified flow.
-   - Define any safe Google link/unlink behavior only after sign-in fallback rules are explicit.
+   - Define any safe Google link/unlink behavior only after sign-in fallback rules are explicit and backend-owned.
    - Phase 8 launch hardening remains next after the remaining Phase 7.7 account-security decisions.
 
 Phase 7 frontend guardrails:
