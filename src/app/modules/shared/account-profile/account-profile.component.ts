@@ -1,12 +1,12 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, ValidationErrors, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { faCalendarCheck, faFloppyDisk, faLink, faRotateRight } from '@fortawesome/free-solid-svg-icons';
+import { faCalendarCheck, faEye, faEyeSlash, faFloppyDisk, faKey, faLink, faRotateRight } from '@fortawesome/free-solid-svg-icons';
 import { finalize, Subscription } from 'rxjs';
 import { AuthService } from '../../../services/auth/auth.service';
 import { CalendlyService } from '../../../services/calendly/calendly.service';
 import { ToastService } from '../../../services/toast.service';
-import { UpdateUserProfileRequest, UserProfile } from '../../../services/user/user.model';
+import { ChangePasswordRequest, UpdateUserProfileRequest, UserProfile } from '../../../services/user/user.model';
 import { UserService } from '../../../services/user/user.service';
 import { SharedModule } from '../../../shared/shared.module';
 
@@ -19,20 +19,35 @@ import { SharedModule } from '../../../shared/shared.module';
 })
 export class AccountProfileComponent implements OnInit, OnDestroy {
   protected readonly faCalendarCheck = faCalendarCheck;
+  protected readonly faEye = faEye;
+  protected readonly faEyeSlash = faEyeSlash;
   protected readonly faFloppyDisk = faFloppyDisk;
+  protected readonly faKey = faKey;
   protected readonly faLink = faLink;
   protected readonly faRotateRight = faRotateRight;
 
   profile: UserProfile | null = null;
   loading = true;
   saving = false;
+  changingPassword = false;
   error: string | null = null;
   message: string | null = null;
+  passwordError: string | null = null;
+  passwordMessage: string | null = null;
+  showCurrentPassword = false;
+  showNewPassword = false;
+  showConfirmPassword = false;
 
   readonly profileForm = this.fb.group({
     fullName: [ '', [ Validators.required, Validators.maxLength(150) ] ],
     profilePicture: [ '', [ Validators.maxLength(2048) ] ]
   });
+
+  readonly passwordForm = this.fb.group({
+    currentPassword: [ '', [ Validators.required ] ],
+    newPassword: [ '', [ Validators.required, Validators.minLength(6), Validators.maxLength(200) ] ],
+    confirmPassword: [ '', [ Validators.required ] ]
+  }, { validators: [ AccountProfileComponent.passwordMatchValidator ] });
 
   private readonly subscriptions = new Subscription();
 
@@ -114,6 +129,42 @@ export class AccountProfileComponent implements OnInit, OnDestroy {
       });
   }
 
+  changePassword(): void {
+    if (this.passwordForm.invalid) {
+      this.passwordForm.markAllAsTouched();
+      return;
+    }
+
+    const value = this.passwordForm.getRawValue();
+    const payload: ChangePasswordRequest = {
+      currentPassword: value.currentPassword ?? '',
+      newPassword: value.newPassword ?? '',
+      confirmPassword: value.confirmPassword ?? ''
+    };
+
+    this.changingPassword = true;
+    this.passwordError = null;
+    this.passwordMessage = null;
+
+    this.userService.changeCurrentPassword(payload)
+      .pipe(finalize(() => this.changingPassword = false))
+      .subscribe({
+        next: () => {
+          this.resetPasswordVisibility();
+          this.passwordForm.reset({
+            currentPassword: '',
+            newPassword: '',
+            confirmPassword: ''
+          });
+          this.passwordMessage = 'Password changed.';
+          this.toast.show('Password changed.', { classname: 'bg-success text-light', delay: 3200 });
+        },
+        error: err => {
+          this.passwordError = this.getActionError(err, 'Unable to change your password right now.');
+        }
+      });
+  }
+
   private loadProfile(): void {
     this.loading = true;
     this.error = null;
@@ -165,9 +216,37 @@ export class AccountProfileComponent implements OnInit, OnDestroy {
     return value && value.trim().length ? value.trim() : null;
   }
 
+  togglePasswordVisibility(field: 'current' | 'new' | 'confirm'): void {
+    if (field === 'current') {
+      this.showCurrentPassword = !this.showCurrentPassword;
+      return;
+    }
+
+    if (field === 'new') {
+      this.showNewPassword = !this.showNewPassword;
+      return;
+    }
+
+    this.showConfirmPassword = !this.showConfirmPassword;
+  }
+
   private getActionError(err: any, fallback: string): string {
     if (err?.status === 401) return 'Please sign in again to manage your profile.';
     if (err?.status === 403) return 'You do not have permission to manage this profile.';
     return err?.error?.message || err?.message || fallback;
+  }
+
+  private resetPasswordVisibility(): void {
+    this.showCurrentPassword = false;
+    this.showNewPassword = false;
+    this.showConfirmPassword = false;
+  }
+
+  private static passwordMatchValidator(form: AbstractControl): ValidationErrors | null {
+    const newPassword = form.get('newPassword')?.value;
+    const confirmPassword = form.get('confirmPassword')?.value;
+
+    if (!newPassword || !confirmPassword) return null;
+    return newPassword === confirmPassword ? null : { passwordMismatch: true };
   }
 }

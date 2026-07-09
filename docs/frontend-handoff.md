@@ -815,7 +815,7 @@ Recommended frontend Phase 6 scope:
 
 ### Phase 7 - Admin Payment and Event Type Operations
 
-Current status: Phase 7.2 admin payment/payment-event read-only UI is complete. Phase 7.3 mentor event type admin API/model alignment is complete in `career-nava-api`. Phase 7.4 admin mentor event type UI is complete in `career-nava-web`. Phase 7.5 tests/docs closeout is complete. Phase 7.6 authenticated user profile and admin-only Calendly connection is complete. Phase 7.7A backend-first account profile contract foundation is complete. Phase 7.7B remains next for password change and/or linked-account mutation planning after auth safety review. Phase 8 launch hardening follows Phase 7.7.
+Current status: Phase 7.2 admin payment/payment-event read-only UI is complete. Phase 7.3 mentor event type admin API/model alignment is complete in `career-nava-api`. Phase 7.4 admin mentor event type UI is complete in `career-nava-web`. Phase 7.5 tests/docs closeout is complete. Phase 7.6 authenticated user profile and admin-only Calendly connection is complete. Phase 7.7A backend-first account profile contract foundation is complete. Phase 7.7B password change safety foundation is complete. Phase 7.7C should handle linked-account mutation or dedicated password-setup rules before Phase 8 launch hardening.
 
 Verified frontend baseline:
 
@@ -866,11 +866,17 @@ Recommended Phase 7 frontend sub-phases:
    - The mentor public-profile workflow remains owned by `/mentor/profile`; Phase 7.7A did not move `bio` or `linkedInUrl` into the shared account-profile editor because source inspection showed ownership overlap with mentor self-service profile data.
    - No password-change UI was added.
    - No Google link or unlink UI was added.
-6. Phase 7.7B - Password change and linked-account mutation planning. Planned next.
-   - Add password change after current-password verification and sign-in fallback review.
-   - Revisit whether any shared account metadata beyond name/avatar belongs to the shared account profile after role/ownership review.
-   - Add Google linked-account mutation only after sign-in impact analysis and backend safety rules are explicit.
-   - Phase 8 launch hardening remains next after Phase 7.7.
+7. Phase 7.7B - Password change safety foundation. Complete.
+   - The shared account profile now includes a minimal Account security section for admin, mentor, and mentee current-user account pages.
+   - The UI posts to `POST /api/User/ChangePassword` with `currentPassword`, `newPassword`, and `confirmPassword`.
+   - The frontend only provides field validation and renders backend success/error states; it does not decide password-change eligibility.
+   - No Google link or unlink controls were added.
+   - No password reset or forgot-password UI was added.
+   - The mentor public-profile workflow remains separate under `/mentor/profile`.
+8. Phase 7.7C - Linked-account mutation and password-setup follow-up. Planned next.
+   - Define whether Google-first accounts may create a local password through a dedicated verified flow.
+   - Define any safe Google link/unlink behavior only after sign-in fallback rules are explicit.
+   - Phase 8 launch hardening remains next after the remaining Phase 7.7 account-security decisions.
 
 Phase 7 frontend guardrails:
 

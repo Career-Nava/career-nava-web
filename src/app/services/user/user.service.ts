@@ -5,7 +5,7 @@ import { ApiResponse } from "../api-response";
 import { ConfigurationService } from "../configuration.service";
 import { LocalStorageCache } from "../local-storage-cache";
 import { RestService } from "../rest.service";
-import { UpdateUserProfileRequest, UserModel, UserProfile } from "./user.model";
+import { ChangePasswordRequest, UpdateUserProfileRequest, UserModel, UserProfile } from "./user.model";
 
 @Injectable({ providedIn: 'root' })
 export class UserService extends RestService {
@@ -70,6 +70,15 @@ export class UserService extends RestService {
       .patch<ApiResponse<UserProfile>>(`${ this.baseUrl }/Profile`, payload)
       .pipe(
         map(res => res.data),
+        catchError(err => throwError(() => err))
+      );
+  }
+
+  changeCurrentPassword(payload: ChangePasswordRequest): Observable<void> {
+    return this.http
+      .post<ApiResponse<null>>(`${ this.baseUrl }/ChangePassword`, payload)
+      .pipe(
+        map(() => void 0),
         catchError(err => throwError(() => err))
       );
   }

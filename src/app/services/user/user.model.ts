@@ -26,3 +26,9 @@ export interface UpdateUserProfileRequest {
   fullName: string;
   profilePicture?: string | null;
 }
+
+export interface ChangePasswordRequest {
+  currentPassword: string;
+  newPassword: string;
+  confirmPassword: string;
+}

@@ -32,42 +32,138 @@
     <ng-container *ngIf="!loading && profile as profile">
       <div class="row g-4 align-items-start">
         <div class="col-12 col-xl-8">
-          <section class="admin-surface admin-panel">
-            <div class="admin-panel__head">
-              <div>
-                <span class="admin-section-label">Profile details</span>
-                <h2 class="admin-panel__title">Editable account fields</h2>
-                <p class="admin-copy mb-0">Name and avatar are Career Nava-owned profile fields. Email and role are read-only.</p>
-              </div>
-            </div>
-
-            <div class="admin-panel__body">
-              <form class="row g-3" [formGroup]="profileForm">
-                <div class="col-12 col-md-6">
-                  <label class="admin-search-label">
-                    <span class="admin-field-label">Full name</span>
-                    <input class="form-control admin-search-input" formControlName="fullName" maxlength="150">
-                  </label>
+          <div class="d-flex flex-column gap-4">
+            <section class="admin-surface admin-panel">
+              <div class="admin-panel__head">
+                <div>
+                  <span class="admin-section-label">Profile details</span>
+                  <h2 class="admin-panel__title">Editable account fields</h2>
+                  <p class="admin-copy mb-0">Name and avatar are Career Nava-owned profile fields. Email and role are read-only.</p>
                 </div>
-                <div class="col-12 col-md-6">
-                  <label class="admin-search-label">
-                    <span class="admin-field-label">Profile picture URL</span>
-                    <input class="form-control admin-search-input" formControlName="profilePicture" maxlength="2048" placeholder="Optional public image URL">
-                  </label>
-                </div>
-              </form>
-
-              <div class="d-flex flex-wrap justify-content-end gap-2 pt-3 mt-3 border-top">
-                <button type="button" class="admin-action-pill admin-action-pill--primary admin-action-pill--compact" [disabled]="saving" (click)="saveProfile()">
-                  <span class="admin-action-content">
-                    <span *ngIf="saving" class="spinner-border spinner-border-sm" aria-hidden="true"></span>
-                    <fa-icon *ngIf="!saving" [icon]="faFloppyDisk"></fa-icon>
-                    <span>Save profile</span>
-                  </span>
-                </button>
               </div>
-            </div>
-          </section>
+
+              <div class="admin-panel__body">
+                <form class="row g-3" [formGroup]="profileForm">
+                  <div class="col-12 col-md-6">
+                    <label class="admin-search-label">
+                      <span class="admin-field-label">Full name</span>
+                      <input class="form-control admin-search-input" formControlName="fullName" maxlength="150">
+                    </label>
+                  </div>
+                  <div class="col-12 col-md-6">
+                    <label class="admin-search-label">
+                      <span class="admin-field-label">Profile picture URL</span>
+                      <input class="form-control admin-search-input" formControlName="profilePicture" maxlength="2048" placeholder="Optional public image URL">
+                    </label>
+                  </div>
+                </form>
+
+                <div class="d-flex flex-wrap justify-content-end gap-2 pt-3 mt-3 border-top">
+                  <button type="button" class="admin-action-pill admin-action-pill--primary admin-action-pill--compact" [disabled]="saving" (click)="saveProfile()">
+                    <span class="admin-action-content">
+                      <span *ngIf="saving" class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+                      <fa-icon *ngIf="!saving" [icon]="faFloppyDisk"></fa-icon>
+                      <span>Save profile</span>
+                    </span>
+                  </button>
+                </div>
+              </div>
+            </section>
+
+            <section class="admin-surface admin-panel">
+              <div class="admin-panel__head">
+                <div>
+                  <span class="admin-section-label">Account security</span>
+                  <h2 class="admin-panel__title">Change password</h2>
+                  <p class="admin-copy mb-0">Password changes are applied to your current signed-in account through backend verification.</p>
+                </div>
+              </div>
+
+              <div class="admin-panel__body">
+                <div *ngIf="passwordError" class="alert alert-danger mb-3" role="alert">{{ passwordError }}</div>
+                <div *ngIf="passwordMessage" class="alert alert-success mb-3" role="status">{{ passwordMessage }}</div>
+
+                <form class="row g-3" [formGroup]="passwordForm">
+                  <div class="col-12">
+                    <label class="admin-search-label">
+                      <span class="admin-field-label">Current password</span>
+                      <div class="account-profile-password-field">
+                        <input
+                          class="form-control admin-search-input pe-5"
+                          [type]="showCurrentPassword ? 'text' : 'password'"
+                          formControlName="currentPassword"
+                          autocomplete="current-password">
+                        <button
+                          type="button"
+                          class="account-profile-password-toggle"
+                          [attr.aria-label]="showCurrentPassword ? 'Hide current password' : 'Show current password'"
+                          [attr.title]="showCurrentPassword ? 'Hide current password' : 'Show current password'"
+                          (click)="togglePasswordVisibility('current')">
+                          <fa-icon [icon]="showCurrentPassword ? faEyeSlash : faEye"></fa-icon>
+                        </button>
+                      </div>
+                    </label>
+                  </div>
+                  <div class="col-12 col-md-6">
+                    <label class="admin-search-label">
+                      <span class="admin-field-label">New password</span>
+                      <div class="account-profile-password-field">
+                        <input
+                          class="form-control admin-search-input pe-5"
+                          [type]="showNewPassword ? 'text' : 'password'"
+                          formControlName="newPassword"
+                          autocomplete="new-password">
+                        <button
+                          type="button"
+                          class="account-profile-password-toggle"
+                          [attr.aria-label]="showNewPassword ? 'Hide new password' : 'Show new password'"
+                          [attr.title]="showNewPassword ? 'Hide new password' : 'Show new password'"
+                          (click)="togglePasswordVisibility('new')">
+                          <fa-icon [icon]="showNewPassword ? faEyeSlash : faEye"></fa-icon>
+                        </button>
+                      </div>
+                    </label>
+                    <div *ngIf="passwordForm.get('newPassword')?.touched && passwordForm.get('newPassword')?.errors?.['minlength']" class="account-profile-help text-danger">
+                      New password must be at least 6 characters.
+                    </div>
+                  </div>
+                  <div class="col-12 col-md-6">
+                    <label class="admin-search-label">
+                      <span class="admin-field-label">Confirm new password</span>
+                      <div class="account-profile-password-field">
+                        <input
+                          class="form-control admin-search-input pe-5"
+                          [type]="showConfirmPassword ? 'text' : 'password'"
+                          formControlName="confirmPassword"
+                          autocomplete="new-password">
+                        <button
+                          type="button"
+                          class="account-profile-password-toggle"
+                          [attr.aria-label]="showConfirmPassword ? 'Hide confirm password' : 'Show confirm password'"
+                          [attr.title]="showConfirmPassword ? 'Hide confirm password' : 'Show confirm password'"
+                          (click)="togglePasswordVisibility('confirm')">
+                          <fa-icon [icon]="showConfirmPassword ? faEyeSlash : faEye"></fa-icon>
+                        </button>
+                      </div>
+                    </label>
+                    <div *ngIf="passwordForm.touched && passwordForm.errors?.['passwordMismatch']" class="account-profile-help text-danger">
+                      New password and confirm password must match.
+                    </div>
+                  </div>
+                </form>
+
+                <div class="d-flex flex-wrap justify-content-end gap-2 pt-3 mt-3 border-top">
+                  <button type="button" class="admin-action-pill admin-action-pill--primary admin-action-pill--compact" [disabled]="changingPassword" (click)="changePassword()">
+                    <span class="admin-action-content">
+                      <span *ngIf="changingPassword" class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+                      <fa-icon *ngIf="!changingPassword" [icon]="faKey"></fa-icon>
+                      <span>Change password</span>
+                    </span>
+                  </button>
+                </div>
+              </div>
+            </section>
+          </div>
         </div>
 
         <aside class="col-12 col-xl-4 d-flex flex-column gap-4">
