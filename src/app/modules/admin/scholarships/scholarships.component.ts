@@ -6,6 +6,7 @@ import { finalize, of, switchMap } from 'rxjs';
 import { AdminScholarship, AdminScholarshipUpsert } from '../../../services/scholarship/shcolarship.model';
 import { ScholarshipService } from '../../../services/scholarship/scholarship.service';
 import { ToastService } from '../../../services/toast.service';
+import { getUserErrorMessage } from '../../../services/user-error-message';
 import { SharedModule } from '../../../shared/shared.module';
 
 type ScholarshipStatusFilter = 'all' | 'draft' | 'published' | 'closed' | 'archived' | 'unknown';
@@ -33,8 +34,6 @@ export class AdminScholarshipsComponent implements OnInit {
   loading = true;
   saving = false;
   error: string | null = null;
-  actionError: string | null = null;
-  actionMessage: string | null = null;
   mode: ScholarshipMode = 'none';
 
   searchQuery = '';
@@ -116,8 +115,6 @@ export class AdminScholarshipsComponent implements OnInit {
   openCreate(): void {
     this.mode = 'create';
     this.selectedScholarship = null;
-    this.actionError = null;
-    this.actionMessage = null;
     this.scholarshipForm.reset({
       mentorProfileId: null,
       datePosted: this.today(),
@@ -132,23 +129,21 @@ export class AdminScholarshipsComponent implements OnInit {
   viewScholarship(scholarship: AdminScholarship): void {
     if (!scholarship.scholarshipId) return;
     this.mode = 'detail';
-    this.actionError = null;
     this.scholarshipService.getAdminScholarshipById(scholarship.scholarshipId).subscribe({
       next: detail => this.selectedScholarship = detail,
-      error: err => this.actionError = this.getActionError(err, 'Unable to load scholarship detail.')
+      error: err => this.toast.error(getUserErrorMessage(err, 'Unable to load scholarship detail.'), { title: 'Scholarship unavailable' })
     });
   }
 
   editScholarship(scholarship: AdminScholarship): void {
     if (!scholarship.scholarshipId) return;
     this.mode = 'edit';
-    this.actionError = null;
     this.scholarshipService.getAdminScholarshipById(scholarship.scholarshipId).subscribe({
       next: detail => {
         this.selectedScholarship = detail;
         this.patchForm(detail);
       },
-      error: err => this.actionError = this.getActionError(err, 'Unable to load scholarship detail.')
+      error: err => this.toast.error(getUserErrorMessage(err, 'Unable to load scholarship detail.'), { title: 'Scholarship unavailable' })
     });
   }
 
@@ -171,7 +166,7 @@ export class AdminScholarshipsComponent implements OnInit {
       )
       .subscribe({
       next: scholarship => this.afterMutation(this.mode === 'edit' ? 'Scholarship updated.' : 'Scholarship created.', scholarship),
-      error: err => this.actionError = this.getActionError(err, 'Unable to save scholarship.')
+      error: err => this.toast.error(getUserErrorMessage(err, 'Unable to save scholarship.'), { title: 'Scholarship save failed' })
     });
   }
 
@@ -186,8 +181,6 @@ export class AdminScholarshipsComponent implements OnInit {
   closePanel(): void {
     this.mode = 'none';
     this.selectedScholarship = null;
-    this.actionError = null;
-    this.actionMessage = null;
   }
 
   getStatusBadgeClass(scholarship: AdminScholarship): string {
@@ -211,10 +204,7 @@ export class AdminScholarshipsComponent implements OnInit {
   }
 
   showPreviewUnavailable(): void {
-    this.toast.show('Publish this scholarship before public preview.', {
-      classname: 'bg-warning text-dark',
-      delay: 3500
-    });
+    this.toast.warning('Publish this scholarship before public preview.', { title: 'Preview unavailable' });
   }
 
   getEmptyTitle(): string {
@@ -258,11 +248,9 @@ export class AdminScholarshipsComponent implements OnInit {
   }
 
   private afterMutation(message: string, scholarship: AdminScholarship): void {
-    this.actionError = null;
-    this.actionMessage = message;
     this.selectedScholarship = scholarship;
     this.mode = 'none';
-    this.toast.show(message, { classname: 'bg-success text-light', delay: 3500 });
+    this.toast.success(message, { title: 'Scholarship saved' });
     this.loadScholarships();
   }
 
@@ -292,7 +280,4 @@ export class AdminScholarshipsComponent implements OnInit {
     return 'Unable to load scholarships right now. Please try again later.';
   }
 
-  private getActionError(err: any, fallback: string): string {
-    return err?.error?.message || err?.message || fallback;
-  }
 }

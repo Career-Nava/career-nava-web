@@ -2,6 +2,7 @@ import { AfterViewInit, Component, OnInit } from "@angular/core";
 import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators } from "@angular/forms";
 import { faEye } from "@fortawesome/free-solid-svg-icons";
 import { AuthService } from "../../../services/auth/auth.service";
+import { getUserErrorMessage } from "../../../services/user-error-message";
 import { SharedModule } from "../../../shared/shared.module";
 
 @Component({
@@ -73,15 +74,16 @@ export class SignUpComponent implements OnInit, AfterViewInit {
             this.loading = false;
           },
           error: err => {
-            console.error('Login after registration failed', err);
-            this.errorMessage = 'Registration succeeded but login failed.';
+            this.errorMessage = getUserErrorMessage(err, 'Registration succeeded but login failed.');
             this.loading = false;
           }
         });
       },
       error: err => {
-        console.error('Registration failed', err);
-        this.errorMessage = err.error?.message || 'Registration failed';
+        const fallback = err?.status === 409
+          ? 'An account with this email already exists.'
+          : 'Unable to create your account right now. Please try again later.';
+        this.errorMessage = getUserErrorMessage(err, fallback);
         this.loading = false;
       }
     });

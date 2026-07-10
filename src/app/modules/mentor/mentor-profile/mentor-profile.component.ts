@@ -22,6 +22,7 @@ import {
 } from '../../../services/mentor/mentor.model';
 import { MentorService } from '../../../services/mentor/mentor.service';
 import { ToastService } from '../../../services/toast.service';
+import { getUserErrorMessage } from '../../../services/user-error-message';
 import { SharedModule } from '../../../shared/shared.module';
 
 type ProfileSectionKey = 'content' | 'taxonomy' | 'experience';
@@ -58,18 +59,6 @@ export class MentorProfileComponent implements OnInit {
     content: false,
     taxonomy: false,
     experience: false
-  };
-
-  readonly sectionError: Record<ProfileSectionKey, string | null> = {
-    content: null,
-    taxonomy: null,
-    experience: null
-  };
-
-  readonly sectionMessage: Record<ProfileSectionKey, string | null> = {
-    content: null,
-    taxonomy: null,
-    experience: null
   };
 
   readonly contentForm = this.fb.group({
@@ -185,7 +174,6 @@ export class MentorProfileComponent implements OnInit {
 
   startContentEdit(): void {
     if (!this.profile) return;
-    this.clearSectionFeedback('content');
     this.editingContent = true;
     this.contentForm.reset({
       company: this.profile.company ?? '',
@@ -200,7 +188,6 @@ export class MentorProfileComponent implements OnInit {
 
   cancelContentEdit(): void {
     this.editingContent = false;
-    this.clearSectionFeedback('content');
     this.contentForm.reset();
   }
 
@@ -227,7 +214,6 @@ export class MentorProfileComponent implements OnInit {
 
   startTaxonomyEdit(): void {
     if (!this.profile) return;
-    this.clearSectionFeedback('taxonomy');
     this.editingTaxonomy = true;
     this.taxonomyForm.reset({
       expertiseIds: this.getSelectedIds('expertise'),
@@ -238,7 +224,6 @@ export class MentorProfileComponent implements OnInit {
 
   cancelTaxonomyEdit(): void {
     this.editingTaxonomy = false;
-    this.clearSectionFeedback('taxonomy');
     this.taxonomyForm.reset();
   }
 
@@ -271,7 +256,6 @@ export class MentorProfileComponent implements OnInit {
   }
 
   startAddExperience(): void {
-    this.clearSectionFeedback('experience');
     this.addingExperience = true;
     this.editingExperienceIndex = null;
     this.experienceForm.reset({
@@ -287,7 +271,6 @@ export class MentorProfileComponent implements OnInit {
 
   startEditExperience(index: number): void {
     if (!this.profile?.experiences?.[index]) return;
-    this.clearSectionFeedback('experience');
     this.addingExperience = false;
     this.editingExperienceIndex = index;
     const experience = this.profile.experiences[index];
@@ -305,7 +288,6 @@ export class MentorProfileComponent implements OnInit {
   cancelExperienceEdit(): void {
     this.addingExperience = false;
     this.editingExperienceIndex = null;
-    this.clearSectionFeedback('experience');
     this.experienceForm.reset();
   }
 
@@ -378,7 +360,7 @@ export class MentorProfileComponent implements OnInit {
           this.applyProfile(profile);
         },
         error: err => {
-          this.error = this.getActionError(err, 'Unable to load your mentor profile right now.');
+          this.error = getUserErrorMessage(err, 'Unable to load your mentor profile right now.');
         }
       });
   }
@@ -397,20 +379,17 @@ export class MentorProfileComponent implements OnInit {
     if (!this.profile) return;
 
     this.sectionSaving[section] = true;
-    this.sectionError[section] = null;
-    this.sectionMessage[section] = null;
 
     this.mentorService.updateSelfProfile(this.buildPayload(overrides))
       .pipe(finalize(() => this.sectionSaving[section] = false))
       .subscribe({
         next: profile => {
           this.applyProfile(profile);
-          this.sectionMessage[section] = successMessage;
           onSuccess?.();
-          this.toastService.show(successMessage, { classname: 'bg-success text-light', delay: 3200 });
+          this.toastService.success(successMessage, { title: 'Profile saved' });
         },
         error: err => {
-          this.sectionError[section] = this.getActionError(err, 'Unable to save your profile changes right now.');
+          this.toastService.error(getUserErrorMessage(err, 'Unable to save your profile changes right now.'), { title: 'Profile save failed' });
         }
       });
   }
@@ -483,11 +462,6 @@ export class MentorProfileComponent implements OnInit {
     };
   }
 
-  private clearSectionFeedback(section: ProfileSectionKey): void {
-    this.sectionError[section] = null;
-    this.sectionMessage[section] = null;
-  }
-
   private toNullable(value: string | null | undefined): string | null {
     return value && value.trim().length ? value.trim() : null;
   }
@@ -509,9 +483,4 @@ export class MentorProfileComponent implements OnInit {
     return value ? value.slice(0, 10) : '';
   }
 
-  private getActionError(err: any, fallback: string): string {
-    if (err?.status === 401) return 'Please sign in again to manage your mentor profile.';
-    if (err?.status === 403) return 'You do not have permission to manage this mentor profile.';
-    return err?.error?.message || err?.message || fallback;
-  }
 }

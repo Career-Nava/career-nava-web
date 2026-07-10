@@ -26,8 +26,7 @@
       <p class="admin-copy mb-0 mt-3">Loading your profile...</p>
     </div>
 
-    <div *ngIf="!loading && error" class="alert alert-danger" role="alert">{{ error }}</div>
-    <div *ngIf="!loading && message" class="alert alert-success" role="status">{{ message }}</div>
+    <div *ngIf="!loading && error" class="career-inline-notice career-inline-notice--error" role="alert">{{ error }}</div>
 
     <ng-container *ngIf="!loading && profile as profile">
       <div class="row g-4 align-items-start">
@@ -85,8 +84,6 @@
 
               <div class="admin-panel__body">
                 <ng-container *ngIf="showSetupPasswordForm; else changePasswordBlock">
-                  <div *ngIf="setupPasswordError" class="alert alert-danger mb-3" role="alert">{{ setupPasswordError }}</div>
-                  <div *ngIf="setupPasswordMessage" class="alert alert-success mb-3" role="status">{{ setupPasswordMessage }}</div>
 
                   <form class="row g-3" [formGroup]="setupPasswordForm">
                     <div class="col-12 col-md-6">
@@ -149,8 +146,6 @@
                 </ng-container>
 
                 <ng-template #changePasswordBlock>
-                  <div *ngIf="passwordError" class="alert alert-danger mb-3" role="alert">{{ passwordError }}</div>
-                  <div *ngIf="passwordMessage" class="alert alert-success mb-3" role="status">{{ passwordMessage }}</div>
                   <div *ngIf="securityStatus && !showChangePasswordForm && securityStatus.passwordChangeBlockedReason" class="account-profile-security-note">
                     {{ securityStatus.passwordChangeBlockedReason }}
                   </div>
@@ -285,8 +280,6 @@
                     </div>
                   </div>
 
-                  <div *ngIf="unlinkGoogleError" class="alert alert-danger mb-3" role="alert">{{ unlinkGoogleError }}</div>
-                  <div *ngIf="unlinkGoogleMessage" class="alert alert-success mb-3" role="status">{{ unlinkGoogleMessage }}</div>
 
                   <ng-container *ngIf="showGoogleUnlinkSection; else googleReadOnlyNote">
                     <ng-container *ngIf="showingGoogleUnlinkConfirmation" [ngTemplateOutlet]="googleUnlinkConfirmBlock"></ng-container>

@@ -1,0 +1,71 @@
+:root {
+  --notification-brand: #5909a9;
+  --notification-brand-soft: #f3ebfb;
+  --notification-brand-border: #d9c2ef;
+
+  --notification-success: #287a5a;
+  --notification-success-soft: #edf8f3;
+  --notification-success-border: #c5e6d7;
+
+  --notification-warning: #9a6517;
+  --notification-warning-soft: #fff8e8;
+  --notification-warning-border: #f1ddb0;
+
+  --notification-error: #a43d37;
+  --notification-error-soft: #fdf1f0;
+  --notification-error-border: #eccac7;
+
+  --notification-neutral: #566174;
+  --notification-neutral-soft: #f4f5f7;
+  --notification-neutral-border: #dfe3e8;
+
+  --notification-title: #1f2937;
+  --notification-body: #475467;
+  --notification-focus: rgba(89, 9, 169, 0.3);
+}
+
+.career-inline-notice {
+  display: flex;
+  width: 100%;
+  align-items: flex-start;
+  gap: 0.65rem;
+  padding: 0.75rem 0.9rem;
+  border: 1px solid var(--notification-neutral-border);
+  border-left: 0.25rem solid var(--notification-neutral);
+  border-radius: 0.85rem;
+  background: #fff;
+  color: var(--notification-body);
+  font-size: 0.92rem;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+.career-inline-notice--success {
+  border-color: var(--notification-success-border);
+  border-left-color: var(--notification-success);
+  background: var(--notification-success-soft);
+}
+
+.career-inline-notice--error {
+  border-color: var(--notification-error-border);
+  border-left-color: var(--notification-error);
+  background: var(--notification-error-soft);
+}
+
+.career-inline-notice--warning {
+  border-color: var(--notification-warning-border);
+  border-left-color: var(--notification-warning);
+  background: var(--notification-warning-soft);
+}
+
+.career-inline-notice--info {
+  border-color: var(--notification-brand-border);
+  border-left-color: var(--notification-brand);
+  background: var(--notification-brand-soft);
+}
+
+.career-inline-notice--neutral {
+  border-color: var(--notification-neutral-border);
+  border-left-color: var(--notification-neutral);
+  background: var(--notification-neutral-soft);
+}

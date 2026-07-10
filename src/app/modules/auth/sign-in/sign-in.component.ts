@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { faEye } from "@fortawesome/free-solid-svg-icons";
 import { LoginRequest } from "../../../services/auth/auth.model";
 import { AuthService } from "../../../services/auth/auth.service";
+import { getUserErrorMessage } from "../../../services/user-error-message";
 import { SharedModule } from "../../../shared/shared.module";
 
 declare const google: any;
@@ -47,8 +48,8 @@ export class SignInComponent implements OnInit, AfterViewInit {
           this.authService.navigateByRole(user.role);
           this.loading = false;
         },
-        error: () => {
-          this.errorMessage = 'Login failed';
+        error: err => {
+          this.errorMessage = getUserErrorMessage(err, 'Login failed');
           this.loading = false;
         }
       });
@@ -92,7 +93,10 @@ export class SignInComponent implements OnInit, AfterViewInit {
         this.loading = false;
       },
       error: (err) => {
-        this.errorMessage = err.error?.message || 'Login failed';
+        const fallback = err?.status === 401
+          ? 'Email or password is incorrect.'
+          : 'Unable to sign in right now. Please try again later.';
+        this.errorMessage = getUserErrorMessage(err, fallback);
         this.loading = false;
       }
     });

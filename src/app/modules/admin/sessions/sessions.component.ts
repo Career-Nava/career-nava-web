@@ -6,6 +6,7 @@ import { debounceTime, finalize, Subscription } from 'rxjs';
 import { AdminSession, AdminSessionDetail, AdminSessionFilters } from '../../../services/session/session.model';
 import { SessionService } from '../../../services/session/session.service';
 import { ToastService } from '../../../services/toast.service';
+import { getUserErrorMessage } from '../../../services/user-error-message';
 import { SharedModule } from '../../../shared/shared.module';
 
 type SessionViewFilter = 'all' | 'today' | 'upcoming' | 'completed' | 'pending';
@@ -29,8 +30,6 @@ export class AdminSessionsComponent implements OnInit, OnDestroy {
   loading = true;
   saving = false;
   error: string | null = null;
-  actionError: string | null = null;
-  actionMessage: string | null = null;
 
   searchQuery = '';
   viewFilter: SessionViewFilter = 'all';
@@ -106,13 +105,12 @@ export class AdminSessionsComponent implements OnInit, OnDestroy {
   }
 
   viewSession(session: AdminSession): void {
-    this.actionError = null;
     this.sessionService.getAdminSessionById(session.sessionId).subscribe({
       next: detail => {
         this.selectedSession = detail;
         this.selectedStatus = this.toAllowedDetailStatus(detail.status);
       },
-      error: err => this.actionError = this.getActionError(err, 'Unable to load session detail.')
+      error: err => this.toast.error(getUserErrorMessage(err, 'Unable to load session detail.'), { title: 'Session unavailable' })
     });
   }
 
@@ -135,12 +133,12 @@ export class AdminSessionsComponent implements OnInit, OnDestroy {
         : this.sessionService.moveAdminSessionToPending(session.sessionId);
     this.saving = true;
     request.pipe(finalize(() => this.saving = false)).subscribe({
-      next: updated => { this.selectedSession = updated; this.actionMessage = 'Session status updated.'; this.toast.show('Session status updated.', { classname: 'bg-success text-light', delay: 3500 }); this.loadSessions(); },
-      error: err => this.actionError = this.getActionError(err, 'Unable to update session status.')
+      next: updated => { this.selectedSession = updated; this.toast.success('Session status updated.', { title: 'Session updated' }); this.loadSessions(); },
+      error: err => this.toast.error(getUserErrorMessage(err, 'Unable to update session status.'), { title: 'Session update failed' })
     });
   }
 
-  closeDetail(): void { this.selectedSession = null; this.actionError = null; this.actionMessage = null; }
+  closeDetail(): void { this.selectedSession = null; }
 
   ngOnDestroy(): void {
     this.subs.unsubscribe();
@@ -201,8 +199,6 @@ export class AdminSessionsComponent implements OnInit, OnDestroy {
     if (err?.status === 403) return 'Only admins can view all platform sessions.';
     return 'Unable to load platform sessions right now. Please try again later.';
   }
-
-  private getActionError(err: any, fallback: string): string { return err?.error?.message || err?.message || fallback; }
 
   private toAllowedDetailStatus(status?: string | null): 'pending' | 'completed' | 'cancelled' {
     const normalized = (status || '').toLowerCase();

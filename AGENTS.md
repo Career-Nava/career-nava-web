@@ -125,6 +125,15 @@ Keep the standalone component structure. Do not add NgModules or a new state-man
 - Empty states should explain what the user can do next or why data is missing.
 - Do not make backend failures look like legitimate empty states unless explicitly intended.
 
+## Notification And API Error Feedback
+
+- For handled backend/API errors, prefer the backend's structured, non-empty, user-safe application message over a generic frontend fallback. Always retain an operation-specific fallback.
+- Use `getUserErrorMessage(...)` from `src/app/services/user-error-message.ts` instead of duplicating nested component-level error parsing.
+- Treat 5xx responses and generic framework-generated HTTP messages as unsafe by default. Use the operation-specific fallback unless the backend contract explicitly guarantees a sanitized public message.
+- Never expose raw provider responses, exception details, serialized error objects, tokens, secrets, stack traces, internal diagnostics, database errors, or unsafe HTML.
+- Keep field-specific validation inline where appropriate. Use semantic toasts for temporary operation outcomes and branded inline notices or page-state UI for durable information, blocking requirements, empty states, and load failures.
+- Do not reintroduce Bootstrap toast classes, Bootstrap alerts, legacy toast compatibility, or direct presentation-class arguments in feature callers.
+
 ## Testing And Validation
 
 - `npm run build` is the main validation command today.

@@ -162,6 +162,6 @@ export class AdminPaymentEventsComponent implements OnInit, OnDestroy {
   private getLoadError(err: any): string {
     if (err?.status === 401) return 'Please sign in again to view payment events.';
     if (err?.status === 403) return 'Only admins can view payment event audit records.';
-    return err?.error?.message || 'Unable to load payment events right now. Please try again later.';
+    return 'Unable to load payment events right now. Please try again later.';
   }
 }

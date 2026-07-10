@@ -8,6 +8,7 @@ import { CalendlyService } from '../../../services/calendly/calendly.service';
 import { AdminMentor } from '../../../services/mentor/mentor.model';
 import { MentorService } from '../../../services/mentor/mentor.service';
 import { ToastService } from '../../../services/toast.service';
+import { getUserErrorMessage } from '../../../services/user-error-message';
 import { SharedModule } from '../../../shared/shared.module';
 
 @Component({
@@ -31,7 +32,6 @@ export class AdminEventTypesComponent implements OnInit, OnDestroy {
   syncing = false;
   error: string | null = null;
   mentorsError: string | null = null;
-  actionError: string | null = null;
   filtersExpanded = false;
 
   filterForm: FormGroup = this.fb.group({
@@ -88,15 +88,14 @@ export class AdminEventTypesComponent implements OnInit, OnDestroy {
 
   syncEventTypes(): void {
     this.syncing = true;
-    this.actionError = null;
     this.calendlyService.syncAdminEventTypes()
       .pipe(finalize(() => this.syncing = false))
       .subscribe({
         next: () => {
-          this.toast.show('Calendly event types synced.', { classname: 'bg-success text-light', delay: 3500 });
+          this.toast.success('Calendly event types synced.', { title: 'Sync complete' });
           this.loadEventTypes();
         },
-        error: err => this.actionError = this.getActionError(err, 'Unable to sync Calendly event types.')
+        error: err => this.toast.error(getUserErrorMessage(err, 'Unable to sync Calendly event types.'), { title: 'Event type sync failed' })
       });
   }
 
@@ -193,16 +192,13 @@ export class AdminEventTypesComponent implements OnInit, OnDestroy {
   private getLoadError(err: any): string {
     if (err?.status === 401) return 'Please sign in again to view event types.';
     if (err?.status === 403) return 'Only admins can view event type records.';
-    return err?.error?.message || 'Unable to load event types right now. Please try again later.';
+    return 'Unable to load event types right now. Please try again later.';
   }
 
   private getMentorLoadError(err: any): string {
     if (err?.status === 401) return 'Please sign in again to load mentor options.';
     if (err?.status === 403) return 'Only admins can load mentor options.';
-    return err?.error?.message || 'Unable to load active mentor options.';
+    return 'Unable to load active mentor options.';
   }
 
-  private getActionError(err: any, fallback: string): string {
-    return err?.error?.message || err?.message || fallback;
-  }
 }

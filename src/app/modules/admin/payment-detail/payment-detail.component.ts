@@ -108,12 +108,12 @@ export class AdminPaymentDetailComponent implements OnInit {
     if (err?.status === 401) return 'Please sign in again to view this payment.';
     if (err?.status === 403) return 'Only admins can view payment detail.';
     if (err?.status === 404) return 'Payment record was not found.';
-    return err?.error?.message || 'Unable to load this payment right now.';
+    return 'Unable to load this payment right now.';
   }
 
   private getEventsError(err: any): string {
     if (err?.status === 401) return 'Please sign in again to view payment events.';
     if (err?.status === 403) return 'Only admins can view payment events.';
-    return err?.error?.message || 'Unable to load events for this payment.';
+    return 'Unable to load events for this payment.';
   }
 }

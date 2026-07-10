@@ -6,6 +6,7 @@ import { finalize, of, switchMap } from 'rxjs';
 import { AdminMentor, EligibleMentorUser } from '../../../services/mentor/mentor.model';
 import { MentorService } from '../../../services/mentor/mentor.service';
 import { ToastService } from '../../../services/toast.service';
+import { getUserErrorMessage } from '../../../services/user-error-message';
 import { SharedModule } from '../../../shared/shared.module';
 
 type MentorStatusFilter = 'all' | 'draft' | 'active' | 'inactive' | 'suspended' | 'unknown';
@@ -36,8 +37,6 @@ export class AdminMentorsComponent implements OnInit {
   loadingEligible = false;
   saving = false;
   error: string | null = null;
-  actionError: string | null = null;
-  actionMessage: string | null = null;
   mode: MentorMode = 'none';
 
   searchQuery = '';
@@ -159,8 +158,6 @@ export class AdminMentorsComponent implements OnInit {
   openOnboarding(): void {
     this.mode = 'onboard';
     this.selectedMentor = null;
-    this.actionError = null;
-    this.actionMessage = null;
     this.onboardingForm.reset({ status: 'draft', verified: false });
     this.loadEligibleUsers();
   }
@@ -169,10 +166,9 @@ export class AdminMentorsComponent implements OnInit {
     const id = this.getMentorRouteId(mentor);
     if (!id) return;
     this.mode = 'detail';
-    this.actionError = null;
     this.mentorService.getAdminMentorById(id).subscribe({
       next: detail => this.selectedMentor = detail,
-      error: err => this.actionError = this.getActionError(err, 'Unable to load mentor detail.')
+      error: err => this.toast.error(getUserErrorMessage(err, 'Unable to load mentor detail.'), { title: 'Mentor unavailable' })
     });
   }
 
@@ -217,7 +213,7 @@ export class AdminMentorsComponent implements OnInit {
       )
       .subscribe({
         next: mentor => this.afterMutation('Mentor updated.', mentor),
-        error: err => this.actionError = this.getActionError(err, 'Unable to update mentor.')
+        error: err => this.toast.error(getUserErrorMessage(err, 'Unable to update mentor.'), { title: 'Mentor update failed' })
       });
   }
 
@@ -235,7 +231,7 @@ export class AdminMentorsComponent implements OnInit {
           this.afterMutation('User promoted to mentor.', mentor);
           this.loadEligibleUsers();
         },
-        error: err => this.actionError = this.getActionError(err, 'Unable to onboard mentor.')
+        error: err => this.toast.error(getUserErrorMessage(err, 'Unable to onboard mentor.'), { title: 'Mentor onboarding failed' })
       });
   }
 
@@ -248,15 +244,13 @@ export class AdminMentorsComponent implements OnInit {
       .pipe(finalize(() => this.saving = false))
       .subscribe({
         next: updated => this.afterMutation(`Mentor status changed to ${ status }.`, updated),
-        error: err => this.actionError = this.getActionError(err, 'Unable to change mentor status.')
+        error: err => this.toast.error(getUserErrorMessage(err, 'Unable to change mentor status.'), { title: 'Mentor status update failed' })
       });
   }
 
   closePanel(): void {
     this.mode = 'none';
     this.selectedMentor = null;
-    this.actionError = null;
-    this.actionMessage = null;
   }
 
   getStatusLabel(mentor: AdminMentor): string {
@@ -304,15 +298,13 @@ export class AdminMentorsComponent implements OnInit {
     this.mentorService.getEligibleMentorUsers()
       .pipe(finalize(() => this.loadingEligible = false))
       .subscribe({
-        next: users => this.eligibleUsers = users,
-        error: err => this.actionError = this.getActionError(err, 'Unable to load eligible users.')
+      next: users => this.eligibleUsers = users,
+      error: err => this.toast.error(getUserErrorMessage(err, 'Unable to load eligible users.'), { title: 'Mentor options unavailable' })
       });
   }
 
   private afterMutation(message: string, mentor: AdminMentor): void {
-    this.actionError = null;
-    this.actionMessage = message;
-    this.toast.show(message, { classname: 'bg-success text-light', delay: 3500 });
+    this.toast.success(message, { title: 'Mentor updated' });
     this.selectedMentor = mentor;
     this.mode = 'detail';
     this.loadMentors();
@@ -340,7 +332,4 @@ export class AdminMentorsComponent implements OnInit {
     return 'Unable to load mentors right now. Please try again later.';
   }
 
-  private getActionError(err: any, fallback: string): string {
-    return err?.error?.message || err?.message || fallback;
-  }
 }

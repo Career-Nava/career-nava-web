@@ -309,11 +309,6 @@ export class StudentSessionsComponent implements OnInit, OnDestroy {
       return 'You do not have permission to pay for this session.';
     }
 
-    const message = err?.error?.message;
-    if (typeof message === 'string' && message.trim()) {
-      return message;
-    }
-
     return fallback;
   }
 }

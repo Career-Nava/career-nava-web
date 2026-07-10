@@ -76,8 +76,6 @@
     </div>
 
     <div class="admin-panel__body">
-      <div *ngIf="actionError" class="alert alert-danger" role="alert">{{ actionError }}</div>
-      <div *ngIf="actionMessage" class="alert alert-success" role="status">{{ actionMessage }}</div>
 
       <form *ngIf="mode === 'onboard'" [formGroup]="onboardingForm" (ngSubmit)="onboardUser()" class="admin-form-grid">
         <label class="admin-select-label admin-form-span-2">
@@ -141,7 +139,7 @@
     <div class="spinner-border text-primary" role="status" aria-label="Loading mentors"></div>
     <p class="admin-copy mb-0 mt-3">Loading mentors...</p>
   </div>
-  <div *ngIf="!loading && error" class="alert alert-danger mb-4" role="alert">{{ error }}</div>
+  <div *ngIf="!loading && error" class="career-inline-notice career-inline-notice--error mb-4" role="alert">{{ error }}</div>
   <div *ngIf="!loading && !error && !filteredMentors.length" class="admin-state admin-list-state mb-4">
     <h2 class="admin-state__title">{{ getEmptyTitle() }}</h2>
     <p class="admin-copy mb-0">{{ getEmptyMessage() }}</p>

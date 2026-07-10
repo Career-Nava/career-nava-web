@@ -907,7 +907,7 @@ Recommended Phase 7 frontend sub-phases:
    - Authentication restoration now has explicit `initializing`, `authenticated`, and `unauthenticated` states in `AuthService`.
    - `APP_INITIALIZER` restores the persisted Career Nava JWT/session before route evaluation, hydrates the current user through `/api/User/me`, and clears expired or malformed credentials.
    - Auth guards wait for restoration before redirecting, so hard refresh, direct protected-route navigation, and full-page Google OAuth return preserve authentication when the stored session is valid.
-   - Phase 8 shared notification experience redesign is now the next planned frontend direction.
+   - Phase 8 shared notification experience redesign is complete and manually approved by the product owner.
 
 Phase 7 frontend guardrails:
 
@@ -920,34 +920,23 @@ Phase 7 frontend guardrails:
 
 ### Planned Pre-Hardening Roadmap
 
-Phase 8 - Shared Notification Experience Redesign is the active next phase. The goal is to replace the current generic Bootstrap/ng-bootstrap-looking toast experience with a shared notification system that visually and behaviorally belongs to the premium Career Nava admin, mentor, mentee, account-profile, auth, payment, scholarship, session, and Calendly flows.
+Phase 8 - Shared Notification Experience Redesign is complete and manually approved by the product owner.
 
-Current toast limitations to address in Phase 8:
+Delivered scope:
 
-- call sites can provide Bootstrap class strings instead of semantic intent
-- the visual treatment is flat and disconnected from dashboard cards, badges, shadows, spacing, and navigation chrome
-- variants are not enforced as a shared product language
-- stacking, maximum visible count, and duplicate suppression are limited
-- responsive placement, keyboard dismissal, reduced-motion behavior, and live-region semantics need a focused review
-- raw backend/provider errors can be surfaced too directly if call sites pass through unsafe text
+- Shared semantic notification architecture with `success`, `error`, `warning`, `info`, and `neutral` variants.
+- Career Nava-aligned styling using the approved brand purple and softened semantic colours, with responsive desktop/mobile placement.
+- Four-visible notification limit, FIFO queueing, duplicate suppression, variant-based auto-dismiss durations, persistent mode, manual dismissal, hover/focus pause and resume, keyboard handling, and reduced-motion support.
+- Safe text interpolation and accessible live-region behavior without TemplateRef, raw HTML, or provider payload rendering.
+- Removal of legacy toast compatibility, Bootstrap classname interpretation, ng-bootstrap toast usage, and Bootstrap alert classes.
+- Durable validation and page-state information remains in branded inline notices or existing field/page-state UI; transient operation results use semantic toasts without duplicate feedback.
+- Shared `getUserErrorMessage(...)` extraction prefers safe structured backend messages, rejects unsafe/technical messages, and retains deliberate operation-specific fallbacks.
+- Raw provider responses, exception details, tokens, secrets, stack traces, serialized errors, and unsafe HTML are not exposed.
+- Product-owner manual browser and visual QA was completed and approved. The temporary development notification showcase was removed after approval.
 
-Phase 8 intended notification contract:
+Phase 9 - Calendly Platform Ownership and Backend Integration Foundation is the next active implementation phase and is backend-first. No Phase 9 implementation has started. Career Nava will use one global platform Calendly account for MVP, managed by authorized admins. This is not a per-admin Calendly account model. Existing user associations should represent the managing admin as an audit actor, not independent scheduling ownership.
 
-- semantic variants: success, error, warning, info, and neutral
-- optional title plus safe body text, with no raw HTML by default
-- automatic icon treatment by variant
-- dismiss action, auto-dismiss duration, persistent mode, maximum visible count, duplicate suppression, responsive layout, reduced-motion behavior, and accessible live-region behavior
-- styling belongs to the shared toast system; call sites should express intent rather than Bootstrap classes
-- preserve existing service compatibility where practical
-- keep persistent page/form validation alerts where they are the correct UI; transient operation feedback should use the toast system
-
-Phase 8 expected web scope includes the toast service/model, toast container/template/SCSS, root toast outlet, existing call sites that pass class strings, and duplicate transient notification patterns. It does not include backend behavior changes, Calendly ownership work, broad dashboard redesign, replacing all form validation messages, or launch hardening.
-
-Phase 8 validation should cover success, error, warning, info, neutral, short and long messages, title-plus-body, body-only notifications, stacked notifications, maximum visible count, duplicate suppression, auto-dismiss, persistent mode, manual and keyboard dismissal, screen-reader semantics, reduced motion, mobile layout, route navigation, admin/mentor/mentee dashboards, auth pages, and no raw HTML/provider secrets.
-
-Phase 9 - Calendly Platform Ownership and Backend Integration Foundation is backend-first. Product decision: Career Nava will use one global platform Calendly account for MVP, managed by authorized admins. This is not a per-admin Calendly account model. Existing user associations should represent the managing admin as an audit actor, not independent scheduling ownership.
-
-Phase 10 - Calendly Account Management UI and Integration Validation depends on the Phase 9 backend contract and should use the redesigned Phase 8 toast system. The authorized admin account profile should expose platform connection status, connect, reconnect, explicit replacement confirmation, disconnect, refresh/status reload, and safe provider-derived details where appropriate. The frontend must not send target user ids, build provider authorization URLs, store provider tokens, infer connection state locally, decide replacement safety, expose raw provider ids unnecessarily, or reintroduce duplicate inline transient alerts. It should handle callback result codes once, remove them from the URL, and refresh backend-derived capabilities/status.
+Phase 10 - Calendly Account Management UI and Integration Validation follows Phase 9, depends on its backend contract, and should use the redesigned Phase 8 toast system. The authorized admin account profile should expose platform connection status, connect, reconnect, explicit replacement confirmation, disconnect, refresh/status reload, and safe provider-derived details where appropriate. The frontend must not send target user ids, build provider authorization URLs, store provider tokens, infer connection state locally, decide replacement safety, expose raw provider ids unnecessarily, or reintroduce duplicate inline transient alerts. It should handle callback result codes once, remove them from the URL, and refresh backend-derived capabilities/status.
 
 Phase 11 - Test and Launch Hardening replaces the former Phase 8 launch-hardening plan. It should run only after Phases 8, 9, and 10 complete and should preserve the existing hardening scope: frontend smoke/build/test setup, auth/security regressions, visibility checks, fake/disabled UI audit, provider callback configuration, deployment documentation, environment validation, and final readiness review.
 
@@ -1030,16 +1019,15 @@ Major pending areas after the current MVP foundation:
 - better automated frontend validation and tests
 - richer dashboard analytics
 - application tracker work
-- Phase 8 shared notification experience redesign
 - Phase 9/10 Calendly platform ownership and account-management correction
 - Phase 11 test and launch hardening
 - preserve mentor experience row identities if richer non-replacement editing becomes necessary
 
 ## Recommended Next Frontend Iterations
 
-1. Start Phase 8 with the shared toast notification redesign, preserving service compatibility where practical while moving call sites toward semantic variants instead of Bootstrap class strings.
-2. Use Phase 9 backend contracts to plan Phase 10 Calendly account-management UI; do not replace hardcoded Calendly ownership with frontend-selected or per-admin target ids.
-3. Add targeted automated coverage for auth restoration, protected route continuity, account-security flows, toast behavior, and Calendly management where practical.
+1. Start Phase 9 with a backend-first audit and implementation plan for global Calendly platform ownership; do not replace hardcoded ownership with frontend-selected or per-admin target ids.
+2. Use the Phase 9 backend contract to plan Phase 10 Calendly account-management UI; do not replace hardcoded Calendly ownership with frontend-selected or per-admin target ids.
+3. Add targeted automated coverage for auth restoration, protected route continuity, account-security flows, notification behavior, and Calendly management where practical.
 4. Add lint/test scripts or at least basic test tooling.
 5. Add pagination/search/filtering refinements to admin lists during Phase 11 or a focused later hardening slice.
 6. Add a scholarship detail bookmark split/current-user detail path if product wants bookmark controls on detail.

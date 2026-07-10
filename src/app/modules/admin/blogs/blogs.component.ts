@@ -6,6 +6,7 @@ import { finalize, of, switchMap } from 'rxjs';
 import { AdminBlog, AdminBlogUpsert } from '../../../services/blog/blog.model';
 import { BlogService } from '../../../services/blog/blog.service';
 import { ToastService } from '../../../services/toast.service';
+import { getUserErrorMessage } from '../../../services/user-error-message';
 import { UserModel } from '../../../services/user/user.model';
 import { UserService } from '../../../services/user/user.service';
 import { SharedModule } from '../../../shared/shared.module';
@@ -34,8 +35,6 @@ export class AdminBlogsComponent implements OnInit {
   loading = true;
   saving = false;
   error: string | null = null;
-  actionError: string | null = null;
-  actionMessage: string | null = null;
   mode: BlogMode = 'none';
   authorOptions: UserModel[] = [];
 
@@ -102,8 +101,6 @@ export class AdminBlogsComponent implements OnInit {
   openCreate(): void {
     this.mode = 'create';
     this.selectedBlog = null;
-    this.actionError = null;
-    this.actionMessage = null;
     this.blogForm.reset({ category: 'General', status: 'draft' });
     this.contents.clear();
     this.addContentBlock();
@@ -112,10 +109,9 @@ export class AdminBlogsComponent implements OnInit {
   viewBlog(blog: AdminBlog): void {
     if (!blog.blogId) return;
     this.mode = 'detail';
-    this.actionError = null;
     this.blogService.getAdminBlogById(blog.blogId).subscribe({
       next: detail => this.selectedBlog = detail,
-      error: err => this.actionError = this.getActionError(err, 'Unable to load blog detail.')
+      error: err => this.toast.error(getUserErrorMessage(err, 'Unable to load blog detail.'), { title: 'Resource unavailable' })
     });
   }
 
@@ -124,7 +120,7 @@ export class AdminBlogsComponent implements OnInit {
     this.mode = 'edit';
     this.blogService.getAdminBlogById(blog.blogId).subscribe({
       next: detail => { this.selectedBlog = detail; this.patchForm(detail); },
-      error: err => this.actionError = this.getActionError(err, 'Unable to load blog detail.')
+      error: err => this.toast.error(getUserErrorMessage(err, 'Unable to load blog detail.'), { title: 'Resource unavailable' })
     });
   }
 
@@ -142,13 +138,13 @@ export class AdminBlogsComponent implements OnInit {
       )
       .subscribe({
       next: blog => this.afterMutation(this.mode === 'edit' ? 'Resource updated.' : 'Resource created.', blog),
-      error: err => this.actionError = this.getActionError(err, 'Unable to save resource.')
+      error: err => this.toast.error(getUserErrorMessage(err, 'Unable to save resource.'), { title: 'Resource save failed' })
     });
   }
 
   addContentBlock(value = ''): void { this.contents.push(this.fb.group({ contentOrder: [ this.contents.length + 1 ], contentText: [ value ] })); }
   removeContentBlock(index: number): void { this.contents.removeAt(index); }
-  closePanel(): void { this.mode = 'none'; this.selectedBlog = null; this.actionError = null; this.actionMessage = null; }
+  closePanel(): void { this.mode = 'none'; this.selectedBlog = null; }
 
   getStatusLabel(blog: AdminBlog): string { return blog.status || 'Unknown'; }
   getContentBlockCount(blog: AdminBlog): string { return `${ blog.contentBlockCount ?? blog.contents?.length ?? 0 }`; }
@@ -158,10 +154,7 @@ export class AdminBlogsComponent implements OnInit {
     return `${ author.fullName || author.email } - ${ role }${ author.email ? ` (${ author.email })` : '' }`;
   }
   showPreviewUnavailable(): void {
-    this.toast.show('Publish this resource before public preview.', {
-      classname: 'bg-warning text-dark',
-      delay: 3500
-    });
+    this.toast.warning('Publish this resource before public preview.', { title: 'Preview unavailable' });
   }
   getStatusBadgeClass(blog: AdminBlog): string {
     const status = this.normalizeStatus(blog.status);
@@ -198,8 +191,8 @@ export class AdminBlogsComponent implements OnInit {
   }
 
   private afterMutation(message: string, blog: AdminBlog): void {
-    this.actionError = null; this.actionMessage = message; this.selectedBlog = blog; this.mode = 'none';
-    this.toast.show(message, { classname: 'bg-success text-light', delay: 3500 });
+    this.selectedBlog = blog; this.mode = 'none';
+    this.toast.success(message, { title: 'Resource saved' });
     this.loadBlogs();
   }
   private applyBlogStatus(blog: AdminBlog, desiredStatus: string) {
@@ -220,11 +213,10 @@ export class AdminBlogsComponent implements OnInit {
       },
       error: err => {
         this.authorOptions = [];
-        this.actionError = this.getActionError(err, 'Unable to load author options.');
+        this.toast.error(getUserErrorMessage(err, 'Unable to load author options.'), { title: 'Author options unavailable' });
       }
     });
   }
   private normalizeStatus(status?: string): BlogStatusFilter { const s = status?.toLowerCase(); return s === 'published' || s === 'draft' || s === 'archived' ? s : 'unknown'; }
   private getLoadError(err: any): string { if (err?.status === 401) return 'Please sign in again to view blogs.'; if (err?.status === 403) return 'You do not have access to view blogs.'; return 'Unable to load blogs right now. Please try again later.'; }
-  private getActionError(err: any, fallback: string): string { return err?.error?.message || err?.message || fallback; }
 }

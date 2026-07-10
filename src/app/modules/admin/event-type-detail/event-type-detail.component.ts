@@ -9,6 +9,7 @@ import { CalendlyService } from '../../../services/calendly/calendly.service';
 import { AdminMentor } from '../../../services/mentor/mentor.model';
 import { MentorService } from '../../../services/mentor/mentor.service';
 import { ToastService } from '../../../services/toast.service';
+import { getUserErrorMessage } from '../../../services/user-error-message';
 import { SharedModule } from '../../../shared/shared.module';
 
 @Component({
@@ -31,8 +32,6 @@ export class AdminEventTypeDetailComponent implements OnInit, OnDestroy {
   savingPricing = false;
   error: string | null = null;
   mentorsError: string | null = null;
-  actionError: string | null = null;
-  actionMessage: string | null = null;
   private eventTypeId = 0;
   private readonly subs = new Subscription();
 
@@ -104,15 +103,13 @@ export class AdminEventTypeDetailComponent implements OnInit, OnDestroy {
     if (!this.eventType) return;
 
     this.savingAssignment = true;
-    this.actionError = null;
-    this.actionMessage = null;
     const mentorProfileId = this.toNumber(this.assignmentForm.value.mentorProfileId);
 
     this.calendlyService.updateAdminEventTypeAssignment(this.eventType.eventTypeId, { mentorProfileId })
       .pipe(finalize(() => this.savingAssignment = false))
       .subscribe({
         next: eventType => this.afterMutation('Event type assignment updated.', eventType),
-        error: err => this.actionError = this.getActionError(err, 'Unable to update event type assignment.')
+        error: err => this.toast.error(getUserErrorMessage(err, 'Unable to update event type assignment.'), { title: 'Assignment update failed' })
       });
   }
 
@@ -136,8 +133,6 @@ export class AdminEventTypeDetailComponent implements OnInit, OnDestroy {
     }
 
     this.savingPricing = true;
-    this.actionError = null;
-    this.actionMessage = null;
 
     this.calendlyService.updateAdminEventTypePricing(this.eventType.eventTypeId, {
       isFreeSession,
@@ -147,7 +142,7 @@ export class AdminEventTypeDetailComponent implements OnInit, OnDestroy {
       .pipe(finalize(() => this.savingPricing = false))
       .subscribe({
         next: eventType => this.afterMutation('Event type pricing updated.', eventType),
-        error: err => this.actionError = this.getActionError(err, 'Unable to update event type pricing.')
+        error: err => this.toast.error(getUserErrorMessage(err, 'Unable to update event type pricing.'), { title: 'Pricing update failed' })
       });
   }
 
@@ -214,9 +209,7 @@ export class AdminEventTypeDetailComponent implements OnInit, OnDestroy {
   private afterMutation(message: string, eventType: AdminCalendlyEventTypeDetail): void {
     this.eventType = eventType;
     this.patchForms(eventType);
-    this.actionError = null;
-    this.actionMessage = message;
-    this.toast.show(message, { classname: 'bg-success text-light', delay: 3500 });
+    this.toast.success(message, { title: 'Event type updated' });
   }
 
   private isActiveMentor(mentor: AdminMentor): boolean {
@@ -237,16 +230,13 @@ export class AdminEventTypeDetailComponent implements OnInit, OnDestroy {
     if (err?.status === 401) return 'Please sign in again to view this event type.';
     if (err?.status === 403) return 'Only admins can view event type detail.';
     if (err?.status === 404) return 'Event type was not found.';
-    return err?.error?.message || 'Unable to load this event type right now.';
+    return 'Unable to load this event type right now.';
   }
 
   private getMentorLoadError(err: any): string {
     if (err?.status === 401) return 'Please sign in again to load mentor options.';
     if (err?.status === 403) return 'Only admins can load mentor options.';
-    return err?.error?.message || 'Unable to load active mentor options.';
+    return 'Unable to load active mentor options.';
   }
 
-  private getActionError(err: any, fallback: string): string {
-    return err?.error?.message || err?.message || fallback;
-  }
 }

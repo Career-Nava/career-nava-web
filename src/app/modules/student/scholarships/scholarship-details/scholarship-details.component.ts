@@ -5,6 +5,7 @@ import { Subscription } from 'rxjs';
 import { ScholarshipService } from '../../../../services/scholarship/scholarship.service';
 import { ScholarshipDto } from '../../../../services/scholarship/shcolarship.model';
 import { ToastService } from '../../../../services/toast.service';
+import { getUserErrorMessage } from '../../../../services/user-error-message';
 import { SharedModule } from '../../../../shared/shared.module';
 
 @Component({
@@ -54,14 +55,11 @@ export class ScholarshipDetailsComponent implements OnInit, OnDestroy {
           this.scholarship = data;
           this.isLoading = false;
         },
-        error: () => {
+        error: err => {
           this.scholarship = undefined;
           this.isLoading = false;
           this.loadFailed = true;
-          this.toast.show('Failed to load scholarship details', {
-            classname: 'bg-danger text-light',
-            delay: 4000
-          });
+          this.toast.error(getUserErrorMessage(err, 'Unable to load scholarship details right now. Please try again later.'), { title: 'Scholarship unavailable' });
         }
       })
     );

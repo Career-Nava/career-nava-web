@@ -62,6 +62,6 @@ export class AdminPaymentEventDetailComponent implements OnInit {
     if (err?.status === 401) return 'Please sign in again to view this payment event.';
     if (err?.status === 403) return 'Only admins can view payment event detail.';
     if (err?.status === 404) return 'Payment event record was not found.';
-    return err?.error?.message || 'Unable to load this payment event right now.';
+    return 'Unable to load this payment event right now.';
   }
 }

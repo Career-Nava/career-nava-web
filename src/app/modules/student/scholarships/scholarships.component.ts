@@ -5,6 +5,7 @@ import { Subscription } from 'rxjs';
 import { ScholarshipService } from '../../../services/scholarship/scholarship.service';
 import { ScholarshipDto } from '../../../services/scholarship/shcolarship.model';
 import { ToastService } from '../../../services/toast.service';
+import { getUserErrorMessage } from '../../../services/user-error-message';
 import { SharedModule } from '../../../shared/shared.module';
 
 type Tab = 'all' | 'bookmarked' | 'active' | 'inactive';
@@ -90,25 +91,20 @@ export class ScholarshipsComponent implements OnInit, OnDestroy {
       request.subscribe({
         next: result => {
           s.isBookmarked = result.isBookmarked;
-          this.toast.show(
-            result.isBookmarked
-              ? `${ s.title } bookmarked`
-              : `${ s.title } removed from bookmarks`,
-            {
-              classname: result.isBookmarked
-                ? 'bg-success text-light'
-                : 'bg-secondary text-light',
-              delay: 2500
-            }
-          );
+          const message = result.isBookmarked
+            ? `${ s.title } bookmarked`
+            : `${ s.title } removed from bookmarks`;
+          const options = { title: result.isBookmarked ? 'Scholarship saved' : 'Bookmark removed' };
+          if (result.isBookmarked) {
+            this.toast.success(message, options);
+          } else {
+            this.toast.neutral(message, options);
+          }
           this.bookmarkingScholarshipId = null;
         },
-        error: () => {
+        error: err => {
           this.bookmarkingScholarshipId = null;
-          this.toast.show('Bookmark update failed', {
-            classname: 'bg-danger text-light',
-            delay: 4000
-          });
+          this.toast.error(getUserErrorMessage(err, 'Bookmark update failed. Please try again.'), { title: 'Unable to save bookmark' });
         }
       })
     );
@@ -123,12 +119,9 @@ export class ScholarshipsComponent implements OnInit, OnDestroy {
           this.scholarships = data;
           this.isLoading = false;
         },
-        error: () => {
+        error: err => {
           this.isLoading = false;
-          this.toast.show('Failed to load scholarships', {
-            classname: 'bg-danger text-light',
-            delay: 4000
-          });
+          this.toast.error(getUserErrorMessage(err, 'Unable to load scholarships right now. Please try again later.'), { title: 'Scholarships unavailable' });
         }
       })
     );

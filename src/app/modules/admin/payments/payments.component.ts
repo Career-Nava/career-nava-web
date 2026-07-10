@@ -164,6 +164,6 @@ export class AdminPaymentsComponent implements OnInit, OnDestroy {
   private getLoadError(err: any): string {
     if (err?.status === 401) return 'Please sign in again to view admin payments.';
     if (err?.status === 403) return 'Only admins can view payment audit records.';
-    return err?.error?.message || 'Unable to load payment records right now. Please try again later.';
+    return 'Unable to load payment records right now. Please try again later.';
   }
 }

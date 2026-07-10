@@ -7,6 +7,7 @@ import { CalendlyService } from '../../../../services/calendly/calendly.service'
 import { AdminMentor, Mentor, MentorSelfProfile } from '../../../../services/mentor/mentor.model';
 import { MentorService } from '../../../../services/mentor/mentor.service';
 import { ToastService } from '../../../../services/toast.service';
+import { getUserErrorMessage } from '../../../../services/user-error-message';
 import { SharedModule } from '../../../../shared/shared.module';
 
 declare global {
@@ -91,7 +92,6 @@ export class MentorDetailsComponent implements OnInit, OnDestroy {
           this.isLoading = false;
         },
         error: err => {
-          console.error('Error loading mentor', err);
           this.mentor = undefined;
           this.isLoading = false;
           this.hasError = true;
@@ -179,7 +179,7 @@ export class MentorDetailsComponent implements OnInit, OnDestroy {
         resolve();
       };
       script.onerror = () => {
-        this.toastService.show('Failed to load Calendly script', { classname: 'bg-soft-danger text-dark' });
+        this.toastService.error('Unable to load the scheduling service. Please try again later.', { title: 'Scheduling unavailable' });
         resolve();
       };
       document.body.appendChild(script);
@@ -189,16 +189,16 @@ export class MentorDetailsComponent implements OnInit, OnDestroy {
   openCalendlyModal(): void {
     if (!this.mentor) return;
     if (this.isAdminPreview || this.isMentorPreview) {
-      this.toastService.show(
+      this.toastService.warning(
         this.isAdminPreview ? 'Booking is disabled in admin preview.' : 'Booking is disabled in mentor preview.',
-        { classname: 'bg-soft-warning text-dark' }
+        { title: 'Preview mode' }
       );
       return;
     }
 
     const user = this.authService.getUser();
     if (!user) {
-      this.toastService.show('You must be logged in to book a session.', { classname: 'bg-soft-warning text-dark' });
+      this.toastService.warning('You must be logged in to book a session.', { title: 'Sign-in required' });
       return;
     }
 
@@ -210,7 +210,7 @@ export class MentorDetailsComponent implements OnInit, OnDestroy {
       this.waitForCalendlyScript().then(() => {
         if (!window.Calendly?.initInlineWidget || !this.calendlyContainer) {
           this.isLoadingCalendly = false;
-          this.toastService.show('Unable to load scheduling right now. Please try again later.', { classname: 'bg-soft-danger text-dark' });
+          this.toastService.error('Unable to load scheduling right now. Please try again later.', { title: 'Scheduling unavailable' });
           this.closeCalendlyModal();
           return;
         }
@@ -234,9 +234,9 @@ export class MentorDetailsComponent implements OnInit, OnDestroy {
             this.isLoadingCalendly = false;
           },
           error: err => {
-            console.warn('Error fetching booking link: ', err.error?.message ?? err);
+            console.warn('Booking link request failed.');
             this.isLoadingCalendly = false;
-            this.toastService.show('Unable to load scheduling link. Please try again later.', { classname: 'bg-soft-danger text-dark' });
+            this.toastService.error(getUserErrorMessage(err, 'Unable to load scheduling link. Please try again later.'), { title: 'Scheduling unavailable' });
             this.closeCalendlyModal();
           }
         });

@@ -1,25 +1,44 @@
-<div
-  aria-live="polite"
-  aria-atomic="true"
-  class="position-fixed top-0 end-0 p-3"
-  style="z-index: 1200;"
->
-  <ngb-toast
-    *ngFor="let toast of toastService.toasts"
-    [class]="toast.classname"
-    [autohide]="true"
-    [delay]="toast.delay || 500"
-    (hidden)="toastService.remove(toast)"
-    role="alert"
+<section class="toast-container" aria-label="Notifications">
+  <article
+    #toastElement
+    *ngFor="let toast of toastService.toasts; trackBy: trackToast"
+    class="career-toast"
+    [class.career-toast--success]="toast.variant === 'success'"
+    [class.career-toast--error]="toast.variant === 'error'"
+    [class.career-toast--warning]="toast.variant === 'warning'"
+    [class.career-toast--info]="toast.variant === 'info'"
+    [class.career-toast--neutral]="toast.variant === 'neutral'"
+    [class.career-toast--paused]="toast.isPaused"
+    [attr.role]="toast.announcement === 'assertive' ? 'alert' : 'status'"
+    [attr.aria-live]="toast.announcement"
+    aria-atomic="true"
+    (mouseenter)="onMouseEnter(toast)"
+    (mouseleave)="onMouseLeave(toast)"
+    (focusin)="onFocusIn(toast)"
+    (focusout)="onFocusOut($event, toast, toastElement)"
+    (keydown.escape)="toastService.dismiss(toast.id)"
   >
-    <!-- If toast is a TemplateRef -->
-    <ng-container *ngIf="isTemplate(toast); else textToast">
-      <ng-container *ngTemplateOutlet="asTemplateRef(toast.textOrTpl)"></ng-container>
-    </ng-container>
+    <span class="career-toast__icon" aria-hidden="true">
+      <fa-icon *ngIf="toast.variant === 'success'" [icon]="faCircleCheck"></fa-icon>
+      <fa-icon *ngIf="toast.variant === 'error'" [icon]="faCircleExclamation"></fa-icon>
+      <fa-icon *ngIf="toast.variant === 'warning'" [icon]="faTriangleExclamation"></fa-icon>
+      <fa-icon *ngIf="toast.variant === 'info'" [icon]="faCircleInfo"></fa-icon>
+      <fa-icon *ngIf="toast.variant === 'neutral'" [icon]="faBell"></fa-icon>
+    </span>
 
-    <!-- If toast is a string -->
-    <ng-template #textToast>
-      {{ toast.textOrTpl }}
-    </ng-template>
-  </ngb-toast>
-</div>
+    <div class="career-toast__content">
+      <span *ngIf="toast.title" class="career-toast__title">{{ toast.title }}</span>
+      <span *ngIf="!toast.title" class="visually-hidden">{{ getVariantLabel(toast.variant) }} notification</span>
+      <span *ngIf="toast.message" class="career-toast__message">{{ toast.message }}</span>
+    </div>
+
+    <button
+      type="button"
+      class="career-toast__dismiss"
+      [attr.aria-label]="'Dismiss ' + getVariantLabel(toast.variant).toLowerCase() + ' notification'"
+      (click)="toastService.dismiss(toast.id)"
+    >
+      <fa-icon [icon]="faXmark" aria-hidden="true"></fa-icon>
+    </button>
+  </article>
+</section>

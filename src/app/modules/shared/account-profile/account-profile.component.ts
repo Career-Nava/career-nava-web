@@ -6,6 +6,7 @@ import { finalize, forkJoin, Subscription } from 'rxjs';
 import { AuthService } from '../../../services/auth/auth.service';
 import { CalendlyService } from '../../../services/calendly/calendly.service';
 import { ToastService } from '../../../services/toast.service';
+import { getUserErrorMessage } from '../../../services/user-error-message';
 import { ChangePasswordRequest, GoogleUnlinkRequest, SetupPasswordRequest, UpdateUserProfileRequest, UserProfile, UserSecurityStatus } from '../../../services/user/user.model';
 import { UserService } from '../../../services/user/user.service';
 import { SharedModule } from '../../../shared/shared.module';
@@ -32,13 +33,6 @@ export class AccountProfileComponent implements OnInit, OnDestroy {
   saving = false;
   changingPassword = false;
   error: string | null = null;
-  message: string | null = null;
-  passwordError: string | null = null;
-  passwordMessage: string | null = null;
-  setupPasswordError: string | null = null;
-  setupPasswordMessage: string | null = null;
-  unlinkGoogleError: string | null = null;
-  unlinkGoogleMessage: string | null = null;
   settingUpPassword = false;
   linkingGoogle = false;
   unlinkingGoogle = false;
@@ -176,7 +170,7 @@ export class AccountProfileComponent implements OnInit, OnDestroy {
           window.location.href = authorizationUrl;
         },
         error: err => {
-          this.toast.show(this.getActionError(err, 'Unable to start Google linking right now.'), { classname: 'bg-danger text-light', delay: 7000 });
+          this.toast.error(getUserErrorMessage(err, 'Unable to start Google linking right now.'), { title: 'Google linking failed' });
         }
       });
   }
@@ -204,23 +198,21 @@ export class AccountProfileComponent implements OnInit, OnDestroy {
 
     this.saving = true;
     this.error = null;
-    this.message = null;
 
     this.userService.updateCurrentProfile(payload)
       .pipe(finalize(() => this.saving = false))
       .subscribe({
         next: profile => {
           this.applyProfile(profile);
-          this.message = 'Profile updated.';
           this.authService.updateUser({
             fullName: profile.fullName,
             profilePicture: profile.profilePicture ?? undefined,
             calendlyConnected: profile.calendlyConnected
           });
-          this.toast.show('Profile updated.', { classname: 'bg-success text-light', delay: 3200 });
+          this.toast.success('Profile updated.', { title: 'Profile saved' });
         },
         error: err => {
-          this.error = this.getActionError(err, 'Unable to save your profile right now.');
+          this.toast.error(getUserErrorMessage(err, 'Unable to save your profile right now.'), { title: 'Profile save failed' });
         }
       });
   }
@@ -239,8 +231,6 @@ export class AccountProfileComponent implements OnInit, OnDestroy {
     };
 
     this.changingPassword = true;
-    this.passwordError = null;
-    this.passwordMessage = null;
 
     this.userService.changeCurrentPassword(payload)
       .pipe(finalize(() => this.changingPassword = false))
@@ -252,11 +242,10 @@ export class AccountProfileComponent implements OnInit, OnDestroy {
             newPassword: '',
             confirmPassword: ''
           });
-          this.passwordMessage = 'Password changed.';
-          this.toast.show('Password changed.', { classname: 'bg-success text-light', delay: 3200 });
+          this.toast.success('Password changed.', { title: 'Password updated' });
         },
         error: err => {
-          this.passwordError = this.getActionError(err, 'Unable to change your password right now.');
+          this.toast.error(getUserErrorMessage(err, 'Unable to change your password right now.'), { title: 'Password update failed' });
         }
       });
   }
@@ -274,8 +263,6 @@ export class AccountProfileComponent implements OnInit, OnDestroy {
     };
 
     this.settingUpPassword = true;
-    this.setupPasswordError = null;
-    this.setupPasswordMessage = null;
 
     this.userService.setupCurrentPassword(payload)
       .pipe(finalize(() => this.settingUpPassword = false))
@@ -286,12 +273,11 @@ export class AccountProfileComponent implements OnInit, OnDestroy {
             newPassword: '',
             confirmPassword: ''
           });
-          this.setupPasswordMessage = 'Password set.';
-          this.toast.show('Password set.', { classname: 'bg-success text-light', delay: 3200 });
+          this.toast.success('Password set.', { title: 'Password ready' });
           this.refreshSecurityStatus();
         },
         error: err => {
-          this.setupPasswordError = this.getActionError(err, 'Unable to set your password right now.');
+          this.toast.error(getUserErrorMessage(err, 'Unable to set your password right now.'), { title: 'Password setup failed' });
         }
       });
   }
@@ -308,8 +294,6 @@ export class AccountProfileComponent implements OnInit, OnDestroy {
     };
 
     this.unlinkingGoogle = true;
-    this.unlinkGoogleError = null;
-    this.unlinkGoogleMessage = null;
 
     this.userService.unlinkCurrentGoogle(payload)
       .pipe(finalize(() => this.unlinkingGoogle = false))
@@ -319,12 +303,11 @@ export class AccountProfileComponent implements OnInit, OnDestroy {
           this.unlinkGoogleForm.reset({
             currentPassword: ''
           });
-          this.unlinkGoogleMessage = 'Google sign-in disconnected.';
-          this.toast.show('Google sign-in disconnected.', { classname: 'bg-success text-light', delay: 3200 });
+          this.toast.success('Google sign-in disconnected.', { title: 'Google sign-in removed' });
           this.refreshAccountState();
         },
         error: err => {
-          this.unlinkGoogleError = this.getActionError(err, 'Unable to disconnect Google sign-in right now.');
+          this.toast.error(getUserErrorMessage(err, 'Unable to disconnect Google sign-in right now.'), { title: 'Google disconnect failed' });
         }
       });
   }
@@ -332,8 +315,6 @@ export class AccountProfileComponent implements OnInit, OnDestroy {
   beginGoogleUnlink(): void {
     this.showingGoogleUnlinkConfirmation = true;
     this.showUnlinkCurrentPassword = false;
-    this.unlinkGoogleError = null;
-    this.unlinkGoogleMessage = null;
     this.unlinkGoogleForm.reset({
       currentPassword: ''
     });
@@ -342,8 +323,6 @@ export class AccountProfileComponent implements OnInit, OnDestroy {
   cancelGoogleUnlink(): void {
     this.showingGoogleUnlinkConfirmation = false;
     this.showUnlinkCurrentPassword = false;
-    this.unlinkGoogleError = null;
-    this.unlinkGoogleMessage = null;
     this.unlinkGoogleForm.reset({
       currentPassword: ''
     });
@@ -364,7 +343,7 @@ export class AccountProfileComponent implements OnInit, OnDestroy {
           this.applyProfile(profile);
         },
         error: err => {
-          this.error = this.getActionError(err, 'Unable to load your profile right now.');
+          this.error = getUserErrorMessage(err, 'Unable to load your profile right now.');
         }
       });
   }
@@ -393,7 +372,6 @@ export class AccountProfileComponent implements OnInit, OnDestroy {
             currentPassword: ''
           });
         }
-        this.unlinkGoogleError = null;
       },
       error: () => undefined
     });
@@ -418,11 +396,11 @@ export class AccountProfileComponent implements OnInit, OnDestroy {
     if (!calendlyStatus && !legacyStatus) return;
 
     if (calendlyStatus === 'connected' || legacyStatus === 'success') {
-      this.toast.show('Calendly linked successfully.', { classname: 'bg-success text-light', delay: 5000 });
+      this.toast.success('Calendly linked successfully.', { title: 'Calendly connected' });
       this.authService.updateUser({ calendlyConnected: true });
       this.subscriptions.add(this.authService.refreshCurrentUser().subscribe({ error: () => undefined }));
     } else {
-      this.toast.show(`Unable to link Calendly${ message ? ': ' + message : '.' }`, { classname: 'bg-danger text-light', delay: 7000 });
+      this.toast.error('Unable to link Calendly. Please try again later.', { title: 'Calendly connection failed' });
     }
 
     void this.router.navigate([], {
@@ -439,10 +417,10 @@ export class AccountProfileComponent implements OnInit, OnDestroy {
 
     const message = this.getGoogleLinkResultMessage(googleLinkResult);
     if (message.success) {
-      this.toast.show(message.text, { classname: 'bg-success text-light', delay: 5000 });
+      this.toast.success(message.text, { title: 'Google linking complete' });
       this.subscriptions.add(this.authService.refreshCurrentUser().subscribe({ error: () => undefined }));
     } else {
-      this.toast.show(message.text, { classname: 'bg-danger text-light', delay: 7000 });
+      this.toast.error(message.text, { title: 'Google linking failed' });
     }
 
     void this.router.navigate([], {
@@ -498,12 +476,6 @@ export class AccountProfileComponent implements OnInit, OnDestroy {
 
   toggleUnlinkPasswordVisibility(): void {
     this.showUnlinkCurrentPassword = !this.showUnlinkCurrentPassword;
-  }
-
-  private getActionError(err: any, fallback: string): string {
-    if (err?.status === 401) return 'Please sign in again to manage your profile.';
-    if (err?.status === 403) return 'You do not have permission to manage this profile.';
-    return err?.error?.message || err?.message || fallback;
   }
 
   private resetPasswordVisibility(): void {
