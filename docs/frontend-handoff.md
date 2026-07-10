@@ -815,7 +815,7 @@ Recommended frontend Phase 6 scope:
 
 ### Phase 7 - Admin Payment and Event Type Operations
 
-Current status: Phase 7.2 admin payment/payment-event read-only UI is complete. Phase 7.3 mentor event type admin API/model alignment is complete in `career-nava-api`. Phase 7.4 admin mentor event type UI is complete in `career-nava-web`. Phase 7.5 tests/docs closeout is complete. Phase 7.6 authenticated user profile and admin-only Calendly connection is complete. Phase 7.7A backend-first account profile contract foundation is complete. Phase 7.7B password change safety foundation is complete. Phase 7.7C account security status contract and provider identifier hardening is complete. Phase 7.7D Google-only local password setup foundation is complete. Phase 7.7E Google provider uniqueness and unlink safety groundwork is complete. Phase 7.7F shared account-profile Google unlink UI is complete. A small Phase 7.7G admin-only Calendly card visual refinement is complete. Explicit Google link UI remains deferred.
+Current status: Phase 7.2 admin payment/payment-event read-only UI is complete. Phase 7.3 mentor event type admin API/model alignment is complete in `career-nava-api`. Phase 7.4 admin mentor event type UI is complete in `career-nava-web`. Phase 7.5 tests/docs closeout is complete. Phase 7.6 authenticated user profile and admin-only Calendly connection is complete. Phase 7.7A backend-first account profile contract foundation is complete. Phase 7.7B password change safety foundation is complete. Phase 7.7C account security status contract and provider identifier hardening is complete. Phase 7.7D Google-only local password setup foundation is complete. Phase 7.7E Google provider uniqueness and unlink safety groundwork is complete. Phase 7.7F shared account-profile Google unlink UI is complete. Phase 7.7G admin-only Calendly card visual refinement is complete. Phase 7.7H current-user Google linking and authentication session persistence are complete.
 
 Verified frontend baseline:
 
@@ -898,9 +898,16 @@ Recommended Phase 7 frontend sub-phases:
    - The admin-only Calendly connection card now uses a looser two-row provider layout aligned with the Google sign-in card, with the Calendly logo, a shorter connection-status pill, and a separate action row for connect/reconnect plus refresh.
    - Existing connect/reconnect and refresh behavior was preserved exactly; no Calendly backend contracts, sync rules, or provider-owned field handling changed.
    - Mentors and mentees still do not see account-level Calendly controls.
-12. Later account-security follow-up. Planned next.
-   - Explicit Google link UI remains deferred until a dedicated current-user link flow exists and backend `google_id` uniqueness has already been enforced.
-   - Phase 8 launch hardening remains next after the remaining Phase 7.7 account-security decisions.
+12. Phase 7.7H - Current-user Google linking and authentication session persistence. Complete.
+   - The shared account profile Google sign-in card now shows `Link Google` for backend-derived unlinked accounts, keeps `Linked` status when Google is attached, and preserves the existing `Disconnect Google` action where `GET /api/User/Security` allows it.
+   - Link start calls the authenticated backend-owned Google link endpoint and navigates to the backend-generated authorization URL; the frontend does not build the Google URL, send a target user id, store provider tokens, or infer linkage without refreshing backend state.
+   - The shared Google callback returns to the role account-profile route with a coarse `googleLink` result. The account-profile page maps that result to the global toast system, removes the temporary query parameter, refreshes `GET /api/User/Profile` and `GET /api/User/Security`, and shows the backend-derived linked state.
+   - Link success and Google-identity conflict rejection were manually validated, including the guarantee that the active Career Nava account does not switch after OAuth return.
+   - Google link feedback now uses the global toast system only. Duplicate inline Bootstrap result alerts and stale deferred-link messaging were removed from the Google sign-in card.
+   - Authentication restoration now has explicit `initializing`, `authenticated`, and `unauthenticated` states in `AuthService`.
+   - `APP_INITIALIZER` restores the persisted Career Nava JWT/session before route evaluation, hydrates the current user through `/api/User/me`, and clears expired or malformed credentials.
+   - Auth guards wait for restoration before redirecting, so hard refresh, direct protected-route navigation, and full-page Google OAuth return preserve authentication when the stored session is valid.
+   - Phase 8 launch hardening is now the next planned frontend direction.
 
 Phase 7 frontend guardrails:
 
@@ -978,7 +985,7 @@ Phase 3F follow-up notes:
 - Payment/join behavior exists only for mentee sessions and should not be moved into shared session components.
 - Phase 5.3 frontend payment integration is wired to backend-owned initialization and verification. The frontend must not decide amount, currency, payment reference, success, paid access, or booked session state.
 - Phase 5.5 closed payment docs/build validation, but external Paystack sandbox delivery and manual visual review of the payment modal remain production-readiness caveats.
-- Admin payment/event audit pages are implemented and read-only. Phase 7.4 mentor event type management pages are implemented with backend-only sync, active mentor assignment, and pricing metadata controls. Phase 7.5 closeout validation is complete; Phase 7.6 profile/Calendly connection work is complete; Phase 7.7A account profile contract foundation is complete; Phase 7.7B password change safety foundation is complete; Phase 7.7C account-security status hardening is complete; Phase 7.7D Google-only local password setup is complete; Phase 7.7F shared Google unlink UI is complete on top of the Phase 7.7E backend groundwork; and Phase 7.7G visually aligns the admin-only Calendly card without changing its behavior. Explicit Google link mutation remains deferred.
+- Admin payment/event audit pages are implemented and read-only. Phase 7.4 mentor event type management pages are implemented with backend-only sync, active mentor assignment, and pricing metadata controls. Phase 7.5 closeout validation is complete; Phase 7.6 profile/Calendly connection work is complete; Phase 7.7A account profile contract foundation is complete; Phase 7.7B password change safety foundation is complete; Phase 7.7C account-security status hardening is complete; Phase 7.7D Google-only local password setup is complete; Phase 7.7F shared Google unlink UI is complete on top of the Phase 7.7E backend groundwork; Phase 7.7G visually aligns the admin-only Calendly card without changing its behavior; and Phase 7.7H completes current-user Google linking plus auth-session restoration.
 - Admin overview currently uses aggregate counts only; charts/recent activity/trends are deferred.
 - Public blog detail now resolves through the dedicated published-only slug endpoint.
 
@@ -990,13 +997,13 @@ Major pending areas after the current MVP foundation:
 - better automated frontend validation and tests
 - richer dashboard analytics
 - application tracker work
-- launch hardening after Phase 7.7 account profile expansion closeout
+- Phase 8 launch hardening
 - preserve mentor experience row identities if richer non-replacement editing becomes necessary
 
 ## Recommended Next Frontend Iterations
 
-1. Define a dedicated current-user Google link flow now that unlink safety and provider uniqueness groundwork are in place.
-2. Start Phase 8 launch hardening without adding new product features.
+1. Start Phase 8 launch hardening with a fresh tracker analysis before implementing a specific hardening item.
+2. Add targeted automated coverage for auth restoration, protected route continuity, and Google account-security flows where practical.
 3. Add lint/test scripts or at least basic test tooling.
 4. Add pagination/search/filtering refinements to admin lists.
 5. Add a scholarship detail bookmark split/current-user detail path if product wants bookmark controls on detail.

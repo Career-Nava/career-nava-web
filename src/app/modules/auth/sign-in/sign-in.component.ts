@@ -36,19 +36,12 @@ export class SignInComponent implements OnInit, AfterViewInit {
       password: [ '', [ Validators.required, Validators.minLength(6) ] ]
     });
 
-    // already logged in
-    const existingUser = this.authService.getUser();
-    if (existingUser) {
-      this.authService.navigateByRole(existingUser.role);
-      return;
-    }
-
-    // OAuth redirect handling
     const params = new URLSearchParams(window.location.search);
     const token = params.get('token');
 
     if (token) {
       this.loading = true;
+      window.history.replaceState({}, document.title, window.location.pathname);
       this.authService.restoreSessionFromToken(token).subscribe({
         next: user => {
           this.authService.navigateByRole(user.role);
@@ -59,6 +52,18 @@ export class SignInComponent implements OnInit, AfterViewInit {
           this.loading = false;
         }
       });
+      return;
+    }
+
+    // already logged in
+    const existingUser = this.authService.getUser();
+    if (existingUser) {
+      const googleLink = params.get('googleLink');
+      if (googleLink) {
+        window.location.href = `${ this.authService.getAccountProfileUrlForRole(existingUser.role) }?googleLink=${ encodeURIComponent(googleLink) }`;
+      } else {
+        this.authService.navigateByRole(existingUser.role);
+      }
     }
   }
 

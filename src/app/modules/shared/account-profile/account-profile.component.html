@@ -261,6 +261,18 @@
                         {{ googleLinked ? 'Linked' : 'Not linked' }}
                       </span>
                       <button
+                        *ngIf="showGoogleLinkAction"
+                        type="button"
+                        class="admin-action-pill admin-action-pill--primary admin-action-pill--compact"
+                        [disabled]="linkingGoogle"
+                        (click)="linkGoogle()">
+                        <span class="admin-action-content">
+                          <span *ngIf="linkingGoogle" class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+                          <fa-icon *ngIf="!linkingGoogle" [icon]="faLink"></fa-icon>
+                          <span>Link Google</span>
+                        </span>
+                      </button>
+                      <button
                         *ngIf="showGoogleUnlinkSection && !showingGoogleUnlinkConfirmation"
                         type="button"
                         class="admin-action-pill admin-action-pill--danger admin-action-pill--compact"
@@ -281,7 +293,7 @@
                   </ng-container>
 
                   <ng-template #googleReadOnlyNote>
-                    <div class="account-profile-security-note mb-0">
+                    <div *ngIf="showGoogleReadOnlyNote" class="account-profile-security-note mb-0">
                       {{ googleCardNotice }}
                     </div>
                   </ng-template>

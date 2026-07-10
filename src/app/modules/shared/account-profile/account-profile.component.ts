@@ -40,6 +40,7 @@ export class AccountProfileComponent implements OnInit, OnDestroy {
   unlinkGoogleError: string | null = null;
   unlinkGoogleMessage: string | null = null;
   settingUpPassword = false;
+  linkingGoogle = false;
   unlinkingGoogle = false;
   showingGoogleUnlinkConfirmation = false;
   showCurrentPassword = false;
@@ -83,6 +84,7 @@ export class AccountProfileComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.handleGoogleLinkRedirect();
     this.handleCalendlyRedirect();
     this.loadProfile();
   }
@@ -127,20 +129,28 @@ export class AccountProfileComponent implements OnInit, OnDestroy {
     return this.securityStatus?.canUnlinkGoogle ?? false;
   }
 
+  get showGoogleLinkAction(): boolean {
+    return this.securityStatus?.canLinkGoogle ?? false;
+  }
+
   get canSubmitGoogleUnlink(): boolean {
     const currentPassword = this.unlinkGoogleForm.get('currentPassword')?.value;
     return !this.unlinkingGoogle && typeof currentPassword === 'string' && currentPassword.trim().length > 0;
   }
 
   get googleCardLabel(): string {
-    return this.showGoogleUnlinkSection ? 'Connected account' : 'Sign-in method';
+    return this.googleLinked ? 'Connected account' : 'Sign-in method';
   }
 
   get showGoogleCardIntro(): boolean {
-    return this.showGoogleUnlinkSection;
+    return this.showGoogleUnlinkSection || this.showGoogleLinkAction;
   }
 
   get googleCardIntro(): string {
+    if (this.showGoogleLinkAction) {
+      return 'Connect Google so you can use it as a sign-in method for this Career Nava account.';
+    }
+
     return 'You can disconnect Google because your account also has a local password. You will still be able to sign in with email and password.';
   }
 
@@ -149,7 +159,26 @@ export class AccountProfileComponent implements OnInit, OnDestroy {
       return this.securityStatus?.googleUnlinkBlockedReason || 'Google cannot be disconnected until this account also has a local password.';
     }
 
-    return this.securityStatus?.googleLinkBlockedReason || 'Google connection is not available yet because the safe account-linking flow is still deferred.';
+    return this.securityStatus?.googleLinkBlockedReason || '';
+  }
+
+  get showGoogleReadOnlyNote(): boolean {
+    return !this.showGoogleUnlinkSection && !this.showGoogleLinkAction && this.googleCardNotice.trim().length > 0;
+  }
+
+  linkGoogle(): void {
+    this.linkingGoogle = true;
+
+    this.authService.getGoogleLinkAuthorizationUrl()
+      .pipe(finalize(() => this.linkingGoogle = false))
+      .subscribe({
+        next: authorizationUrl => {
+          window.location.href = authorizationUrl;
+        },
+        error: err => {
+          this.toast.show(this.getActionError(err, 'Unable to start Google linking right now.'), { classname: 'bg-danger text-light', delay: 7000 });
+        }
+      });
   }
 
   connectCalendly(): void {
@@ -401,6 +430,43 @@ export class AccountProfileComponent implements OnInit, OnDestroy {
       queryParams: {},
       replaceUrl: true
     });
+  }
+
+  private handleGoogleLinkRedirect(): void {
+    const queryParams = this.route.snapshot.queryParamMap;
+    const googleLinkResult = queryParams.get('googleLink');
+    if (!googleLinkResult) return;
+
+    const message = this.getGoogleLinkResultMessage(googleLinkResult);
+    if (message.success) {
+      this.toast.show(message.text, { classname: 'bg-success text-light', delay: 5000 });
+      this.subscriptions.add(this.authService.refreshCurrentUser().subscribe({ error: () => undefined }));
+    } else {
+      this.toast.show(message.text, { classname: 'bg-danger text-light', delay: 7000 });
+    }
+
+    void this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: {},
+      replaceUrl: true
+    });
+  }
+
+  private getGoogleLinkResultMessage(result: string): { success: boolean; text: string } {
+    switch (result) {
+      case 'success':
+        return { success: true, text: 'Google sign-in linked.' };
+      case 'already-linked':
+        return { success: true, text: 'Google sign-in is already linked.' };
+      case 'conflict':
+        return { success: false, text: 'That Google account cannot be linked here.' };
+      case 'already-different':
+        return { success: false, text: 'This account is already linked to a different Google sign-in.' };
+      case 'invalid':
+        return { success: false, text: 'Google linking request expired or could not be verified.' };
+      default:
+        return { success: false, text: 'Unable to link Google sign-in right now.' };
+    }
   }
 
   private toNullable(value: string | null | undefined): string | null {

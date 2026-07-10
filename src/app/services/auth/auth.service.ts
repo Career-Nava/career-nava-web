@@ -2,12 +2,19 @@ import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Router } from "@angular/router";
 import { jwtDecode } from "jwt-decode";
-import { BehaviorSubject, catchError, map, Observable, throwError } from "rxjs";
+import { BehaviorSubject, catchError, map, Observable, of, shareReplay, throwError } from "rxjs";
 import { ApiResponse } from "../api-response";
 import { ConfigurationService } from "../configuration.service";
 import { RestService } from "../rest.service";
 import { UserModel } from "../user/user.model";
 import { AuthPayload, JwtClaims, LoginRequest, RegisterRequest } from "./auth.model";
+
+export type AuthStatus = 'initializing' | 'authenticated' | 'unauthenticated';
+
+export interface AuthSessionState {
+  status: AuthStatus;
+  user: UserModel | null;
+}
 
 @Injectable({ providedIn: 'root' })
 export class AuthService extends RestService {
@@ -15,17 +22,53 @@ export class AuthService extends RestService {
   private readonly USER_KEY = 'user';
   private readonly apiBaseUrl: string;
 
-  private readonly userSubject = new BehaviorSubject<UserModel | null>(this.loadUserFromStorage());
+  private initialization$?: Observable<AuthSessionState>;
+  private readonly userSubject = new BehaviorSubject<UserModel | null>(null);
+  private readonly authStateSubject = new BehaviorSubject<AuthSessionState>({ status: 'initializing', user: null });
+
   readonly user$ = this.userSubject.asObservable();
+  readonly authState$ = this.authStateSubject.asObservable();
 
   constructor(http: HttpClient, config: ConfigurationService, private router: Router) {
     const apiBaseUrl = config.get<any>('api').baseUrl;
     super(http, 'auth', apiBaseUrl);
     this.apiBaseUrl = apiBaseUrl;
+  }
 
-    if (this.userSubject.value && this.getToken()) {
-      this.refreshCurrentUser().subscribe({ error: () => this.clearSession() });
+  initializeAuth(): Observable<AuthSessionState> {
+    const current = this.authStateSubject.value;
+    if (current.status !== 'initializing') return of(current);
+    if (this.initialization$) return this.initialization$;
+
+    const token = this.readStoredToken();
+    if (!token) {
+      this.clearSession(false);
+      return of(this.authStateSubject.value);
     }
+
+    if (!this.isTokenValid(token)) {
+      this.clearSession(false);
+      return of(this.authStateSubject.value);
+    }
+
+    const claimsUser = this.createUserFromToken(token);
+    if (!claimsUser) {
+      this.clearSession(false);
+      return of(this.authStateSubject.value);
+    }
+
+    this.userSubject.next(claimsUser);
+
+    this.initialization$ = this.refreshCurrentUser().pipe(
+      map(user => this.setAuthenticated(user)),
+      catchError(() => {
+        this.clearSession(false);
+        return of(this.authStateSubject.value);
+      }),
+      shareReplay(1)
+    );
+
+    return this.initialization$;
   }
 
   register(payload: RegisterRequest): Observable<void> {
@@ -45,8 +88,21 @@ export class AuthService extends RestService {
     return `${ this.baseUrl }/google/connect?userId=${ userId }`;
   }
 
+  getGoogleLinkAuthorizationUrl(): Observable<string> {
+    return this.http
+      .get<ApiResponse<{ authorizationUrl: string }>>(`${ this.baseUrl }/google/link`)
+      .pipe(
+        map(res => {
+          const authorizationUrl = res?.data?.authorizationUrl;
+          if (!authorizationUrl) throw new Error('Invalid Google link response');
+          return authorizationUrl;
+        }),
+        catchError(err => throwError(() => err))
+      );
+  }
+
   logout(): void {
-    this.clearSession();
+    this.clearSession(true);
     void this.router.navigate([ '/sign-in' ]);
   }
 
@@ -55,11 +111,11 @@ export class AuthService extends RestService {
   }
 
   getToken(): string | null {
-    const token = localStorage.getItem(this.TOKEN_KEY);
+    const token = this.readStoredToken();
     if (!token) return null;
 
     if (!this.isTokenValid(token)) {
-      this.clearSession();
+      this.clearSession(false);
       return null;
     }
 
@@ -67,7 +123,7 @@ export class AuthService extends RestService {
   }
 
   isAuthenticated(): boolean {
-    return !!this.getToken() && !!this.getUser();
+    return this.authStateSubject.value.status === 'authenticated' && !!this.getToken() && !!this.getUser();
   }
 
   getRedirectUrlForRole(role: string | undefined): string {
@@ -79,6 +135,18 @@ export class AuthService extends RestService {
       case 'mentee':
       default:
         return '/mentee/mentors';
+    }
+  }
+
+  getAccountProfileUrlForRole(role: string | undefined): string {
+    switch (role) {
+      case 'mentor':
+        return '/mentor/account';
+      case 'admin':
+        return '/admin/profile';
+      case 'mentee':
+      default:
+        return '/mentee/profile';
     }
   }
 
@@ -111,7 +179,7 @@ export class AuthService extends RestService {
         return res.data;
       }),
       catchError(err => {
-        this.clearSession();
+        this.clearSession(false);
         return throwError(() => err);
       })
     );
@@ -120,22 +188,21 @@ export class AuthService extends RestService {
   restoreSessionFromToken(token: string): Observable<UserModel> {
     try {
       if (!this.isTokenValid(token)) {
-        this.clearSession();
+        this.clearSession(false);
         return throwError(() => new Error('Invalid authentication token'));
       }
 
-      const jwtClaims = jwtDecode<JwtClaims>(token);
-      const userId = +jwtClaims.nameid;
-
-      if (!userId || !jwtClaims.email || !jwtClaims.role) {
-        this.clearSession();
+      const claimsUser = this.createUserFromToken(token);
+      if (!claimsUser) {
+        this.clearSession(false);
         return throwError(() => new Error('Invalid authentication token'));
       }
 
       localStorage.setItem(this.TOKEN_KEY, token);
+      this.userSubject.next(claimsUser);
       return this.refreshCurrentUser();
     } catch {
-      this.clearSession();
+      this.clearSession(false);
       return throwError(() => new Error('Invalid authentication token'));
     }
   }
@@ -155,12 +222,14 @@ export class AuthService extends RestService {
   private saveSession({ token, user }: AuthPayload): void {
     localStorage.setItem(this.TOKEN_KEY, token);
     localStorage.setItem(this.USER_KEY, JSON.stringify(user));
-    this.userSubject.next(user);
+    this.setAuthenticated(user);
   }
 
-  private clearSession(): void {
+  private clearSession(resetInitialization = true): void {
     this.clearStoredSession();
     this.userSubject.next(null);
+    this.authStateSubject.next({ status: 'unauthenticated', user: null });
+    if (resetInitialization) this.initialization$ = undefined;
   }
 
   private clearStoredSession(): void {
@@ -168,31 +237,40 @@ export class AuthService extends RestService {
     localStorage.removeItem(this.USER_KEY);
   }
 
-  private loadUserFromStorage(): UserModel | null {
-    const token = localStorage.getItem(this.TOKEN_KEY);
-    if (!token || !this.isTokenValid(token)) {
-      this.clearStoredSession();
-      return null;
-    }
-
-    const raw = localStorage.getItem(this.USER_KEY);
-    if (!raw) {
-      this.clearStoredSession();
-      return null;
-    }
-
+  private readStoredToken(): string | null {
     try {
-      const user = JSON.parse(raw) as UserModel;
-      if (!user?.userId || !user.email || !user.role) {
-        this.clearStoredSession();
-        return null;
-      }
-
-      return user;
+      return localStorage.getItem(this.TOKEN_KEY);
     } catch {
-      this.clearStoredSession();
       return null;
     }
+  }
+
+  private createUserFromToken(token: string): UserModel | null {
+    try {
+      const jwtClaims = jwtDecode<JwtClaims>(token);
+      const userId = +jwtClaims.nameid;
+
+      if (!userId || !jwtClaims.email || !jwtClaims.role) return null;
+
+      return {
+        userId,
+        email: jwtClaims.email,
+        role: jwtClaims.role,
+        fullName: jwtClaims.unique_name ?? '',
+        isActive: true,
+        calendlyConnected: false
+      };
+    } catch {
+      return null;
+    }
+  }
+
+  private setAuthenticated(user: UserModel): AuthSessionState {
+    localStorage.setItem(this.USER_KEY, JSON.stringify(user));
+    this.userSubject.next(user);
+    const state: AuthSessionState = { status: 'authenticated', user };
+    this.authStateSubject.next(state);
+    return state;
   }
 
   private isTokenValid(token: string): boolean {

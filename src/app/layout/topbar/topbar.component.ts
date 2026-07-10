@@ -33,9 +33,7 @@ export class TopbarComponent {
   }
 
   getProfileRoute(role: string | undefined): string {
-    if (role === 'admin') return '/admin/profile';
-    if (role === 'mentor') return '/mentor/account';
-    return '/mentee/profile';
+    return this.authService.getAccountProfileUrlForRole(role);
   }
 
   openProfile(role: string | undefined): void {
