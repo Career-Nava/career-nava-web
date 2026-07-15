@@ -266,8 +266,12 @@ export class AdminMentorsComponent implements OnInit {
     return 'admin-badge--warning';
   }
 
-  getCalendlyLabel(mentor: AdminMentor): string {
-    return mentor.calendlyConnected ? 'Connected' : 'Not connected';
+  getSchedulingLabel(mentor: AdminMentor): string {
+    return mentor.schedulingAssigned ? 'Assigned' : 'Not assigned';
+  }
+
+  getSchedulingBadgeClass(mentor: AdminMentor): string {
+    return mentor.schedulingAssigned ? 'admin-badge--success' : 'admin-badge--warning';
   }
 
   getTitleCompany(mentor: AdminMentor): string {

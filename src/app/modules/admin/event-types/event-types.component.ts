@@ -3,7 +3,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { faCloudArrowDown, faEye, faFilter, faRotateRight, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { debounceTime, finalize, Subscription } from 'rxjs';
-import { AdminCalendlyEventType, AdminCalendlyEventTypeFilters } from '../../../services/calendly/calendly.model';
+import { AdminCalendlyEventType, AdminCalendlyEventTypeFilters, CalendlyPlatformStatus } from '../../../services/calendly/calendly.model';
 import { CalendlyService } from '../../../services/calendly/calendly.service';
 import { AdminMentor } from '../../../services/mentor/mentor.model';
 import { MentorService } from '../../../services/mentor/mentor.service';
@@ -29,9 +29,12 @@ export class AdminEventTypesComponent implements OnInit, OnDestroy {
   mentors: AdminMentor[] = [];
   loading = true;
   mentorsLoading = false;
+  loadingPlatformStatus = false;
   syncing = false;
   error: string | null = null;
   mentorsError: string | null = null;
+  platformStatus: CalendlyPlatformStatus | null = null;
+  platformStatusError: string | null = null;
   filtersExpanded = false;
 
   filterForm: FormGroup = this.fb.group({
@@ -54,6 +57,7 @@ export class AdminEventTypesComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.loadMentors();
+    this.loadPlatformStatus();
     this.loadEventTypes();
     this.subs.add(this.filterForm.valueChanges.pipe(debounceTime(200)).subscribe(() => this.loadEventTypes()));
   }
@@ -86,7 +90,25 @@ export class AdminEventTypesComponent implements OnInit, OnDestroy {
       });
   }
 
+  loadPlatformStatus(): void {
+    this.loadingPlatformStatus = true;
+    this.calendlyService.getPlatformStatus()
+      .pipe(finalize(() => this.loadingPlatformStatus = false))
+      .subscribe({
+        next: status => {
+          this.platformStatus = status;
+          this.platformStatusError = null;
+        },
+        error: err => {
+          this.platformStatus = null;
+          this.platformStatusError = getUserErrorMessage(err, 'Unable to load Calendly platform status.');
+        }
+      });
+  }
+
   syncEventTypes(): void {
+    if (!this.canSyncEventTypes) return;
+
     this.syncing = true;
     this.calendlyService.syncAdminEventTypes()
       .pipe(finalize(() => this.syncing = false))
@@ -94,6 +116,7 @@ export class AdminEventTypesComponent implements OnInit, OnDestroy {
         next: () => {
           this.toast.success('Calendly event types synced.', { title: 'Sync complete' });
           this.loadEventTypes();
+          this.loadPlatformStatus();
         },
         error: err => this.toast.error(getUserErrorMessage(err, 'Unable to sync Calendly event types.'), { title: 'Event type sync failed' })
       });
@@ -106,6 +129,21 @@ export class AdminEventTypesComponent implements OnInit, OnDestroy {
   get showClearFilters(): boolean {
     const filters = this.filterForm.value;
     return this.filtersExpanded || Object.values(filters).some(value => value !== null && value !== undefined && value !== '');
+  }
+  get canSyncEventTypes(): boolean {
+    return this.platformStatus?.isConnected === true &&
+      this.platformStatus?.canSync === true &&
+      this.platformStatus?.configurationReady === true &&
+      !this.syncing &&
+      !this.loadingPlatformStatus;
+  }
+  get syncDisabledReason(): string {
+    if (this.loadingPlatformStatus) return 'Checking Calendly platform status.';
+    if (this.platformStatusError) return this.platformStatusError;
+    if (!this.platformStatus?.isConnected) return 'Connect the Calendly platform account before synchronizing event types.';
+    if (!this.platformStatus?.configurationReady) return this.platformStatus?.configurationMessage || 'Calendly provider configuration is incomplete.';
+    if (!this.platformStatus?.canSync) return this.platformStatus?.message || 'Calendly synchronization is unavailable for the current platform state.';
+    return '';
   }
 
   toggleFilters(): void { this.filtersExpanded = !this.filtersExpanded; }
@@ -136,7 +174,7 @@ export class AdminEventTypesComponent implements OnInit, OnDestroy {
   }
 
   getMentorLabel(eventType: AdminCalendlyEventType): string {
-    return eventType.mentor?.fullName || eventType.mentor?.email || 'Unassigned';
+    return eventType.mentor?.fullName || eventType.mentor?.email || '';
   }
 
   getProviderStatusBadgeClass(status?: string | null): string {

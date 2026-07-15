@@ -99,6 +99,13 @@ export class AdminEventTypeDetailComponent implements OnInit, OnDestroy {
       });
   }
 
+  get eligibleMentors(): AdminMentor[] {
+    const currentMentorProfileId = this.eventType?.mentor?.mentorProfileId ?? null;
+    return this.mentors.filter(mentor =>
+      mentor.mentorProfileId === currentMentorProfileId || mentor.schedulingAssigned !== true
+    );
+  }
+
   saveAssignment(): void {
     if (!this.eventType) return;
 

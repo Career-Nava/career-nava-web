@@ -25,7 +25,7 @@
         <p class="admin-copy mb-0">Provider-owned Calendly fields are read-only. Filters call the admin event type API.</p>
       </div>
       <div class="admin-toolbar__actions">
-        <button type="button" class="admin-action-pill admin-action-pill--primary admin-action-pill--compact" [disabled]="syncing" (click)="syncEventTypes()">
+        <button type="button" class="admin-action-pill admin-action-pill--primary admin-action-pill--compact" [disabled]="!canSyncEventTypes" [title]="canSyncEventTypes ? 'Sync event types from Calendly' : syncDisabledReason" (click)="syncEventTypes()">
           <span class="admin-action-content"><fa-icon [icon]="faCloudArrowDown"></fa-icon><span>{{ syncing ? 'Syncing...' : 'Sync from Calendly' }}</span></span>
         </button>
         <button type="button" class="admin-action-icon" title="Toggle filters" aria-label="Toggle filters" (click)="toggleFilters()"><fa-icon [icon]="faFilter"></fa-icon></button>
@@ -98,6 +98,7 @@
         </div>
       </ng-container>
     </form>
+    <p *ngIf="!canSyncEventTypes && syncDisabledReason" class="admin-copy admin-inline-warning mt-3 mb-0">{{ syncDisabledReason }}</p>
   </section>
 
   <div *ngIf="loading" class="admin-state admin-list-state text-center mb-4"><div class="spinner-border text-primary" role="status" aria-label="Loading event types"></div><p class="admin-copy mb-0 mt-3">Loading event types...</p></div>
@@ -114,7 +115,10 @@
             <tr *ngFor="let eventType of eventTypes; trackBy: trackEventType">
               <td><div class="admin-table__title">{{ eventType.name || 'Unnamed event type' }}</div><span class="admin-table__subcopy">{{ eventType.provider || 'calendly' }} · <a *ngIf="eventType.bookingUri" [href]="eventType.bookingUri" target="_blank" rel="noopener">Booking link</a><span *ngIf="!eventType.bookingUri">Booking link unavailable</span></span></td>
               <td><span class="admin-badge text-capitalize" [ngClass]="getProviderStatusBadgeClass(eventType.activeStatus)">{{ eventType.activeStatus || 'unknown' }}</span></td>
-              <td><div class="admin-table__title">{{ getMentorLabel(eventType) }}</div><span class="admin-badge" [ngClass]="getAssignmentBadgeClass(eventType)">{{ eventType.assigned ? 'Assigned' : 'Unassigned' }}</span></td>
+              <td>
+                <div *ngIf="eventType.assigned" class="admin-table__title">{{ getMentorLabel(eventType) }}</div>
+                <span class="admin-badge" [ngClass]="getAssignmentBadgeClass(eventType)" [attr.aria-label]="eventType.assigned ? 'Assigned to ' + getMentorLabel(eventType) : 'Unassigned event type'">{{ eventType.assigned ? 'Assigned' : 'Unassigned' }}</span>
+              </td>
               <td>{{ formatDuration(eventType) }}</td>
               <td><span class="admin-badge" [ngClass]="getPriceBadgeClass(eventType)">{{ formatPrice(eventType) }}</span></td>
               <td>{{ eventType.updatedAt | date:'medium' }}</td>
@@ -127,7 +131,7 @@
       <div class="admin-record-list d-lg-none">
         <article *ngFor="let eventType of eventTypes; trackBy: trackEventType" class="admin-record-card">
           <div class="admin-record-card__head">
-            <div><h3 class="admin-record-card__title">{{ eventType.name || 'Unnamed event type' }}</h3><p class="admin-copy mb-0">{{ getMentorLabel(eventType) }}</p></div>
+            <div><h3 class="admin-record-card__title">{{ eventType.name || 'Unnamed event type' }}</h3><p *ngIf="eventType.assigned" class="admin-copy mb-0">{{ getMentorLabel(eventType) }}</p><span class="admin-badge" [ngClass]="getAssignmentBadgeClass(eventType)" [attr.aria-label]="eventType.assigned ? 'Assigned to ' + getMentorLabel(eventType) : 'Unassigned event type'">{{ eventType.assigned ? 'Assigned' : 'Unassigned' }}</span></div>
             <span class="admin-badge text-capitalize" [ngClass]="getProviderStatusBadgeClass(eventType.activeStatus)">{{ eventType.activeStatus || 'unknown' }}</span>
           </div>
           <div class="admin-detail-list">

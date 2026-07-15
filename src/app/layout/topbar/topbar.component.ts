@@ -40,14 +40,6 @@ export class TopbarComponent {
     this.router.navigateByUrl(this.getProfileRoute(role));
   }
 
-  showsCalendlyStatus(role: string | undefined): boolean {
-    return role === 'admin';
-  }
-
-  getCalendlyStatusLabel(user: UserModel): string {
-    return user.calendlyConnected ? 'Calendly connected' : 'Calendly not connected';
-  }
-
   logout() {
     this.sidebarService.close();
     this.authService.logout();

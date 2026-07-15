@@ -95,8 +95,8 @@
           </ng-template>
 
           <div class="mnt-chips">
-            <span class="mnt-chip" [class.mnt-chip--success]="mentor.calendlyConnected" [class.mnt-chip--muted]="!mentor.calendlyConnected">
-              {{ mentor.calendlyConnected ? 'Open for booking' : 'Profile available' }}
+            <span class="mnt-chip" [class.mnt-chip--success]="mentor.schedulingAssigned" [class.mnt-chip--muted]="!mentor.schedulingAssigned">
+              {{ mentor.schedulingAssigned ? 'Open for booking' : 'Profile available' }}
             </span>
             <span class="mnt-chip mnt-chip--soft" *ngIf="mentor.avgRating">
               {{ mentor.avgRating | number:'1.0-1' }} rating

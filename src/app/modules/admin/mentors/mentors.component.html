@@ -155,14 +155,14 @@
     <div class="admin-panel__body">
       <div class="d-none d-lg-block admin-table-wrap">
         <table class="table align-middle admin-table">
-          <thead><tr><th>Mentor</th><th>Title / Company</th><th>Profile status</th><th>Account</th><th>Calendly</th><th>Sessions</th><th>Reviews</th><th class="admin-table__actions">Actions</th></tr></thead>
+          <thead><tr><th>Mentor</th><th>Title / Company</th><th>Profile status</th><th>Account</th><th>Scheduling</th><th>Sessions</th><th>Reviews</th><th class="admin-table__actions">Actions</th></tr></thead>
           <tbody>
             <tr *ngFor="let mentor of filteredMentors; trackBy: trackMentor">
               <td><div class="admin-table__title">{{ mentor.fullName || '-' }}</div><span class="admin-table__subcopy">{{ mentor.email || 'Email unavailable' }}</span></td>
               <td>{{ getTitleCompany(mentor) }}</td>
               <td><span class="admin-badge text-capitalize" [ngClass]="getStatusBadgeClass(mentor)">{{ getStatusLabel(mentor) }}</span></td>
               <td>{{ mentor.isActive ? 'Active' : 'Inactive' }}</td>
-              <td>{{ getCalendlyLabel(mentor) }}</td>
+              <td><span class="admin-badge" [ngClass]="getSchedulingBadgeClass(mentor)">{{ getSchedulingLabel(mentor) }}</span></td>
               <td>{{ mentor.totalSessions ?? 0 }}</td>
               <td>{{ getReviewsSummary(mentor) }}</td>
               <td class="admin-table__actions">
@@ -185,7 +185,7 @@
           <div class="admin-detail-list">
             <div class="admin-detail-list__item"><span class="admin-detail-list__label">Title / Company</span><span class="admin-detail-list__value">{{ getTitleCompany(mentor) }}</span></div>
             <div class="admin-detail-list__item"><span class="admin-detail-list__label">Account</span><span class="admin-detail-list__value">{{ mentor.isActive ? 'Active' : 'Inactive' }}</span></div>
-            <div class="admin-detail-list__item"><span class="admin-detail-list__label">Calendly</span><span class="admin-detail-list__value">{{ getCalendlyLabel(mentor) }}</span></div>
+            <div class="admin-detail-list__item"><span class="admin-detail-list__label">Scheduling</span><span class="admin-detail-list__value"><span class="admin-badge" [ngClass]="getSchedulingBadgeClass(mentor)">{{ getSchedulingLabel(mentor) }}</span></span></div>
           </div>
           <div class="admin-action-group">
             <a class="admin-action-icon" [routerLink]="['/admin/mentors/preview', getMentorPreviewId(mentor)]" title="Preview mentee view" aria-label="Preview mentee view"><fa-icon [icon]="faEye"></fa-icon></a>

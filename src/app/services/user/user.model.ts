@@ -4,7 +4,6 @@ export interface UserModel {
   email: string;
   role: string;
   isActive: boolean;
-  calendlyConnected: boolean;
   profilePicture?: string;
 }
 
@@ -14,7 +13,6 @@ export interface UserProfile {
   email: string;
   role: string;
   isActive: boolean;
-  calendlyConnected: boolean;
   googleLinked: boolean;
   profilePicture?: string | null;
   createdAt?: string;

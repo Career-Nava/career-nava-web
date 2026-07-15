@@ -1,9 +1,10 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, ValidationErrors, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { faCalendarCheck, faEye, faEyeSlash, faFloppyDisk, faKey, faLink, faRotateRight } from '@fortawesome/free-solid-svg-icons';
+import { faEye, faEyeSlash, faFloppyDisk, faKey, faLink, faPowerOff, faRotateRight } from '@fortawesome/free-solid-svg-icons';
 import { finalize, forkJoin, Subscription } from 'rxjs';
 import { AuthService } from '../../../services/auth/auth.service';
+import { CalendlyPlatformOAuthOperation, CalendlyPlatformStatus } from '../../../services/calendly/calendly.model';
 import { CalendlyService } from '../../../services/calendly/calendly.service';
 import { ToastService } from '../../../services/toast.service';
 import { getUserErrorMessage } from '../../../services/user-error-message';
@@ -19,12 +20,12 @@ import { SharedModule } from '../../../shared/shared.module';
   styleUrl: './account-profile.component.scss'
 })
 export class AccountProfileComponent implements OnInit, OnDestroy {
-  protected readonly faCalendarCheck = faCalendarCheck;
   protected readonly faEye = faEye;
   protected readonly faEyeSlash = faEyeSlash;
   protected readonly faFloppyDisk = faFloppyDisk;
   protected readonly faKey = faKey;
   protected readonly faLink = faLink;
+  protected readonly faPowerOff = faPowerOff;
   protected readonly faRotateRight = faRotateRight;
 
   profile: UserProfile | null = null;
@@ -36,6 +37,10 @@ export class AccountProfileComponent implements OnInit, OnDestroy {
   settingUpPassword = false;
   linkingGoogle = false;
   unlinkingGoogle = false;
+  calendlyPlatformStatus: CalendlyPlatformStatus | null = null;
+  loadingCalendlyStatus = false;
+  calendlyAction: 'connect' | 'reconnect' | 'refresh' | 'disconnect' | null = null;
+  showingCalendlyDisconnectConfirmation = false;
   showingGoogleUnlinkConfirmation = false;
   showCurrentPassword = false;
   showNewPassword = false;
@@ -93,17 +98,52 @@ export class AccountProfileComponent implements OnInit, OnDestroy {
 
   get calendlyStatusLabel(): string {
     if (!this.canManageCalendly) return 'Not applicable';
-    return this.profile?.calendlyConnected ? 'Calendly connected' : 'Calendly not connected';
+    if (this.loadingCalendlyStatus) return 'Calendly status loading';
+    if (!this.calendlyPlatformStatus) return 'Calendly status unavailable';
+    return this.calendlyPlatformStatus.isConnected ? 'Calendly platform connected' : 'Calendly platform not connected';
   }
 
   get calendlyStatusClass(): string {
     if (!this.canManageCalendly) return 'admin-badge--muted';
-    return this.profile?.calendlyConnected ? 'admin-badge--success' : 'admin-badge--warning';
+    if (this.loadingCalendlyStatus) return 'admin-badge--muted';
+    if (!this.calendlyPlatformStatus) return 'admin-badge--danger';
+    return this.calendlyPlatformStatus.isConnected ? 'admin-badge--success' : 'admin-badge--warning';
   }
 
   get calendlyStatusBadgeLabel(): string {
     if (!this.canManageCalendly) return 'Unavailable';
-    return this.profile?.calendlyConnected ? 'Connected' : 'Unconnected';
+    if (this.loadingCalendlyStatus) return 'Loading';
+    if (!this.calendlyPlatformStatus) return 'Unavailable';
+    return this.calendlyPlatformStatus.isConnected ? 'Connected' : 'Unconnected';
+  }
+
+  get calendlyPlatformMessage(): string {
+    if (this.loadingCalendlyStatus) return 'Checking platform connection status...';
+    return this.calendlyPlatformStatus?.message || 'Platform connection status is unavailable.';
+  }
+
+  get calendlyProviderLabel(): string {
+    return this.calendlyPlatformStatus?.providerAccountLabel || 'N/A';
+  }
+
+  get calendlyConnectionTimeLabel(): string {
+    return this.calendlyPlatformStatus?.isConnected ? 'Connected at' : 'Previously connected';
+  }
+
+  get canStartCalendlyConnect(): boolean {
+    return !!this.calendlyPlatformStatus?.canConnect && !this.calendlyAction;
+  }
+
+  get canReconnectCalendly(): boolean {
+    return !!this.calendlyPlatformStatus?.canReconnect && !this.calendlyAction;
+  }
+
+  get canRefreshCalendly(): boolean {
+    return !!this.calendlyPlatformStatus?.canRefresh && !this.calendlyAction;
+  }
+
+  get canDisconnectCalendly(): boolean {
+    return !!this.calendlyPlatformStatus?.canDisconnect && !this.calendlyAction;
   }
 
   get googleLinked(): boolean {
@@ -176,8 +216,53 @@ export class AccountProfileComponent implements OnInit, OnDestroy {
   }
 
   connectCalendly(): void {
-    if (!this.profile || !this.canManageCalendly) return;
-    window.location.href = this.calendlyService.getConnectUrl(this.profile.userId);
+    if (!this.canManageCalendly || !this.canStartCalendlyConnect) return;
+    this.startCalendlyOAuth('connect');
+  }
+
+  reconnectCalendly(): void {
+    if (!this.canManageCalendly || !this.canReconnectCalendly) return;
+    this.startCalendlyOAuth('reconnect');
+  }
+
+  refreshCalendlyConnection(): void {
+    if (!this.canManageCalendly || !this.canRefreshCalendly) return;
+
+    this.calendlyAction = 'refresh';
+    this.calendlyService.refreshPlatformConnection()
+      .pipe(finalize(() => this.calendlyAction = null))
+      .subscribe({
+        next: status => {
+          this.calendlyPlatformStatus = status;
+          this.toast.success('Calendly platform connection refreshed.', { title: 'Calendly refreshed' });
+        },
+        error: err => this.toast.error(getUserErrorMessage(err, 'Unable to refresh Calendly platform connection.'), { title: 'Calendly refresh failed' })
+      });
+  }
+
+  beginCalendlyDisconnect(): void {
+    if (!this.canManageCalendly || !this.canDisconnectCalendly) return;
+    this.showingCalendlyDisconnectConfirmation = true;
+  }
+
+  cancelCalendlyDisconnect(): void {
+    this.showingCalendlyDisconnectConfirmation = false;
+  }
+
+  confirmCalendlyDisconnect(): void {
+    if (!this.canManageCalendly || !this.canDisconnectCalendly) return;
+
+    this.calendlyAction = 'disconnect';
+    this.calendlyService.disconnectPlatformConnection({ confirm: true })
+      .pipe(finalize(() => this.calendlyAction = null))
+      .subscribe({
+        next: status => {
+          this.calendlyPlatformStatus = status;
+          this.showingCalendlyDisconnectConfirmation = false;
+          this.toast.success('Calendly platform connection disconnected.', { title: 'Calendly disconnected' });
+        },
+        error: err => this.toast.error(getUserErrorMessage(err, 'Unable to disconnect Calendly platform connection.'), { title: 'Calendly disconnect failed' })
+      });
   }
 
   refreshProfile(): void {
@@ -206,8 +291,7 @@ export class AccountProfileComponent implements OnInit, OnDestroy {
           this.applyProfile(profile);
           this.authService.updateUser({
             fullName: profile.fullName,
-            profilePicture: profile.profilePicture ?? undefined,
-            calendlyConnected: profile.calendlyConnected
+            profilePicture: profile.profilePicture ?? undefined
           });
           this.toast.success('Profile updated.', { title: 'Profile saved' });
         },
@@ -341,6 +425,9 @@ export class AccountProfileComponent implements OnInit, OnDestroy {
         next: ({ profile, securityStatus }) => {
           this.securityStatus = securityStatus;
           this.applyProfile(profile);
+          if (profile.role === 'admin') {
+            this.refreshCalendlyStatus();
+          }
         },
         error: err => {
           this.error = getUserErrorMessage(err, 'Unable to load your profile right now.');
@@ -365,6 +452,9 @@ export class AccountProfileComponent implements OnInit, OnDestroy {
       next: ({ profile, securityStatus }) => {
         this.securityStatus = securityStatus;
         this.applyProfile(profile);
+        if (profile.role === 'admin') {
+          this.refreshCalendlyStatus();
+        }
         if (!securityStatus.canUnlinkGoogle) {
           this.showingGoogleUnlinkConfirmation = false;
           this.showUnlinkCurrentPassword = false;
@@ -385,6 +475,56 @@ export class AccountProfileComponent implements OnInit, OnDestroy {
     });
   }
 
+  private refreshCalendlyStatus(): void {
+    if (!this.canManageCalendly) return;
+
+    this.loadingCalendlyStatus = true;
+    this.calendlyService.getPlatformStatus()
+      .pipe(finalize(() => this.loadingCalendlyStatus = false))
+      .subscribe({
+        next: status => {
+          this.calendlyPlatformStatus = status;
+        },
+        error: err => {
+          this.calendlyPlatformStatus = null;
+          this.toast.error(getUserErrorMessage(err, 'Unable to load Calendly platform status.'), { title: 'Calendly status unavailable' });
+        }
+      });
+  }
+
+  private startCalendlyOAuth(operation: CalendlyPlatformOAuthOperation): void {
+    this.calendlyAction = operation;
+    this.calendlyService.startPlatformOAuth(operation)
+      .pipe(finalize(() => this.calendlyAction = null))
+      .subscribe({
+        next: response => {
+          if (!this.isSafeCalendlyAuthorizationUrl(response?.authorizationUrl)) {
+            this.toast.error('Calendly authorization could not be started safely.', { title: 'Calendly connection failed' });
+            return;
+          }
+
+          window.location.assign(response.authorizationUrl);
+        },
+        error: err => {
+          this.toast.error(getUserErrorMessage(err, 'Unable to start Calendly authorization.'), { title: 'Calendly connection failed' });
+          this.refreshCalendlyStatus();
+        }
+      });
+  }
+
+  private isSafeCalendlyAuthorizationUrl(value?: string | null): value is string {
+    if (!value) return false;
+
+    try {
+      const url = new URL(value);
+      return url.protocol === 'https:' &&
+        url.hostname.toLowerCase() === 'auth.calendly.com' &&
+        url.pathname.startsWith('/oauth/authorize');
+    } catch {
+      return false;
+    }
+  }
+
   private handleCalendlyRedirect(): void {
     if (!this.router.url.startsWith('/admin/profile')) return;
 
@@ -396,11 +536,9 @@ export class AccountProfileComponent implements OnInit, OnDestroy {
     if (!calendlyStatus && !legacyStatus) return;
 
     if (calendlyStatus === 'connected' || legacyStatus === 'success') {
-      this.toast.success('Calendly linked successfully.', { title: 'Calendly connected' });
-      this.authService.updateUser({ calendlyConnected: true });
-      this.subscriptions.add(this.authService.refreshCurrentUser().subscribe({ error: () => undefined }));
+      this.toast.success('Calendly platform authorization completed.', { title: 'Calendly connected' });
     } else {
-      this.toast.error('Unable to link Calendly. Please try again later.', { title: 'Calendly connection failed' });
+      this.toast.error(message || 'Unable to authorize Calendly platform connection. Please try again later.', { title: 'Calendly connection failed' });
     }
 
     void this.router.navigate([], {
@@ -408,6 +546,8 @@ export class AccountProfileComponent implements OnInit, OnDestroy {
       queryParams: {},
       replaceUrl: true
     });
+
+    this.refreshCalendlyStatus();
   }
 
   private handleGoogleLinkRedirect(): void {

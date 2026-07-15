@@ -374,9 +374,9 @@
           <section *ngIf="canManageCalendly" class="admin-surface admin-panel">
             <div class="admin-panel__head">
               <div>
-                <span class="admin-section-label text-uppercase">Calendly connection</span>
+                <span class="admin-section-label text-uppercase">Calendly platform</span>
                 <h2 class="admin-panel__title">Scheduling account</h2>
-                <p class="admin-copy mb-0">Connect Calendly so Career Nava can keep scheduling sync and event-type availability aligned through the backend.</p>
+                <p class="admin-copy mb-0">Career Nava uses one backend-owned Calendly platform account for scheduling access.</p>
               </div>
             </div>
             <div class="admin-panel__body">
@@ -386,22 +386,89 @@
                     <img src="assets/images/logo/calendly.png" class="account-profile-provider-card__logo" alt="Calendly">
                     <div class="d-flex flex-column gap-1">
                       <span class="account-profile-provider-card__name">Calendly</span>
-                      <span class="account-profile-provider-card__meta">Scheduling sync status</span>
+                      <span class="account-profile-provider-card__meta">{{ calendlyProviderLabel }}</span>
                     </div>
                   </div>
                   <span class="admin-badge" [ngClass]="calendlyStatusClass">{{ calendlyStatusBadgeLabel }}</span>
                 </div>
 
+                <div class="account-profile-security-note mb-0" [ngClass]="calendlyPlatformStatus?.isConnected ? 'account-profile-security-note--success' : ''">
+                  {{ calendlyPlatformMessage }}
+                </div>
+
+                <div class="admin-detail-list">
+                  <div class="admin-detail-list__item">
+                    <span class="admin-detail-list__label">{{ calendlyConnectionTimeLabel }}</span>
+                    <span class="admin-detail-list__value">{{ calendlyPlatformStatus?.connectedAt ? (calendlyPlatformStatus?.connectedAt | date:'medium') : 'N/A' }}</span>
+                  </div>
+                  <div *ngIf="calendlyPlatformStatus?.disconnectedAt" class="admin-detail-list__item">
+                    <span class="admin-detail-list__label">Disconnected</span>
+                    <span class="admin-detail-list__value">{{ calendlyPlatformStatus?.disconnectedAt | date:'medium' }}</span>
+                  </div>
+                  <div class="admin-detail-list__item">
+                    <span class="admin-detail-list__label">Last refresh</span>
+                    <span class="admin-detail-list__value">{{ calendlyPlatformStatus?.lastRefreshedAt ? (calendlyPlatformStatus?.lastRefreshedAt | date:'medium') : 'N/A' }}</span>
+                  </div>
+                  <div class="admin-detail-list__item">
+                    <span class="admin-detail-list__label">Last sync</span>
+                    <span class="admin-detail-list__value">{{ calendlyPlatformStatus?.lastSyncedAt ? (calendlyPlatformStatus?.lastSyncedAt | date:'medium') : 'N/A' }}</span>
+                  </div>
+                </div>
+
                 <div class="account-profile-provider-card__action-row">
-                  <button type="button" class="admin-action-pill admin-action-pill--primary admin-action-pill--compact" (click)="connectCalendly()">
+                  <button
+                    *ngIf="calendlyPlatformStatus?.canConnect"
+                    type="button"
+                    class="admin-action-pill admin-action-pill--primary admin-action-pill--compact"
+                    [disabled]="!canStartCalendlyConnect"
+                    (click)="connectCalendly()">
                     <span class="admin-action-content">
                       <fa-icon [icon]="faLink"></fa-icon>
-                      <span>{{ profile.calendlyConnected ? 'Reconnect Calendly' : 'Connect Calendly' }}</span>
+                      <span>Connect</span>
                     </span>
                   </button>
-                  <button type="button" class="admin-action-icon" title="Refresh profile status" aria-label="Refresh profile status" (click)="refreshProfile()">
-                    <fa-icon [icon]="faRotateRight"></fa-icon>
+                  <button
+                    *ngIf="calendlyPlatformStatus?.canReconnect"
+                    type="button"
+                    class="admin-action-pill admin-action-pill--primary admin-action-pill--compact"
+                    [disabled]="!canReconnectCalendly"
+                    (click)="reconnectCalendly()">
+                    <span class="admin-action-content">
+                      <fa-icon [icon]="faLink"></fa-icon>
+                      <span>Reconnect</span>
+                    </span>
                   </button>
+                  <button type="button" class="admin-action-pill admin-action-pill--ghost admin-action-pill--compact" [disabled]="!canRefreshCalendly" (click)="refreshCalendlyConnection()" aria-label="Refresh Calendly platform connection">
+                    <span class="admin-action-content">
+                      <span *ngIf="calendlyAction === 'refresh'" class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+                      <fa-icon *ngIf="calendlyAction !== 'refresh'" [icon]="faRotateRight"></fa-icon>
+                      <span>Refresh connection</span>
+                    </span>
+                  </button>
+                  <button type="button" class="admin-action-pill admin-action-pill--danger admin-action-pill--compact" [disabled]="!canDisconnectCalendly" (click)="beginCalendlyDisconnect()" aria-label="Disconnect Calendly platform account">
+                    <span class="admin-action-content">
+                      <fa-icon [icon]="faPowerOff"></fa-icon>
+                      <span>Disconnect</span>
+                    </span>
+                  </button>
+                </div>
+
+                <div *ngIf="showingCalendlyDisconnectConfirmation" class="account-profile-security-note mb-0">
+                  <div class="d-flex flex-column gap-2">
+                    <span>This disconnects the shared Career Nava Calendly platform account locally.</span>
+                    <div class="d-flex flex-wrap justify-content-end gap-2">
+                      <button type="button" class="admin-action-pill admin-action-pill--ghost admin-action-pill--compact" [disabled]="calendlyAction === 'disconnect'" (click)="cancelCalendlyDisconnect()">
+                        <span class="admin-action-content"><span>Cancel</span></span>
+                      </button>
+                      <button type="button" class="admin-action-pill admin-action-pill--danger admin-action-pill--compact" [disabled]="calendlyAction === 'disconnect'" (click)="confirmCalendlyDisconnect()">
+                        <span class="admin-action-content">
+                          <span *ngIf="calendlyAction === 'disconnect'" class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+                          <fa-icon *ngIf="calendlyAction !== 'disconnect'" [icon]="faPowerOff"></fa-icon>
+                          <span>Confirm disconnect</span>
+                        </span>
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

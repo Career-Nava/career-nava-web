@@ -48,3 +48,50 @@ export interface AdminCalendlyEventTypePricingUpdate {
   priceAmount?: number | null;
   priceCurrency?: string | null;
 }
+
+export interface CalendlyPlatformStatus {
+  isConnected: boolean;
+  status: string;
+  provider?: string | null;
+  providerAccountLabel?: string | null;
+  connectedAt?: string | null;
+  lastRefreshedAt?: string | null;
+  lastSyncedAt?: string | null;
+  disconnectedAt?: string | null;
+  connectedByUserId?: number | null;
+  updatedByUserId?: number | null;
+  disconnectedByUserId?: number | null;
+  canConnect: boolean;
+  canReconnect: boolean;
+  canDisconnect: boolean;
+  canRefresh: boolean;
+  canSync: boolean;
+  configurationReady: boolean;
+  oAuthClientIdConfigured: boolean;
+  oAuthClientSecretConfigured: boolean;
+  redirectUriConfigured: boolean;
+  frontendBaseUrlConfigured: boolean;
+  webhookSigningKeyConfigured: boolean;
+  activeCredentialsPresent: boolean;
+  redirectUri?: string | null;
+  authorizationEndpoint: string;
+  tokenEndpoint: string;
+  apiBaseUrl: string;
+  webhookEndpointPath: string;
+  configurationMessage?: string | null;
+  message: string;
+}
+
+export interface CalendlyPlatformDisconnectRequest {
+  confirm: boolean;
+}
+
+export type CalendlyPlatformOAuthOperation = 'connect' | 'reconnect';
+
+export interface CalendlyPlatformOAuthRequest {
+  operation: CalendlyPlatformOAuthOperation;
+}
+
+export interface CalendlyPlatformOAuthResponse {
+  authorizationUrl: string;
+}

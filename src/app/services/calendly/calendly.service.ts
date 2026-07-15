@@ -9,7 +9,11 @@ import {
   AdminCalendlyEventTypeAssignmentUpdate,
   AdminCalendlyEventTypeDetail,
   AdminCalendlyEventTypeFilters,
-  AdminCalendlyEventTypePricingUpdate
+  AdminCalendlyEventTypePricingUpdate,
+  CalendlyPlatformDisconnectRequest,
+  CalendlyPlatformOAuthOperation,
+  CalendlyPlatformOAuthResponse,
+  CalendlyPlatformStatus
 } from "./calendly.model";
 
 @Injectable({ providedIn: 'root' })
@@ -19,10 +23,40 @@ export class CalendlyService extends RestService {
     super(http, 'calendly', config.get<any>('api').baseUrl);
   }
 
-  // Build OAuth redirect URL (pure function)
-  getConnectUrl(mentorId: number): string {
-    const params = this.buildParams({ mentorId });
-    return `${ this.baseUrl }/connect?${ params.toString() }`;
+  getPlatformStatus(): Observable<CalendlyPlatformStatus> {
+    return this.http
+      .get<ApiResponse<CalendlyPlatformStatus>>(`${ this.baseUrl }/platform/status`)
+      .pipe(
+        map(res => res.data),
+        catchError(err => throwError(() => err))
+      );
+  }
+
+  startPlatformOAuth(operation: CalendlyPlatformOAuthOperation): Observable<CalendlyPlatformOAuthResponse> {
+    return this.http
+      .post<ApiResponse<CalendlyPlatformOAuthResponse>>(`${ this.baseUrl }/platform/connect`, { operation })
+      .pipe(
+        map(res => res.data),
+        catchError(err => throwError(() => err))
+      );
+  }
+
+  refreshPlatformConnection(): Observable<CalendlyPlatformStatus> {
+    return this.http
+      .post<ApiResponse<CalendlyPlatformStatus>>(`${ this.baseUrl }/platform/refresh`, {})
+      .pipe(
+        map(res => res.data),
+        catchError(err => throwError(() => err))
+      );
+  }
+
+  disconnectPlatformConnection(payload: CalendlyPlatformDisconnectRequest): Observable<CalendlyPlatformStatus> {
+    return this.http
+      .post<ApiResponse<CalendlyPlatformStatus>>(`${ this.baseUrl }/platform/disconnect`, payload)
+      .pipe(
+        map(res => res.data),
+        catchError(err => throwError(() => err))
+      );
   }
 
   getSchedulingLink(mentorId: number): Observable<string> {
@@ -79,7 +113,7 @@ export class CalendlyService extends RestService {
 
   syncAdminEventTypes(): Observable<AdminCalendlyEventType[]> {
     return this.http
-      .post<ApiResponse<AdminCalendlyEventType[]>>(`${ this.baseUrl }/sync-event-types`, {})
+      .post<ApiResponse<AdminCalendlyEventType[]>>(`${ this.baseUrl }/platform/sync-event-types`, {})
       .pipe(
         map(res => res.data ?? []),
         catchError(err => throwError(() => err))

@@ -65,9 +65,10 @@
                 <span class="admin-field-label">Mentor</span>
                 <select class="form-select admin-select" formControlName="mentorProfileId">
                   <option value="">{{ mentorsLoading ? 'Loading mentors...' : 'Unassigned' }}</option>
-                  <option *ngFor="let mentor of mentors; trackBy: trackMentor" [value]="mentor.mentorProfileId">{{ mentor.fullName || mentor.email }} - {{ mentor.email || 'Email unavailable' }}</option>
+                  <option *ngFor="let mentor of eligibleMentors; trackBy: trackMentor" [value]="mentor.mentorProfileId">{{ mentor.fullName || mentor.email }} - {{ mentor.email || 'Email unavailable' }}</option>
                 </select>
               </label>
+              <p *ngIf="!mentorsLoading && !eligibleMentors.length" class="admin-copy admin-inline-warning admin-form-span-2 mb-0">No eligible active mentors remain. Unassign a mentor from their current active event type before assigning them here.</p>
               <div class="admin-form-actions admin-form-span-2">
                 <button type="submit" class="admin-action-pill admin-action-pill--primary admin-action-pill--compact" [disabled]="savingAssignment || mentorsLoading">
                   <span class="admin-action-content"><fa-icon [icon]="faFloppyDisk"></fa-icon><span>{{ savingAssignment ? 'Saving...' : 'Save assignment' }}</span></span>

@@ -88,7 +88,7 @@ export class MentorDetailsComponent implements OnInit, OnDestroy {
       this.getMentorForRoute(id).subscribe({
         next: mentor => {
           this.mentor = mentor;
-          this.calendlyVerified = mentor?.calendlyConnected ?? false;
+          this.calendlyVerified = mentor?.schedulingAssigned ?? false;
           this.isLoading = false;
         },
         error: err => {
@@ -271,7 +271,7 @@ export class MentorDetailsComponent implements OnInit, OnDestroy {
       this.mentorService.getSelfProfile().subscribe({
         next: profile => {
           this.mentor = this.mapSelfProfileToPreview(profile);
-          this.calendlyVerified = profile.calendlyConnected ?? false;
+          this.calendlyVerified = profile.schedulingAssigned ?? false;
           this.isLoading = false;
         },
         error: () => {
@@ -294,7 +294,7 @@ export class MentorDetailsComponent implements OnInit, OnDestroy {
       email: mentor.email,
       role: mentor.role,
       isActive: mentor.isActive,
-      calendlyConnected: mentor.calendlyConnected === true,
+      schedulingAssigned: mentor.schedulingAssigned === true,
       company: mentor.company,
       positionTitle: mentor.positionTitle ?? mentor.title,
       linkedInUrl: mentor.linkedInUrl ?? mentor.linkedIn,
@@ -321,7 +321,7 @@ export class MentorDetailsComponent implements OnInit, OnDestroy {
       email: profile.email,
       role: profile.role,
       isActive: profile.isActive,
-      calendlyConnected: profile.calendlyConnected === true,
+      schedulingAssigned: profile.schedulingAssigned === true,
       company: profile.company,
       positionTitle: profile.positionTitle,
       linkedInUrl: profile.linkedInUrl,

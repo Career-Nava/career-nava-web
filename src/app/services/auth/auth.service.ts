@@ -257,8 +257,7 @@ export class AuthService extends RestService {
         email: jwtClaims.email,
         role: jwtClaims.role,
         fullName: jwtClaims.unique_name ?? '',
-        isActive: true,
-        calendlyConnected: false
+        isActive: true
       };
     } catch {
       return null;

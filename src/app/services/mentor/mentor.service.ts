@@ -132,7 +132,8 @@ export class MentorService extends RestService {
       })),
       totalSessions: typeof dto.totalSessions === 'number' ? dto.totalSessions : 0,
       totalReviews: typeof dto.totalReviews === 'number' ? dto.totalReviews : 0,
-      avgRating: typeof dto.avgRating === 'number' ? dto.avgRating : 0
+      avgRating: typeof dto.avgRating === 'number' ? dto.avgRating : 0,
+      schedulingAssigned: dto.schedulingAssigned === true
     };
   }
 
@@ -161,7 +162,7 @@ export class MentorService extends RestService {
       email: dto.email,
       role: dto.role,
       isActive: dto.isActive,
-      calendlyConnected: dto.calendlyConnected,
+      schedulingAssigned: dto.schedulingAssigned === true,
       mentorProfileStatus: dto.mentorProfileStatus,
       verified: dto.verified,
       profilePicture: dto.profilePicture,

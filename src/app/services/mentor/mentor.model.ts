@@ -39,7 +39,7 @@ export interface Mentor {
   email?: string;
   role?: string;
   isActive?: boolean;
-  calendlyConnected: boolean;
+  schedulingAssigned: boolean;
 
   company?: string;
   positionTitle?: string;
@@ -66,7 +66,7 @@ export interface AdminMentor {
   email?: string;
   role?: string;
   isActive?: boolean;
-  calendlyConnected?: boolean;
+  schedulingAssigned?: boolean;
   mentorProfileStatus?: string;
   verified?: boolean;
   profilePicture?: string;
@@ -97,7 +97,6 @@ export interface EligibleMentorUser {
   email: string;
   role: string;
   isActive: boolean;
-  calendlyConnected: boolean;
   profilePicture?: string | null;
   company?: string | null;
   positionTitle?: string | null;

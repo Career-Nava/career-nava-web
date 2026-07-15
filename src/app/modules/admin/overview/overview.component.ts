@@ -5,6 +5,8 @@ import { faCalendarCheck, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { AdminOverview } from '../../../services/admin/admin.model';
 import { AdminService } from '../../../services/admin/admin.service';
 import { AuthService } from '../../../services/auth/auth.service';
+import { CalendlyPlatformStatus } from '../../../services/calendly/calendly.model';
+import { CalendlyService } from '../../../services/calendly/calendly.service';
 import { UserModel } from '../../../services/user/user.model';
 import { SharedModule } from '../../../shared/shared.module';
 
@@ -40,6 +42,7 @@ interface AdminStubAction {
 export class OverviewComponent implements OnInit {
   user: UserModel | null = null;
   overview: AdminOverview | null = null;
+  calendlyPlatformStatus: CalendlyPlatformStatus | null = null;
   loading = true;
   error: string | null = null;
 
@@ -90,12 +93,14 @@ export class OverviewComponent implements OnInit {
 
   constructor(
     private authService: AuthService,
-    private adminService: AdminService
+    private adminService: AdminService,
+    private calendlyService: CalendlyService
   ) {
   }
 
   ngOnInit(): void {
     this.user = this.authService.getUser();
+    this.loadCalendlyPlatformStatus();
 
     this.adminService.getOverview().subscribe({
       next: overview => {
@@ -170,11 +175,13 @@ export class OverviewComponent implements OnInit {
   }
 
   get calendlyStatusLabel(): string {
-    return this.user?.calendlyConnected ? 'Calendly connected' : 'Calendly not connected';
+    if (!this.calendlyPlatformStatus) return 'Calendly status unavailable';
+    return this.calendlyPlatformStatus.isConnected ? 'Calendly platform connected' : 'Calendly platform not connected';
   }
 
   get calendlyStatusClass(): string {
-    return this.user?.calendlyConnected ? 'admin-badge--success' : 'admin-badge--warning';
+    if (!this.calendlyPlatformStatus) return 'admin-badge--muted';
+    return this.calendlyPlatformStatus.isConnected ? 'admin-badge--success' : 'admin-badge--warning';
   }
 
   trackCard(_: number, card: OverviewCard): string {
@@ -203,5 +210,16 @@ export class OverviewComponent implements OnInit {
     }
 
     return 'Unable to load the admin overview right now. Please try again later.';
+  }
+
+  private loadCalendlyPlatformStatus(): void {
+    this.calendlyService.getPlatformStatus().subscribe({
+      next: status => {
+        this.calendlyPlatformStatus = status;
+      },
+      error: () => {
+        this.calendlyPlatformStatus = null;
+      }
+    });
   }
 }
