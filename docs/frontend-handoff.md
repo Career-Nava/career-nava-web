@@ -934,9 +934,32 @@ Delivered scope:
 - Raw provider responses, exception details, tokens, secrets, stack traces, serialized errors, and unsafe HTML are not exposed.
 - Product-owner manual browser and visual QA was completed and approved. The temporary development notification showcase was removed after approval.
 
-Phase 9 - Calendly Platform Ownership and Backend Integration Foundation is the next active implementation phase and is backend-first. No Phase 9 implementation has started. Career Nava will use one global platform Calendly account for MVP, managed by authorized admins. This is not a per-admin Calendly account model. Existing user associations should represent the managing admin as an audit actor, not independent scheduling ownership.
+Phase 9 - Calendly Platform Ownership and Backend Integration Foundation is complete. Career Nava uses one global platform Calendly account for MVP, managed by authorized admins. This is not a per-admin or per-mentor Calendly account model. Existing user associations represent the managing admin as an audit actor, not independent scheduling ownership.
 
-Phase 10 - Calendly Account Management UI and Integration Validation follows Phase 9, depends on its backend contract, and should use the redesigned Phase 8 toast system. The authorized admin account profile should expose platform connection status, connect, reconnect, explicit replacement confirmation, disconnect, refresh/status reload, and safe provider-derived details where appropriate. The frontend must not send target user ids, build provider authorization URLs, store provider tokens, infer connection state locally, decide replacement safety, expose raw provider ids unnecessarily, or reintroduce duplicate inline transient alerts. It should handle callback result codes once, remove them from the URL, and refresh backend-derived capabilities/status.
+Phase 10 - Calendly Account Management UI and Integration Validation was absorbed into Phase 9C-9E and is complete. Phase 9C implemented the MVP account-profile platform-management UI against the Phase 9B backend contract. Phase 9E simplified that UI after owner OAuth/sync acceptance: the authorized admin account profile now loads backend platform status, starts connect/reconnect through authenticated backend initiation, refreshes credentials, and disconnects with explicit inline confirmation. Replace was removed from the active product contract, and event-type sync now appears only on the admin event-type inventory route. Mentors and mentees do not see the platform-management card. The frontend no longer sends profile/user/mentor ids for platform ownership, no longer builds provider authorization URLs, no longer treats a user-level Calendly boolean as platform status, and refreshes backend platform status after callback/action outcomes.
+
+Phase 9C frontend contract:
+
+- `GET /api/calendly/platform/status`
+- `POST /api/calendly/platform/connect` with `{ "operation": "connect" | "reconnect" }`
+- `POST /api/calendly/platform/refresh`
+- `POST /api/calendly/platform/disconnect` with `{ "confirm": true }`
+- `POST /api/calendly/platform/sync-event-types`
+
+OAuth initiation note: do not navigate directly to `/api/calendly/platform/connect`. Browser document navigation does not include Angular's bearer-token interceptor and will correctly receive `401`. The UI must call `CalendlyService.startPlatformOAuth(...)` through `HttpClient`, receive the safe backend-generated Calendly `authorizationUrl`, verify it is an HTTPS `auth.calendly.com/oauth/authorize` URL, and then navigate with `window.location.assign`.
+
+The platform status DTO is the sole frontend source of truth for the shared Calendly platform connection. Mentor-facing and admin mentor DTOs now use `schedulingAssigned` for derived mentor scheduling readiness from assigned active event types with booking links; the removed `users.calendly_connected` flag must not be reintroduced as UI truth.
+
+Phase 9D frontend acceptance notes:
+
+- The backend platform status DTO now also includes safe configuration-readiness fields: `configurationReady`, `oAuthClientIdConfigured`, `oAuthClientSecretConfigured`, `redirectUriConfigured`, `frontendBaseUrlConfigured`, `webhookSigningKeyConfigured`, `activeCredentialsPresent`, provider endpoint labels, webhook endpoint path, and `configurationMessage`.
+- The frontend should continue to render actions only from backend capability flags. If `canConnect` is false because provider configuration is missing or placeholder, the UI must not build a Calendly authorization URL or infer readiness locally.
+- Local API URL for Phase 9D validation: `http://localhost:5128`. Local frontend URL: `http://localhost:4200`.
+- Owner acceptance confirmed real Calendly OAuth initiation, login/consent, callback, global platform persistence, connected status, event-type synchronization, and preservation of existing mentor assignments/pricing through sync. Real webhook delivery remains deferred because the available Calendly plan does not expose the required webhook capability.
+- Final owner browser acceptance confirmed the simplified profile platform card, Sync from Calendly only on `/admin/event-types`, event-type inventory assigned/unassigned display, mentor inventory Scheduling column, and assignment eligibility behavior.
+- Event-type sync is capability-driven from backend platform status and appears only on `/admin/event-types`. It is disabled with a safe explanation until the global platform connection is active and `canSync`/configuration readiness allow it.
+- The admin mentor inventory column is now `Scheduling`, showing `Assigned` or `Not assigned` from backend-derived event-type assignment readiness. Do not display `Connected` for mentors; mentors do not own Calendly provider accounts.
+- Assignment forms exclude mentors already assigned to another active event type while keeping the current event type's assigned mentor selectable. Backend validation and the database unique index remain authoritative.
 
 Phase 11 - Test and Launch Hardening replaces the former Phase 8 launch-hardening plan. It should run only after Phases 8, 9, and 10 complete and should preserve the existing hardening scope: frontend smoke/build/test setup, auth/security regressions, visibility checks, fake/disabled UI audit, provider callback configuration, deployment documentation, environment validation, and final readiness review.
 
@@ -993,7 +1016,7 @@ Phase 3F follow-up notes:
 - Admin mentor preview no longer blocks draft, inactive, or suspended mentor profiles in the admin console; every listed mentor row shows the preview icon, and the reused detail view fetches admin-safe mentor data for `/admin/mentors/preview/:id` with a non-public status notice.
 - Admin blog/resource create and edit forms use an author dropdown from the admin user list. `Anonymous author` saves `authorId = null`; users with the `mentee` role are excluded from author choices.
 - Admin filters now auto-apply on change. Clear filters is a compact icon action in the toolbar beside Filter and Refresh for mentors, scholarships, blogs/resources, and sessions; session filter panels no longer contain Apply/Clear action rows.
-- Phase 3G aligned mentor preview contracts. `GET /api/Mentor/Admin/GetMentorById/{id}` now returns the rich mentee-facing display fields used by public mentor detail, including `expertise`, `disciplines`, `fluency`, `experiences`, `positionTitle`, `linkedInUrl`, `avgRating`, `totalReviews`, `totalSessions`, `bio`, `profilePicture`, and `company`, while preserving admin-only operational fields such as `mentorProfileStatus`, `isActive`, `calendlyConnected`, `verified`, `createdAt`, and `updatedAt`. Public mentor list/detail remains restricted to active accounts with active mentor profiles only.
+- Phase 3G aligned mentor preview contracts. `GET /api/Mentor/Admin/GetMentorById/{id}` now returns the rich mentee-facing display fields used by public mentor detail, including `expertise`, `disciplines`, `fluency`, `experiences`, `positionTitle`, `linkedInUrl`, `avgRating`, `totalReviews`, `totalSessions`, `bio`, `profilePicture`, and `company`, while preserving admin-only operational fields such as `mentorProfileStatus`, `isActive`, `schedulingAssigned`, `verified`, `createdAt`, and `updatedAt`. Public mentor list/detail remains restricted to active accounts with active mentor profiles only.
 - Phase 4 added a real `/mentor/profile` self-service workspace. Mentors can now edit safe public-facing profile content and taxonomy/experience selections through mentor-scoped backend endpoints while lifecycle status, verification, and visibility controls remain admin-only.
 - Phase 4A refined `/mentor/profile` into a premium read-first workspace with section-level edit/save/cancel flows, a mentor-facing `/mentor/profile/preview` route, and read-only scheduling/event-type visibility sourced from the self-profile contract.
 
@@ -1019,20 +1042,18 @@ Major pending areas after the current MVP foundation:
 - better automated frontend validation and tests
 - richer dashboard analytics
 - application tracker work
-- Phase 9/10 Calendly platform ownership and account-management correction
 - Phase 11 test and launch hardening
 - preserve mentor experience row identities if richer non-replacement editing becomes necessary
 
 ## Recommended Next Frontend Iterations
 
-1. Start Phase 9 with a backend-first audit and implementation plan for global Calendly platform ownership; do not replace hardcoded ownership with frontend-selected or per-admin target ids.
-2. Use the Phase 9 backend contract to plan Phase 10 Calendly account-management UI; do not replace hardcoded Calendly ownership with frontend-selected or per-admin target ids.
-3. Add targeted automated coverage for auth restoration, protected route continuity, account-security flows, notification behavior, and Calendly management where practical.
-4. Add lint/test scripts or at least basic test tooling.
-5. Add pagination/search/filtering refinements to admin lists during Phase 11 or a focused later hardening slice.
-6. Add a scholarship detail bookmark split/current-user detail path if product wants bookmark controls on detail.
-7. Add a dedicated saved-scholarships workspace if product requests it.
-8. Fix `shcolarship.model.ts` typo safely.
+1. Move to Phase 11 launch hardening, preserving the global Calendly platform ownership and account-management UI model.
+2. Add targeted automated coverage for auth restoration, protected route continuity, account-security flows, notification behavior, and Calendly management where practical.
+3. Add lint/test scripts or at least basic test tooling.
+4. Add pagination/search/filtering refinements to admin lists during Phase 11 or a focused later hardening slice.
+5. Add a scholarship detail bookmark split/current-user detail path if product wants bookmark controls on detail.
+6. Add a dedicated saved-scholarships workspace if product requests it.
+7. Fix `shcolarship.model.ts` typo safely.
 9. Add richer admin overview charts/recent activity.
 
 ## Notes for Future Codex Sessions
