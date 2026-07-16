@@ -54,6 +54,18 @@ The frontend currently expects these role names:
 - No active test script exists yet.
 - Lazy-loading routes is a recommended next improvement.
 
+## Current Roadmap Note
+
+Final test and launch hardening is now planned as Phase 12. Historical Calendly-related Phase 10 work was absorbed into Phase 9C-9E; the active Phase 10 now means Platform Administration and Contract Completion.
+
+Phase 10 should complete platform administration and API contract work first. Phase 10A uses one dedicated admin route, `/admin/platform-settings`, for Platform Settings > Mentor Taxonomy > Disciplines / Expertises / Fluencies. Do not place these global platform records inside the admin account profile and do not add separate sidebar links for each taxonomy table. The admin UI should support listing, justified search/filtering, add/edit, activate/deactivate/reactivate, usage counts, duplicate prevention, and safe ordering while relying on backend authorization and lifecycle rules.
+
+Phase 10B keeps API endpoint normalization as a separate cross-cutting phase with route inventory and compatibility planning for OAuth/webhook/provider routes. Phase 10C should enrich admin and mentor dashboards with truthful, role-specific backend-supported information; charts are optional and should be added only when they improve real trend/distribution understanding.
+
+Phase 11 should handle media and unauthenticated-experience modernization. Phase 11A decides image upload/storage architecture before replacing raw image URL fields, favoring managed image/CDN storage if provider, cost, and platform-owned account approval are obtained. Phase 11B modernizes sign-in/sign-up and the auth layout without silently adding forgot/reset password, email verification, account activation, or email-token systems. Phase 11C modernizes the broader public experience separately from auth while preserving public/private visibility rules.
+
+Preserve async auth restoration and OAuth-return behavior, backend-owned payment truth, global Calendly platform ownership, public visibility rules, and the approved dashboard action/CTA styling baselines during these phases.
+
 ## Notes for Future Contributors
 
 - Environment files control backend API targets.

@@ -936,7 +936,7 @@ Delivered scope:
 
 Phase 9 - Calendly Platform Ownership and Backend Integration Foundation is complete. Career Nava uses one global platform Calendly account for MVP, managed by authorized admins. This is not a per-admin or per-mentor Calendly account model. Existing user associations represent the managing admin as an audit actor, not independent scheduling ownership.
 
-Phase 10 - Calendly Account Management UI and Integration Validation was absorbed into Phase 9C-9E and is complete. Phase 9C implemented the MVP account-profile platform-management UI against the Phase 9B backend contract. Phase 9E simplified that UI after owner OAuth/sync acceptance: the authorized admin account profile now loads backend platform status, starts connect/reconnect through authenticated backend initiation, refreshes credentials, and disconnects with explicit inline confirmation. Replace was removed from the active product contract, and event-type sync now appears only on the admin event-type inventory route. Mentors and mentees do not see the platform-management card. The frontend no longer sends profile/user/mentor ids for platform ownership, no longer builds provider authorization URLs, no longer treats a user-level Calendly boolean as platform status, and refreshes backend platform status after callback/action outcomes.
+Historical Phase 10 - Calendly Account Management UI and Integration Validation was absorbed into Phase 9C-9E and is complete. Phase 9C implemented the MVP account-profile platform-management UI against the Phase 9B backend contract. Phase 9E simplified that UI after owner OAuth/sync acceptance: the authorized admin account profile now loads backend platform status, starts connect/reconnect through authenticated backend initiation, refreshes credentials, and disconnects with explicit inline confirmation. Replace was removed from the active product contract, and event-type sync now appears only on the admin event-type inventory route. Mentors and mentees do not see the platform-management card. The frontend no longer sends profile/user/mentor ids for platform ownership, no longer builds provider authorization URLs, no longer treats a user-level Calendly boolean as platform status, and refreshes backend platform status after callback/action outcomes.
 
 Phase 9C frontend contract:
 
@@ -961,7 +961,17 @@ Phase 9D frontend acceptance notes:
 - The admin mentor inventory column is now `Scheduling`, showing `Assigned` or `Not assigned` from backend-derived event-type assignment readiness. Do not display `Connected` for mentors; mentors do not own Calendly provider accounts.
 - Assignment forms exclude mentors already assigned to another active event type while keeping the current event type's assigned mentor selectable. Backend validation and the database unique index remain authoritative.
 
-Phase 11 - Test and Launch Hardening replaces the former Phase 8 launch-hardening plan. It should run only after Phases 8, 9, and 10 complete and should preserve the existing hardening scope: frontend smoke/build/test setup, auth/security regressions, visibility checks, fake/disabled UI audit, provider callback configuration, deployment documentation, environment validation, and final readiness review.
+Historical Phase 10 - Calendly Account Management UI and Integration Validation was absorbed into Phase 9C-9E and is complete. The active Phase 10 identifier is now reassigned to Platform Administration and Contract Completion.
+
+Phase 10 - Platform Administration and Contract Completion is now the next planned pre-hardening phase. Phase 10A should add one admin destination at `/admin/platform-settings` for Platform Settings > Mentor Taxonomy > Disciplines / Expertises / Fluencies. These are global platform records, not admin account-profile fields, and the sidebar should not gain separate links for each taxonomy table. The admin surface should support listing, justified search/filtering, adding, editing labels, activating, deactivating, reactivating, usage counts, duplicate prevention, and safe ordering. Reuse the mentor profile chip/pill language only where it helps visual consistency; the management interface should still behave like an admin table/form workflow. Frontend route guards are UX controls only; backend authorization and usage checks decide mutation safety and deletion eligibility.
+
+Phase 10B remains a separate controlled endpoint-normalization phase. It should maintain a route inventory and update Angular services, environment references, smoke scripts, tests, docs, OAuth callbacks, Calendly callbacks/webhooks, and Paystack callbacks/webhooks together. Internal Angular/API consumers can generally move together, but provider-facing routes require coordinated provider/environment changes and documented temporary aliases.
+
+Phase 10C should enrich admin and mentor dashboards with truthful backend-supported data only. Admin overview should prioritize attention states, platform activity, KPIs, and real trends only where supported. Mentor overview must show mentor-specific data only, and earnings should appear only where the backend supports truthful mentor-level payment data. Charts are not mandatory; KPI cards, attention states, lists, progress indicators, and recent activity are acceptable premium dashboard patterns.
+
+Phase 11 - Media and Experience Modernization should follow Phase 10. Phase 11A should decide image upload/storage architecture before replacing raw image URL fields, with managed image/CDN storage preferred if provider, cost, and platform-owned account approval are obtained. Phase 11B should modernize sign-in/sign-up and the auth layout while preserving async auth restoration and OAuth-return behavior; forgot/reset password, email verification, resend verification, account activation, email delivery, and token lifecycle are separate approved backend/security scopes if they become MVP requirements. Phase 11C should modernize public routes separately from auth and preserve public/private visibility rules.
+
+Phase 12 - Test and Launch Hardening replaces the former Phase 11 hardening plan and the older Phase 8 launch-hardening plan. It should preserve the existing hardening scope: frontend smoke/build/test setup, auth/security regressions, visibility checks, fake/disabled UI audit, provider callback configuration, deployment documentation, environment validation, Paystack deployed sandbox validation, real Calendly webhook delivery when plan/environment permits, and final readiness review.
 
 ### Blogs
 
@@ -1042,19 +1052,20 @@ Major pending areas after the current MVP foundation:
 - better automated frontend validation and tests
 - richer dashboard analytics
 - application tracker work
-- Phase 11 test and launch hardening
+- Phase 10 platform administration and contract completion
+- Phase 11 media and experience modernization
+- Phase 12 test and launch hardening
 - preserve mentor experience row identities if richer non-replacement editing becomes necessary
 
 ## Recommended Next Frontend Iterations
 
-1. Move to Phase 11 launch hardening, preserving the global Calendly platform ownership and account-management UI model.
-2. Add targeted automated coverage for auth restoration, protected route continuity, account-security flows, notification behavior, and Calendly management where practical.
-3. Add lint/test scripts or at least basic test tooling.
-4. Add pagination/search/filtering refinements to admin lists during Phase 11 or a focused later hardening slice.
-5. Add a scholarship detail bookmark split/current-user detail path if product wants bookmark controls on detail.
-6. Add a dedicated saved-scholarships workspace if product requests it.
-7. Fix `shcolarship.model.ts` typo safely.
-9. Add richer admin overview charts/recent activity.
+1. Move to Phase 10A Platform Settings and Master Data Management with a single `/admin/platform-settings` route rather than separate sidebar routes for each reference table. Scope the first slice to disciplines, expertises, fluencies, active/inactive lifecycle behavior, usage counts, duplicate prevention, and backend-backed admin mutations.
+2. Keep Phase 10B API endpoint normalization separate because it touches every Angular service, smoke script, OAuth callback, webhook, provider configuration, and documentation reference.
+3. Enrich admin and mentor overview dashboards in Phase 10C with truthful backend-supported metrics and remove or replace disabled fake "Soon" actions. Do not add a chart dependency unless the data and use case justify it.
+4. Complete Phase 11A image upload/storage architecture before replacing raw image URL fields in account, mentor, scholarship, and blog forms.
+5. Modernize auth pages in Phase 11B while preserving async auth restoration and OAuth-return behavior. Do not silently add account recovery or email-verification flows without approved backend scope.
+6. Modernize public/unauthenticated routes in Phase 11C while preserving public/private visibility rules and excluding draft blogs, unpublished scholarships, suspended/private mentors, admin-only fields, and private payment/scheduling details.
+7. Defer test/launch hardening, lint/test expansion, provider callback validation, and final readiness review to Phase 12 unless a focused earlier phase explicitly scopes them.
 
 ## Notes for Future Codex Sessions
 
